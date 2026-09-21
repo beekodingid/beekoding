@@ -1,0 +1,942 @@
+import React, { useState } from 'react';
+import {
+  type SystemUser,
+  type UserRole,
+  type AdminTab,
+  getSystemUsers,
+  saveSystemUser,
+  deleteSystemUser,
+  switchActiveSystemUser,
+  getCurrentSystemUser,
+  ALL_ADMIN_TABS,
+  INSTRUCTOR_RECOMMENDED_TABS,
+  COUNSELOR_RECOMMENDED_TABS,
+  exportUsersCSV,
+} from '../../services/adminStorage';
+import {
+  Users,
+  ShieldCheck,
+  Search,
+  Plus,
+  Trash2,
+  Edit,
+  CheckCircle2,
+  FileSpreadsheet,
+  Sparkles,
+  GraduationCap,
+  Briefcase,
+  Mail,
+  Phone,
+  X,
+  LogIn,
+} from 'lucide-react';
+
+interface AdminUsersProps {
+  isDark: boolean;
+  onRoleSwitched?: () => void;
+}
+
+const MENU_CATEGORIES: {
+  category: string;
+  items: { id: AdminTab; label: string; desc: string }[];
+}[] = [
+  {
+    category: 'Utama',
+    items: [
+      { id: 'dashboard', label: 'Dashboard', desc: 'Ringkasan performa, siswa, dan statistik kelas' },
+    ],
+  },
+  {
+    category: 'Penerimaan & Konsultasi',
+    items: [
+      { id: 'students', label: 'Data Siswa', desc: 'Profil anak, minat bakat, dan kontak wali murid' },
+      { id: 'inquiries', label: 'Konsultasi & Registrasi', desc: 'Prospek leads pendaftaran calon murid baru' },
+      { id: 'events', label: 'Event & Trial Class', desc: 'Jadwal workshop koding dan trial class' },
+      { id: 'counseling', label: 'Konseling & Bimbingan', desc: 'Sesi mentoring privat 1-on-1 dengan siswa/ortu' },
+      { id: 'templates', label: 'Template Pesan WA', desc: 'Format pesan resmi penagihan, follow-up & info' },
+      { id: 'announcements', label: 'Pengumuman & Siaran', desc: 'Broadcast massal untuk siswa dan pengajar' },
+      { id: 'gateway', label: 'WhatsApp Gateway & Otomasi', desc: 'Mesin antrean & pemicu notifikasi WhatsApp' },
+    ],
+  },
+  {
+    category: 'Akademik & Pengajaran',
+    items: [
+      { id: 'batches', label: 'Jadwal & Batch Kelas', desc: 'Kelola kelas aktif, sesi, dan link Google Meet/Zoom' },
+      { id: 'attendance', label: 'Presensi & Absensi', desc: 'Catat kehadiran siswa dan ringkasan materi harian' },
+      { id: 'reports', label: 'Rapor Belajar Siswa', desc: 'Nilai kompetensi koding, rapor bulanan & feedback' },
+      { id: 'curriculum', label: 'Silabus Kurikulum', desc: 'Panduan target modul dan capaian pembelajaran' },
+      { id: 'resources', label: 'Bahan Ajar & Modul', desc: 'Starter code, slide presentasi, panduan praktik' },
+      { id: 'instructors', label: 'Tim Instruktur', desc: 'Manajemen master profil dan data pengajar' },
+    ],
+  },
+  {
+    category: 'Gamifikasi & Prestasi',
+    items: [
+      { id: 'quests', label: 'Tantangan & Quest', desc: 'Misi koding mandiri dan validasi submission tugas' },
+      { id: 'quizzes', label: 'Kuis & Evaluasi Belajar', desc: 'Ujian pemahaman konsep komputasi & logika' },
+      { id: 'certificates', label: 'Sertifikat Siswa', desc: 'Verifikasi kelayakan dan penerbitan sertifikat' },
+      { id: 'showcase', label: 'Karya & Portofolio', desc: 'Kurasi & code review game/web buatan siswa' },
+    ],
+  },
+  {
+    category: 'Keuangan & Pemasaran',
+    items: [
+      { id: 'transactions', label: 'Transaksi & Biaya', desc: 'Data omzet, mutasi pembayaran SPP siswa' },
+      { id: 'vouchers', label: 'Kupon & Promo', desc: 'Manajemen kode promo diskon pendaftaran' },
+      { id: 'payroll', label: 'Penggajian Instruktur', desc: 'Honor per sesi mengajar dan slip gaji A4' },
+      { id: 'referrals', label: 'Duta & Referral', desc: 'Komisi program afiliasi mitra dan duta belajar' },
+    ],
+  },
+  {
+    category: 'Sistem & Evaluasi',
+    items: [
+      { id: 'questions', label: 'Bank Soal', desc: 'Kumpulan soal asesmen bakat dan latihan logika' },
+      { id: 'users', label: 'Manajemen User & Hak Akses', desc: 'Pengaturan akun staf dan pembagian izin menu' },
+      { id: 'audit', label: 'Log Aktivitas & Audit', desc: 'Jejak audit forensik keamanan mutasi data' },
+      { id: 'settings', label: 'Pengaturan Sistem', desc: 'Profil instansi, backup database, dan konfigurasi' },
+    ],
+  },
+];
+
+export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }) => {
+  const [users, setUsers] = useState<SystemUser[]>(() => getSystemUsers());
+  const [currentUser, setCurrentUser] = useState<SystemUser>(() => getCurrentSystemUser());
+  const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'all' | UserRole>('all');
+  const [showModal, setShowModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<SystemUser | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Form states
+  const [formName, setFormName] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formPassword, setFormPassword] = useState('');
+  const [formRole, setFormRole] = useState<UserRole>('instructor');
+  const [formRoleTitle, setFormRoleTitle] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formAvatar, setFormAvatar] = useState('');
+  const [formInstitution, setFormInstitution] = useState('BeeKoding Academy');
+  const [formBio, setFormBio] = useState('');
+  const [formStatus, setFormStatus] = useState<'active' | 'inactive'>('active');
+  const [formAllowedTabs, setFormAllowedTabs] = useState<AdminTab[]>([...INSTRUCTOR_RECOMMENDED_TABS]);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const refreshData = () => {
+    const list = getSystemUsers();
+    setUsers(list);
+    setCurrentUser(getCurrentSystemUser());
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingUser(null);
+    setFormName('');
+    setFormEmail('');
+    setFormPassword('password123');
+    setFormRole('instructor');
+    setFormRoleTitle('Coding Instructor & Mentor');
+    setFormPhone('');
+    setFormAvatar('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80');
+    setFormInstitution('BeeKoding Academy');
+    setFormBio('');
+    setFormStatus('active');
+    setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
+    setShowModal(true);
+  };
+
+  const handleOpenEditModal = (user: SystemUser) => {
+    setEditingUser(user);
+    setFormName(user.name);
+    setFormEmail(user.email);
+    setFormPassword(user.passwordHash || 'password123');
+    setFormRole(user.role);
+    setFormRoleTitle(user.roleTitle);
+    setFormPhone(user.phone || '');
+    setFormAvatar(user.avatar || '');
+    setFormInstitution(user.institution || 'BeeKoding Academy');
+    setFormBio(user.bio || '');
+    setFormStatus(user.status);
+    setFormAllowedTabs([...user.allowedTabs]);
+    setShowModal(true);
+  };
+
+  const handleRoleChangeInForm = (newRole: UserRole) => {
+    setFormRole(newRole);
+    if (!editingUser) {
+      if (newRole === 'administrator') {
+        setFormRoleTitle('Super Administrator & Academic Strategist');
+        setFormAllowedTabs([...ALL_ADMIN_TABS]);
+      } else if (newRole === 'instructor') {
+        setFormRoleTitle('Senior Coding Mentor & Python Specialist');
+        setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
+      } else if (newRole === 'counselor') {
+        setFormRoleTitle('Academic Counselor & Student Advisor');
+        setFormAllowedTabs([...COUNSELOR_RECOMMENDED_TABS]);
+      } else {
+        setFormRoleTitle('Staf Khusus Sistem');
+      }
+    }
+  };
+
+  const handleApplyPreset = (preset: 'instructor' | 'admin' | 'counselor') => {
+    if (preset === 'instructor') {
+      setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
+      showToast('Scope 13 menu rekomendasi instruktur berhasil diterapkan!');
+    } else if (preset === 'admin') {
+      setFormAllowedTabs([...ALL_ADMIN_TABS]);
+      showToast('Akses penuh seluruh 25 menu berhasil diterapkan!');
+    } else if (preset === 'counselor') {
+      setFormAllowedTabs([...COUNSELOR_RECOMMENDED_TABS]);
+      showToast('Scope 9 menu konselor berhasil diterapkan!');
+    }
+  };
+
+  const handleToggleTab = (tabId: AdminTab) => {
+    setFormAllowedTabs((prev) => {
+      if (prev.includes(tabId)) {
+        return prev.filter((id) => id !== tabId);
+      } else {
+        return [...prev, tabId];
+      }
+    });
+  };
+
+  const handleToggleCategory = (tabsInCategory: AdminTab[]) => {
+    const allSelected = tabsInCategory.every((id) => formAllowedTabs.includes(id));
+    if (allSelected) {
+      setFormAllowedTabs((prev) => prev.filter((id) => !tabsInCategory.includes(id)));
+    } else {
+      setFormAllowedTabs((prev) => Array.from(new Set([...prev, ...tabsInCategory])));
+    }
+  };
+
+  const handleSaveUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formName.trim() || !formEmail.trim()) {
+      alert('Mohon isi nama lengkap dan email.');
+      return;
+    }
+
+    if (formAllowedTabs.length === 0) {
+      alert('Pengguna setidaknya harus memiliki izin ke minimal 1 menu.');
+      return;
+    }
+
+    saveSystemUser({
+      id: editingUser ? editingUser.id : undefined,
+      name: formName.trim(),
+      email: formEmail.trim().toLowerCase(),
+      passwordHash: formPassword.trim() || 'password123',
+      role: formRole,
+      roleTitle: formRoleTitle.trim() || (formRole === 'administrator' ? 'Administrator' : 'Instruktur / Mentor'),
+      phone: formPhone.trim(),
+      avatar: formAvatar.trim() || '/febri-hasan.png',
+      institution: formInstitution.trim(),
+      bio: formBio.trim(),
+      status: formStatus,
+      allowedTabs: formAllowedTabs,
+    });
+
+    refreshData();
+    setShowModal(false);
+    showToast(editingUser ? 'Perubahan akun berhasil disimpan.' : 'Pengguna baru berhasil ditambahkan.');
+  };
+
+  const handleDelete = (id: string, name: string) => {
+    if (confirm(`Apakah Anda yakin ingin menghapus akun pengguna "${name}"?`)) {
+      const res = deleteSystemUser(id);
+      if (res.success) {
+        refreshData();
+        showToast(`Akun "${name}" berhasil dihapus.`);
+      } else {
+        alert(res.error || 'Gagal menghapus pengguna.');
+      }
+    }
+  };
+
+  const handleSwitchSession = (user: SystemUser) => {
+    const res = switchActiveSystemUser(user.id);
+    if (res.success) {
+      refreshData();
+      showToast(`Sesi aktif berhasil dialihkan ke: ${user.name} (${user.roleTitle})`);
+      if (onRoleSwitched) {
+        onRoleSwitched();
+      }
+    } else {
+      alert(res.error || 'Gagal beralih akun.');
+    }
+  };
+
+  const filteredUsers = users.filter((u) => {
+    const matchSearch =
+      u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      u.roleTitle.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchRole = roleFilter === 'all' || u.role === roleFilter;
+    return matchSearch && matchRole;
+  });
+
+  const totalUsers = users.length;
+  const adminCount = users.filter((u) => u.role === 'administrator').length;
+  const instructorCount = users.filter((u) => u.role === 'instructor').length;
+  const counselorCount = users.filter((u) => u.role === 'counselor').length;
+
+  return (
+    <div className="space-y-6">
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-amber-500/40 text-amber-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4">
+          <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
+          <span className="text-sm font-semibold">{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Header Banner */}
+      <div
+        className={`p-6 rounded-3xl border relative overflow-hidden transition-all ${
+          isDark
+            ? 'bg-slate-900/60 border-slate-800 shadow-xl shadow-black/20'
+            : 'bg-white border-slate-200 shadow-sm'
+        }`}
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center gap-1.5">
+                <ShieldCheck className="w-3 h-3" />
+                Role-Based Access Control (RBAC)
+              </span>
+              <span className="text-xs text-slate-400">• Multi-User & Multi-Role</span>
+            </div>
+            <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+              Manajemen Pengguna & Kontrol Hak Akses Menu
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl">
+              Atur hak akses staf, instruktur pengajar, dan konselor secara granular. Menu navigasi akan otomatis
+              menyesuaikan dengan wewenang akun masing-masing.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={exportUsersCSV}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold border flex items-center gap-2 transition-all cursor-pointer ${
+                isDark
+                  ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+              }`}
+              title="Ekspor Data Pengguna ke CSV"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+              <span>Ekspor CSV</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleOpenAddModal}
+              className="px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 flex items-center gap-2 cursor-pointer transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Tambah Pengguna</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Educational Callout: Scope Rekomendasi Instruktur */}
+      <div
+        className={`p-5 rounded-3xl border transition-all ${
+          isDark
+            ? 'bg-amber-500/5 border-amber-500/20 text-slate-300'
+            : 'bg-amber-50/70 border-amber-200/80 text-slate-800'
+        }`}
+      >
+        <div className="flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-500">
+            <GraduationCap className="w-5 h-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                💡 Rekomendasi Ruang Lingkup (Scope) untuk Instruktur / Mentor Pengajar
+              </h3>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                13 Menu Mengajar
+              </span>
+            </div>
+            <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+              Instruktur difokuskan pada aktivitas pedagogik: <strong>Dashboard, Data Siswa, Jadwal Batch, Presensi, Rapor, Silabus, Bahan Ajar, Quest, Kuis, Sertifikat, Portofolio, Bank Soal, dan Konseling</strong>.
+              Menu sensitif seperti <em>Transaksi Keuangan, Kupon Promo, Slip Payroll Guru Lain, Referral, dan Audit Trail</em> dibatasi untuk menjaga kerahasiaan institusi.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div
+          className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}
+        >
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider">Total Akun</span>
+            <Users className="w-4 h-4 text-amber-500" />
+          </div>
+          <div className="text-2xl font-black text-slate-900 dark:text-white">{totalUsers}</div>
+          <p className="text-[11px] text-slate-500 mt-1">Terdaftar dalam sistem</p>
+        </div>
+
+        <div
+          className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}
+        >
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider">Administrator</span>
+            <ShieldCheck className="w-4 h-4 text-amber-500" />
+          </div>
+          <div className="text-2xl font-black text-amber-500">{adminCount}</div>
+          <p className="text-[11px] text-slate-500 mt-1">Akses penuh 25 menu</p>
+        </div>
+
+        <div
+          className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}
+        >
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider">Instruktur / Mentor</span>
+            <GraduationCap className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div className="text-2xl font-black text-emerald-500">{instructorCount}</div>
+          <p className="text-[11px] text-slate-500 mt-1">Scope pengajaran & siswa</p>
+        </div>
+
+        <div
+          className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}
+        >
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider">Konselor & CS</span>
+            <Briefcase className="w-4 h-4 text-indigo-500" />
+          </div>
+          <div className="text-2xl font-black text-indigo-500">{counselorCount}</div>
+          <p className="text-[11px] text-slate-500 mt-1">Scope konseling & leads</p>
+        </div>
+      </div>
+
+      {/* Filter & Search Toolbar */}
+      <div
+        className={`p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 ${
+          isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+        }`}
+      >
+        <div className="relative w-full md:w-80">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari nama, email, atau jabatan..."
+            className={`w-full pl-10 pr-4 py-2 rounded-xl text-xs border transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+              isDark
+                ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500'
+                : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'
+            }`}
+          />
+        </div>
+
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+          {(
+            [
+              { id: 'all', label: 'Semua Peran' },
+              { id: 'administrator', label: 'Administrator' },
+              { id: 'instructor', label: 'Instruktur' },
+              { id: 'counselor', label: 'Konselor' },
+            ] as const
+          ).map((filter) => (
+            <button
+              key={filter.id}
+              type="button"
+              onClick={() => setRoleFilter(filter.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                roleFilter === filter.id
+                  ? 'bg-amber-500 text-slate-950 shadow-sm'
+                  : isDark
+                  ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Users List Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredUsers.map((user) => {
+          const isCurrent = currentUser.id === user.id;
+          const isAdmin = user.role === 'administrator';
+          const isInstructor = user.role === 'instructor';
+          const isCounselor = user.role === 'counselor';
+
+          return (
+            <div
+              key={user.id}
+              className={`p-5 rounded-3xl border transition-all flex flex-col justify-between relative ${
+                isCurrent
+                  ? 'ring-2 ring-amber-500/50 bg-amber-500/5 border-amber-500/40 shadow-lg shadow-amber-500/10'
+                  : isDark
+                  ? 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                  : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
+              }`}
+            >
+              <div>
+                {/* Active Session Ribbon */}
+                {isCurrent && (
+                  <div className="absolute top-4 right-4 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-sm">
+                    <Sparkles className="w-3 h-3" />
+                    <span>Sesi Aktif</span>
+                  </div>
+                )}
+
+                {/* User Info Header */}
+                <div className="flex items-center gap-3.5 mb-3.5">
+                  <div className="relative">
+                    <img
+                      src={user.avatar || '/febri-hasan.png'}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-2xl object-cover border border-amber-500/20"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/febri-hasan.png';
+                      }}
+                    />
+                    <span
+                      className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 ${
+                        isDark ? 'border-slate-900' : 'border-white'
+                      } ${user.status === 'active' ? 'bg-emerald-500' : 'bg-slate-400'}`}
+                      title={user.status === 'active' ? 'Akun Aktif' : 'Akun Non-Aktif'}
+                    />
+                  </div>
+
+                  <div className="min-w-0 flex-1 pr-14">
+                    <h4 className="font-extrabold text-sm text-slate-900 dark:text-white truncate">
+                      {user.name}
+                    </h4>
+                    <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+                      {user.roleTitle}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Role Badge & Status */}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span
+                    className={`text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                      isAdmin
+                        ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                        : isInstructor
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                        : isCounselor
+                        ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30'
+                        : 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30'
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    {user.allowedTabs.length} dari 25 Menu
+                  </span>
+                </div>
+
+                {/* Contact Details */}
+                <div className="space-y-1 text-xs text-slate-500 dark:text-slate-400 mb-4">
+                  <div className="flex items-center gap-2 truncate">
+                    <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <span className="truncate">{user.email}</span>
+                  </div>
+                  {user.phone && (
+                    <div className="flex items-center gap-2 truncate">
+                      <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{user.phone}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Allowed Menu Chips Preview */}
+                <div className="mb-4">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                    Menu yang Diizinkan:
+                  </span>
+                  <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
+                    {user.allowedTabs.slice(0, 6).map((tabId) => (
+                      <span
+                        key={tabId}
+                        className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-medium"
+                      >
+                        {tabId}
+                      </span>
+                    ))}
+                    {user.allowedTabs.length > 6 && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-500 font-bold">
+                        +{user.allowedTabs.length - 6} lainnya
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons Footer */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                {!isCurrent ? (
+                  <button
+                    type="button"
+                    onClick={() => handleSwitchSession(user)}
+                    className="flex-1 py-1.5 px-3 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500 text-amber-600 dark:text-amber-400 hover:text-slate-950 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    title="Beralih peran dan uji tampilan menu sebagai pengguna ini"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>Uji / Simulasi Role</span>
+                  </button>
+                ) : (
+                  <span className="text-xs font-bold text-amber-500 flex items-center gap-1.5 px-2">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Sedang Digunakan</span>
+                  </span>
+                )}
+
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEditModal(user)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                    title="Edit Pengguna & Hak Akses"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+
+                  {user.email !== 'admin@beekoding.id' && (
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(user.id, user.name)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      title="Hapus Pengguna"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Modal Add / Edit User */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+          <div
+            className={`w-full max-w-3xl rounded-3xl border shadow-2xl p-6 transition-all my-8 max-h-[90vh] flex flex-col ${
+              isDark ? 'bg-[#151928] border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold">
+                  {editingUser ? <Edit className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base">
+                    {editingUser ? `Edit Akun: ${editingUser.name}` : 'Tambah Pengguna Sistem Baru'}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Konfigurasikan profil akun dan centang hak akses menu yang diizinkan.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <form onSubmit={handleSaveUser} className="flex-1 overflow-y-auto pr-1 py-4 space-y-5">
+              {/* Account Basic Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Nama Lengkap *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    placeholder="Contoh: Sarah Melati, S.Kom."
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Email Pengguna (Username Login) *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
+                    placeholder="mentor@beekoding.id"
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Kata Sandi (Password) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formPassword}
+                    onChange={(e) => setFormPassword(e.target.value)}
+                    placeholder="Minimal 6 karakter"
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Peran (Role) Utama *
+                  </label>
+                  <select
+                    value={formRole}
+                    onChange={(e) => handleRoleChangeInForm(e.target.value as UserRole)}
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
+                  >
+                    <option value="instructor">Instruktur / Mentor Pengajar</option>
+                    <option value="administrator">Super Administrator</option>
+                    <option value="counselor">Konselor Akademik & Student Advisor</option>
+                    <option value="custom">Kustom (Peran Khusus)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Gelar / Jabatan Spesialisasi
+                  </label>
+                  <input
+                    type="text"
+                    value={formRoleTitle}
+                    onChange={(e) => setFormRoleTitle(e.target.value)}
+                    placeholder="Contoh: Senior Coding Mentor & Python Specialist"
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    No. WhatsApp / Telepon
+                  </label>
+                  <input
+                    type="text"
+                    value={formPhone}
+                    onChange={(e) => setFormPhone(e.target.value)}
+                    placeholder="+62 812-xxxx-xxxx"
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Status Akun */}
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                  Status Akun
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="active"
+                      checked={formStatus === 'active'}
+                      onChange={() => setFormStatus('active')}
+                      className="text-amber-500 focus:ring-amber-400"
+                    />
+                    <span>Aktif (Dapat Login & Akses Menu)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="inactive"
+                      checked={formStatus === 'inactive'}
+                      onChange={() => setFormStatus('inactive')}
+                      className="text-amber-500 focus:ring-amber-400"
+                    />
+                    <span className="text-slate-400">Non-Aktif (Akses Ditangguhkan)</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Preset Buttons for Quick Scope Assignment */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Pilih Menu yang Diizinkan ({formAllowedTabs.length} dari 25 Terpilih)
+                  </label>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleApplyPreset('instructor')}
+                      className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
+                    >
+                      Preset Instruktur (13 Menu)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyPreset('admin')}
+                      className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-slate-950 transition-all cursor-pointer"
+                    >
+                      Pilih Semua (25 Menu)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormAllowedTabs([])}
+                      className="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all cursor-pointer"
+                    >
+                      Kosongkan
+                    </button>
+                  </div>
+                </div>
+
+                {/* Categorized Menu Checklist */}
+                <div className="space-y-4 pt-1">
+                  {MENU_CATEGORIES.map((cat) => {
+                    const categoryTabIds = cat.items.map((i) => i.id);
+                    const selectedCount = categoryTabIds.filter((id) => formAllowedTabs.includes(id)).length;
+                    const allSelected = selectedCount === categoryTabIds.length;
+
+                    return (
+                      <div
+                        key={cat.category}
+                        className={`p-3.5 rounded-2xl border transition-all ${
+                          isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-800">
+                          <div className="flex items-center gap-2">
+                            <span className="font-extrabold text-xs text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                              {cat.category}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-slate-200 dark:bg-slate-800 text-slate-500">
+                              {selectedCount}/{categoryTabIds.length}
+                            </span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleToggleCategory(categoryTabIds)}
+                            className="text-[10px] font-bold text-amber-500 hover:underline cursor-pointer"
+                          >
+                            {allSelected ? 'Batal Pilih Kategori' : 'Pilih Semua Kategori'}
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {cat.items.map((item) => {
+                            const isChecked = formAllowedTabs.includes(item.id);
+                            return (
+                              <label
+                                key={item.id}
+                                className={`p-2 rounded-xl border flex items-start gap-2.5 cursor-pointer transition-all ${
+                                  isChecked
+                                    ? 'bg-amber-500/10 border-amber-500/40 text-slate-900 dark:text-white'
+                                    : isDark
+                                    ? 'bg-slate-900 border-slate-800/80 text-slate-400 hover:border-slate-700'
+                                    : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => handleToggleTab(item.id)}
+                                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400 shrink-0"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-bold text-xs truncate">{item.label}</div>
+                                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                                    {item.desc}
+                                  </div>
+                                </div>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Modal Actions Footer */}
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 cursor-pointer transition-all"
+                >
+                  {editingUser ? 'Simpan Perubahan Akun' : 'Buat Pengguna Baru'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
