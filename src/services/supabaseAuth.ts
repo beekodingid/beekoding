@@ -381,3 +381,141 @@ export async function provisionDefaultStaffAccounts(): Promise<ProvisionResult> 
     errors,
   };
 }
+
+export interface PasswordResetResult {
+  success: boolean;
+  message: string;
+  isCloudEmailSent?: boolean;
+}
+
+/**
+ * Mengirimkan permintaan reset password ke email via Supabase Cloud Auth atau validasi lokal
+ */
+export async function requestPasswordReset(email: string): Promise<PasswordResetResult> {
+  const trimmedEmail = email.trim().toLowerCase();
+  if (!trimmedEmail) {
+    return { success: false, message: 'Silakan masukkan alamat email yang terdaftar.' };
+  }
+
+  const client = getSupabaseClient();
+  const cloudAvailable = !!client && isSupabaseConfigured();
+
+  // 1. Coba kirim via Supabase Cloud Auth jika terkonfigurasi
+  if (cloudAvailable) {
+    try {
+      const redirectUrl = `${window.location.origin}/#admin`;
+      const { error } = await client.auth.resetPasswordForEmail(trimmedEmail, {
+        redirectTo: redirectUrl,
+      });
+
+      if (!error) {
+        logAdminActivity({
+          module: 'auth',
+          actionType: 'update',
+          title: 'Permintaan Reset Kata Sandi',
+          description: `Tautan pemulihan kata sandi telah dikirim ke email ${trimmedEmail} melalui Supabase Cloud Auth.`,
+          severity: 'info',
+        });
+        return {
+          success: true,
+          isCloudEmailSent: true,
+          message: `Tautan reset kata sandi telah dikirim ke ${trimmedEmail}. Silakan periksa kotak masuk atau folder spam email Anda.`,
+        };
+      } else {
+        console.warn('Supabase resetPasswordForEmail warning:', error.message);
+      }
+    } catch (err: any) {
+      console.warn('Supabase reset exception:', err);
+    }
+  }
+
+  // 2. Fallback lokal: periksa apakah email ada di system_users
+  const users = getSystemUsers();
+  const matched = users.find((u) => u.email.toLowerCase() === trimmedEmail);
+
+  if (matched) {
+    logAdminActivity({
+      module: 'auth',
+      actionType: 'update',
+      title: 'Permintaan Reset Kata Sandi Lokal',
+      description: `Staf ${matched.name} (${matched.email}) meminta reset kata sandi.`,
+      severity: 'info',
+    });
+    return {
+      success: true,
+      isCloudEmailSent: false,
+      message: `Akun terdaftar atas nama "${matched.name}". Dalam mode lokal, Anda dapat menggunakan PIN Otorisasi Cepat (default: 2026) untuk langsung membuat kata sandi baru.`,
+    };
+  }
+
+  return {
+    success: false,
+    message: `Alamat email "${trimmedEmail}" tidak ditemukan dalam daftar staf terdaftar.`,
+  };
+}
+
+/**
+ * Menyetel ulang kata sandi dengan verifikasi Master PIN Keamanan
+ */
+export async function resetPasswordWithPin(
+  email: string,
+  pin: string,
+  newPassword: string
+): Promise<{ success: boolean; message: string }> {
+  const trimmedEmail = email.trim().toLowerCase();
+  const trimmedPin = pin.trim();
+  const trimmedPass = newPassword.trim();
+
+  if (!trimmedEmail || !trimmedPin || !trimmedPass) {
+    return { success: false, message: 'Semua kolom wajib diisi.' };
+  }
+
+  if (trimmedPass.length < 6) {
+    return { success: false, message: 'Kata sandi baru minimal 6 karakter.' };
+  }
+
+  // Master PIN keamanan darurat: 2026 atau 8888 atau 1131
+  const validPins = ['2026', '8888', '1131'];
+  if (!validPins.includes(trimmedPin)) {
+    return {
+      success: false,
+      message: 'PIN Otorisasi Darurat salah. Hubungi Super Admin (+62 853-1131-7127) untuk mendapatkan PIN bantuan.',
+    };
+  }
+
+  const users = getSystemUsers();
+  const userIdx = users.findIndex((u) => u.email.toLowerCase() === trimmedEmail);
+
+  if (userIdx === -1) {
+    return { success: false, message: 'Email staf tidak ditemukan dalam basis data sistem.' };
+  }
+
+  // Update password lokal
+  users[userIdx].passwordHash = `scrypt_custom_${trimmedPass}`;
+  localStorage.setItem(STORAGE_KEYS.SYSTEM_USERS, JSON.stringify(users));
+
+  // Sinkronkan ke Supabase jika terhubung
+  const client = getSupabaseClient();
+  if (client && isSupabaseConfigured()) {
+    try {
+      await client.from('system_users').update({
+        password_hash: users[userIdx].passwordHash,
+      }).eq('id', users[userIdx].id);
+    } catch (e) {
+      console.warn('Sync updated password to supabase failed:', e);
+    }
+  }
+
+  logAdminActivity({
+    module: 'auth',
+    actionType: 'update',
+    title: 'Reset Kata Sandi Berhasil',
+    description: `Kata sandi staf ${users[userIdx].name} (${users[userIdx].email}) berhasil direset menggunakan PIN Otorisasi.`,
+    severity: 'warning',
+  });
+
+  return {
+    success: true,
+    message: `Kata sandi untuk ${users[userIdx].name} berhasil diperbarui! Silakan masuk dengan kata sandi baru Anda.`,
+  };
+}

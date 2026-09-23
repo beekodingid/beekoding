@@ -4,8 +4,6 @@ import { ThemeToggle } from '../ThemeToggle';
 import {
   getAdminUser,
   getCurrentSystemUser,
-  getSystemUsers,
-  switchActiveSystemUser,
   type AdminTab,
 } from '../../services/adminStorage';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
@@ -43,7 +41,6 @@ import {
   ScrollText,
   HelpCircle,
   Share2,
-  Sparkles,
   Smartphone,
 } from 'lucide-react';
 
@@ -323,7 +320,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   ];
 
   const currentSystemUser = getCurrentSystemUser();
-  const allSystemUsers = getSystemUsers();
   const allowedTabs = currentSystemUser.role === 'administrator' ? null : currentSystemUser.allowedTabs;
 
   // Filter groups according to user role / permissions
