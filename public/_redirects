@@ -1,0 +1,3 @@
+# Cloudflare Pages SPA (Single Page Application) Redirect Rules
+# Ensures all routes and refresh actions are handled by React (index.html)
+/*    /index.html   200
