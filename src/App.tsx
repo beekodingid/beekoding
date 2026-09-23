@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useTheme } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -12,14 +12,39 @@ import { Gallery } from './components/Gallery';
 import { StudentShowcase } from './components/StudentShowcase';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { BootcampModal } from './components/BootcampModal';
-import { TrialEventsModal } from './components/TrialEventsModal';
 import { TrialEventsSection } from './components/TrialEventsSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { TalentAssessmentView } from './components/talent/TalentAssessmentView';
-import { AdminView } from './components/admin/AdminView';
-import { StudentPortalView } from './components/portal/StudentPortalView';
 import { type CodingEvent } from './services/adminStorage';
+
+// Lazy-loaded heavy modules for maximum initial page load speed
+const TalentAssessmentView = lazy(() =>
+  import('./components/talent/TalentAssessmentView').then((m) => ({ default: m.TalentAssessmentView }))
+);
+const AdminView = lazy(() =>
+  import('./components/admin/AdminView').then((m) => ({ default: m.AdminView }))
+);
+const StudentPortalView = lazy(() =>
+  import('./components/portal/StudentPortalView').then((m) => ({ default: m.StudentPortalView }))
+);
+const BootcampModal = lazy(() =>
+  import('./components/BootcampModal').then((m) => ({ default: m.BootcampModal }))
+);
+const TrialEventsModal = lazy(() =>
+  import('./components/TrialEventsModal').then((m) => ({ default: m.TrialEventsModal }))
+);
+
+function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
+  return (
+    <div className="min-h-screen bg-[#0d0f15] text-slate-100 flex flex-col items-center justify-center p-6 select-none">
+      <div className="relative w-16 h-16 mb-4 flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full border-4 border-amber-500/20 border-t-amber-400 animate-spin" />
+        <span className="text-2xl animate-bounce">🐝</span>
+      </div>
+      <h3 className="text-lg font-bold text-amber-400 mb-1">BeeKoding Academy</h3>
+      <p className="text-xs text-slate-400 font-medium">{message}</p>
+    </div>
+  );
+}
 
 export function App() {
   const { isDark } = useTheme();
@@ -131,17 +156,29 @@ export function App() {
 
   // Jika Portal Administrator sedang aktif
   if (showAdmin) {
-    return <AdminView onBackToHome={handleCloseAdmin} />;
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Memuat Portal Administrasi BeeKoding..." />}>
+        <AdminView onBackToHome={handleCloseAdmin} />
+      </Suspense>
+    );
   }
 
   // Jika Talent Assessment sedang aktif, tampilkan Talent Assessment View
   if (showTalentAssessment) {
-    return <TalentAssessmentView onClose={handleCloseTalentAssessment} />;
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Asesmen Minat & Bakat..." />}>
+        <TalentAssessmentView onClose={handleCloseTalentAssessment} />
+      </Suspense>
+    );
   }
 
   // Jika Portal Siswa & Wali Murid sedang aktif
   if (showStudentPortal) {
-    return <StudentPortalView onClose={handleCloseStudentPortal} />;
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Membuka Portal Siswa & Wali Murid..." />}>
+        <StudentPortalView onClose={handleCloseStudentPortal} />
+      </Suspense>
+    );
   }
 
   return (
@@ -200,18 +237,26 @@ export function App() {
       <FloatingWhatsApp />
 
       {/* Summer AI & Coding Bootcamp 2026 Curriculum Modal */}
-      <BootcampModal
-        isOpen={bootcampModalOpen}
-        onClose={handleCloseBootcampModal}
-        onEnrollClick={handleEnrollFromModal}
-      />
+      {bootcampModalOpen && (
+        <Suspense fallback={null}>
+          <BootcampModal
+            isOpen={bootcampModalOpen}
+            onClose={handleCloseBootcampModal}
+            onEnrollClick={handleEnrollFromModal}
+          />
+        </Suspense>
+      )}
 
       {/* Free Trial Class & Coding Events Modal */}
-      <TrialEventsModal
-        isOpen={trialEventsModalOpen}
-        onClose={handleCloseTrialEvents}
-        initialSelectedEvent={selectedEventForModal}
-      />
+      {trialEventsModalOpen && (
+        <Suspense fallback={null}>
+          <TrialEventsModal
+            isOpen={trialEventsModalOpen}
+            onClose={handleCloseTrialEvents}
+            initialSelectedEvent={selectedEventForModal}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
