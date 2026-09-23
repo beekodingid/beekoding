@@ -161,11 +161,11 @@ export async function syncAllLocalDataToSupabase(): Promise<SyncResult> {
     const profile = getAdminProfile();
     const settingsRows = [{
       id: 'setting-01',
-      institution_name: profile.institution || 'BeeKoding Academy Indonesia',
+      institution_name: profile.institution || 'Beekoding Academy Indonesia',
       tagline: profile.bio || 'Platform Belajar Koding Berbasis Bakat Anak',
       email: profile.email || 'halo@beekoding.com',
       phone: profile.phone || '+62 853-1131-7127',
-      address: 'Gedung BeeKoding EduHub Lt. 3, Jakarta Selatan',
+      address: 'Gedung Beekoding EduHub Lt. 3, Jakarta Selatan',
       logo_url: profile.avatar || '/bee-mascot.png',
       website_url: 'https://beekoding.com',
       currency: 'IDR',
@@ -814,7 +814,7 @@ export async function pullAllDataFromSupabase(): Promise<PullResult> {
         topStrengths: row.top_strengths_json ? (typeof row.top_strengths_json === 'string' ? JSON.parse(row.top_strengths_json) : row.top_strengths_json) : [],
         growthAreas: row.growth_areas_json ? (typeof row.growth_areas_json === 'string' ? JSON.parse(row.growth_areas_json) : row.growth_areas_json) : [],
         recommendedProgram: {
-          title: row.recommended_program_name || 'BeeKoding Foundation',
+          title: row.recommended_program_name || 'Beekoding Foundation',
           description: row.recommended_program_desc || 'Program belajar koding terpersonalisasi.',
           whyFit: 'Kurikulum disesuaikan dengan dominasi profil bakat.',
         },
@@ -983,7 +983,7 @@ export async function fetchSubmissionsFromCloud(): Promise<AssessmentSubmission[
       id: String(row.id || `sub-${Date.now()}-${idx}`),
       completedAt: row.created_at || row.completedAt || new Date().toISOString(),
       profile: {
-        childName: String(row.child_name || 'Siswa BeeKoding'),
+        childName: String(row.child_name || 'Siswa Beekoding'),
         childAge: Number(row.child_age) || 8,
         gradeLevel: String(row.grade_level || 'SD'),
         parentName: String(row.parent_name || 'Orang Tua'),
@@ -995,7 +995,7 @@ export async function fetchSubmissionsFromCloud(): Promise<AssessmentSubmission[
       topStrengths: row.top_strengths_json ? (typeof row.top_strengths_json === 'string' ? JSON.parse(row.top_strengths_json) : row.top_strengths_json) : [],
       growthAreas: row.growth_areas_json ? (typeof row.growth_areas_json === 'string' ? JSON.parse(row.growth_areas_json) : row.growth_areas_json) : [],
       recommendedProgram: {
-        title: String(row.recommended_program_name || 'BeeKoding Foundation'),
+        title: String(row.recommended_program_name || 'Beekoding Foundation'),
         description: String(row.recommended_program_desc || 'Program belajar koding terpersonalisasi.'),
         whyFit: 'Kurikulum disesuaikan dengan dominasi profil bakat anak.',
       },
@@ -1391,11 +1391,11 @@ export async function pushSettingsToSupabase(p: AdminUser): Promise<void> {
   try {
     await client.from('system_settings').upsert({
       id: 'setting-01',
-      institution_name: p.institution || 'BeeKoding Academy Indonesia',
+      institution_name: p.institution || 'Beekoding Academy Indonesia',
       tagline: p.bio || 'Platform Belajar Koding Berbasis Bakat Anak',
       email: p.email || 'halo@beekoding.com',
       phone: p.phone || '+62 853-1131-7127',
-      address: 'Gedung BeeKoding EduHub Lt. 3, Jakarta Selatan',
+      address: 'Gedung Beekoding EduHub Lt. 3, Jakarta Selatan',
       logo_url: p.avatar || '/bee-mascot.png',
       website_url: 'https://beekoding.com',
       currency: 'IDR',

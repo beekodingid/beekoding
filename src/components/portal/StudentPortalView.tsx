@@ -256,7 +256,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose })
       certMatch[0]?.studentName ||
       txMatch[0]?.studentName ||
       selectedStudentName ||
-      'Siswa BeeKoding';
+      'Siswa Beekoding';
 
     const parentName =
       subMatch?.profile?.parentName ||
@@ -542,7 +542,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose })
       setCounselingNotes('');
       setCounselingDate('');
       setCounselingMsg({
-        text: 'Permohonan bimbingan privat berhasil diajukan! Tim akademik BeeKoding akan mengonfirmasi via WhatsApp.',
+        text: 'Permohonan bimbingan privat berhasil diajukan! Tim akademik Beekoding akan mengonfirmasi via WhatsApp.',
         type: 'success',
       });
       setTimeout(() => setCounselingMsg(null), 6000);
@@ -675,7 +675,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose })
     const studentName = studentData?.studentName || 'kami';
     const msg = `Halo Ayah/Bunda! 🐝✨
 
-Yuk ajak ananda belajar koding seru bareng ${studentName} di BeeKoding Academy!
+Yuk ajak ananda belajar koding seru bareng ${studentName} di Beekoding Academy!
 
 Gunakan kode referral eksklusif ini:
 👉 *${studentReferralCode}*
@@ -712,7 +712,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
       setReferralFriendPhone('');
       setReferralFriendNotes('');
       setReferralSubmitMsg({
-        text: 'Teman berhasil direkomendasikan! Tim BeeKoding akan mengonfirmasi via WhatsApp.',
+        text: 'Teman berhasil direkomendasikan! Tim Beekoding akan mengonfirmasi via WhatsApp.',
         type: 'success',
       });
       setTimeout(() => setReferralSubmitMsg(null), 6000);
@@ -799,7 +799,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                   Portal Siswa & Wali
                 </span>
                 <span className="text-[10px] text-amber-500 font-semibold tracking-wider uppercase">
-                  BeeKoding Academic Hub
+                  Beekoding Academic Hub
                 </span>
               </div>
             </div>
@@ -842,7 +842,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                 }`}
               >
                 <GraduationCap className="w-4 h-4 text-amber-500" />
-                <span>Layanan Mandiri Orang Tua & Murid BeeKoding</span>
+                <span>Layanan Mandiri Orang Tua & Murid Beekoding</span>
               </div>
               <h1
                 className={`text-3xl sm:text-4xl lg:text-5xl font-black font-['Space_Grotesk'] tracking-tight ${
@@ -1061,7 +1061,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                   </a>
 
                   <a
-                    href="https://wa.me/6281234567890?text=Halo%20Admin%20BeeKoding,%20saya%20wali%20murid%20ingin%20berkonsultasi"
+                    href="https://wa.me/6281234567890?text=Halo%20Admin%20Beekoding,%20saya%20wali%20murid%20ingin%20berkonsultasi"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`inline-flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold border transition-colors ${
@@ -1497,10 +1497,10 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                   >
                     <h3 className="font-bold text-sm mb-1">Ada Pertanyaan?</h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                      Tim Academic Advisor BeeKoding siap mendampingi perjalanan belajar ananda.
+                      Tim Academic Advisor Beekoding siap mendampingi perjalanan belajar ananda.
                     </p>
                     <a
-                      href="https://wa.me/6281234567890?text=Halo%20BeeKoding,%20saya%20wali%20murid%20ingin%20berkonsultasi%20jadwal"
+                      href="https://wa.me/6281234567890?text=Halo%20Beekoding,%20saya%20wali%20murid%20ingin%20berkonsultasi%20jadwal"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all"
@@ -1525,7 +1525,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                       <span>Papan Pengumuman & Info Terkini</span>
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Informasi akademik, jadwal libur, tantangan coding, dan pengumuman resmi BeeKoding.
+                      Informasi akademik, jadwal libur, tantangan coding, dan pengumuman resmi Beekoding.
                     </p>
                   </div>
                   <div className="text-xs text-slate-400">
@@ -1930,7 +1930,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                         <span>Koleksi Lencana Kehormatan (*Achievement Badges*)</span>
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        Lencana penghargaan resmi yang berhasil diraih dari mentor pengajar BeeKoding.
+                        Lencana penghargaan resmi yang berhasil diraih dari mentor pengajar Beekoding.
                       </p>
                     </div>
                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/30">
@@ -2375,7 +2375,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                         {/* Description */}
                         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
                           {cert.description ||
-                            'Telah berhasil menyelesaikan seluruh materi pembelajaran coding, proyek aplikasi mandiri, dan uji kompetensi pemrograman pada kurikulum resmi BeeKoding.'}
+                            'Telah berhasil menyelesaikan seluruh materi pembelajaran coding, proyek aplikasi mandiri, dan uji kompetensi pemrograman pada kurikulum resmi Beekoding.'}
                         </p>
 
                         {/* Signatures */}
@@ -2528,7 +2528,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                     <span>Riwayat Kwitansi & Pembayaran Biaya</span>
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Bukti transaksi pendaftaran kursus resmi BeeKoding Academy.
+                    Bukti transaksi pendaftaran kursus resmi Beekoding Academy.
                   </p>
                 </div>
 
@@ -2776,7 +2776,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                               <ExternalLink className="w-3 h-3" />
                             </a>
                             <a
-                              href={`https://wa.me/6285311317127?text=Halo%20Admin%20BeeKoding,%20saya%20wali%20dari%20${encodeURIComponent(
+                              href={`https://wa.me/6285311317127?text=Halo%20Admin%20Beekoding,%20saya%20wali%20dari%20${encodeURIComponent(
                                 studentData.studentName
                               )}%20ingin%20konfirmasi%20sesi%20${encodeURIComponent(event.title)}`}
                               target="_blank"
@@ -2816,7 +2816,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                         Luar biasa! Ananda telah terdaftar di seluruh agenda yang tersedia.
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
-                        Tim BeeKoding akan mengumumkan jadwal workshop sesi baru segera.
+                        Tim Beekoding akan mengumumkan jadwal workshop sesi baru segera.
                       </p>
                     </div>
                   ) : (
@@ -2927,7 +2927,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                           </span>
                         </div>
                         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
-                          Layanan konsultasi belajar privat 1-on-1 bersama Head Coach BeeKoding. Dapatkan analisis gaya belajar, pemetaan minat digital, dan panduan aksi mendampingi ananda di rumah.
+                          Layanan konsultasi belajar privat 1-on-1 bersama Head Coach Beekoding. Dapatkan analisis gaya belajar, pemetaan minat digital, dan panduan aksi mendampingi ananda di rumah.
                         </p>
                       </div>
                     </div>
@@ -3083,7 +3083,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                                 </a>
                               )}
                               <a
-                                href={`https://wa.me/6285311317127?text=Halo%20Tim%20BeeKoding,%20saya%20wali%20dari%20${encodeURIComponent(
+                                href={`https://wa.me/6285311317127?text=Halo%20Tim%20Beekoding,%20saya%20wali%20dari%20${encodeURIComponent(
                                   studentData.studentName
                                 )}%20ingin%20konfirmasi%20sesi%20konseling%20${encodeURIComponent(topicLabel)}`}
                                 target="_blank"
@@ -3719,7 +3719,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                         <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">
                           Keuntungan Untuk Ananda
                         </h4>
-                        <p className="text-[11px] text-slate-400">Apresiasi Duta Belajar BeeKoding</p>
+                        <p className="text-[11px] text-slate-400">Apresiasi Duta Belajar Beekoding</p>
                       </div>
                     </div>
                     <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">

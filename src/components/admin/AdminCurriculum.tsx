@@ -205,7 +205,7 @@ export const AdminCurriculum: React.FC<AdminCurriculumProps> = ({ isDark = false
   const handleResetToDefault = () => {
     if (
       confirm(
-        'Kembalikan seluruh silabus kurikulum ke kondisi bawaan awal BeeKoding (36 Sesi Lengkap)?'
+        'Kembalikan seluruh silabus kurikulum ke kondisi bawaan awal Beekoding (36 Sesi Lengkap)?'
       )
     ) {
       resetCurriculumToDefault();

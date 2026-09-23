@@ -1103,7 +1103,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                   </h4>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed max-w-2xl mt-1">
-                  Hubungkan BeeKoding langsung ke cloud database PostgreSQL Supabase. Perubahan data di aplikasi
+                  Hubungkan Beekoding langsung ke cloud database PostgreSQL Supabase. Perubahan data di aplikasi
                   akan otomatis tersinkronisasi ke server cloud secara real-time dengan proteksi fallback offline.
                 </p>
               </div>
@@ -1205,7 +1205,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                   <div className="space-y-1">
                     <p className="font-bold text-sm text-amber-200">Koneksi API Supabase 100% Berhasil! (Tabel Belum Dibuat)</p>
                     <p className="text-slate-300 leading-relaxed">
-                      URL & Anon Key Anda <strong>sudah valid dan terhubung</strong>. Supabase mengembalikan pesan bahwa 33 tabel sistem BeeKoding belum dibuat di proyek baru Anda. Silakan salin query SQL dan jalankan satu kali di menu <strong>SQL Editor</strong> dashboard Supabase.
+                      URL & Anon Key Anda <strong>sudah valid dan terhubung</strong>. Supabase mengembalikan pesan bahwa 33 tabel sistem Beekoding belum dibuat di proyek baru Anda. Silakan salin query SQL dan jalankan satu kali di menu <strong>SQL Editor</strong> dashboard Supabase.
                     </p>
                   </div>
                 </div>
@@ -1505,7 +1505,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-black text-base sm:text-lg">Pratinjau Query SQL Migrasi BeeKoding</h3>
+                    <h3 className="font-black text-base sm:text-lg">Pratinjau Query SQL Migrasi Beekoding</h3>
                     <span className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                       v2.0.0
                     </span>
@@ -1634,7 +1634,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
             {/* Modal Footer */}
             <div className="p-4 sm:p-5 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
               <div className="text-xs text-slate-400 text-center sm:text-left">
-                💡 Query ini diekspor langsung dari data operasional BeeKoding saat ini.
+                💡 Query ini diekspor langsung dari data operasional Beekoding saat ini.
               </div>
 
               <div className="flex items-center gap-2.5 w-full sm:w-auto">

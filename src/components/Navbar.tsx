@@ -83,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <img
-                    src="/bee-mascot.png"
+                    src="/favicon.png"
                     alt="Beekoding Mascot"
                     className="w-7 h-7 sm:w-8 sm:h-8 object-contain group-hover:scale-110 transition-transform duration-300"
                   />
@@ -168,37 +168,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950">
               Free
             </span>
-          </button>
-
-          {/* Tombol Portal Siswa & Wali */}
-          <button
-            type="button"
-            onClick={onOpenStudentPortal || (() => (window.location.hash = '#portal'))}
-            className={`whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer ${
-              isDark
-                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/40 hover:bg-sky-500/25 hover:border-sky-400'
-                : 'bg-sky-50 text-sky-900 border border-sky-300 hover:bg-sky-100'
-            }`}
-            title="Portal Mandiri Siswa & Wali Murid"
-          >
-            <GraduationCap className="w-3.5 h-3.5 text-sky-500" />
-            <span>Portal Siswa</span>
-          </button>
-
-          {/* Tombol Trial Class */}
-          <button
-            type="button"
-            onClick={onOpenTrialEvents}
-            className={`whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer ${
-              isDark
-                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/40 hover:bg-amber-500/25 hover:border-amber-400'
-                : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
-            }`}
-            title="Jadwal Free Trial Class & Workshop"
-          >
-            <Calendar className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden xl:inline">Trial Class</span>
-            <span className="xl:hidden">Trial</span>
           </button>
 
           <a

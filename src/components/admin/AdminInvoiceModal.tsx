@@ -85,11 +85,11 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
       ``,
       `*METODE PEMBAYARAN:*`,
       `Transfer Bank ${transaction.paymentMethod.toUpperCase()}`,
-      `• *BCA*: 772-019-8821 a/n BeeKoding Edukasi Nusantara`,
-      `• *Mandiri*: 132-00-1928374-1 a/n BeeKoding Edukasi Nusantara`,
+      `• *BCA*: 772-019-8821 a/n Beekoding Edukasi Nusantara`,
+      `• *Mandiri*: 132-00-1928374-1 a/n Beekoding Edukasi Nusantara`,
       ``,
-      `Terima kasih telah mempercayakan pendidikan logika & teknologi ananda bersama BeeKoding! 🚀`,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`,
+      `Terima kasih telah mempercayakan pendidikan logika & teknologi ananda bersama Beekoding! 🚀`,
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
     ];
     return lines.filter(Boolean).join('\n');
   };
@@ -288,7 +288,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                   Next Gen Coding & AI Academy
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  PT BeeKoding Edukasi Nusantara • www.beekoding.id
+                  PT Beekoding Edukasi Nusantara • www.beekoding.id
                 </p>
               </div>
             </div>
@@ -450,18 +450,18 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
             <div>
               <span className="font-bold text-slate-800 uppercase tracking-wider text-[11px] block mb-2 flex items-center gap-1.5">
                 <Building2 className="w-4 h-4 text-amber-500" />
-                Rekening Resmi BeeKoding
+                Rekening Resmi Beekoding
               </span>
               <div className="space-y-2 text-[11px] text-slate-600 bg-amber-50/60 p-3 rounded-xl border border-amber-200/50">
                 <div>
                   <span className="font-bold text-slate-900 block">Bank Central Asia (BCA)</span>
                   <span className="font-mono text-slate-800 font-bold">772-019-8821</span>
-                  <span className="block text-slate-500">a/n PT BeeKoding Edukasi Nusantara</span>
+                  <span className="block text-slate-500">a/n PT Beekoding Edukasi Nusantara</span>
                 </div>
                 <div className="pt-1 border-t border-amber-200/40">
                   <span className="font-bold text-slate-900 block">Bank Mandiri</span>
                   <span className="font-mono text-slate-800 font-bold">132-00-1928374-1</span>
-                  <span className="block text-slate-500">a/n PT BeeKoding Edukasi Nusantara</span>
+                  <span className="block text-slate-500">a/n PT Beekoding Edukasi Nusantara</span>
                 </div>
               </div>
               {transaction.notes && (
@@ -477,7 +477,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                 Bandung, {formatDateIndo(transaction.createdAt)}
               </span>
               <p className="text-xs font-bold text-slate-900">
-                PT BeeKoding Edukasi Nusantara
+                PT Beekoding Edukasi Nusantara
               </p>
 
               {/* Stempel & Signature Visual */}
@@ -545,7 +545,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
 
           {/* Footer Dokumen */}
           <div className="mt-8 pt-4 border-t border-slate-100 text-center text-[10px] text-slate-400">
-            Faktur ini dihasilkan secara digital oleh Sistem Manajemen Administrasi BeeKoding dan
+            Faktur ini dihasilkan secara digital oleh Sistem Manajemen Administrasi Beekoding dan
             berlaku sebagai bukti transaksi pembayaran sah.
           </div>
         </div>

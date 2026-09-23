@@ -72,7 +72,7 @@ export const AdminResourceModal: React.FC<AdminResourceModalProps> = ({
       downloadUrl: downloadUrl.trim(),
       previewUrl: previewUrl.trim() || undefined,
       isFeatured,
-      tags: tags.length > 0 ? tags : ['BeeKoding', 'Modul'],
+      tags: tags.length > 0 ? tags : ['Beekoding', 'Modul'],
     });
 
     onClose();

@@ -181,7 +181,7 @@ export const AdminAuditLog: React.FC<AdminAuditLogProps> = ({ isDark }) => {
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
-                Arsip audit komprehensif pencatatan seluruh mutasi data akademik, autentikasi, transaksi finansial, penerbitan piagam, dan perubahan konfigurasi sistem BeeKoding.
+                Arsip audit komprehensif pencatatan seluruh mutasi data akademik, autentikasi, transaksi finansial, penerbitan piagam, dan perubahan konfigurasi sistem Beekoding.
               </p>
             </div>
           </div>

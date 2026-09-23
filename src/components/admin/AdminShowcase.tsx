@@ -1314,7 +1314,7 @@ export const AdminShowcase: React.FC<AdminShowcaseProps> = ({ isDark }) => {
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     {editingTesti ? 'Edit Testimoni' : 'Catat Testimoni Baru'}
                   </h3>
-                  <p className="text-xs text-slate-500">Ulasan kepuasan wali murid BeeKoding</p>
+                  <p className="text-xs text-slate-500">Ulasan kepuasan wali murid Beekoding</p>
                 </div>
               </div>
               <button

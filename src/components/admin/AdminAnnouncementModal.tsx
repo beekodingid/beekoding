@@ -42,7 +42,7 @@ export const AdminAnnouncementModal: React.FC<AdminAnnouncementModalProps> = ({
   );
   const [pinned, setPinned] = useState(announcement?.pinned || false);
   const [authorName, setAuthorName] = useState(
-    announcement?.authorName || 'Admin Akademik BeeKoding'
+    announcement?.authorName || 'Admin Akademik Beekoding'
   );
   const [publishedAt, setPublishedAt] = useState(
     () => announcement?.publishedAt || new Date().toISOString().split('T')[0]
@@ -249,7 +249,7 @@ export const AdminAnnouncementModal: React.FC<AdminAnnouncementModalProps> = ({
                   type="text"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  placeholder="Contoh: Admin Akademik BeeKoding"
+                  placeholder="Contoh: Admin Akademik Beekoding"
                   className={`w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium border outline-none ${
                     isDark
                       ? 'bg-slate-900 border-slate-700 text-white'

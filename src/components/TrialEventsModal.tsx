@@ -122,7 +122,7 @@ export const TrialEventsModal: React.FC<TrialEventsModalProps> = ({
 
   const handleOpenWhatsAppAdmin = () => {
     if (!regSuccessData) return;
-    const msg = `Halo Tim BeeKoding! Saya *${regSuccessData.parentName}*, baru saja mendaftarkan ananda *${regSuccessData.childName}* untuk agenda *${regSuccessData.event.title}* pada ${regSuccessData.event.date} jam ${regSuccessData.event.startTime} WIB. Mohon konfirmasi jadwal & link Zoom kelas ya. Terima kasih! 🐝✨`;
+    const msg = `Halo Tim Beekoding! Saya *${regSuccessData.parentName}*, baru saja mendaftarkan ananda *${regSuccessData.childName}* untuk agenda *${regSuccessData.event.title}* pada ${regSuccessData.event.date} jam ${regSuccessData.event.startTime} WIB. Mohon konfirmasi jadwal & link Zoom kelas ya. Terima kasih! 🐝✨`;
     window.open(`https://wa.me/${siteConfig.phoneRaw}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 

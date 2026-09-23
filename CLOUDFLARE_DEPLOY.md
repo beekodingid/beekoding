@@ -1,6 +1,6 @@
-# Panduan Deploy BeeKoding ke Cloudflare Pages
+# Panduan Deploy Beekoding ke Cloudflare Pages
 
-Panduan ini menjelaskan cara meluncurkan website BeeKoding ke **Cloudflare Pages** secara gratis, cepat, dan menghubungkannya dengan domain kustom **`beekoding.id`**.
+Panduan ini menjelaskan cara meluncurkan website Beekoding ke **Cloudflare Pages** secara gratis, cepat, dan menghubungkannya dengan domain kustom **`beekoding.id`**.
 
 ---
 

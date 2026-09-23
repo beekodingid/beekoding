@@ -101,7 +101,7 @@ export const AdminCounselingNoteModal: React.FC<AdminCounselingNoteModalProps> =
           <div className="flex items-center justify-between border-b-2 border-amber-500 pb-5 mb-6">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center p-2">
-                <img src="/bee-mascot.png" alt="BeeKoding" className="w-full h-full object-contain" />
+                <img src="/bee-mascot.png" alt="Beekoding" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h1 className="text-xl font-black font-['Space_Grotesk'] text-slate-950 tracking-tight">
@@ -269,7 +269,7 @@ export const AdminCounselingNoteModal: React.FC<AdminCounselingNoteModalProps> =
 
           {/* Print Footer Note */}
           <div className="mt-8 pt-3 border-t border-slate-200 text-[9px] text-slate-400 text-center">
-            Dokumen resmi ini diterbitkan oleh BeeKoding Academy sebagai rekaman bimbingan akademik siswa. Dicetak secara otomatis melalui BeeKoding Academic Portal pada {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}.
+            Dokumen resmi ini diterbitkan oleh Beekoding Academy sebagai rekaman bimbingan akademik siswa. Dicetak secara otomatis melalui Beekoding Academic Portal pada {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}.
           </div>
         </div>
       </div>

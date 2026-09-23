@@ -175,7 +175,7 @@ export const AdminInstructors: React.FC<AdminInstructorsProps> = ({ isDark = fal
         phone: formPhone.trim(),
         role: formRole,
         specializations: specsArray.length > 0 ? specsArray : ['Logika Coding'],
-        bio: formBio.trim() || 'Mentor berdedikasi tinggi di BeeKoding Academy.',
+        bio: formBio.trim() || 'Mentor berdedikasi tinggi di Beekoding Academy.',
         teachingTiers: tiers,
         rating: Number(formRating),
         totalTeachingHours: Number(formHours),
@@ -192,7 +192,7 @@ export const AdminInstructors: React.FC<AdminInstructorsProps> = ({ isDark = fal
         phone: formPhone.trim(),
         role: formRole,
         specializations: specsArray.length > 0 ? specsArray : ['Logika Coding'],
-        bio: formBio.trim() || 'Mentor berdedikasi tinggi di BeeKoding Academy.',
+        bio: formBio.trim() || 'Mentor berdedikasi tinggi di Beekoding Academy.',
         teachingTiers: tiers,
         rating: Number(formRating),
         totalTeachingHours: Number(formHours),
@@ -223,7 +223,7 @@ export const AdminInstructors: React.FC<AdminInstructorsProps> = ({ isDark = fal
 
   const handleResetToDefault = () => {
     if (
-      confirm('Kembalikan seluruh direktori tim pengajar ke kondisi awal bawaan BeeKoding?')
+      confirm('Kembalikan seluruh direktori tim pengajar ke kondisi awal bawaan Beekoding?')
     ) {
       resetInstructorsToDefault();
       loadData();

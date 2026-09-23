@@ -265,7 +265,7 @@ export const AdminWhatsAppGateway: React.FC<AdminWhatsAppGatewayProps> = ({ isDa
   // Build simulated message for tester
   const getCompiledTestMessage = () => {
     if (testCustomMessage.trim()) return testCustomMessage;
-    return `Halo ${testName}! 🐝\n\nMengingatkan sesi koding besok untuk ananda *${testStudentName}* pada kelas "${testBatchName}".\n\n⏰ Waktu: ${testTime}\n📌 Link Kelas: ${testMeetUrl}\n👨‍🏫 Mentor: ${testInstructor}\n\nMohon pastikan laptop & koneksi internet ananda telah siap. Sampai jumpa di kelas koding BeeKoding! 🚀✨`;
+    return `Halo ${testName}! 🐝\n\nMengingatkan sesi koding besok untuk ananda *${testStudentName}* pada kelas "${testBatchName}".\n\n⏰ Waktu: ${testTime}\n📌 Link Kelas: ${testMeetUrl}\n👨‍🏫 Mentor: ${testInstructor}\n\nMohon pastikan laptop & koneksi internet ananda telah siap. Sampai jumpa di kelas koding Beekoding! 🚀✨`;
   };
 
   // Send Test Message
@@ -1180,12 +1180,12 @@ export const AdminWhatsAppGateway: React.FC<AdminWhatsAppGatewayProps> = ({ isDa
                   <div className="flex items-center gap-2 min-w-0">
                     <img
                       src="/bee-mascot.png"
-                      alt="BeeKoding Bot"
+                      alt="Beekoding Bot"
                       className="w-8 h-8 rounded-full bg-amber-500/20 p-1 object-contain shrink-0"
                     />
                     <div className="min-w-0">
                       <div className="font-bold text-xs truncate text-white flex items-center gap-1">
-                        <span>BeeKoding Hotline</span>
+                        <span>Beekoding Hotline</span>
                         <CheckCircle2 className="w-3 h-3 text-emerald-400 fill-current shrink-0" />
                       </div>
                       <div className="text-[10px] text-emerald-400 font-medium">online • Official Bot</div>
@@ -1196,7 +1196,7 @@ export const AdminWhatsAppGateway: React.FC<AdminWhatsAppGatewayProps> = ({ isDa
 
                 {/* Chat Background with Bubbles */}
                 <div className="flex-1 p-3 overflow-y-auto space-y-3 bg-[radial-gradient(#121b22_1px,transparent_1px)] [background-size:12px_12px] flex flex-col justify-end">
-                  {/* Incoming Chat Bubble from BeeKoding Gateway */}
+                  {/* Incoming Chat Bubble from Beekoding Gateway */}
                   <div className="bg-[#005c4b] text-white p-3 rounded-2xl rounded-tl-xs shadow-md max-w-[90%] self-start space-y-1.5 text-xs leading-relaxed">
                     <p className="whitespace-pre-line break-words text-[11px]">
                       {getCompiledTestMessage()}
@@ -1293,7 +1293,7 @@ export const AdminWhatsAppGateway: React.FC<AdminWhatsAppGatewayProps> = ({ isDa
                     required
                     value={cfgDeviceName}
                     onChange={(e) => setCfgDeviceName(e.target.value)}
-                    placeholder="BeeKoding Hotline Bot"
+                    placeholder="Beekoding Hotline Bot"
                     className={`w-full px-3.5 py-2 rounded-xl border font-semibold ${
                       isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
                     }`}

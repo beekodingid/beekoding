@@ -158,10 +158,10 @@ export const AdminVouchers: React.FC<AdminVouchersProps> = ({ isDark = false }) 
       `"${v.description}"`,
       ``,
       `🚀 *Klaim Voucher & Pendaftaran*:`,
-      `WhatsApp: https://wa.me/6285311317127?text=${encodeURIComponent(`Halo Admin BeeKoding! Saya ingin mendaftar kelas dengan kode voucher *${v.code}*.`)}`,
+      `WhatsApp: https://wa.me/6285311317127?text=${encodeURIComponent(`Halo Admin Beekoding! Saya ingin mendaftar kelas dengan kode voucher *${v.code}*.`)}`,
       `Website Resmi: https://beekoding.id`,
       ``,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`,
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
     ].join('\n');
 
     window.open(`https://wa.me/?text=${encodeURIComponent(lines)}`, '_blank');

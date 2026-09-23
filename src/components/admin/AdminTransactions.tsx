@@ -486,7 +486,7 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
       target = '62' + target.substring(1);
     }
     const message = [
-      `Halo Kak *${tx.parentName}*, salam hangat dari BeeKoding! 🐝`,
+      `Halo Kak *${tx.parentName}*, salam hangat dari Beekoding! 🐝`,
       ``,
       `Berikut adalah rincian faktur pendaftaran ananda *${tx.studentName}*:`,
       `• *No. Invoice*: ${tx.invoiceNumber}`,
@@ -495,9 +495,9 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
       `• *Total Tagihan*: *${formatRupiah(tx.totalAmount)}*`,
       tx.remainingAmount > 0 ? `• *Sisa Tagihan*: *${formatRupiah(tx.remainingAmount)}*` : '',
       ``,
-      `Rekening Resmi BeeKoding:`,
-      `• BCA: *772-019-8821* a/n PT BeeKoding Edukasi Nusantara`,
-      `• Mandiri: *132-00-1928374-1* a/n PT BeeKoding Edukasi Nusantara`,
+      `Rekening Resmi Beekoding:`,
+      `• BCA: *772-019-8821* a/n PT Beekoding Edukasi Nusantara`,
+      `• Mandiri: *132-00-1928374-1* a/n PT Beekoding Edukasi Nusantara`,
       ``,
       `Mohon kirimkan bukti transfer ke nomor WhatsApp ini bila telah melakukan pembayaran. Terima kasih! 🙏`,
     ]

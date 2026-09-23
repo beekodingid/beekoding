@@ -112,8 +112,8 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
       `💡 *Rekomendasi Langkah Berikutnya*:`,
       `"${report.nextStepRecommendation}"`,
       ``,
-      `Terima kasih atas kepercayaan Bapak/Ibu mendampingi ananda belajar coding & AI bersama BeeKoding. Lembar rapor resmi A4 PDF dapat diunduh melalui portal sekolah.`,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`,
+      `Terima kasih atas kepercayaan Bapak/Ibu mendampingi ananda belajar coding & AI bersama Beekoding. Lembar rapor resmi A4 PDF dapat diunduh melalui portal sekolah.`,
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
     ]
       .filter(Boolean)
       .join('\n');
@@ -422,7 +422,7 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
               <div className="w-48">
                 <p className="text-[11px] text-slate-500 mb-12">Instruktur Pembimbing Kelas,</p>
                 <p className="font-black text-slate-950 underline">{report.instructorName}</p>
-                <p className="text-[10px] text-slate-400">BeeKoding Academic Mentor</p>
+                <p className="text-[10px] text-slate-400">Beekoding Academic Mentor</p>
               </div>
 
               {/* Center: Digital Verified Seal */}

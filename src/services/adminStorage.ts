@@ -907,7 +907,7 @@ export interface CodingEvent {
   startTime: string; // HH:mm
   endTime: string; // HH:mm
   locationType: CodingEventLocationType;
-  locationDetail: string; // misal: "Zoom Cloud Meeting #1" atau "BeeKoding Tech Lab Bandung"
+  locationDetail: string; // misal: "Zoom Cloud Meeting #1" atau "Beekoding Tech Lab Bandung"
   meetingUrl?: string; // misal: "https://zoom.us/j/9812739123"
   capacity: number;
   price: number; // 0 = Free
@@ -2061,7 +2061,7 @@ export const DEFAULT_SYSTEM_USERS: SystemUser[] = [
     roleTitle: 'Senior Coding Mentor & Python Specialist',
     phone: '+62 812-8877-6655',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-    institution: 'BeeKoding Academy',
+    institution: 'Beekoding Academy',
     bio: 'Mentor koding anak spesialis Scratch, Roblox Lua, dan Python Dasar dengan pendekatan gamifikasi interaktif.',
     status: 'active',
     allowedTabs: [...INSTRUCTOR_RECOMMENDED_TABS],
@@ -2077,7 +2077,7 @@ export const DEFAULT_SYSTEM_USERS: SystemUser[] = [
     roleTitle: 'Academic Counselor & Student Advisor',
     phone: '+62 813-4455-6677',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-    institution: 'BeeKoding Counseling Hub',
+    institution: 'Beekoding Counseling Hub',
     bio: 'Konselor pendidikan anak & pendamping bakat teknologi dengan fokus bimbingan 1-on-1 dan komunikasi wali murid.',
     status: 'active',
     allowedTabs: [...COUNSELOR_RECOMMENDED_TABS],
@@ -2222,7 +2222,7 @@ export function saveSystemUser(userData: Partial<SystemUser> & { name: string; e
       avatar:
         userData.avatar ||
         'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80',
-      institution: userData.institution || 'BeeKoding Academy',
+      institution: userData.institution || 'Beekoding Academy',
       bio: userData.bio || '',
       status: userData.status || 'active',
       allowedTabs: userData.allowedTabs || getRoleDefaultTabs(role),
@@ -2340,7 +2340,7 @@ export function getAdminProfile(): AdminUser {
         role: cur.roleTitle || cur.role,
         phone: cur.phone || '+62 853-1131-7127',
         avatar: cur.avatar || '/febri-hasan.png',
-        institution: cur.institution || 'BeeKoding Academy',
+        institution: cur.institution || 'Beekoding Academy',
         bio: cur.bio || 'Pendidik & kurator asesmen bakat digital anak.',
         notificationsEnabled: true,
         leadAlertsEnabled: true,
@@ -2702,7 +2702,7 @@ DROP TABLE IF EXISTS system_settings CASCADE;
 
 CREATE TABLE IF NOT EXISTS system_settings (
     id VARCHAR(50) PRIMARY KEY,
-    institution_name VARCHAR(150) NOT NULL DEFAULT 'BeeKoding Academy',
+    institution_name VARCHAR(150) NOT NULL DEFAULT 'Beekoding Academy',
     tagline VARCHAR(255) DEFAULT 'Coding for Kids & Teens',
     email VARCHAR(100) NOT NULL,
     phone VARCHAR(30) NOT NULL,
@@ -3175,7 +3175,7 @@ CREATE TABLE IF NOT EXISTS whatsapp_gateway_config (
     id VARCHAR(50) PRIMARY KEY,
     provider VARCHAR(50) NOT NULL DEFAULT 'sandbox_simulator',
     device_number VARCHAR(30) NOT NULL DEFAULT '+62 853-1131-7127',
-    device_name VARCHAR(100) NOT NULL DEFAULT 'BeeKoding Official Bot',
+    device_name VARCHAR(100) NOT NULL DEFAULT 'Beekoding Official Bot',
     api_key_or_token TEXT,
     webhook_url TEXT,
     anti_spam_delay_seconds INT DEFAULT 3,
@@ -3214,11 +3214,11 @@ CREATE TABLE IF NOT EXISTS whatsapp_queued_messages (
     'id', 'institution_name', 'tagline', 'email', 'phone', 'address', 'logo_url', 'website_url', 'currency', 'notifications_enabled', 'lead_alerts_enabled', 'sound_enabled', 'two_factor_enabled', 'system_config_json'
   ], [[
     'setting-01',
-    profile.institution || 'BeeKoding Academy Indonesia',
+    profile.institution || 'Beekoding Academy Indonesia',
     profile.bio || 'Platform Belajar Koding Berbasis Bakat Anak',
     profile.email || 'halo@beekoding.com',
     profile.phone || '+62 853-1131-7127',
-    'Gedung BeeKoding EduHub Lt. 3, Jakarta Selatan',
+    'Gedung Beekoding EduHub Lt. 3, Jakarta Selatan',
     profile.avatar || '/bee-mascot.png',
     'https://beekoding.com',
     'IDR',
@@ -4974,7 +4974,7 @@ export const DEFAULT_TESTIMONIALS: ParentTestimonial[] = [
     roleOrProfession: 'Orang Tua Murid (Wiraswasta, Bandung)',
     rating: 5,
     review:
-      'Kenzo awalnya hanya suka bermain game di tablet, tapi setelah 2 bulan di BeeKoding dia sekarang bisa bikin game Scratch sendiri dan bangga dipamerkan ke teman sekolahnya! Logika matematika di sekolah juga meningkat drastis.',
+      'Kenzo awalnya hanya suka bermain game di tablet, tapi setelah 2 bulan di Beekoding dia sekarang bisa bikin game Scratch sendiri dan bangga dipamerkan ke teman sekolahnya! Logika matematika di sekolah juga meningkat drastis.',
     programTaken: 'Junior Explorer: Visual Scratch & AI Logic',
     avatarEmojiOrUrl: '👨‍💼',
     isFeatured: true,
@@ -5016,7 +5016,7 @@ export const DEFAULT_TESTIMONIALS: ParentTestimonial[] = [
     roleOrProfession: 'Pendidik & Orang Tua (Surabaya)',
     rating: 5,
     review:
-      'Laporan rapor asesmen 8 pilar kognitifnya sangat ilmiah dan mendalam. Guru sekolah Nathania sampai memuji karena konsentrasi belajarnya naik signifikan sejak belajar algoritma sekuensial di BeeKoding.',
+      'Laporan rapor asesmen 8 pilar kognitifnya sangat ilmiah dan mendalam. Guru sekolah Nathania sampai memuji karena konsentrasi belajarnya naik signifikan sejak belajar algoritma sekuensial di Beekoding.',
     programTaken: 'Junior Explorer: Visual Scratch & AI Logic',
     avatarEmojiOrUrl: '👩‍⚕️',
     isFeatured: true,
@@ -5258,7 +5258,7 @@ export const DEFAULT_CURRICULUM: LessonSession[] = [
     difficulty: 'beginner',
     coreConcepts: ['Algoritma', 'Sequencing', 'User Interface', 'Sprite & Backdrop'],
     description: 'Memahami apa itu komputer, instruksi sekuensial langkah-demi-langkah, dan navigasi antarmuka Scratch Studio.',
-    projectOutcome: 'Animasi Sapaan Lebah BeeKoding: Sprite lebah terbang menyapa nama anak.',
+    projectOutcome: 'Animasi Sapaan Lebah Beekoding: Sprite lebah terbang menyapa nama anak.',
     slideUrl: 'https://slides.google.com/presentation/d/beekoding-junior-01',
     starterCodeUrl: 'https://scratch.mit.edu/projects/starter-junior-01',
     worksheetUrl: 'https://assets.beekoding.id/curriculum/worksheet-junior-01.pdf',
@@ -5892,7 +5892,7 @@ export const DEFAULT_CURRICULUM: LessonSession[] = [
     difficulty: 'advanced',
     coreConcepts: ['Tech Demo Pitching', 'Problem-Solution Fit', 'Product Demonstration', 'Career Portfolio Building'],
     description: 'Siswa mempresentasikan produk digital buatannya di hadapan juri dan orang tua, siap dimasukkan ke CV portofolio global.',
-    projectOutcome: 'Portofolio Publik Siap Beasiswa & Piagam Kelulusan Teens Innovator BeeKoding.',
+    projectOutcome: 'Portofolio Publik Siap Beasiswa & Piagam Kelulusan Teens Innovator Beekoding.',
     slideUrl: 'https://slides.google.com/presentation/d/beekoding-teens-12',
     starterCodeUrl: 'https://github.com/beekoding/teens-pitch-starter',
     worksheetUrl: 'https://assets.beekoding.id/curriculum/worksheet-teens-12.pdf',
@@ -6046,7 +6046,7 @@ export const DEFAULT_INSTRUCTORS: InstructorRecord[] = [
     phone: '081399887766',
     role: 'curriculum_specialist',
     specializations: ['Computer Science Pedagogy', 'AI Ethics', 'Algorithmic Problem Solving'],
-    bio: 'Dosen senior dan konsultan kurikulum ilmu komputer K-12. Mengawasi keselarasan kurikulum BeeKoding dengan standar CSTA internasional dan persiapan kompetisi beasiswa.',
+    bio: 'Dosen senior dan konsultan kurikulum ilmu komputer K-12. Mengawasi keselarasan kurikulum Beekoding dengan standar CSTA internasional dan persiapan kompetisi beasiswa.',
     teachingTiers: ['middle', 'teens'],
     rating: 4.9,
     totalTeachingHours: 420,
@@ -7180,7 +7180,7 @@ export const DEFAULT_VOUCHERS: PromoVoucher[] = [
     applicableTiers: ['junior', 'middle', 'teens', 'all'],
     status: 'active',
     description:
-      'Potongan apresiasi Rp 150.000 untuk wali murid baru yang mendaftar melalui rekomendasi orang tua siswa aktif BeeKoding.',
+      'Potongan apresiasi Rp 150.000 untuk wali murid baru yang mendaftar melalui rekomendasi orang tua siswa aktif Beekoding.',
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -8148,7 +8148,7 @@ export const DEFAULT_ANNOUNCEMENTS: ClassAnnouncement[] = [
       'Diberitahukan kepada seluruh wali murid dan siswa bahwa seluruh aktivitas sesi kelas daring maupun tatap muka ditiadakan pada hari Jumat - Minggu, 26-28 Juni 2026 dalam rangka Libur Nasional. Sesi pengganti akan dialihkan ke minggu berikutnya dengan jam belajar yang sama.',
     priority: 'urgent',
     pinned: true,
-    authorName: 'Admin Akademik BeeKoding',
+    authorName: 'Admin Akademik Beekoding',
     publishedAt: '2026-06-20',
     expiresAt: '2026-06-29',
     status: 'published',
@@ -8181,7 +8181,7 @@ export const DEFAULT_ANNOUNCEMENTS: ClassAnnouncement[] = [
     category: 'academic',
     audience: 'teens',
     content:
-      'Kabar gembira untuk siswa jenjang Teens Innovator! BeeKoding telah mengintegrasikan API model multimodal terbaru ke dalam workspace React latihan kita. Siswa dapat mulai membangun asisten koding interaktif berbasis vision.',
+      'Kabar gembira untuk siswa jenjang Teens Innovator! Beekoding telah mengintegrasikan API model multimodal terbaru ke dalam workspace React latihan kita. Siswa dapat mulai membangun asisten koding interaktif berbasis vision.',
     priority: 'normal',
     pinned: false,
     authorName: 'Kak Febri Hasan, S.Kom., M.T.',
@@ -8193,14 +8193,14 @@ export const DEFAULT_ANNOUNCEMENTS: ClassAnnouncement[] = [
   },
   {
     id: 'ann-2026-004',
-    title: '🏆 Kompetisi Koding Nasional BeeKoding Hackathon 2026',
+    title: '🏆 Kompetisi Koding Nasional Beekoding Hackathon 2026',
     category: 'event',
     audience: 'all',
     content:
-      'Pendaftaran BeeKoding National Kids Coding Championship resmi dibuka! Terdapat kategori Scratch Game, Roblox World Builder, dan Web App for SDGs. Seluruh peserta aktif BeeKoding mendapatkan tiket pendaftaran gratis.',
+      'Pendaftaran Beekoding National Kids Coding Championship resmi dibuka! Terdapat kategori Scratch Game, Roblox World Builder, dan Web App for SDGs. Seluruh peserta aktif Beekoding mendapatkan tiket pendaftaran gratis.',
     priority: 'important',
     pinned: false,
-    authorName: 'Tim Manajemen Event BeeKoding',
+    authorName: 'Tim Manajemen Event Beekoding',
     publishedAt: '2026-06-25',
     expiresAt: '2026-08-15',
     status: 'published',
@@ -8234,7 +8234,7 @@ export const DEFAULT_ANNOUNCEMENTS: ClassAnnouncement[] = [
       'Mendampingi anak belajar computational thinking tidak memerlukan latar belakang IT! Kuncinya adalah melatih logika deduktif, memberi ruang saat ananda menemukan bug, dan mengapresiasi proses eksplorasi solusinya.',
     priority: 'normal',
     pinned: false,
-    authorName: 'Tim Konseling & Edukasi BeeKoding',
+    authorName: 'Tim Konseling & Edukasi Beekoding',
     publishedAt: '2026-06-27',
     status: 'published',
     readCount: 51,
@@ -8409,7 +8409,7 @@ export function generateWhatsAppBroadcastMessage(announcement: ClassAnnouncement
 
   const audienceLabel =
     announcement.audience === 'all'
-      ? 'Seluruh Wali Murid & Siswa BeeKoding'
+      ? 'Seluruh Wali Murid & Siswa Beekoding'
       : announcement.audience === 'junior'
       ? 'Wali Murid & Siswa Jenjang Junior Explorer'
       : announcement.audience === 'middle'
@@ -8435,7 +8435,7 @@ ${announcement.content}
 📱 *Akses Portal Mandiri Siswa:*
 Buka jadwal sesi, rapor, dan piagam anak di https://beekoding.id/#portal
 
-_Salam hangat, Tim Akademik & Kesiswaan BeeKoding Academy 🐝_
+_Salam hangat, Tim Akademik & Kesiswaan Beekoding Academy 🐝_
 `.trim();
 }
 
@@ -8941,7 +8941,7 @@ ${payroll.deductionsTotal > 0 ? `• Potongan: -*${formatRupiah(payroll.deductio
 ${payroll.notes ? `📝 *Catatan Finance:* ${payroll.notes}\n` : ''}
 Terima kasih atas dedikasi luar biasa dalam membimbing generasi muda Indonesia mencintai dunia koding dan AI! 🚀
 
-_Finance & Academic Operations BeeKoding Academy_
+_Finance & Academic Operations Beekoding Academy_
 `.trim();
 }
 
@@ -9390,12 +9390,12 @@ export const DEFAULT_CODING_EVENTS: CodingEvent[] = [
     eventType: 'webinar',
     tier: 'teens',
     instructorName: 'Febri Hasan',
-    instructorTitle: 'Founder BeeKoding & EdTech Strategist',
+    instructorTitle: 'Founder Beekoding & EdTech Strategist',
     date: '2026-07-11',
     startTime: '19:00',
     endTime: '20:30',
     locationType: 'online_zoom',
-    locationDetail: 'BeeKoding Main Stage Webinar Live',
+    locationDetail: 'Beekoding Main Stage Webinar Live',
     meetingUrl: 'https://zoom.us/j/9812739789',
     capacity: 100,
     price: 0,
@@ -9404,7 +9404,7 @@ export const DEFAULT_CODING_EVENTS: CodingEvent[] = [
     learningOutcomes: [
       'Peta jalan karir teknologi global & skill yang relevan tahun 2026-2030',
       'Cara mendampingi anak bijak menggunakan Generative AI (bukan sekadar copy-paste)',
-      'Studi kasus karya siswa BeeKoding yang berhasil tembus kompetisi nasional',
+      'Studi kasus karya siswa Beekoding yang berhasil tembus kompetisi nasional',
       'Sesi Q&A privat langsung dengan tim kurikulum',
     ],
     posterUrlOrEmoji: '🤖',
@@ -9436,11 +9436,11 @@ export const DEFAULT_CODING_EVENTS: CodingEvent[] = [
   },
   {
     id: 'evt-2026-004',
-    title: 'BeeKoding Mini Game Jam: Kompetisi Koding Akhir Pekan Bertema Lingkungan',
+    title: 'Beekoding Mini Game Jam: Kompetisi Koding Akhir Pekan Bertema Lingkungan',
     slug: 'game-jam-koding-lingkungan-2026',
     eventType: 'competition',
     tier: 'all',
-    instructorName: 'Tim Akademik BeeKoding',
+    instructorName: 'Tim Akademik Beekoding',
     instructorTitle: 'Juri & Kurator Proyek',
     date: '2026-07-18',
     startTime: '09:00',
@@ -9451,7 +9451,7 @@ export const DEFAULT_CODING_EVENTS: CodingEvent[] = [
     capacity: 50,
     price: 0,
     description:
-      'Kompetisi koding seru 1 hari untuk seluruh siswa SD-SMA. Buat game bertema Save Our Planet menggunakan Scratch, Roblox, atau Web Game. Pemenang mendapatkan beasiswa belajar BeeKoding 1 semester penuh!',
+      'Kompetisi koding seru 1 hari untuk seluruh siswa SD-SMA. Buat game bertema Save Our Planet menggunakan Scratch, Roblox, atau Web Game. Pemenang mendapatkan beasiswa belajar Beekoding 1 semester penuh!',
     learningOutcomes: [
       'Mengembangkan kreativitas dan kecepatan problem solving mandiri',
       'Mempresentasikan ide game di hadapan dewan juri dan sesama peserta',
@@ -9697,9 +9697,9 @@ ${event.meetingUrl ? `🔗 *Link Pertemuan:* ${event.meetingUrl}` : ''}
 
 Jika berhalangan hadir atau ada pertanyaan seputar instalasi, mohon balas pesan ini ya Ayah/Bunda.
 
-Sampai jumpa di kelas! Mari ciptakan karya digital pertama ananda bersama BeeKoding! 🚀
+Sampai jumpa di kelas! Mari ciptakan karya digital pertama ananda bersama Beekoding! 🚀
 
-_Salam hangat, Tim Admissions BeeKoding Academy_
+_Salam hangat, Tim Admissions Beekoding Academy_
 `.trim();
 }
 
@@ -9838,7 +9838,7 @@ export const DEFAULT_COUNSELING_SESSIONS: CounselingSession[] = [
     curriculumRecommendation:
       'Kurikulum Lanjutan: Algoritma Pencarian Tingkat Lanjut, Graph Traversal & Dynamic Programming.',
     internalNotes:
-      'Kandidat beasiswa BeeKoding Elite Hacker 2026.',
+      'Kandidat beasiswa Beekoding Elite Hacker 2026.',
     parentFeedback:
       'Sangat bersyukur dapat bimbingan langsung dari Pak Febri. Rizky makin mantap memilih jurusan Ilmu Komputer.',
     createdAt: '2026-09-14T08:00:00.000Z',
@@ -10011,11 +10011,11 @@ export function generateCounselingWhatsAppReminder(session: CounselingSession): 
       : session.sessionType === 'online_gmeet'
       ? 'Google Meet'
       : session.sessionType === 'offline_studio'
-      ? 'Studio Offline BeeKoding'
+      ? 'Studio Offline Beekoding'
       : 'WhatsApp Call';
 
   return `
-Halo Bapak/Ibu *${session.parentName}*, salam hangat dari BeeKoding Academy! 🐝✨
+Halo Bapak/Ibu *${session.parentName}*, salam hangat dari Beekoding Academy! 🐝✨
 
 Mengingatkan kembali jadwal sesi *Konseling & Bimbingan Belajar Privat (1-on-1)* untuk ananda *${session.studentName}*:
 
@@ -10034,7 +10034,7 @@ ${session.meetingLink ? `🔗 *Link Ruang Virtual:* ${session.meetingLink}` : ''
 
 Mohon konfirmasi kesiapan Ayah/Bunda ya. Jika ada penyesuaian jam, silakan balas pesan ini. Terima kasih banyak! 🚀
 
-_Salam hangat, Tim Bimbingan Akademik BeeKoding_
+_Salam hangat, Tim Bimbingan Akademik Beekoding_
 `.trim();
 }
 
@@ -10108,7 +10108,7 @@ export const DEFAULT_AUDIT_LOGS: AuditLogEntry[] = [
     module: 'auth',
     actionType: 'login',
     title: 'Autentikasi Administrator Berhasil',
-    description: 'Admin Febri Hasan berhasil masuk ke Dashboard Kontrol Utama BeeKoding.',
+    description: 'Admin Febri Hasan berhasil masuk ke Dashboard Kontrol Utama Beekoding.',
     ipAddress: '180.252.14.88 (Jakarta, ID)',
     severity: 'info',
     metadata: { browser: 'Chrome 128 / Windows', loginMethod: 'Direct Portal Form' },
@@ -11772,7 +11772,7 @@ export function generateAmbassadorWhatsAppInvite(ambassador: AmbassadorProfile, 
   const appUrl = portalUrl || window.location.origin;
   const message = `Halo Ayah/Bunda! 🐝✨
 
-Yuk ajak ananda belajar koding, logika game, dan AI seru bersama BeeKoding Academy!
+Yuk ajak ananda belajar koding, logika game, dan AI seru bersama Beekoding Academy!
 
 Gunakan kode referral eksklusif ini saat mendaftar:
 👉 *${ambassador.referralCode}*
@@ -11784,7 +11784,7 @@ Keuntungan untuk Anda:
 Kunjungi portal pendaftaran:
 ${appUrl}
 
-Mari persiapkan masa depan teknologi ananda sejak dini bersama BeeKoding! 🚀`;
+Mari persiapkan masa depan teknologi ananda sejak dini bersama Beekoding! 🚀`;
 
   return encodeURIComponent(message);
 }
@@ -11964,7 +11964,7 @@ export const DEFAULT_GATEWAY_CONFIG: WhatsAppGatewayConfig = {
   provider: 'sandbox_simulator',
   status: 'connected',
   deviceNumber: '+62 853-1131-7127',
-  deviceName: 'BeeKoding Official Education Hotline & Auto-Bot',
+  deviceName: 'Beekoding Official Education Hotline & Auto-Bot',
   apiKeyOrToken: 'bk_sandbox_token_live_2026',
   webhookUrl: 'https://api.beekoding.id/v1/webhooks/whatsapp',
   antiSpamDelaySeconds: 3,
@@ -11992,7 +11992,7 @@ export const DEFAULT_GATEWAY_QUEUE: QueuedWhatsAppMessage[] = [
     recipientName: 'Bunda Sarah (Wali Kenzo)',
     recipientRole: 'parent',
     triggerType: 'class_reminder_h1',
-    content: `Halo Bunda Sarah! 🐝 Mengingatkan besok Sabtu pukul 09.00 WIB ananda *Kenzo Alvaro* memiliki sesi koding "Scratch Game Maker (Pertemuan 4)".\n\n📌 Link Kelas: https://meet.google.com/bk-junior-kenzo\n👨‍🏫 Mentor: Kak Sarah Amalia\n\nSampai jumpa di ruang kelas digital BeeKoding! 🚀`,
+    content: `Halo Bunda Sarah! 🐝 Mengingatkan besok Sabtu pukul 09.00 WIB ananda *Kenzo Alvaro* memiliki sesi koding "Scratch Game Maker (Pertemuan 4)".\n\n📌 Link Kelas: https://meet.google.com/bk-junior-kenzo\n👨‍🏫 Mentor: Kak Sarah Amalia\n\nSampai jumpa di ruang kelas digital Beekoding! 🚀`,
     status: 'delivered',
     retryCount: 0,
     scheduledAt: '2026-09-18T08:00:00Z',
@@ -12007,7 +12007,7 @@ export const DEFAULT_GATEWAY_QUEUE: QueuedWhatsAppMessage[] = [
     recipientName: 'Ayah Hendra (Wali Alya)',
     recipientRole: 'parent',
     triggerType: 'attendance_summary',
-    content: `Halo Ayah Hendra! 🌟 Hari ini *Alya Putri* telah selesai mengikuti sesi "Roblox Lua Scripting (Pertemuan 6)".\n\n✅ Kehadiran: Hadir Tepat Waktu\n🎯 Materi: Loop & Conditional Logic 3D Obby\n⭐ Catatan Mentor: "Alya sangat antusias dan berhasil memecahkan bug script koin tanpa bantuan!"\n\nTerima kasih telah mempercayakan pendidikan koding ananda di BeeKoding! 🐝`,
+    content: `Halo Ayah Hendra! 🌟 Hari ini *Alya Putri* telah selesai mengikuti sesi "Roblox Lua Scripting (Pertemuan 6)".\n\n✅ Kehadiran: Hadir Tepat Waktu\n🎯 Materi: Loop & Conditional Logic 3D Obby\n⭐ Catatan Mentor: "Alya sangat antusias dan berhasil memecahkan bug script koin tanpa bantuan!"\n\nTerima kasih telah mempercayakan pendidikan koding ananda di Beekoding! 🐝`,
     status: 'read',
     retryCount: 0,
     scheduledAt: '2026-09-17T16:00:00Z',
@@ -12051,7 +12051,7 @@ export const DEFAULT_GATEWAY_QUEUE: QueuedWhatsAppMessage[] = [
     recipientName: 'Bunda Valerie (Wali Kimberly)',
     recipientRole: 'parent',
     triggerType: 'payment_success',
-    content: `Pembayaran Berhasil! 🧾 Terima kasih Bunda Valerie. Pembayaran SPP koding ananda *Kimberly Valerie Tan* sebesar Rp 450.000 telah kami verifikasi lunas.\n\nNomor Kuitansi: #KWT-BK-2026-089\nStatus Siswa: Aktif (Sesi Berlanjut)\n\nTerima kasih telah bersama BeeKoding! 🚀`,
+    content: `Pembayaran Berhasil! 🧾 Terima kasih Bunda Valerie. Pembayaran SPP koding ananda *Kimberly Valerie Tan* sebesar Rp 450.000 telah kami verifikasi lunas.\n\nNomor Kuitansi: #KWT-BK-2026-089\nStatus Siswa: Aktif (Sesi Berlanjut)\n\nTerima kasih telah bersama Beekoding! 🚀`,
     status: 'delivered',
     retryCount: 0,
     scheduledAt: '2026-09-17T11:20:00Z',
@@ -12253,7 +12253,7 @@ export function generateAutomatedBatchReminders(): {
         );
 
         if (!alreadyQueued) {
-          const content = `Halo ${st.parentName || 'Ayah/Bunda'}! 🐝 Mengingatkan jadwal kelas koding besok untuk ananda *${st.studentName}* pada batch "${b.name}".\n\n⏰ Jam: ${b.scheduleTime}\n📌 Link Kelas: ${b.meetUrl || 'https://meet.google.com/bk-class-online'}\n👨‍🏫 Mentor: ${b.instructorName}\n\nSampai jumpa di kelas koding BeeKoding! 🚀`;
+          const content = `Halo ${st.parentName || 'Ayah/Bunda'}! 🐝 Mengingatkan jadwal kelas koding besok untuk ananda *${st.studentName}* pada batch "${b.name}".\n\n⏰ Jam: ${b.scheduleTime}\n📌 Link Kelas: ${b.meetUrl || 'https://meet.google.com/bk-class-online'}\n👨‍🏫 Mentor: ${b.instructorName}\n\nSampai jumpa di kelas koding Beekoding! 🚀`;
 
           const msg: QueuedWhatsAppMessage = {
             id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,

@@ -309,7 +309,7 @@ export const AdminPayroll: React.FC<AdminPayrollProps> = ({ isDark }) => {
           <div className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-purple-600 dark:text-purple-400">
             {formatRupiah(metrics.avgHourlyRate)}
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">Standar honor mentor BeeKoding</p>
+          <p className="text-[11px] text-slate-500 mt-1">Standar honor mentor Beekoding</p>
         </div>
       </div>
 

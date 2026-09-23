@@ -265,7 +265,7 @@ export async function registerStaffUserInCloud(
           name: user.name,
           role: user.role,
           roleTitle: user.roleTitle,
-          institution: user.institution || 'BeeKoding Tech Academy',
+          institution: user.institution || 'Beekoding Tech Academy',
         },
       },
     });
@@ -355,7 +355,7 @@ export async function provisionDefaultStaffAccounts(): Promise<ProvisionResult> 
             name: staff.name,
             role: staff.role,
             roleTitle: staff.roleTitle,
-            institution: 'BeeKoding Tech Academy',
+            institution: 'Beekoding Tech Academy',
           },
         },
       });

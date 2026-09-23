@@ -15,7 +15,7 @@
 -- Tabel Profil Lembaga & Pengaturan Global
 CREATE TABLE IF NOT EXISTS system_settings (
     id VARCHAR(50) PRIMARY KEY,
-    institution_name VARCHAR(150) NOT NULL DEFAULT 'BeeKoding Academy',
+    institution_name VARCHAR(150) NOT NULL DEFAULT 'Beekoding Academy',
     tagline VARCHAR(255) DEFAULT 'Coding for Kids & Teens: Belajar Koding Berbasis Bakat',
     email VARCHAR(100) NOT NULL DEFAULT 'halo@beekoding.com',
     phone VARCHAR(30) NOT NULL DEFAULT '+62 853-1131-7127',
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS system_users (
     role_title VARCHAR(100) NOT NULL DEFAULT 'Administrator Sistem',
     phone VARCHAR(30),
     avatar TEXT,
-    institution VARCHAR(150) DEFAULT 'BeeKoding Tech Academy',
+    institution VARCHAR(150) DEFAULT 'Beekoding Tech Academy',
     bio TEXT,
     status VARCHAR(20) NOT NULL DEFAULT 'active', -- active, inactive
     allowed_tabs_json LONGTEXT, -- Array ID tab menu yang diizinkan untuk diakses
@@ -600,7 +600,7 @@ CREATE TABLE IF NOT EXISTS whatsapp_gateway_config (
     id VARCHAR(50) PRIMARY KEY,
     provider VARCHAR(50) NOT NULL DEFAULT 'sandbox_simulator', -- sandbox_simulator, meta_cloud_api, fonnte, wablas, custom_webhook
     device_number VARCHAR(30) NOT NULL DEFAULT '+62 853-1131-7127',
-    device_name VARCHAR(100) NOT NULL DEFAULT 'BeeKoding Official Bot',
+    device_name VARCHAR(100) NOT NULL DEFAULT 'Beekoding Official Bot',
     api_key_or_token TEXT,
     webhook_url TEXT,
     anti_spam_delay_seconds INT DEFAULT 3,

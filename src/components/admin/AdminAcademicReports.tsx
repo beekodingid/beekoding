@@ -191,7 +191,7 @@ export const AdminAcademicReports: React.FC<AdminAcademicReportsProps> = ({
       `💡 *Rekomendasi Level*:`,
       `"${r.nextStepRecommendation}"`,
       ``,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`,
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
     ].join('\n');
 
     const cleanPhone = r.parentPhone.replace(/\D/g, '');

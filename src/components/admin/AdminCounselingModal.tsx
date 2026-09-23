@@ -423,7 +423,7 @@ export const AdminCounselingModal: React.FC<AdminCounselingModalProps> = ({
                 >
                   <option value="online_zoom">Zoom Cloud Meeting</option>
                   <option value="online_gmeet">Google Meet</option>
-                  <option value="offline_studio">Studio Offline BeeKoding</option>
+                  <option value="offline_studio">Studio Offline Beekoding</option>
                   <option value="whatsapp_call">WhatsApp Video Call</option>
                 </select>
               </div>

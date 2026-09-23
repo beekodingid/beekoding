@@ -257,7 +257,7 @@ export const AdminAuditLogDetailModal: React.FC<AdminAuditLogDetailModalProps> =
         <div className="p-4 sm:p-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
           <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
             <Terminal className="w-3.5 h-3.5" />
-            <span>Audit Trail terverifikasi standar keamanan BeeKoding</span>
+            <span>Audit Trail terverifikasi standar keamanan Beekoding</span>
           </div>
 
           <button

@@ -111,7 +111,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
       ? cleanPhone
       : '62' + cleanPhone;
 
-    const message = `Halo Bapak/Ibu! 👋\n\nBerikut kami lampirkan *Silabus Resmi Pembelajaran BeeKoding* untuk jenjang *${meta.title}* (${meta.ageRange}):\n\n${sortedSessions
+    const message = `Halo Bapak/Ibu! 👋\n\nBerikut kami lampirkan *Silabus Resmi Pembelajaran Beekoding* untuk jenjang *${meta.title}* (${meta.ageRange}):\n\n${sortedSessions
       .map(
         (s) =>
           `📌 *Sesi ${s.sessionNumber}:* ${s.title}\n🎯 *Output:* ${s.projectOutcome}`
@@ -241,7 +241,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
                     Syllabus & Curriculum Learning Roadmap
                   </p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 print:text-slate-600">
-                    PT BeeKoding Edukasi Nusantara • www.beekoding.id • info@beekoding.id
+                    PT Beekoding Edukasi Nusantara • www.beekoding.id • info@beekoding.id
                   </p>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
                 </div>
                 <div className="text-[11px] text-slate-500">Founder & Chief Learning Officer</div>
                 <div className="text-[10px] text-amber-600 font-semibold mt-0.5">
-                  PT BeeKoding Edukasi Nusantara
+                  PT Beekoding Edukasi Nusantara
                 </div>
               </div>
 
@@ -437,7 +437,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
             </div>
 
             <div className="mt-8 text-center text-[11px] text-slate-400 print:text-slate-500">
-              Dokumen kurikulum ini dilindungi hak cipta © 2026 BeeKoding Academy. Seluruh materi
+              Dokumen kurikulum ini dilindungi hak cipta © 2026 Beekoding Academy. Seluruh materi
               disesuaikan dengan standar CSTA K-12 Computer Science Standards.
             </div>
           </div>

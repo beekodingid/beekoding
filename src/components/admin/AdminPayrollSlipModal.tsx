@@ -116,7 +116,7 @@ export const AdminPayrollSlipModal: React.FC<AdminPayrollSlipModalProps> = ({
             <div className="flex items-center gap-4">
               <img
                 src="/bee-mascot.png"
-                alt="BeeKoding"
+                alt="Beekoding"
                 className="w-14 h-14 object-contain"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = 'none';
@@ -130,7 +130,7 @@ export const AdminPayrollSlipModal: React.FC<AdminPayrollSlipModalProps> = ({
                   </span>
                 </h1>
                 <p className="text-xs text-slate-500 font-medium">
-                  PT BeeKoding Edukasi Nusantara • Learning Innovation Hub
+                  PT Beekoding Edukasi Nusantara • Learning Innovation Hub
                 </p>
                 <p className="text-[11px] text-slate-400">
                   Jl. Telekomunikasi No. 01, Terusan Buahbatu, Bandung • finance@beekoding.id
@@ -229,7 +229,7 @@ export const AdminPayrollSlipModal: React.FC<AdminPayrollSlipModalProps> = ({
               <div className="font-bold text-slate-700">Catatan Pembayaran:</div>
               <p className="text-[11px] leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-slate-200">
                 {payroll.notes ||
-                  'Slip honorarium resmi ini diterbitkan secara otomatis oleh sistem BeeKoding Academy. Dana telah ditransfer ke rekening instruktur yang tertera.'}
+                  'Slip honorarium resmi ini diterbitkan secara otomatis oleh sistem Beekoding Academy. Dana telah ditransfer ke rekening instruktur yang tertera.'}
               </p>
             </div>
 
@@ -265,14 +265,14 @@ export const AdminPayrollSlipModal: React.FC<AdminPayrollSlipModalProps> = ({
               <span className="text-slate-500 block">Diterima oleh Instruktur:</span>
               <div>
                 <div className="font-bold text-slate-900 uppercase">{payroll.instructorName}</div>
-                <div className="text-[11px] text-slate-400">Mentor Pengajar BeeKoding</div>
+                <div className="text-[11px] text-slate-400">Mentor Pengajar Beekoding</div>
               </div>
             </div>
 
             <div className="space-y-2 flex flex-col items-center">
               <span className="text-slate-500 block">Disahkan oleh Finance & Academic Operations:</span>
               <div className="relative py-2">
-                {/* Cap Stempel Lunas / BeeKoding */}
+                {/* Cap Stempel Lunas / Beekoding */}
                 <div className="px-4 py-1 rounded-lg border-2 border-emerald-500 text-emerald-600 font-black text-xs uppercase tracking-widest rotate-[-6deg] opacity-80 inline-block">
                   BEEKODING • VERIFIED
                 </div>

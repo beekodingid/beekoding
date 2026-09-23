@@ -48,7 +48,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
       `---------------------------------------`,
       `Kepada Yth. *${certificate.parentName || 'Orang Tua / Wali'}*,`,
       ``,
-      `Kami segenap tim akademik *BeeKoding* mengucapkan selamat atas pencapaian luar biasa ananda:`,
+      `Kami segenap tim akademik *Beekoding* mengucapkan selamat atas pencapaian luar biasa ananda:`,
       `⭐ *${certificate.studentName.toUpperCase()}* ⭐`,
       ``,
       `Telah resmi dinyatakan *LULUS & MENYELESAIKAN* program:`,
@@ -65,7 +65,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
       ``,
       `Salam hangat & bangga,`,
       `*Febri Hasan, S.Kom., M.T.*`,
-      `_Founder & Lead Educator BeeKoding_`,
+      `_Founder & Lead Educator Beekoding_`,
       `🌐 www.beekoding.id`,
     ];
     return lines.filter(Boolean).join('\n');
@@ -185,7 +185,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
               <span className="text-[280px]">🐝</span>
             </div>
 
-            {/* Top Bar: BeeKoding Logo & Header */}
+            {/* Top Bar: Beekoding Logo & Header */}
             <div className="relative z-10 text-center pt-2">
               <div className="inline-flex items-center justify-center gap-3 mb-1">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-2xl shadow-md text-slate-950">
@@ -313,7 +313,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 Kode Validasi Keaslian: <strong className="font-mono text-slate-700">{certificate.verificationCode}</strong>
               </span>
-              <span>PT BeeKoding Edukasi Nusantara</span>
+              <span>PT Beekoding Edukasi Nusantara</span>
             </div>
           </div>
         </div>

@@ -40,7 +40,7 @@ function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string 
         <div className="absolute inset-0 rounded-full border-4 border-amber-500/20 border-t-amber-400 animate-spin" />
         <span className="text-2xl animate-bounce">🐝</span>
       </div>
-      <h3 className="text-lg font-bold text-amber-400 mb-1">BeeKoding Academy</h3>
+      <h3 className="text-lg font-bold text-amber-400 mb-1">Beekoding Academy</h3>
       <p className="text-xs text-slate-400 font-medium">{message}</p>
     </div>
   );
@@ -157,7 +157,7 @@ export function App() {
   // Jika Portal Administrator sedang aktif
   if (showAdmin) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Memuat Portal Administrasi BeeKoding..." />}>
+      <Suspense fallback={<AppLoadingFallback message="Memuat Portal Administrasi Beekoding..." />}>
         <AdminView onBackToHome={handleCloseAdmin} />
       </Suspense>
     );

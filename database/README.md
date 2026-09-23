@@ -1,6 +1,6 @@
-# Panduan Migrasi & Impor Basis Data BeeKoding (Database Migration Guide)
+# Panduan Migrasi & Impor Basis Data Beekoding (Database Migration Guide)
 
-Berkas SQL di direktori ini dirancang khusus untuk mempermudah migrasi struktur data relasional (DDL), relasi tabel, dan data awal (DML Seed) dari seluruh fitur BeeKoding Academy ke server database produksi.
+Berkas SQL di direktori ini dirancang khusus untuk mempermudah migrasi struktur data relasional (DDL), relasi tabel, dan data awal (DML Seed) dari seluruh fitur Beekoding Academy ke server database produksi.
 
 ---
 

@@ -218,7 +218,7 @@ export const AdminAttendance: React.FC<AdminAttendanceProps> = ({ isDark = false
     lines.push(
       ``,
       `Terima kasih atas partisipasi aktif ananda hari ini! ✨`,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`
     );
 
     window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`, '_blank');

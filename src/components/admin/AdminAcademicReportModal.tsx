@@ -286,7 +286,7 @@ export const AdminAcademicReportModal: React.FC<AdminAcademicReportModalProps> =
         capstoneProjectDesc: capstoneProjectDesc.trim(),
         instructorNotes: instructorNotes.trim(),
         nextStepRecommendation: nextStepRecommendation.trim(),
-        instructorName: instructorName.trim() || 'Tim Akademik BeeKoding',
+        instructorName: instructorName.trim() || 'Tim Akademik Beekoding',
         issueDate,
       };
 

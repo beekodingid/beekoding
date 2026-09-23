@@ -277,7 +277,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
       target = '62' + target.substring(1);
     }
     const message = [
-      `Halo Kak *${cert.parentName || 'Orang Tua / Wali'}*, salam hangat dari BeeKoding! 🐝🎓`,
+      `Halo Kak *${cert.parentName || 'Orang Tua / Wali'}*, salam hangat dari Beekoding! 🐝🎓`,
       ``,
       `Kami mengucapkan selamat atas kelulusan ananda *${cert.studentName}* pada program:`,
       `• *${cert.programName}*`,
@@ -885,7 +885,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
                     {editingCert ? 'Perbarui Piagam Sertifikat' : 'Terbitkan Sertifikat Baru'}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    {editingCert ? `No: ${editingCert.certificateNumber}` : 'Format A4 Landscape Resmi BeeKoding'}
+                    {editingCert ? `No: ${editingCert.certificateNumber}` : 'Format A4 Landscape Resmi Beekoding'}
                   </p>
                 </div>
               </div>

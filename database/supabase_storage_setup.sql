@@ -79,5 +79,5 @@ CREATE POLICY "Anyone can upload showcase"
     WITH CHECK (bucket_id = 'showcase');
 
 -- ============================================================================
--- SELESAI: 4 Bucket penyimpanan siap digunakan oleh aplikasi BeeKoding!
+-- SELESAI: 4 Bucket penyimpanan siap digunakan oleh aplikasi Beekoding!
 -- ============================================================================

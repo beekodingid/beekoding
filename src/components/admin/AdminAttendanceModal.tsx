@@ -272,7 +272,7 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
     lines.push(
       ``,
       `Terima kasih atas semangat belajar anak-anak hari ini! Sampai jumpa di pertemuan berikutnya! 🚀`,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`
     );
 
     return lines.join('\n');

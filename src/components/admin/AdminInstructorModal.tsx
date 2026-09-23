@@ -70,7 +70,7 @@ export const AdminInstructorModal: React.FC<AdminInstructorModalProps> = ({
       `Tentang Mentor:`,
       `"${instructor.bio}"`,
       ``,
-      `Kontak Resmi BeeKoding:`,
+      `Kontak Resmi Beekoding:`,
       `WhatsApp: https://wa.me/62${instructor.phone.replace(/\D/g, '').replace(/^0/, '')}`,
       `Email: ${instructor.email}`,
     ].join('\n');
@@ -88,7 +88,7 @@ export const AdminInstructorModal: React.FC<AdminInstructorModalProps> = ({
       ? cleanPhone
       : '62' + cleanPhone;
 
-    const msg = `Halo ${instructor.name}! 👋\nKoordinasi dari tim operasional BeeKoding Academy terkait jadwal kelas mengajar.`;
+    const msg = `Halo ${instructor.name}! 👋\nKoordinasi dari tim operasional Beekoding Academy terkait jadwal kelas mengajar.`;
     window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 

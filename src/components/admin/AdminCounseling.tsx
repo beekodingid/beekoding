@@ -139,7 +139,7 @@ export const AdminCounseling: React.FC<AdminCounselingProps> = ({ isDark }) => {
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}
           >
-            Fasilitas bimbingan personal 1-on-1 antara Tim Akademik BeeKoding dengan siswa dan orang tua.
+            Fasilitas bimbingan personal 1-on-1 antara Tim Akademik Beekoding dengan siswa dan orang tua.
             Catat hasil observasi karakter anak (fokus, screen-time, bakat), rancang action plan, dan cetak lembar resmi A4.
           </p>
         </div>

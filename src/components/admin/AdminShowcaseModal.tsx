@@ -77,7 +77,7 @@ export const AdminShowcaseModal: React.FC<AdminShowcaseModalProps> = ({
       ``,
       project.demoUrl ? `🔗 *Coba Demo Live*: ${project.demoUrl}` : '',
       ``,
-      `_BeeKoding - Next Gen Coding & AI Academy for Kids & Teens_`,
+      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
     ]
       .filter(Boolean)
       .join('\n');

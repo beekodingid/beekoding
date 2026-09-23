@@ -106,7 +106,7 @@ export const AdminResources: React.FC<AdminResourcesProps> = ({ isDark }) => {
   const handleResetToDefault = () => {
     if (
       window.confirm(
-        'Reset seluruh materi bahan ajar kembali ke pustaka kurikulum default BeeKoding?'
+        'Reset seluruh materi bahan ajar kembali ke pustaka kurikulum default Beekoding?'
       )
     ) {
       resetLearningResourcesToDefault();

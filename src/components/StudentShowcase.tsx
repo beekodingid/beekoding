@@ -156,7 +156,7 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}
           >
-            Bukan sekadar teori hafalan kode. Di BeeKoding, anak-anak merancang game interaktif,
+            Bukan sekadar teori hafalan kode. Di Beekoding, anak-anak merancang game interaktif,
             dunia 3D, dan aplikasi web bertenaga AI ciptaan mereka sendiri sejak hari pertama.
           </p>
         </div>
@@ -618,7 +618,7 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
                 >
                   <div className="flex items-center space-x-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">
                     <Sparkles className="w-4 h-4 text-amber-500" />
-                    <span>Catatan Apresiasi Instruktur BeeKoding:</span>
+                    <span>Catatan Apresiasi Instruktur Beekoding:</span>
                   </div>
                   <p className="text-xs italic leading-relaxed text-slate-600 dark:text-slate-300">
                     "{selectedProject.instructorFeedback}"

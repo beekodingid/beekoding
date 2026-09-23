@@ -122,7 +122,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
   const [formRoleTitle, setFormRoleTitle] = useState('');
   const [formPhone, setFormPhone] = useState('');
   const [formAvatar, setFormAvatar] = useState('');
-  const [formInstitution, setFormInstitution] = useState('BeeKoding Academy');
+  const [formInstitution, setFormInstitution] = useState('Beekoding Academy');
   const [formBio, setFormBio] = useState('');
   const [formStatus, setFormStatus] = useState<'active' | 'inactive'>('active');
   const [formAllowedTabs, setFormAllowedTabs] = useState<AdminTab[]>([...INSTRUCTOR_RECOMMENDED_TABS]);
@@ -189,7 +189,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setFormRoleTitle('Coding Instructor & Mentor');
     setFormPhone('');
     setFormAvatar('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80');
-    setFormInstitution('BeeKoding Academy');
+    setFormInstitution('Beekoding Academy');
     setFormBio('');
     setFormStatus('active');
     setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
@@ -205,7 +205,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setFormRoleTitle(user.roleTitle);
     setFormPhone(user.phone || '');
     setFormAvatar(user.avatar || '');
-    setFormInstitution(user.institution || 'BeeKoding Academy');
+    setFormInstitution(user.institution || 'Beekoding Academy');
     setFormBio(user.bio || '');
     setFormStatus(user.status);
     setFormAllowedTabs([...user.allowedTabs]);
