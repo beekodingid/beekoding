@@ -108,7 +108,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 }`}
               >
                 <img
-                  src="/bee-mascot.png"
+                  src="/favicon.png"
                   alt="Beekoding Mascot"
                   className="w-11 h-11 object-contain"
                 />
@@ -196,7 +196,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
               {/* Password */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">
-                  Kata Sandi
+                  Password
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -223,7 +223,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
               </div>
 
               {/* Quick Preset Info Card */}
-              <div
+              {/* <div
                 className={`p-3 rounded-xl border text-xs space-y-2 ${
                   isDark
                     ? 'bg-amber-500/5 border-amber-500/20 text-slate-300'
@@ -246,7 +246,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                     <span className="text-slate-500 font-mono text-[10px]">mentor@beekoding.id</span>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <button
@@ -259,13 +259,13 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 ) : (
                   <>
                     <LogIn className="w-4 h-4" />
-                    <span>Masuk ke Dashboard Admin</span>
+                    <span>Masuk</span>
                   </>
                 )}
               </button>
 
               {/* 1-Click Fast Login Multi-Role Demo Buttons */}
-              <div className="grid grid-cols-2 gap-2 pt-1">
+              {/* <div className="grid grid-cols-2 gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => handleFastLogin('admin@beekoding.id', 'admin123')}
@@ -295,7 +295,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                   <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
                   <span>Demo Mentor</span>
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>

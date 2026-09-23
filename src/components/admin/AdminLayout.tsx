@@ -487,7 +487,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                     }`}
                   >
                     <img
-                      src="/bee-mascot.png"
+                      src="/favicon.png"
                       alt="Beekoding Mascot"
                       className="w-8 h-8 object-contain"
                     />
@@ -773,7 +773,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 title="Keluar dari Portal Admin"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span>Logout</span>
+                <span>Keluar</span>
               </button>
             </>
           )}
@@ -1032,7 +1032,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 className="w-full py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 text-rose-500 border-rose-500/20 bg-rose-500/10"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span>Logout</span>
+                <span>Keluar</span>
               </button>
             </div>
           </div>
@@ -1080,7 +1080,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
 
           <div className="flex items-center gap-3">
             {/* Quick Role Switcher Pill for Demo & Testing */}
-            <div
+            {/* <div
               className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl border text-xs ${
                 isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200 shadow-xs'
               }`}
@@ -1108,7 +1108,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
  
             {isSupabaseConfigured() && (
               <div

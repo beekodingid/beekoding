@@ -86,7 +86,7 @@ export const TalentAssessmentView: React.FC<TalentAssessmentViewProps> = ({ onCl
                   }`}
                 >
                   <img
-                    src="/bee-mascot.png"
+                    src="/favicon.png"
                     alt="Beekoding Mascot"
                     className="w-7 h-7 object-contain"
                   />
@@ -96,7 +96,7 @@ export const TalentAssessmentView: React.FC<TalentAssessmentViewProps> = ({ onCl
                 <span className="text-base sm:text-lg font-black tracking-tight flex items-center">
                   bee<span className="text-amber-500">koding</span>
                   <span className="text-xs font-normal text-amber-500/80 ml-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
-                    Talent Lab
+                    Talent Anak
                   </span>
                 </span>
               </div>
