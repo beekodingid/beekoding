@@ -14,6 +14,12 @@ import {
   exportUsersCSV,
 } from '../../services/adminStorage';
 import {
+  provisionDefaultStaffAccounts,
+  registerStaffUserInCloud,
+} from '../../services/supabaseAuth';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
+import { uploadAvatar } from '../../services/supabaseStorage';
+import {
   Users,
   ShieldCheck,
   Search,
@@ -29,6 +35,7 @@ import {
   Phone,
   X,
   LogIn,
+  Upload,
 } from 'lucide-react';
 
 interface AdminUsersProps {
@@ -119,6 +126,30 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
   const [formBio, setFormBio] = useState('');
   const [formStatus, setFormStatus] = useState<'active' | 'inactive'>('active');
   const [formAllowedTabs, setFormAllowedTabs] = useState<AdminTab[]>([...INSTRUCTOR_RECOMMENDED_TABS]);
+  const [isUploadingStaffAvatar, setIsUploadingStaffAvatar] = useState(false);
+
+  const handleStaffAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingStaffAvatar(true);
+    try {
+      const res = await uploadAvatar(file, formEmail || formName || 'staff');
+      if (res.success && res.url) {
+        setFormAvatar(res.url);
+        showToast(
+          res.isCloudStorage
+            ? 'Foto profil staf berhasil diunggah ke Supabase Storage!'
+            : 'Foto profil staf berhasil dimuat secara lokal (Base64).'
+        );
+      } else {
+        showToast(res.error || 'Gagal mengunggah foto profil.');
+      }
+    } catch (err: any) {
+      showToast(err?.message || 'Terjadi kesalahan saat unggah avatar.');
+    } finally {
+      setIsUploadingStaffAvatar(false);
+    }
+  };
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -129,6 +160,24 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     const list = getSystemUsers();
     setUsers(list);
     setCurrentUser(getCurrentSystemUser());
+  };
+
+  const [isSyncingStaff, setIsSyncingStaff] = useState(false);
+
+  const handleSyncStaffToCloud = async () => {
+    setIsSyncingStaff(true);
+    try {
+      const res = await provisionDefaultStaffAccounts();
+      if (res.success) {
+        showToast(`Sukses: ${res.createdCount} akun baru dibuat, ${res.existingCount} akun sudah aktif di Supabase Auth.`);
+      } else {
+        showToast(`Selesai: ${res.createdCount} dibuat, ${res.existingCount} ada. Catatan: ${res.errors.join(', ')}`);
+      }
+    } catch (err: any) {
+      showToast(err?.message || 'Gagal menyinkronkan akun staf ke Supabase Auth.');
+    } finally {
+      setIsSyncingStaff(false);
+    }
   };
 
   const handleOpenAddModal = () => {
@@ -181,13 +230,13 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     }
   };
 
-  const handleApplyPreset = (preset: 'instructor' | 'admin' | 'counselor') => {
-    if (preset === 'instructor') {
-      setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
-      showToast('Scope 13 menu rekomendasi instruktur berhasil diterapkan!');
-    } else if (preset === 'admin') {
+  const handleApplyPreset = (preset: 'admin' | 'instructor' | 'counselor') => {
+    if (preset === 'admin') {
       setFormAllowedTabs([...ALL_ADMIN_TABS]);
       showToast('Akses penuh seluruh 25 menu berhasil diterapkan!');
+    } else if (preset === 'instructor') {
+      setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
+      showToast('Scope 13 menu instruktur berhasil diterapkan!');
     } else if (preset === 'counselor') {
       setFormAllowedTabs([...COUNSELOR_RECOMMENDED_TABS]);
       showToast('Scope 9 menu konselor berhasil diterapkan!');
@@ -225,7 +274,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
       return;
     }
 
-    saveSystemUser({
+    const saved = saveSystemUser({
       id: editingUser ? editingUser.id : undefined,
       name: formName.trim(),
       email: formEmail.trim().toLowerCase(),
@@ -239,6 +288,14 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
       status: formStatus,
       allowedTabs: formAllowedTabs,
     });
+
+    if (isSupabaseConfigured()) {
+      registerStaffUserInCloud(saved, formPassword.trim()).then((cloudRes) => {
+        if (cloudRes?.message) {
+          console.log(cloudRes.message);
+        }
+      });
+    }
 
     refreshData();
     setShowModal(false);
@@ -320,6 +377,19 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
+            {isSupabaseConfigured() && (
+              <button
+                type="button"
+                onClick={handleSyncStaffToCloud}
+                disabled={isSyncingStaff}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                title="Daftarkan seluruh akun staf default ke Supabase Auth"
+              >
+                <Sparkles className={`w-4 h-4 text-emerald-500 ${isSyncingStaff ? 'animate-spin' : ''}`} />
+                <span>{isSyncingStaff ? 'Menyinkronkan...' : 'Daftarkan Staf ke Supabase Auth'}</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={exportUsersCSV}
@@ -782,6 +852,62 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                         : 'bg-slate-50 border-slate-300 text-slate-900'
                     }`}
                   />
+                </div>
+
+                {/* Foto Profil / Avatar */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Foto Avatar / Profil Staf (Supabase Storage)
+                  </label>
+                  <div className="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 shrink-0 flex items-center justify-center">
+                      <img
+                        src={formAvatar || '/febri-hasan.png'}
+                        alt="Avatar Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/febri-hasan.png';
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <label className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-sm">
+                          {isUploadingStaffAvatar ? (
+                            <div className="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Upload className="w-3.5 h-3.5" />
+                          )}
+                          <span>{isUploadingStaffAvatar ? 'Mengunggah...' : 'Pilih Foto Baru'}</span>
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={handleStaffAvatarUpload}
+                            disabled={isUploadingStaffAvatar}
+                            className="hidden"
+                          />
+                        </label>
+                        {formAvatar && (
+                          <button
+                            type="button"
+                            onClick={() => setFormAvatar('/febri-hasan.png')}
+                            className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                          >
+                            Reset Default
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-400 truncate">
+                        {formAvatar
+                          ? formAvatar.startsWith('data:')
+                            ? '💾 Disimpan di cache lokal (Base64)'
+                            : formAvatar.startsWith('http')
+                            ? '☁️ Tersimpan di Cloud Storage'
+                            : 'Avatar bawaan sistem'
+                          : 'Belum ada foto khusus, menggunakan default'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 

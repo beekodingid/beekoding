@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import {
   isAdminAuthenticated,
-  logoutAdmin,
   getSubmissions,
   getInquiries,
+  onStorageUpdate,
   type AssessmentSubmission,
   type ConsultationInquiry,
 } from '../../services/adminStorage';
+import {
+  hydratePriorityModulesFromCloud,
+  initPriorityRealtimeSync,
+} from '../../services/supabaseSync';
+import { isSupabaseConfigured, getSupabaseClient } from '../../services/supabaseClient';
+import { checkSupabaseSession, logoutWithSupabase } from '../../services/supabaseAuth';
 import { AdminLogin } from './AdminLogin';
 import { AdminLayout, type AdminTab } from './AdminLayout';
 import { AdminDashboard } from './AdminDashboard';
@@ -63,14 +69,71 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
     setInquiries(list);
   };
 
+  useEffect(() => {
+    // 1. Initial check & restore active Supabase Auth session
+    checkSupabaseSession().then((user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      }
+    });
+
+    // 2. Initial background hydration from Supabase Cloud
+    if (isSupabaseConfigured()) {
+      hydratePriorityModulesFromCloud().then(({ success }) => {
+        if (success) {
+          refreshSubmissions();
+          refreshInquiries();
+        }
+      });
+    }
+
+    // 3. Storage update event listener
+    const unsubStorage = onStorageUpdate((type) => {
+      if (type === 'submissions' || type === 'all') {
+        refreshSubmissions();
+      }
+      if (type === 'inquiries' || type === 'all') {
+        refreshInquiries();
+      }
+    });
+
+    // 4. Supabase Realtime postgres changes channel
+    const unsubRealtime = initPriorityRealtimeSync(() => {
+      refreshSubmissions();
+      refreshInquiries();
+    });
+
+    // 5. Supabase Auth state change listener
+    let authUnsub = () => {};
+    const client = getSupabaseClient();
+    if (client && isSupabaseConfigured()) {
+      const { data: { subscription } } = client.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT') {
+          setIsAuthenticated(false);
+        } else if (event === 'SIGNED_IN') {
+          setIsAuthenticated(true);
+          refreshSubmissions();
+          refreshInquiries();
+        }
+      });
+      authUnsub = () => subscription.unsubscribe();
+    }
+
+    return () => {
+      unsubStorage();
+      unsubRealtime();
+      authUnsub();
+    };
+  }, []);
+
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
     refreshSubmissions();
     refreshInquiries();
   };
 
-  const handleLogout = () => {
-    logoutAdmin();
+  const handleLogout = async () => {
+    await logoutWithSupabase();
     setIsAuthenticated(false);
   };
 

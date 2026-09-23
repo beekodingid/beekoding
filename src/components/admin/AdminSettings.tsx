@@ -34,7 +34,24 @@ import {
   Check,
   X,
   Terminal,
+  Cloud,
+  RefreshCw,
+  Server,
+  Upload,
 } from 'lucide-react';
+import { uploadAvatar } from '../../services/supabaseStorage';
+import {
+  getSupabaseCredentials,
+  saveSupabaseCredentials,
+  isSupabaseConfigured,
+  testSupabaseConnection,
+  type ConnectionTestResult,
+} from '../../services/supabaseClient';
+import {
+  syncAllLocalDataToSupabase,
+  pullAllDataFromSupabase,
+  type SyncResult,
+} from '../../services/supabaseSync';
 
 interface AdminSettingsProps {
   isDark: boolean;
@@ -85,6 +102,30 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  const handleAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingAvatar(true);
+    try {
+      const res = await uploadAvatar(file, email || 'admin');
+      if (res.success && res.url) {
+        setAvatar(res.url);
+        showSuccess(
+          res.isCloudStorage
+            ? 'Foto profil berhasil diunggah ke Supabase Storage!'
+            : 'Foto profil berhasil dimuat ke cache lokal (Base64).'
+        );
+      } else {
+        showError(res.error || 'Gagal mengunggah foto profil.');
+      }
+    } catch (err: any) {
+      showError(err?.message || 'Terjadi kesalahan saat unggah avatar.');
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
 
   // Factory Reset Confirmation Modal
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -96,6 +137,81 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
   const [sqlModalTab, setSqlModalTab] = useState<'all' | 'ddl' | 'seed'>('all');
   const [sqlPreviewText, setSqlPreviewText] = useState('');
   const [copiedSql, setCopiedSql] = useState(false);
+
+  // Supabase Cloud State
+  const [supabaseUrl, setSupabaseUrl] = useState(() => getSupabaseCredentials().url);
+  const [supabaseKey, setSupabaseKey] = useState(() => getSupabaseCredentials().anonKey);
+  const [showSupabaseKey, setShowSupabaseKey] = useState(false);
+  const [connStatus, setConnStatus] = useState<'idle' | 'testing' | 'connected' | 'error'>('idle');
+  const [connResult, setConnResult] = useState<ConnectionTestResult | null>(null);
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
+  const [syncCloudResult, setSyncCloudResult] = useState<SyncResult | null>(null);
+  const [isPullingCloud, setIsPullingCloud] = useState(false);
+
+  const handleTestSupabase = async () => {
+    saveSupabaseCredentials(supabaseUrl, supabaseKey);
+    setConnStatus('testing');
+    const result = await testSupabaseConnection();
+    setConnResult(result);
+    setConnStatus(result.success ? 'connected' : 'error');
+    if (result.success) {
+      showSuccess(result.message);
+    } else {
+      showError(result.message);
+    }
+  };
+
+  const handleSaveSupabaseConfig = async () => {
+    if (!supabaseUrl.trim() || !supabaseKey.trim()) {
+      showError('Harap masukkan Supabase URL dan Anon Key.');
+      return;
+    }
+    saveSupabaseCredentials(supabaseUrl, supabaseKey);
+    showSuccess('Kredensial Supabase berhasil disimpan di browser!');
+    handleTestSupabase();
+  };
+
+  const handleSyncAllToSupabase = async () => {
+    if (!isSupabaseConfigured()) {
+      showError('Mohon simpan dan uji koneksi Supabase URL & Anon Key terlebih dahulu.');
+      return;
+    }
+    setIsSyncingCloud(true);
+    try {
+      const res = await syncAllLocalDataToSupabase();
+      setSyncCloudResult(res);
+      if (res.success) {
+        showSuccess(res.message);
+      } else {
+        showError(res.message);
+      }
+    } catch (err: any) {
+      showError('Terjadi kesalahan saat sinkronisasi: ' + err?.message);
+    } finally {
+      setIsSyncingCloud(false);
+    }
+  };
+
+  const handlePullFromSupabase = async () => {
+    if (!isSupabaseConfigured()) {
+      showError('Supabase belum terkonfigurasi.');
+      return;
+    }
+    setIsPullingCloud(true);
+    try {
+      const res = await pullAllDataFromSupabase();
+      if (res.success) {
+        showSuccess(res.message);
+        if (onRefreshAllData) onRefreshAllData();
+      } else {
+        showError(res.message);
+      }
+    } catch (err: any) {
+      showError('Gagal menarik data: ' + err?.message);
+    } finally {
+      setIsPullingCloud(false);
+    }
+  };
 
   const handleOpenSqlModal = (dialect: SqlDialect = sqlDialect) => {
     const fullSql = generateFullSystemMigrationSQL(dialect);
@@ -387,9 +503,16 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
             <div className="space-y-5">
               {/* Pilihan Avatar */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-                  Foto Profil / Avatar Petugas
-                </label>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Foto Profil / Avatar Petugas
+                  </label>
+                  {avatar && !['/febri-hasan.png', '/bee-mascot.png', '/bee-mascot-raw.png'].includes(avatar) && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                      ☁️ Foto Kustom Supabase Storage
+                    </span>
+                  )}
+                </div>
                 <div className="flex flex-wrap items-center gap-4">
                   {[
                     { id: '/febri-hasan.png', label: 'Febri Hasan (Founder)' },
@@ -416,6 +539,44 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                       <span className="text-xs pr-2">{av.label}</span>
                     </button>
                   ))}
+
+                  {/* Kustom Avatar Jika Ada */}
+                  {avatar && !['/febri-hasan.png', '/bee-mascot.png', '/bee-mascot-raw.png'].includes(avatar) && (
+                    <div className="p-2 rounded-2xl border border-amber-500 bg-amber-500/10 text-amber-500 ring-2 ring-amber-500/20 font-bold flex items-center gap-3">
+                      <img
+                        src={avatar}
+                        alt="Foto Kustom"
+                        className="w-10 h-10 rounded-xl object-cover bg-slate-800/10 border border-amber-500/30"
+                      />
+                      <span className="text-xs pr-1">Foto Kustom</span>
+                    </div>
+                  )}
+
+                  {/* Tombol Unggah Foto Kustom */}
+                  <label className="p-2 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 flex items-center gap-3 transition-all cursor-pointer relative overflow-hidden bg-slate-50 dark:bg-slate-900/40">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleAvatarFileUpload}
+                      disabled={isUploadingAvatar}
+                      className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                    />
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold shrink-0">
+                      {isUploadingAvatar ? (
+                        <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Upload className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="text-left pr-3">
+                      <span className="text-xs font-bold block text-slate-700 dark:text-slate-300">
+                        {isUploadingAvatar ? 'Mengunggah...' : 'Unggah Foto Sendiri'}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block">
+                        PNG, JPG, WebP ke Storage
+                      </span>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -916,6 +1077,223 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
               <div className="text-xs font-bold text-slate-400 uppercase">Konsultasi & Leads</div>
               <div className="text-2xl sm:text-3xl font-black text-purple-500 mt-1">
                 {inquiriesCount} <span className="text-xs font-normal text-slate-400">permohonan</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Integrasi Cloud Database PostgreSQL (Supabase) */}
+          <div
+            className={`p-6 sm:p-8 rounded-3xl border relative overflow-hidden transition-all ${
+              isDark
+                ? 'bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-sky-950/20 border-sky-500/30'
+                : 'bg-gradient-to-br from-white via-sky-50/20 to-blue-50/30 border-sky-200 shadow-sm'
+            }`}
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/40">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                    <Server className="w-5 h-5" />
+                  </div>
+                  <h4 className="font-black text-base sm:text-lg flex items-center gap-2">
+                    <span>Cloud Database PostgreSQL (Supabase)</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                      Opsi A • Terintegrasi Langsung
+                    </span>
+                  </h4>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed max-w-2xl mt-1">
+                  Hubungkan BeeKoding langsung ke cloud database PostgreSQL Supabase. Perubahan data di aplikasi
+                  akan otomatis tersinkronisasi ke server cloud secara real-time dengan proteksi fallback offline.
+                </p>
+              </div>
+
+              {/* Status Badge */}
+              <div className="shrink-0">
+                {connStatus === 'testing' && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/30 text-xs font-bold animate-pulse">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Menguji Koneksi...</span>
+                  </div>
+                )}
+                {connStatus === 'connected' && connResult?.tablesFound && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Terhubung ({connResult?.latencyMs || 0}ms)</span>
+                  </div>
+                )}
+                {connStatus === 'connected' && !connResult?.tablesFound && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>API Terhubung (Tabel Belum Dibuat)</span>
+                  </div>
+                )}
+                {connStatus === 'error' && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs font-bold">
+                    <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Gagal Terhubung</span>
+                  </div>
+                )}
+                {connStatus === 'idle' && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-xs font-bold">
+                    <Cloud className="w-3.5 h-3.5" />
+                    <span>{isSupabaseConfigured() ? 'Terkonfigurasi' : 'Belum Dikonfigurasi'}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Input Kredensial */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-2">
+                  Supabase Project URL <span className="text-sky-400">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={supabaseUrl}
+                    onChange={(e) => setSupabaseUrl(e.target.value)}
+                    placeholder="https://your-project-id.supabase.co"
+                    className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border transition-all focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
+                      isDark
+                        ? 'bg-slate-950/80 border-slate-800 text-slate-200'
+                        : 'bg-white border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1.5">
+                  Dapat diperoleh dari Project Settings &gt; API &gt; Project URL di dashboard Supabase.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-2">
+                  Supabase Anon Key (Public) <span className="text-sky-400">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showSupabaseKey ? 'text' : 'password'}
+                    value={supabaseKey}
+                    onChange={(e) => setSupabaseKey(e.target.value)}
+                    placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    className={`w-full px-4 py-2.5 pr-10 rounded-xl text-xs font-mono border transition-all focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
+                      isDark
+                        ? 'bg-slate-950/80 border-slate-800 text-slate-200'
+                        : 'bg-white border-slate-300 text-slate-900'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSupabaseKey(!showSupabaseKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    {showSupabaseKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1.5">
+                  Gunakan anon/public key untuk akses aman dari sisi klien (Project Settings &gt; API).
+                </p>
+              </div>
+            </div>
+
+            {/* Catatan / Hint Skema Tabel */}
+            {connResult && !connResult.tablesFound && connResult.success && (
+              <div className="mb-6 p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 shrink-0 text-amber-400 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold text-sm text-amber-200">Koneksi API Supabase 100% Berhasil! (Tabel Belum Dibuat)</p>
+                    <p className="text-slate-300 leading-relaxed">
+                      URL & Anon Key Anda <strong>sudah valid dan terhubung</strong>. Supabase mengembalikan pesan bahwa 33 tabel sistem BeeKoding belum dibuat di proyek baru Anda. Silakan salin query SQL dan jalankan satu kali di menu <strong>SQL Editor</strong> dashboard Supabase.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleOpenSqlModal('postgresql')}
+                  className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 flex items-center gap-2 cursor-pointer shadow-md transition-all"
+                >
+                  <Terminal className="w-4 h-4" />
+                  <span>Lihat & Salin Query SQL</span>
+                </button>
+              </div>
+            )}
+
+            {/* Ringkasan Hasil Sinkronisasi Terakhir jika ada */}
+            {syncCloudResult && (
+              <div
+                className={`mb-6 p-4 rounded-2xl border text-xs flex items-start gap-3 ${
+                  syncCloudResult.success
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                    : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                }`}
+              >
+                <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-bold">{syncCloudResult.message}</p>
+                  <p className="text-slate-300">
+                    Tabel berhasil: {syncCloudResult.tablesSucceeded.length} tabel ({syncCloudResult.totalSynced} records disinkronkan dalam {syncCloudResult.durationMs}ms).
+                    {syncCloudResult.tablesFailed.length > 0 && (
+                      <div className="text-rose-400 block mt-2 space-y-1 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20">
+                        <span className="font-bold text-rose-300">Tabel terkendala ({syncCloudResult.tablesFailed.length}):</span>
+                        <ul className="list-disc pl-4 space-y-0.5">
+                          {syncCloudResult.tablesFailed.map((t) => (
+                            <li key={t.table}>
+                              <strong>{t.table}</strong>: <span className="text-rose-200 font-mono text-[11px]">{t.error}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Tombol Aksi */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800/40">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleSaveSupabaseConfig}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white transition-all flex items-center gap-2 cursor-pointer shadow-md"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Simpan Kredensial</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleTestSupabase}
+                  disabled={connStatus === 'testing'}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold border border-sky-500/40 text-sky-400 hover:bg-sky-500/10 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${connStatus === 'testing' ? 'animate-spin' : ''}`} />
+                  <span>Uji Koneksi Cloud</span>
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handlePullFromSupabase}
+                  disabled={isPullingCloud}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Download className={`w-4 h-4 ${isPullingCloud ? 'animate-spin' : ''}`} />
+                  <span>{isPullingCloud ? 'Menarik...' : 'Tarik Data dari Cloud'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSyncAllToSupabase}
+                  disabled={isSyncingCloud}
+                  className="px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-sky-500/20 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+                  <span>{isSyncingCloud ? 'Menyinkronkan...' : '⚡ Sinkronkan Seluruh Data Lokal ke Cloud'}</span>
+                </button>
               </div>
             </div>
           </div>

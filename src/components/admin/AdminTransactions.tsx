@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   type TransactionRecord,
   type PaymentStatus,
@@ -15,7 +15,9 @@ import {
   getBatches,
   validateAndApplyVoucher,
   getPromoVouchers,
+  onStorageUpdate,
 } from '../../services/adminStorage';
+import { uploadTransferProof } from '../../services/supabaseStorage';
 import { AdminInvoiceModal } from './AdminInvoiceModal';
 import {
   Receipt,
@@ -40,6 +42,9 @@ import {
   QrCode,
   DollarSign,
   Ticket,
+  Upload,
+  ExternalLink,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 interface AdminTransactionsProps {
@@ -48,6 +53,14 @@ interface AdminTransactionsProps {
 
 export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) => {
   const [transactions, setTransactions] = useState<TransactionRecord[]>(() => getTransactions());
+
+  useEffect(() => {
+    return onStorageUpdate((type) => {
+      if (type === 'transactions' || type === 'all') {
+        setTransactions(getTransactions());
+      }
+    });
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | 'all'>('all');
   const [methodFilter, setMethodFilter] = useState<PaymentMethod | 'all'>('all');
@@ -96,6 +109,34 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
     return d.toISOString().split('T')[0];
   });
   const [formNotes, setFormNotes] = useState('');
+  const [formTransferProofUrl, setFormTransferProofUrl] = useState('');
+  const [isUploadingProof, setIsUploadingProof] = useState(false);
+  const [proofCloudStatus, setProofCloudStatus] = useState<boolean | null>(null);
+
+  const handleProofFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingProof(true);
+    try {
+      const res = await uploadTransferProof(file, editingTransaction?.invoiceNumber);
+      if (res.success && res.url) {
+        setFormTransferProofUrl(res.url);
+        setProofCloudStatus(res.isCloudStorage);
+        showAlert(
+          'success',
+          res.isCloudStorage
+            ? 'Bukti transfer berhasil diunggah ke Supabase Storage!'
+            : 'Bukti transfer dimuat ke penyimpanan lokal (Base64).'
+        );
+      } else {
+        showAlert('error', res.error || 'Gagal mengunggah bukti pembayaran.');
+      }
+    } catch (err: any) {
+      showAlert('error', err?.message || 'Terjadi kesalahan saat unggah bukti.');
+    } finally {
+      setIsUploadingProof(false);
+    }
+  };
 
   // Quick Pick Lists
   const submissions = useMemo(() => getSubmissions(), []);
@@ -197,6 +238,8 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
     d.setDate(d.getDate() + 7);
     setFormDueDate(d.toISOString().split('T')[0]);
     setFormNotes('');
+    setFormTransferProofUrl('');
+    setProofCloudStatus(null);
     setIsCreateModalOpen(true);
   };
 
@@ -228,6 +271,12 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
     setFormStatus(tx.status);
     setFormDueDate(tx.dueDate || '');
     setFormNotes(tx.notes || '');
+    setFormTransferProofUrl(tx.transferProofUrl || '');
+    setProofCloudStatus(
+      tx.transferProofUrl
+        ? tx.transferProofUrl.startsWith('http') && !tx.transferProofUrl.startsWith('data:')
+        : null
+    );
     setIsCreateModalOpen(true);
   };
 
@@ -263,6 +312,7 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
             ? new Date().toISOString()
             : editingTransaction.paidAt,
         notes: formNotes.trim() || undefined,
+        transferProofUrl: formTransferProofUrl.trim() || undefined,
       });
 
       if (updated) {
@@ -291,6 +341,7 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
         dueDate: formDueDate,
         paidAt: formStatus === 'paid' ? new Date().toISOString() : undefined,
         notes: formNotes.trim() || undefined,
+        transferProofUrl: formTransferProofUrl.trim() || undefined,
       });
 
       setTransactions(getTransactions());
@@ -765,6 +816,18 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
                           year: 'numeric',
                         })}
                       </span>
+                      {tx.transferProofUrl && (
+                        <a
+                          href={tx.transferProofUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 font-semibold mt-1 hover:underline"
+                          title="Lihat Bukti Transfer / Resi"
+                        >
+                          <ImageIcon className="w-3 h-3" />
+                          <span>Ada Bukti Bayar</span>
+                        </a>
+                      )}
                     </td>
 
                     {/* Siswa & Wali */}
@@ -1327,6 +1390,93 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
                     isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
                   }`}
                 />
+              </div>
+
+              {/* Bukti Transfer / Resi Pembayaran (Cloud Storage) */}
+              <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">
+                    Bukti Transfer / Resi Pembayaran
+                  </label>
+                  {formTransferProofUrl && (
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        proofCloudStatus
+                          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                      }`}
+                    >
+                      {proofCloudStatus ? '☁️ Supabase Cloud Storage' : '💾 Lokal (Base64)'}
+                    </span>
+                  )}
+                </div>
+
+                {formTransferProofUrl ? (
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 flex-shrink-0 bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                      <img
+                        src={formTransferProofUrl}
+                        alt="Bukti Bayar"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '';
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                        Bukti Transfer Terlampir
+                      </p>
+                      <a
+                        href={formTransferProofUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400 hover:underline mt-0.5 font-medium"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Buka Gambar Ukuran Penuh
+                      </a>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormTransferProofUrl('');
+                        setProofCloudStatus(null);
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-4 text-center transition-colors">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                      onChange={handleProofFileChange}
+                      disabled={isUploadingProof}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                    />
+                    <div className="flex flex-col items-center justify-center pointer-events-none">
+                      {isUploadingProof ? (
+                        <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
+                          <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                          <span>Mengunggah bukti transfer ke Supabase...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-6 h-6 text-slate-400 mb-1" />
+                          <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            Pilih atau Tarik File Bukti Bayar
+                          </p>
+                          <p className="text-[11px] text-slate-400 mt-0.5">
+                            Mendukung JPG, PNG, WEBP (Maks. 5MB)
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Submit Buttons */}

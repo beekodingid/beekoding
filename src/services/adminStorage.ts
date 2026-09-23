@@ -4,6 +4,19 @@ import {
   type TalentQuestion,
   QUESTION_BANK,
 } from '../data/talentQuestions';
+import {
+  pushSubmissionToSupabase,
+  pushInquiryToSupabase,
+  pushBatchToSupabase,
+  pushTransactionToSupabase,
+  pushAttendanceToSupabase,
+  pushSettingsToSupabase,
+  deleteSubmissionFromSupabase,
+  deleteInquiryFromSupabase,
+  deleteBatchFromSupabase,
+  deleteTransactionFromSupabase,
+  deleteAttendanceFromSupabase,
+} from './supabaseSync';
 
 export type FollowUpStatus = 'baru' | 'dihubungi' | 'terdaftar' | 'selesai';
 
@@ -567,7 +580,7 @@ export interface InstructorPayrollRecord {
   updatedAt: string;
 }
 
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   SUBMISSIONS: 'beekoding_admin_submissions',
   QUESTIONS: 'beekoding_admin_questions',
   AUTH: 'beekoding_admin_auth',
@@ -602,6 +615,37 @@ const STORAGE_KEYS = {
   GATEWAY_CONFIG: 'beekoding_admin_whatsapp_gateway_config',
   GATEWAY_QUEUE: 'beekoding_admin_whatsapp_gateway_queue',
 };
+
+// ==========================================
+// REAL-TIME STORAGE UPDATE EVENT BUS
+// ==========================================
+
+export type StorageUpdateType =
+  | 'submissions'
+  | 'inquiries'
+  | 'batches'
+  | 'transactions'
+  | 'attendance'
+  | 'all';
+
+export function emitStorageUpdate(type: StorageUpdateType = 'all'): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('beekoding_storage_updated', { detail: { type } }));
+  }
+}
+
+export function onStorageUpdate(callback: (type: StorageUpdateType) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const handler = (e: Event) => {
+    const custom = e as CustomEvent<{ type: StorageUpdateType }>;
+    callback(custom.detail?.type || 'all');
+  };
+  window.addEventListener('beekoding_storage_updated', handler);
+  return () => {
+    window.removeEventListener('beekoding_storage_updated', handler);
+  };
+}
+
 
 export type AuditModule =
   | 'auth'
@@ -1421,11 +1465,22 @@ export function saveSubmission(
   const updated = [newSubmission, ...current];
   try {
     localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(updated));
+    pushSubmissionToSupabase(newSubmission).catch(() => {});
+    emitStorageUpdate('submissions');
   } catch (err) {
     console.error('Failed to save submission to localStorage:', err);
   }
 
   return newSubmission;
+}
+
+export function saveSubmissions(submissions: AssessmentSubmission[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(submissions));
+    emitStorageUpdate('submissions');
+  } catch (err) {
+    console.error('Failed to save submissions to localStorage:', err);
+  }
 }
 
 export function updateSubmissionStatus(id: string, status: FollowUpStatus): boolean {
@@ -1436,6 +1491,8 @@ export function updateSubmissionStatus(id: string, status: FollowUpStatus): bool
   current[idx].status = status;
   try {
     localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(current));
+    pushSubmissionToSupabase(current[idx]).catch(() => {});
+    emitStorageUpdate('submissions');
     return true;
   } catch (err) {
     console.error('Failed to update status:', err);
@@ -1451,6 +1508,8 @@ export function updateSubmissionNotes(id: string, notes: string): boolean {
   current[idx].notes = notes;
   try {
     localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(current));
+    pushSubmissionToSupabase(current[idx]).catch(() => {});
+    emitStorageUpdate('submissions');
     return true;
   } catch (err) {
     console.error('Failed to update notes:', err);
@@ -1463,6 +1522,8 @@ export function deleteSubmission(id: string): boolean {
   const filtered = current.filter((item) => item.id !== id);
   try {
     localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(filtered));
+    deleteSubmissionFromSupabase(id).catch(() => {});
+    emitStorageUpdate('submissions');
     return true;
   } catch (err) {
     console.error('Failed to delete submission:', err);
@@ -1610,7 +1671,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
       'Anak saya kelas 5 SD sangat gemar bermain Roblox dan Scratch. Apakah bisa ikut batch Juli 2026? Mohon rincian jadwal dan panduan biayanya.',
     status: 'baru',
     adminNotes: '',
-    createdAt: '16 September 2026, 11:25 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'INQ-2026-002',
@@ -1625,7 +1686,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'dihubungi',
     adminNotes:
       'Sudah dihubungi via WA pada 16 Sep pukul 13.00. Orang tua meminta sesi konsultasi zoom dengan Lead Instructor hari Sabtu jam 10.00.',
-    createdAt: '16 September 2026, 09:40 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'INQ-2026-003',
@@ -1640,7 +1701,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'jadwal_konsultasi',
     adminNotes:
       'Sudah dijadwalkan presentasi proposal kurikulum via Zoom pada Kamis, 18 September 2026 jam 14.00 bersama waka kurikulum.',
-    createdAt: '15 September 2026, 15:10 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'REG-2026-004',
@@ -1655,7 +1716,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'terdaftar',
     adminNotes:
       'Sekolah sepakat mengadakan workshop in-house untuk 25 guru pada 28 September 2026. Invoice DP dan MoU resmi sudah diterbitkan.',
-    createdAt: '15 September 2026, 13:20 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'REG-2026-005',
@@ -1669,7 +1730,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
       'Saya siswi kelas 9 SMP, ingin belajar machine learning dan AI yang bisa bikin bot interaktif sendiri. Apakah untuk pemula boleh ikut?',
     status: 'baru',
     adminNotes: '',
-    createdAt: '15 September 2026, 10:05 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'INQ-2026-006',
@@ -1684,7 +1745,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'dihubungi',
     adminNotes:
       'Sudah dijelaskan modul Junior Little Explorer Scratch Jr via telepon. Orang tua berencana ikut sesi trial gratis hari Minggu.',
-    createdAt: '14 September 2026, 16:45 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'INQ-2026-007',
@@ -1699,7 +1760,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'jadwal_konsultasi',
     adminNotes:
       'Meeting offline di kantor Beekoding dijadwalkan Jumat 19 September jam 10.30 WIB dengan Direktur Akademik.',
-    createdAt: '14 September 2026, 11:30 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'REG-2026-008',
@@ -1714,7 +1775,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'terdaftar',
     adminNotes:
       'Pembayaran pendaftaran lunas via transfer bank. Sudah dimasukkan ke grup WhatsApp peserta workshop batch 3.',
-    createdAt: '13 September 2026, 14:15 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'INQ-2026-009',
@@ -1729,7 +1790,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
     status: 'batal',
     adminNotes:
       'Orang tua membatalkan karena lokasi rumah terlalu jauh dari sentra lab offline Beekoding dan belum memiliki perangkat VR mandiri.',
-    createdAt: '12 September 2026, 17:00 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
   {
     id: 'REG-2026-010',
@@ -1743,7 +1804,7 @@ const SAMPLE_INQUIRIES: ConsultationInquiry[] = [
       'Mohon info diskon early bird pendaftaran Summer Bootcamp untuk 2 anak (kakak adik kelas 4 dan 6 SD).',
     status: 'baru',
     adminNotes: '',
-    createdAt: '12 September 2026, 08:30 WIB',
+    createdAt: '2026-03-01T10:00:00Z',
   },
 ];
 
@@ -1770,13 +1831,6 @@ export function saveInquiry(
   try {
     const current = getInquiries();
     const now = new Date();
-    const dateFormatted =
-      now.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }) +
-      `, ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB`;
 
     const inquiryType =
       data.type ||
@@ -1790,12 +1844,14 @@ export function saveInquiry(
       type: inquiryType,
       status: data.status || 'baru',
       adminNotes: '',
-      createdAt: dateFormatted,
+      createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     };
 
     const updated = [newInquiry, ...current];
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(updated));
+    pushInquiryToSupabase(newInquiry).catch(() => {});
+    emitStorageUpdate('inquiries');
     return newInquiry;
   } catch (err) {
     console.error('Failed to save inquiry:', err);
@@ -1803,13 +1859,29 @@ export function saveInquiry(
   }
 }
 
+export function saveInquiries(inquiries: ConsultationInquiry[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(inquiries));
+    emitStorageUpdate('inquiries');
+  } catch (err) {
+    console.error('Failed to save inquiries to localStorage:', err);
+  }
+}
+
 export function updateInquiryStatus(id: string, status: InquiryStatus): void {
   try {
     const current = getInquiries();
-    const updated = current.map((item) =>
-      item.id === id ? { ...item, status, updatedAt: new Date().toISOString() } : item
-    );
+    let updatedItem: ConsultationInquiry | null = null;
+    const updated = current.map((item) => {
+      if (item.id === id) {
+        updatedItem = { ...item, status, updatedAt: new Date().toISOString() };
+        return updatedItem;
+      }
+      return item;
+    });
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(updated));
+    if (updatedItem) pushInquiryToSupabase(updatedItem).catch(() => {});
+    emitStorageUpdate('inquiries');
   } catch (err) {
     console.error('Failed to update inquiry status:', err);
   }
@@ -1818,10 +1890,17 @@ export function updateInquiryStatus(id: string, status: InquiryStatus): void {
 export function updateInquiryNotes(id: string, notes: string): void {
   try {
     const current = getInquiries();
-    const updated = current.map((item) =>
-      item.id === id ? { ...item, adminNotes: notes, updatedAt: new Date().toISOString() } : item
-    );
+    let updatedItem: ConsultationInquiry | null = null;
+    const updated = current.map((item) => {
+      if (item.id === id) {
+        updatedItem = { ...item, adminNotes: notes, updatedAt: new Date().toISOString() };
+        return updatedItem;
+      }
+      return item;
+    });
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(updated));
+    if (updatedItem) pushInquiryToSupabase(updatedItem).catch(() => {});
+    emitStorageUpdate('inquiries');
   } catch (err) {
     console.error('Failed to update inquiry notes:', err);
   }
@@ -1834,6 +1913,8 @@ export function updateInquiry(inquiry: ConsultationInquiry): void {
       item.id === inquiry.id ? { ...inquiry, updatedAt: new Date().toISOString() } : item
     );
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(updated));
+    pushInquiryToSupabase(inquiry).catch(() => {});
+    emitStorageUpdate('inquiries');
   } catch (err) {
     console.error('Failed to update inquiry:', err);
   }
@@ -1844,6 +1925,8 @@ export function deleteInquiry(id: string): void {
     const current = getInquiries();
     const updated = current.filter((item) => item.id !== id);
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(updated));
+    deleteInquiryFromSupabase(id).catch(() => {});
+    emitStorageUpdate('inquiries');
   } catch (err) {
     console.error('Failed to delete inquiry:', err);
   }
@@ -2305,6 +2388,7 @@ export function updateAdminProfile(updates: Partial<AdminUser>): AdminUser {
       bio: updates.bio || curUser.bio,
       institution: updates.institution || curUser.institution,
     });
+    pushSettingsToSupabase(updated).catch(() => {});
   } catch (err) {
     console.error('Failed to save profile:', err);
   }
@@ -3750,6 +3834,7 @@ export function getBatches(): ClassBatch[] {
 export function saveBatches(batches: ClassBatch[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.BATCHES, JSON.stringify(batches));
+    emitStorageUpdate('batches');
   } catch (err) {
     console.error('Failed to save batches:', err);
   }
@@ -3772,6 +3857,8 @@ export function createBatch(
 
   const updated = [newBatch, ...batches];
   saveBatches(updated);
+  pushBatchToSupabase(newBatch).catch(() => {});
+  emitStorageUpdate('batches');
   return newBatch;
 }
 
@@ -3797,6 +3884,8 @@ export function updateBatch(id: string, updates: Partial<ClassBatch>): ClassBatc
 
   batches[index] = updatedBatch;
   saveBatches(batches);
+  pushBatchToSupabase(updatedBatch).catch(() => {});
+  emitStorageUpdate('batches');
   return updatedBatch;
 }
 
@@ -3805,6 +3894,8 @@ export function deleteBatch(id: string): boolean {
   const filtered = batches.filter((b) => b.id !== id);
   if (filtered.length === batches.length) return false;
   saveBatches(filtered);
+  deleteBatchFromSupabase(id).catch(() => {});
+  emitStorageUpdate('batches');
   return true;
 }
 
@@ -3853,6 +3944,8 @@ export function enrollStudentToBatch(
 
   batches[index] = updatedBatch;
   saveBatches(batches);
+  pushBatchToSupabase(updatedBatch).catch(() => {});
+  emitStorageUpdate('batches');
   return { success: true, batch: updatedBatch };
 }
 
@@ -3887,6 +3980,8 @@ export function removeStudentFromBatch(
 
   batches[index] = updatedBatch;
   saveBatches(batches);
+  pushBatchToSupabase(updatedBatch).catch(() => {});
+  emitStorageUpdate('batches');
   return { success: true, batch: updatedBatch };
 }
 
@@ -4390,6 +4485,7 @@ export function getTransactions(): TransactionRecord[] {
 export function saveTransactions(transactions: TransactionRecord[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+    emitStorageUpdate('transactions');
   } catch (err) {
     console.error('Failed to save transactions:', err);
   }
@@ -4419,6 +4515,8 @@ export function createTransaction(
 
   const updated = [newTx, ...transactions];
   saveTransactions(updated);
+  pushTransactionToSupabase(newTx).catch(() => {});
+  emitStorageUpdate('transactions');
   return newTx;
 }
 
@@ -4439,6 +4537,8 @@ export function updateTransaction(
 
   transactions[index] = updatedTx;
   saveTransactions(transactions);
+  pushTransactionToSupabase(updatedTx).catch(() => {});
+  emitStorageUpdate('transactions');
   return updatedTx;
 }
 
@@ -4447,6 +4547,8 @@ export function deleteTransaction(id: string): boolean {
   const filtered = transactions.filter((t) => t.id !== id);
   if (filtered.length === transactions.length) return false;
   saveTransactions(filtered);
+  deleteTransactionFromSupabase(id).catch(() => {});
+  emitStorageUpdate('transactions');
   return true;
 }
 
@@ -6155,7 +6257,7 @@ export function calculateInstructorStats(instructors: InstructorRecord[]) {
 export const DEFAULT_ATTENDANCE: SessionAttendanceRecord[] = [
   {
     id: 'att-2026-001',
-    batchId: 'batch-2026-001',
+    batchId: 'batch-2026-01',
     batchName: 'Junior Explorer - Scratch Game Dev (Batch 04)',
     tier: 'junior',
     sessionNumber: 3,
@@ -6207,7 +6309,7 @@ export const DEFAULT_ATTENDANCE: SessionAttendanceRecord[] = [
   },
   {
     id: 'att-2026-002',
-    batchId: 'batch-2026-001',
+    batchId: 'batch-2026-01',
     batchName: 'Junior Explorer - Scratch Game Dev (Batch 04)',
     tier: 'junior',
     sessionNumber: 4,
@@ -6260,7 +6362,7 @@ export const DEFAULT_ATTENDANCE: SessionAttendanceRecord[] = [
   },
   {
     id: 'att-2026-003',
-    batchId: 'batch-2026-002',
+    batchId: 'batch-2026-02',
     batchName: 'Middle Coder - Roblox 3D World & Lua (Batch 02)',
     tier: 'middle',
     sessionNumber: 5,
@@ -6304,7 +6406,7 @@ export const DEFAULT_ATTENDANCE: SessionAttendanceRecord[] = [
   },
   {
     id: 'att-2026-004',
-    batchId: 'batch-2026-002',
+    batchId: 'batch-2026-02',
     batchName: 'Middle Coder - Roblox 3D World & Lua (Batch 02)',
     tier: 'middle',
     sessionNumber: 6,
@@ -6349,7 +6451,7 @@ export const DEFAULT_ATTENDANCE: SessionAttendanceRecord[] = [
   },
   {
     id: 'att-2026-005',
-    batchId: 'batch-2026-003',
+    batchId: 'batch-2026-03',
     batchName: 'Teens Innovator - Fullstack Web & AI (Batch 01)',
     tier: 'teens',
     sessionNumber: 2,
@@ -6426,6 +6528,7 @@ export function getAttendanceRecords(): SessionAttendanceRecord[] {
 export function saveAttendanceRecords(records: SessionAttendanceRecord[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(records));
+    emitStorageUpdate('attendance');
   } catch (err) {
     console.error('Failed to save attendance records:', err);
   }
@@ -6444,6 +6547,8 @@ export function createAttendanceRecord(
 
   records.unshift(newRecord);
   saveAttendanceRecords(records);
+  pushAttendanceToSupabase(newRecord).catch(() => {});
+  emitStorageUpdate('attendance');
   return newRecord;
 }
 
@@ -6464,6 +6569,8 @@ export function updateAttendanceRecord(
 
   records[index] = updatedRecord;
   saveAttendanceRecords(records);
+  pushAttendanceToSupabase(updatedRecord).catch(() => {});
+  emitStorageUpdate('attendance');
   return updatedRecord;
 }
 
@@ -6472,6 +6579,8 @@ export function deleteAttendanceRecord(id: string): boolean {
   const filtered = records.filter((r) => r.id !== id);
   if (filtered.length === records.length) return false;
   saveAttendanceRecords(filtered);
+  deleteAttendanceFromSupabase(id).catch(() => {});
+  emitStorageUpdate('attendance');
   return true;
 }
 
@@ -6631,7 +6740,7 @@ export const DEFAULT_ACADEMIC_REPORTS: StudentAcademicReport[] = [
     studentName: 'Kenzo Alvaro Pratama',
     parentName: 'Bambang Pratama',
     parentPhone: '081234567890',
-    batchId: 'batch-2026-001',
+    batchId: 'batch-2026-01',
     batchName: 'Junior Explorer - Scratch Game Dev (Batch 04)',
     tier: 'junior',
     reportPeriod: 'final_term',
@@ -6664,7 +6773,7 @@ export const DEFAULT_ACADEMIC_REPORTS: StudentAcademicReport[] = [
     studentName: 'Aisyah Putri Rahmadani',
     parentName: 'Siti Rahmadani',
     parentPhone: '081298765432',
-    batchId: 'batch-2026-001',
+    batchId: 'batch-2026-01',
     batchName: 'Junior Explorer - Scratch Game Dev (Batch 04)',
     tier: 'junior',
     reportPeriod: 'mid_term',
@@ -6697,7 +6806,7 @@ export const DEFAULT_ACADEMIC_REPORTS: StudentAcademicReport[] = [
     studentName: 'Rafa Azka Putra',
     parentName: 'Budi Santoso',
     parentPhone: '081211112222',
-    batchId: 'batch-2026-002',
+    batchId: 'batch-2026-02',
     batchName: 'Middle Coder - Roblox Studio & Lua Logic (Batch 02)',
     tier: 'middle',
     reportPeriod: 'final_term',
@@ -6730,11 +6839,11 @@ export const DEFAULT_ACADEMIC_REPORTS: StudentAcademicReport[] = [
     studentName: 'Nadia Salsabila',
     parentName: 'Rina Marlina',
     parentPhone: '081322223333',
-    batchId: 'batch-2026-002',
+    batchId: 'batch-2026-02',
     batchName: 'Middle Coder - Roblox Studio & Lua Logic (Batch 02)',
     tier: 'middle',
     reportPeriod: 'mid_term',
-    attendanceRate: 83.3,
+    attendanceRate: 83,
     scores: {
       computationalThinking: 78,
       creativityDesign: 85,
@@ -6763,7 +6872,7 @@ export const DEFAULT_ACADEMIC_REPORTS: StudentAcademicReport[] = [
     studentName: 'Devina Maharani',
     parentName: 'Wawan Gunawan',
     parentPhone: '081255556666',
-    batchId: 'batch-2026-003',
+    batchId: 'batch-2026-03',
     batchName: 'Teens Innovator - Fullstack Web & AI (Batch 01)',
     tier: 'teens',
     reportPeriod: 'final_term',
@@ -6796,7 +6905,7 @@ export const DEFAULT_ACADEMIC_REPORTS: StudentAcademicReport[] = [
     studentName: 'Farhan Ramadhan',
     parentName: 'Taufik Hidayat',
     parentPhone: '081366667777',
-    batchId: 'batch-2026-003',
+    batchId: 'batch-2026-03',
     batchName: 'Teens Innovator - Fullstack Web & AI (Batch 01)',
     tier: 'teens',
     reportPeriod: 'final_term',

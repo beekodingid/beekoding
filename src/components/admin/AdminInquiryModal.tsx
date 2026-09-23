@@ -38,14 +38,15 @@ export const AdminInquiryModal: React.FC<AdminInquiryModalProps> = ({
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Format nomor WhatsApp
-  const rawPhone = inquiry.phone.replace(/[^0-9]/g, '');
+  const phoneStr = inquiry.phone || '';
+  const rawPhone = phoneStr.replace(/[^0-9]/g, '');
   const cleanPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
 
   // Draf pesan WhatsApp siap kirim
   const waGreeting =
-    inquiry.role === 'Orang Tua'
-      ? `Bapak/Ibu ${inquiry.name}`
-      : inquiry.name;
+    (inquiry.role || '') === 'Orang Tua'
+      ? `Bapak/Ibu ${inquiry.name || 'Wali Murid'}`
+      : (inquiry.name || 'Sahabat Beekoding');
 
   const waText = encodeURIComponent(
     `Halo ${waGreeting} 👋,\n\n` +

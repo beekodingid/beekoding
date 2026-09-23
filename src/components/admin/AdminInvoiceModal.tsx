@@ -11,6 +11,8 @@ import {
   Clock,
   AlertCircle,
   Building2,
+  ExternalLink,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 interface AdminInvoiceModalProps {
@@ -501,6 +503,45 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Bukti Transfer Pembayaran Terlampir */}
+          {transaction.transferProofUrl && (
+            <div className="mt-6 p-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-50/50 print:border-slate-300 print:bg-transparent">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <ImageIcon className="w-4 h-4 text-emerald-600" />
+                  Lampiran Bukti Transfer / Resi
+                </span>
+                <a
+                  href={transaction.transferProofUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-amber-600 hover:underline inline-flex items-center gap-1 font-semibold print:hidden"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Buka Gambar Asli
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-20 h-20 rounded-xl overflow-hidden border border-slate-200 bg-white flex-shrink-0 flex items-center justify-center shadow-sm">
+                  <img
+                    src={transaction.transferProofUrl}
+                    alt="Bukti Transfer"
+                    className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => window.open(transaction.transferProofUrl, '_blank')}
+                  />
+                </div>
+                <div className="text-xs text-slate-600 space-y-1">
+                  <p className="font-medium text-slate-900">
+                    File bukti pembayaran resmi telah terlampir pada faktur ini.
+                  </p>
+                  <p className="text-[11px] text-slate-500 print:hidden">
+                    Klik gambar atau tautan di atas untuk melihat bukti transfer dalam resolusi penuh.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Footer Dokumen */}
           <div className="mt-8 pt-4 border-t border-slate-100 text-center text-[10px] text-slate-400">

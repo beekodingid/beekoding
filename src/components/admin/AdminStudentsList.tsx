@@ -21,7 +21,11 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  RefreshCw,
+  Cloud,
 } from 'lucide-react';
+import { fetchSubmissionsFromCloud } from '../../services/supabaseSync';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface AdminStudentsListProps {
   submissions: AssessmentSubmission[];
@@ -45,17 +49,58 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
   // Pagination State (10, 25, 50)
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
-  // Filter Submissions
+  const handlePullFromSupabase = async () => {
+    setIsSyncingCloud(true);
+    setSyncFeedback(null);
+    try {
+      const list = await fetchSubmissionsFromCloud();
+      if (list && list.length > 0) {
+        setSyncFeedback({
+          type: 'success',
+          message: `Berhasil menarik ${list.length} data siswa asesmen dari Supabase!`,
+        });
+        onRefreshData();
+      } else if (list && list.length === 0) {
+        setSyncFeedback({
+          type: 'info',
+          message: 'Tabel students_submissions di Supabase masih kosong (0 baris), atau dibatasi oleh izin RLS.',
+        });
+      } else {
+        setSyncFeedback({
+          type: 'error',
+          message: 'Gagal mengambil data siswa dari Supabase. Periksa izin RLS atau koneksi database.',
+        });
+      }
+    } catch (err: any) {
+      setSyncFeedback({
+        type: 'error',
+        message: err?.message || 'Terjadi kesalahan saat menyinkronkan data siswa.',
+      });
+    } finally {
+      setIsSyncingCloud(false);
+      setTimeout(() => setSyncFeedback(null), 5000);
+    }
+  };
+
+  // Filter Submissions (Null-Safe)
   const filteredSubmissions = submissions.filter((sub) => {
+    if (!sub || !sub.profile) return false;
+    const childName = (sub.profile.childName || '').toLowerCase();
+    const parentName = (sub.profile.parentName || '').toLowerCase();
+    const parentPhone = sub.profile.parentPhone || '';
+    const gradeLevel = (sub.profile.gradeLevel || '').toLowerCase();
+
     // Search match
     const q = searchQuery.toLowerCase().trim();
     const matchSearch =
       !q ||
-      sub.profile.childName.toLowerCase().includes(q) ||
-      (sub.profile.parentName && sub.profile.parentName.toLowerCase().includes(q)) ||
-      sub.profile.parentPhone.includes(q) ||
-      (sub.profile.gradeLevel && sub.profile.gradeLevel.toLowerCase().includes(q));
+      childName.includes(q) ||
+      parentName.includes(q) ||
+      parentPhone.includes(q) ||
+      gradeLevel.includes(q);
 
     // Tier match
     const matchTier = selectedTier === 'all' || sub.profile.tier === selectedTier;
@@ -69,16 +114,16 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
   // Sort Submissions
   const sortedSubmissions = [...filteredSubmissions].sort((a, b) => {
     if (sortBy === 'date-desc') {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     }
     if (sortBy === 'date-asc') {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
     }
     if (sortBy === 'score-desc') {
-      return b.totalScore - a.totalScore;
+      return (b.totalScore || 0) - (a.totalScore || 0);
     }
     if (sortBy === 'score-asc') {
-      return a.totalScore - b.totalScore;
+      return (a.totalScore || 0) - (b.totalScore || 0);
     }
     return 0;
   });
@@ -181,6 +226,19 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {isSupabaseConfigured() && (
+            <button
+              type="button"
+              onClick={handlePullFromSupabase}
+              disabled={isSyncingCloud}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 hover:bg-sky-500 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              title="Tarik data siswa hasil asesmen terbaru langsung dari database Supabase"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+              <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Tarik dari Supabase'}</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handleResetDemoData}
@@ -205,6 +263,22 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Sync Feedback Alert */}
+      {syncFeedback && (
+        <div
+          className={`p-3.5 rounded-2xl border text-xs font-semibold flex items-center gap-2.5 animate-fadeIn ${
+            syncFeedback.type === 'success'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+              : syncFeedback.type === 'error'
+              ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400'
+              : 'bg-sky-500/10 border-sky-500/30 text-sky-600 dark:text-sky-400'
+          }`}
+        >
+          <Cloud className="w-4 h-4 shrink-0" />
+          <span>{syncFeedback.message}</span>
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div
@@ -297,10 +371,39 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-500/10 flex items-center justify-center text-slate-400">
               <Search className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-sm mb-1">Tidak ada data siswa yang cocok</h4>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              Coba ubah kata kunci pencarian atau setelan filter jenjang dan status di atas.
+            <h4 className="font-bold text-sm mb-1">
+              {submissions.length === 0
+                ? 'Belum ada data hasil asesmen siswa tersimpan'
+                : 'Tidak ada data siswa yang cocok'}
+            </h4>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
+              {submissions.length === 0
+                ? 'Data asesmen belum dimuat ke memori browser. Anda dapat menarik data langsung dari Supabase atau memuat simulasi data demo bawaan.'
+                : 'Coba ubah kata kunci pencarian atau setelan filter jenjang dan status di atas.'}
             </p>
+            {submissions.length === 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {isSupabaseConfigured() && (
+                  <button
+                    type="button"
+                    onClick={handlePullFromSupabase}
+                    disabled={isSyncingCloud}
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-400 text-white transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-md shadow-sky-500/20"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+                    <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Tarik Data dari Supabase'}</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleResetDemoData}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Muat Data Demo Bawaan</span>
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -321,7 +424,8 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {paginatedSubmissions.map((sub) => {
-                  const rawPhone = sub.profile.parentPhone.replace(/[^0-9]/g, '');
+                  const phoneStr = sub.profile?.parentPhone || '';
+                  const rawPhone = phoneStr.replace(/[^0-9]/g, '');
                   const cleanPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
 
                   return (

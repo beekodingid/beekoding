@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   type ClassBatch,
   type BatchStatus,
@@ -12,6 +12,7 @@ import {
   resetBatchesToDefault,
   getSubmissions,
   getInquiries,
+  onStorageUpdate,
 } from '../../services/adminStorage';
 import {
   CalendarDays,
@@ -43,6 +44,14 @@ const ALL_DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
 
 export const AdminBatches: React.FC<AdminBatchesProps> = ({ isDark }) => {
   const [batches, setBatches] = useState<ClassBatch[]>(() => getBatches());
+
+  useEffect(() => {
+    return onStorageUpdate((type) => {
+      if (type === 'batches' || type === 'all') {
+        setBatches(getBatches());
+      }
+    });
+  }, []);
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');

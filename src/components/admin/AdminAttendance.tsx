@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   ClipboardCheck,
   Search,
@@ -26,6 +26,7 @@ import {
   calculateAttendanceStats,
   exportAttendanceCSV,
   getBatches,
+  onStorageUpdate,
 } from '../../services/adminStorage';
 import { AdminAttendanceModal } from './AdminAttendanceModal';
 
@@ -54,6 +55,14 @@ const TIER_COLORS: Record<string, { bg: string; text: string; border: string }> 
 export const AdminAttendance: React.FC<AdminAttendanceProps> = ({ isDark = false }) => {
   const [records, setRecords] = useState<SessionAttendanceRecord[]>(() => getAttendanceRecords());
   const [batches] = useState(() => getBatches());
+
+  useEffect(() => {
+    return onStorageUpdate((type) => {
+      if (type === 'attendance' || type === 'all') {
+        setRecords(getAttendanceRecords());
+      }
+    });
+  }, []);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState<string>('');

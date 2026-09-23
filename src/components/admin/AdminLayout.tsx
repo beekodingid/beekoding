@@ -8,6 +8,7 @@ import {
   switchActiveSystemUser,
   type AdminTab,
 } from '../../services/adminStorage';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 import {
   LayoutDashboard,
   Users,
@@ -827,6 +828,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
+          {isSupabaseConfigured() && (
+            <div
+              className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+              title="Cloud PostgreSQL Terhubung & Real-Time Sync Aktif"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Cloud</span>
+            </div>
+          )}
           <ThemeToggle />
           <button
             type="button"
@@ -1099,6 +1109,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 ))}
               </select>
             </div>
+ 
+            {isSupabaseConfigured() && (
+              <div
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs"
+                title="Cloud PostgreSQL Terhubung & Real-Time Sync Aktif"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Cloud Live Sync</span>
+              </div>
+            )}
 
             <ThemeToggle />
           </div>

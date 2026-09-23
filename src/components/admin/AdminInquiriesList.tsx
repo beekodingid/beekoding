@@ -25,7 +25,11 @@ import {
   CheckCircle2,
   Clock,
   Mail,
+  RefreshCw,
+  Cloud,
 } from 'lucide-react';
+import { fetchInquiriesFromCloud } from '../../services/supabaseSync';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface AdminInquiriesListProps {
   inquiries: ConsultationInquiry[];
@@ -50,19 +54,62 @@ export const AdminInquiriesList: React.FC<AdminInquiriesListProps> = ({
   // Pagination State (10, 25, 50)
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
-  // Filter Inquiries
+  const handlePullFromSupabase = async () => {
+    setIsSyncingCloud(true);
+    setSyncFeedback(null);
+    try {
+      const list = await fetchInquiriesFromCloud();
+      if (list && list.length > 0) {
+        setSyncFeedback({
+          type: 'success',
+          message: `Berhasil menarik ${list.length} data permohonan dari Supabase Cloud!`,
+        });
+        onRefreshData();
+      } else if (list && list.length === 0) {
+        setSyncFeedback({
+          type: 'info',
+          message: 'Tabel consultation_inquiries di Supabase masih kosong (0 baris), atau dibatasi oleh izin RLS.',
+        });
+      } else {
+        setSyncFeedback({
+          type: 'error',
+          message: 'Gagal mengambil data dari Supabase. Periksa koneksi atau izin RLS database.',
+        });
+      }
+    } catch (err: any) {
+      setSyncFeedback({
+        type: 'error',
+        message: err?.message || 'Terjadi kesalahan saat menyinkronkan data.',
+      });
+    } finally {
+      setIsSyncingCloud(false);
+      setTimeout(() => setSyncFeedback(null), 5000);
+    }
+  };
+
+  // Filter Inquiries (Null-Safe)
   const filteredInquiries = inquiries.filter((item) => {
+    if (!item) return false;
+    const name = (item.name || '').toLowerCase();
+    const phone = item.phone || '';
+    const email = (item.email || '').toLowerCase();
+    const program = (item.program || '').toLowerCase();
+    const message = (item.message || '').toLowerCase();
+    const adminNotes = (item.adminNotes || '').toLowerCase();
+
     // Search match
     const q = searchQuery.toLowerCase().trim();
     const matchSearch =
       !q ||
-      item.name.toLowerCase().includes(q) ||
-      item.phone.includes(q) ||
-      item.email.toLowerCase().includes(q) ||
-      item.program.toLowerCase().includes(q) ||
-      (item.message && item.message.toLowerCase().includes(q)) ||
-      (item.adminNotes && item.adminNotes.toLowerCase().includes(q));
+      name.includes(q) ||
+      phone.includes(q) ||
+      email.includes(q) ||
+      program.includes(q) ||
+      message.includes(q) ||
+      adminNotes.includes(q);
 
     // Type match
     const matchType = selectedType === 'all' || item.type === selectedType;
@@ -76,17 +123,18 @@ export const AdminInquiriesList: React.FC<AdminInquiriesListProps> = ({
     return matchSearch && matchType && matchStatus && matchRole;
   });
 
-  // Sort Inquiries
+  // Sort Inquiries (Null-Safe)
   const sortedInquiries = [...filteredInquiries].sort((a, b) => {
     if (sortBy === 'name-asc') {
-      return a.name.localeCompare(b.name);
+      return (a.name || '').localeCompare(b.name || '');
     }
-    // We can also sort by ID or timestamp
+    const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
     if (sortBy === 'date-asc') {
-      return a.id.localeCompare(b.id);
+      return aDate - bDate || (a.id || '').localeCompare(b.id || '');
     }
     // Default 'date-desc'
-    return b.id.localeCompare(a.id);
+    return bDate - aDate || (b.id || '').localeCompare(a.id || '');
   });
 
   // Pagination Calculation
@@ -204,6 +252,19 @@ export const AdminInquiriesList: React.FC<AdminInquiriesListProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {isSupabaseConfigured() && (
+            <button
+              type="button"
+              onClick={handlePullFromSupabase}
+              disabled={isSyncingCloud}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 hover:bg-sky-500 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              title="Tarik data permohonan terbaru langsung dari database Supabase"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+              <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Tarik dari Supabase'}</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handleResetDemoData}
@@ -229,6 +290,22 @@ export const AdminInquiriesList: React.FC<AdminInquiriesListProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Sync Feedback Alert */}
+      {syncFeedback && (
+        <div
+          className={`p-3.5 rounded-2xl border text-xs font-semibold flex items-center gap-2.5 animate-fadeIn ${
+            syncFeedback.type === 'success'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+              : syncFeedback.type === 'error'
+              ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400'
+              : 'bg-sky-500/10 border-sky-500/30 text-sky-600 dark:text-sky-400'
+          }`}
+        >
+          <Cloud className="w-4 h-4 shrink-0" />
+          <span>{syncFeedback.message}</span>
+        </div>
+      )}
 
       {/* Metric Highlights */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -403,10 +480,39 @@ export const AdminInquiriesList: React.FC<AdminInquiriesListProps> = ({
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-500/10 flex items-center justify-center text-slate-400">
               <Search className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-sm mb-1">Tidak ada data permohonan yang cocok</h4>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              Coba ubah kata kunci pencarian atau setelan filter tipe, status, dan peran di atas.
+            <h4 className="font-bold text-sm mb-1">
+              {inquiries.length === 0
+                ? 'Belum ada data permohonan konsultasi tersimpan'
+                : 'Tidak ada data permohonan yang cocok'}
+            </h4>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
+              {inquiries.length === 0
+                ? 'Data permohonan belum dimuat ke memori browser. Anda dapat menarik data langsung dari Supabase atau memuat simulasi data demo bawaan.'
+                : 'Coba ubah kata kunci pencarian atau setelan filter tipe, status, dan peran di atas.'}
             </p>
+            {inquiries.length === 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {isSupabaseConfigured() && (
+                  <button
+                    type="button"
+                    onClick={handlePullFromSupabase}
+                    disabled={isSyncingCloud}
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-400 text-white transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-md shadow-sky-500/20"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+                    <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Tarik Data dari Supabase'}</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleResetDemoData}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Muat Data Demo Bawaan</span>
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -429,14 +535,17 @@ export const AdminInquiriesList: React.FC<AdminInquiriesListProps> = ({
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {paginatedInquiries.map((item) => {
-                  const rawPhone = item.phone.replace(/[^0-9]/g, '');
+                  const phoneStr = item.phone || '';
+                  const rawPhone = phoneStr.replace(/[^0-9]/g, '');
                   const cleanPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
                   const waGreeting =
-                    item.role === 'Orang Tua' ? `Bapak/Ibu ${item.name}` : item.name;
+                    (item.role || '') === 'Orang Tua'
+                      ? `Bapak/Ibu ${item.name || 'Wali Murid'}`
+                      : (item.name || 'Sahabat Beekoding');
                   const waText = encodeURIComponent(
                     `Halo ${waGreeting} 👋, salam hangat dari Beekoding 🐝! Kami telah menerima ${
                       item.type === 'pendaftaran' ? 'pendaftaran' : 'permohonan konsultasi'
-                    } Anda untuk program *${item.program}*. Apakah ada waktu luang hari ini untuk berdiskusi? Terima kasih! 🙏`
+                    } Anda untuk program *${item.program || 'Program Koding'}*. Apakah ada waktu luang hari ini untuk berdiskusi? Terima kasih! 🙏`
                   );
                   const waLink = `https://wa.me/${cleanPhone}?text=${waText}`;
 

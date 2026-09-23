@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { loginAdmin } from '../../services/adminStorage';
+import { loginWithSupabase } from '../../services/supabaseAuth';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeToggle } from '../ThemeToggle';
 import {
@@ -27,36 +28,42 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = loginAdmin(email, password);
+    try {
+      const res = await loginWithSupabase(email, password);
       if (res.success) {
         onLoginSuccess();
       } else {
-        setError(res.error || 'Login gagal.');
+        setError(res.error || 'Login gagal. Periksa kembali email dan kata sandi.');
       }
+    } catch (err: any) {
+      setError(err?.message || 'Terjadi kesalahan saat memproses login.');
+    } finally {
       setIsLoading(false);
-    }, 400);
+    }
   };
 
-  const handleFastLogin = (demoEmail: string, demoPass: string) => {
+  const handleFastLogin = async (demoEmail: string, demoPass: string) => {
     setEmail(demoEmail);
     setPassword(demoPass);
     setError('');
     setIsLoading(true);
-    setTimeout(() => {
-      const res = loginAdmin(demoEmail, demoPass);
+    try {
+      const res = await loginWithSupabase(demoEmail, demoPass);
       if (res.success) {
         onLoginSuccess();
       } else {
         setError(res.error || 'Login gagal.');
       }
+    } catch (err: any) {
+      setError(err?.message || 'Login gagal.');
+    } finally {
       setIsLoading(false);
-    }, 300);
+    }
   };
 
   return (
@@ -134,7 +141,26 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 <ShieldCheck className="w-5 h-5 text-amber-500" />
                 <h2 className="font-extrabold text-base tracking-tight">Autentikasi Petugas</h2>
               </div>
-              <span className="text-[11px] font-semibold text-slate-400">Secure 256-bit</span>
+              <div className="flex items-center gap-2">
+                {isSupabaseConfigured() ? (
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                    title="Terhubung ke Supabase Cloud Auth"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Cloud Auth
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                    title="Mode Lokal Aktif (Offline Resilient)"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    Mode Lokal
+                  </span>
+                )}
+                <span className="text-[11px] font-semibold text-slate-400 hidden sm:inline">256-bit</span>
+              </div>
             </div>
 
             {error && (
