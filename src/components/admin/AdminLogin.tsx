@@ -6,13 +6,11 @@ import {
 } from '../../services/supabaseAuth';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { useTheme } from '../../context/ThemeContext';
-import { ThemeToggle } from '../ThemeToggle';
 import {
   Lock,
   Mail,
   Eye,
   EyeOff,
-  ArrowLeft,
   ShieldCheck,
   LogIn,
   CheckCircle2,
@@ -25,10 +23,10 @@ import {
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
-  onBackToHome: () => void;
+  onBackToHome?: () => void;
 }
 
-export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackToHome }) => {
+export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackToHome: _onBackToHome }) => {
   const { isDark } = useTheme();
   const [email, setEmail] = useState('admin@beekoding.id');
   const [password, setPassword] = useState('admin123');

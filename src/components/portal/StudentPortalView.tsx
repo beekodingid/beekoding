@@ -4,7 +4,6 @@ import { ThemeToggle } from '../ThemeToggle';
 import {
   GraduationCap,
   Search,
-  ArrowLeft,
   CheckCircle2,
   Calendar,
   Award,
@@ -84,11 +83,12 @@ import {
 } from '../../services/adminStorage';
 
 interface StudentPortalViewProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
+/*
 // Profil rekomendasi demo untuk pengujian 1-klik
-const DEMO_STUDENTS = [
+const _DEMO_STUDENTS = [
   {
     name: 'Kenzo Alvaro Pratama',
     phone: '081234567890',
@@ -114,6 +114,7 @@ const DEMO_STUDENTS = [
     badgeColor: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30',
   },
 ];
+*/
 
 type PortalTab =
   | 'overview'
@@ -130,7 +131,7 @@ type PortalTab =
   | 'events'
   | 'counseling';
 
-export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose }) => {
+export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _onClose }) => {
   const { isDark } = useTheme();
 
   // Search State
@@ -738,11 +739,13 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
     }
   };
 
-  const handleSelectDemoStudent = (demo: (typeof DEMO_STUDENTS)[0]) => {
+  /*
+  const _handleSelectDemoStudent = (demo: (typeof _DEMO_STUDENTS)[0]) => {
     setSearchInput(demo.name);
     setSelectedStudentName(demo.name);
     setSelectedStudentPhone(demo.phone);
   };
+  */
 
   const handleResetSearch = () => {
     setSelectedStudentPhone(null);
