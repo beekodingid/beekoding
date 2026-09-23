@@ -116,7 +116,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
       <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Bar */}
-      <header className="p-4 sm:p-6 flex items-center justify-between relative z-10">
+      {/* <header className="p-4 sm:p-6 flex items-center justify-between relative z-10">
         <button
           type="button"
           onClick={onBackToHome}
@@ -133,7 +133,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
         <div className="flex items-center gap-2">
           <ThemeToggle />
         </div>
-      </header>
+      </header> */}
 
       {/* Main Login Card Container */}
       <main className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">

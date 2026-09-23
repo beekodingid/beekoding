@@ -767,7 +767,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
-            <button
+            {/* <button
               onClick={onClose}
               className={`p-2 rounded-xl border transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer ${
                 isDark
@@ -778,7 +778,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Ke Beranda</span>
-            </button>
+            </button> */}
 
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 p-[1.5px]">
@@ -788,7 +788,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                   }`}
                 >
                   <img
-                    src="/bee-mascot.png"
+                    src="/favicon.png"
                     alt="Beekoding"
                     className="w-6 h-6 object-contain"
                   />
@@ -817,7 +817,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                     : 'border-slate-300 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                Ganti Siswa
+                Keluar
               </button>
             )}
             <ThemeToggle />
@@ -903,7 +903,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
               </form>
 
               {/* Quick Demo Selector Chips */}
-              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+              {/* <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Coba Akses Cepat Akun Demo (1-Klik):
@@ -941,7 +941,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                     </button>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Feature Highlights Grid */}
