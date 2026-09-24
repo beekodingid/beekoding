@@ -389,7 +389,7 @@ export interface PasswordResetResult {
 }
 
 /**
- * Mengirimkan permintaan reset password ke email via Supabase Cloud Auth atau validasi lokal
+ * Mengirimkan permintaan reset password ke email via Supabase Cloud Auth dengan validasi email terdaftar
  */
 export async function requestPasswordReset(email: string): Promise<PasswordResetResult> {
   const trimmedEmail = email.trim().toLowerCase();
@@ -397,60 +397,122 @@ export async function requestPasswordReset(email: string): Promise<PasswordReset
     return { success: false, message: 'Silakan masukkan alamat email yang terdaftar.' };
   }
 
+  // Validasi format email dasar
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmedEmail)) {
+    return {
+      success: false,
+      message: 'Format alamat email tidak valid. Masukkan email dengan format yang benar (contoh: admin@beekoding.id).',
+    };
+  }
+
   const client = getSupabaseClient();
   const cloudAvailable = !!client && isSupabaseConfigured();
 
-  // 1. Coba kirim via Supabase Cloud Auth jika terkonfigurasi
+  // Ambil data staf lokal sebagai salah satu referensi
+  const localUsers = getSystemUsers();
+  const localMatched = localUsers.find((u) => u.email.toLowerCase() === trimmedEmail);
+
+  // 1. Jika Supabase Cloud aktif, lakukan validasi data di Supabase terlebih dahulu
   if (cloudAvailable) {
+    let existsInSupabase = false;
+    let staffName = '';
+    let cloudQueryAttempted = false;
+
+    try {
+      const { data: dbUser, error: dbError } = await client
+        .from('system_users')
+        .select('id, name, email')
+        .ilike('email', trimmedEmail)
+        .maybeSingle();
+
+      if (!dbError) {
+        cloudQueryAttempted = true;
+        if (dbUser && dbUser.email) {
+          existsInSupabase = true;
+          staffName = dbUser.name || '';
+        }
+      } else {
+        console.warn('Cek email di system_users Supabase:', dbError.message);
+      }
+    } catch (err) {
+      console.warn('Gagal kueri email ke Supabase:', err);
+    }
+
+    // Jika telah dicek ke Supabase dan datanya tidak ada, serta tidak ada di data lokal
+    const isEmailRegistered = existsInSupabase || !!localMatched;
+
+    if (!isEmailRegistered && cloudQueryAttempted) {
+      return {
+        success: false,
+        message: `Alamat email "${trimmedEmail}" tidak terdaftar dalam database Supabase. Pastikan email yang dimasukkan sudah benar atau hubungi Super Admin.`,
+      };
+    }
+
+    if (!isEmailRegistered && !cloudQueryAttempted) {
+      // Jika kueri tabel gagal (misal RLS belum mengizinkan select anon atau offline sementara),
+      // tetap validasi terhadap daftar staf terdaftar
+      return {
+        success: false,
+        message: `Alamat email "${trimmedEmail}" tidak ditemukan dalam daftar akun staf terdaftar.`,
+      };
+    }
+
+    // Email terbukti terdaftar -> kirim email reset melalui Supabase Auth
     try {
       const redirectUrl = `${window.location.origin}/#admin`;
-      const { error } = await client.auth.resetPasswordForEmail(trimmedEmail, {
+      const { error: resetError } = await client.auth.resetPasswordForEmail(trimmedEmail, {
         redirectTo: redirectUrl,
       });
 
-      if (!error) {
-        logAdminActivity({
-          module: 'auth',
-          actionType: 'update',
-          title: 'Permintaan Reset Kata Sandi',
-          description: `Tautan pemulihan kata sandi telah dikirim ke email ${trimmedEmail} melalui Supabase Cloud Auth.`,
-          severity: 'info',
-        });
+      if (resetError) {
         return {
-          success: true,
-          isCloudEmailSent: true,
-          message: `Tautan reset kata sandi telah dikirim ke ${trimmedEmail}. Silakan periksa kotak masuk atau folder spam email Anda.`,
+          success: false,
+          message: `Gagal mengirim tautan reset dari Supabase: ${resetError.message}`,
         };
-      } else {
-        console.warn('Supabase resetPasswordForEmail warning:', error.message);
       }
+
+      logAdminActivity({
+        module: 'auth',
+        actionType: 'update',
+        title: 'Permintaan Reset Kata Sandi',
+        description: `Tautan pemulihan kata sandi telah dikirim ke email ${trimmedEmail} (${staffName || localMatched?.name || 'Staf'}) melalui Supabase Cloud Auth.`,
+        severity: 'info',
+      });
+
+      return {
+        success: true,
+        isCloudEmailSent: true,
+        message: `Tautan reset kata sandi telah dikirim ke ${trimmedEmail}. Silakan periksa kotak masuk atau folder spam email Anda.`,
+      };
     } catch (err: any) {
       console.warn('Supabase reset exception:', err);
+      return {
+        success: false,
+        message: err?.message || 'Terjadi kesalahan saat memproses permintaan reset kata sandi.',
+      };
     }
   }
 
-  // 2. Fallback lokal: periksa apakah email ada di system_users
-  const users = getSystemUsers();
-  const matched = users.find((u) => u.email.toLowerCase() === trimmedEmail);
-
-  if (matched) {
+  // 2. Fallback mode lokal/offline: periksa apakah email ada di system_users lokal
+  if (localMatched) {
     logAdminActivity({
       module: 'auth',
       actionType: 'update',
       title: 'Permintaan Reset Kata Sandi Lokal',
-      description: `Staf ${matched.name} (${matched.email}) meminta reset kata sandi.`,
+      description: `Staf ${localMatched.name} (${localMatched.email}) meminta reset kata sandi dalam mode offline.`,
       severity: 'info',
     });
     return {
       success: true,
       isCloudEmailSent: false,
-      message: `Akun terdaftar atas nama "${matched.name}". Dalam mode lokal, Anda dapat menggunakan PIN Otorisasi Cepat (default: 2026) untuk langsung membuat kata sandi baru.`,
+      message: `Akun terdaftar atas nama "${localMatched.name}". Karena sistem dalam mode offline / lokal, silakan hubungi Super Admin via WhatsApp untuk bantuan reset kata sandi.`,
     };
   }
 
   return {
     success: false,
-    message: `Alamat email "${trimmedEmail}" tidak ditemukan dalam daftar staf terdaftar.`,
+    message: `Alamat email "${trimmedEmail}" tidak ditemukan dalam data akun terdaftar.`,
   };
 }
 

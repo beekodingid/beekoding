@@ -35,6 +35,7 @@ ALTER TABLE IF EXISTS system_settings ENABLE ROW LEVEL SECURITY;
 -- 2. HAPUS KEBIJAKAN LAMA (JIKA SUDAH ADA SEBELUMNYA)
 -- ============================================================================
 DROP POLICY IF EXISTS "Authenticated staff full access on system_users" ON system_users;
+DROP POLICY IF EXISTS "Public can check registered email in system_users" ON system_users;
 DROP POLICY IF EXISTS "Authenticated staff full access on students_submissions" ON students_submissions;
 DROP POLICY IF EXISTS "Public can insert submissions" ON students_submissions;
 DROP POLICY IF EXISTS "Public or staff can view submissions" ON students_submissions;
@@ -199,6 +200,12 @@ CREATE POLICY "Public can view batches"
     ON class_batches FOR SELECT
     TO anon
     USING (status = 'upcoming' OR status = 'ongoing');
+
+-- Staf/Publik bisa memverifikasi email terdaftar saat fitur lupa kata sandi digunakan
+CREATE POLICY "Public can check registered email in system_users"
+    ON system_users FOR SELECT
+    TO anon
+    USING (true);
 
 -- ============================================================================
 -- CATATAN PENGGUNAAN:
