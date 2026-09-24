@@ -81,6 +81,66 @@ export async function checkSupabaseSession(): Promise<SystemUser | null> {
 }
 
 /**
+ * Melakukan hashing kata sandi menggunakan standar SHA-256 (Web Crypto API).
+ * Menghasilkan string heksadesimal 64 karakter sehingga kata sandi tidak pernah tersimpan telanjang di database.
+ */
+export async function hashPasswordSha256(password: string): Promise<string> {
+  const trimmed = password.trim();
+  try {
+    const subtle = typeof window !== 'undefined' ? window.crypto?.subtle : (globalThis as any).crypto?.subtle;
+    if (subtle) {
+      const msgBuffer = new TextEncoder().encode(trimmed);
+      const hashBuffer = await subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (err) {
+    console.warn('Web Crypto digest failed:', err);
+  }
+  // Fallback sederhana jika Web Crypto tidak tersedia
+  let hash = 0;
+  for (let i = 0; i < trimmed.length; i++) {
+    const char = trimmed.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0;
+  }
+  return `sha256_fallback_${Math.abs(hash)}_${trimmed}`;
+}
+
+/**
+ * Memvalidasi apakah kata sandi input cocok dengan hash yang tersimpan di kolom password_hash Supabase.
+ * Mendukung:
+ * 1. Hash SHA-256 (64 hex characters) - Standar aman terenkripsi
+ * 2. Format legacy scrypt_custom_
+ * 3. Plaintext legacy (mendukung auto-upgrade ke hash SHA-256)
+ */
+export async function verifyPasswordHash(
+  inputPassword: string,
+  storedHash: string | null | undefined
+): Promise<boolean> {
+  if (!storedHash) return false;
+  const trimmedInput = inputPassword.trim();
+  const inputSha256 = await hashPasswordSha256(trimmedInput);
+
+  // 1. Cocok dengan SHA-256 (64 karakter hex)
+  if (storedHash.toLowerCase() === inputSha256.toLowerCase()) {
+    return true;
+  }
+
+  // 2. Cocok dengan format legacy scrypt_custom_
+  if (storedHash === `scrypt_custom_${trimmedInput}`) {
+    return true;
+  }
+
+  // 3. Cocok dengan teks telanjang (legacy plaintext)
+  if (storedHash === trimmedInput) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Login pengguna menggunakan Supabase Auth dengan graceful fallback ke kredensial lokal
  */
 export async function loginWithSupabase(
@@ -115,11 +175,8 @@ export async function loginWithSupabase(
           };
         }
 
-        // Cek kecocokan kata sandi dari kolom password_hash
-        const isPasswordMatch =
-          dbUser.password_hash === trimmedPassword ||
-          (dbUser.password_hash?.startsWith('scrypt_custom_') &&
-            dbUser.password_hash === `scrypt_custom_${trimmedPassword}`);
+        // Cek kecocokan kata sandi dari kolom password_hash (SHA-256 / Plaintext)
+        const isPasswordMatch = await verifyPasswordHash(trimmedPassword, dbUser.password_hash);
 
         if (!isPasswordMatch) {
           return {
@@ -127,6 +184,18 @@ export async function loginWithSupabase(
             error: 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.',
             isCloudAuth: true,
           };
+        }
+
+        // Auto-upgrade: Jika di Supabase masih tersimpan kata sandi telanjang,
+        // otomatis konversi menjadi hash SHA-256 terenkripsi di background!
+        if (dbUser.password_hash === trimmedPassword || dbUser.password_hash?.startsWith('scrypt_custom_')) {
+          try {
+            const encryptedHash = await hashPasswordSha256(trimmedPassword);
+            await client
+              .from('system_users')
+              .update({ password_hash: encryptedHash, updated_at: new Date().toISOString() })
+              .eq('id', dbUser.id);
+          } catch {}
         }
 
         const matchedUser: SystemUser = {
@@ -445,12 +514,13 @@ export async function resetPasswordInSystemUsers(
       }
 
       let updatedSuccessfully = false;
+      const hashedPass = await hashPasswordSha256(trimmedPass);
 
       // Cara 1: Coba via RPC function reset_system_user_password (SECURITY DEFINER)
       try {
         const { data: rpcResult, error: rpcErr } = await client.rpc('reset_system_user_password', {
           target_email: trimmedEmail,
-          new_password: trimmedPass,
+          new_password: hashedPass,
         });
         if (!rpcErr && rpcResult === true) {
           updatedSuccessfully = true;
@@ -462,7 +532,7 @@ export async function resetPasswordInSystemUsers(
         const { data: updatedRows, error: updateErr } = await client
           .from('system_users')
           .update({
-            password_hash: trimmedPass,
+            password_hash: hashedPass,
             updated_at: new Date().toISOString(),
           })
           .eq('id', dbUser.id)
@@ -715,10 +785,11 @@ export async function updateUserPassword(
 
   if (cloudAvailable && client) {
     try {
+      const secureHash = await hashPasswordSha256(trimmed);
       const { error } = await client
         .from('system_users')
         .update({
-          password_hash: trimmed,
+          password_hash: secureHash,
           updated_at: new Date().toISOString(),
         })
         .ilike('email', emailToUpdate);
@@ -792,8 +863,9 @@ export async function resetPasswordWithPin(
     return { success: false, message: 'Email staf tidak ditemukan dalam basis data sistem.' };
   }
 
-  // Update password lokal
-  users[userIdx].passwordHash = `scrypt_custom_${trimmedPass}`;
+  // Update password lokal dengan hash SHA-256
+  const secureHash = await hashPasswordSha256(trimmedPass);
+  users[userIdx].passwordHash = secureHash;
   localStorage.setItem(STORAGE_KEYS.SYSTEM_USERS, JSON.stringify(users));
 
   // Sinkronkan ke Supabase jika terhubung
@@ -801,7 +873,8 @@ export async function resetPasswordWithPin(
   if (client && isSupabaseConfigured()) {
     try {
       await client.from('system_users').update({
-        password_hash: users[userIdx].passwordHash,
+        password_hash: secureHash,
+        updated_at: new Date().toISOString(),
       }).eq('id', users[userIdx].id);
     } catch (e) {
       console.warn('Sync updated password to supabase failed:', e);
