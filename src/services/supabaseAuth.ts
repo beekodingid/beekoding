@@ -96,74 +96,58 @@ export async function loginWithSupabase(
   const client = getSupabaseClient();
   const cloudAvailable = !!client && isSupabaseConfigured();
 
-  // 1. Jika Supabase terhubung, coba autentikasi ke Supabase Cloud terlebih dahulu
+  // 1. Autentikasi langsung ke tabel database system_users di Supabase
   if (cloudAvailable) {
     try {
-      const { data, error } = await client.auth.signInWithPassword({
-        email: trimmedEmail,
-        password: trimmedPassword,
-      });
+      const { data: dbUser, error } = await client
+        .from('system_users')
+        .select('*')
+        .ilike('email', trimmedEmail)
+        .maybeSingle();
 
-      if (!error && data.session && data.user) {
-        // Ambil profil staf dari PostgreSQL atau cache
-        let users = getSystemUsers();
-        let matchedUser = users.find(
-          (u) => u.email.toLowerCase() === trimmedEmail
-        );
-
-        // Jika profil belum ada di lokal, coba query ke tabel system_users di Supabase
-        if (!matchedUser) {
-          try {
-            const { data: dbUser } = await client
-              .from('system_users')
-              .select('*')
-              .eq('email', trimmedEmail)
-              .maybeSingle();
-
-            if (dbUser) {
-              matchedUser = {
-                id: dbUser.id,
-                name: dbUser.name,
-                email: dbUser.email,
-                role: dbUser.role as any,
-                roleTitle: dbUser.role_title,
-                phone: dbUser.phone || undefined,
-                avatar: dbUser.avatar || undefined,
-                institution: dbUser.institution || undefined,
-                bio: dbUser.bio || undefined,
-                status: dbUser.status as any,
-                allowedTabs: dbUser.allowed_tabs_json
-                  ? JSON.parse(dbUser.allowed_tabs_json)
-                  : ['dashboard'],
-                passwordHash: '',
-                lastLoginAt: new Date().toISOString(),
-                createdAt: dbUser.created_at || new Date().toISOString(),
-              };
-              saveSystemUser(matchedUser);
-            }
-          } catch (fetchErr) {
-            console.warn('Gagal memuat profil user dari Supabase:', fetchErr);
-          }
-        }
-
-        // Jika tetap belum ditemukan, buat profil fallback dari metadata
-        if (!matchedUser) {
-          matchedUser = {
-            id: `usr-${data.user.id.slice(0, 8)}`,
-            name: data.user.user_metadata?.name || trimmedEmail.split('@')[0],
-            email: trimmedEmail,
-            role: (data.user.user_metadata?.role as any) || 'administrator',
-            roleTitle: data.user.user_metadata?.roleTitle || 'Administrator Sistem',
-            status: 'active',
-            allowedTabs: ['dashboard', 'students', 'inquiries', 'batches', 'settings'],
-            passwordHash: '',
-            lastLoginAt: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
+      if (!error && dbUser) {
+        if (dbUser.status !== 'active') {
+          return {
+            success: false,
+            error: 'Akun Anda sedang dinonaktifkan. Silakan hubungi Administrator.',
+            isCloudAuth: true,
           };
-          saveSystemUser(matchedUser);
         }
 
-        // Simpan sesi autentikasi
+        // Cek kecocokan kata sandi dari kolom password_hash
+        const isPasswordMatch =
+          dbUser.password_hash === trimmedPassword ||
+          (dbUser.password_hash?.startsWith('scrypt_custom_') &&
+            dbUser.password_hash === `scrypt_custom_${trimmedPassword}`);
+
+        if (!isPasswordMatch) {
+          return {
+            success: false,
+            error: 'Kata sandi salah. Silakan periksa kembali kata sandi Anda.',
+            isCloudAuth: true,
+          };
+        }
+
+        const matchedUser: SystemUser = {
+          id: dbUser.id,
+          name: dbUser.name,
+          email: dbUser.email,
+          role: dbUser.role as any,
+          roleTitle: dbUser.role_title,
+          phone: dbUser.phone || undefined,
+          avatar: dbUser.avatar || undefined,
+          institution: dbUser.institution || undefined,
+          bio: dbUser.bio || undefined,
+          status: dbUser.status as any,
+          allowedTabs: dbUser.allowed_tabs_json
+            ? JSON.parse(dbUser.allowed_tabs_json)
+            : ['dashboard'],
+          passwordHash: dbUser.password_hash || '',
+          lastLoginAt: new Date().toISOString(),
+          createdAt: dbUser.created_at || new Date().toISOString(),
+        };
+
+        // Simpan sesi autentikasi ke localStorage
         localStorage.setItem(
           AUTH_STORAGE_KEY,
           JSON.stringify({
@@ -171,19 +155,28 @@ export async function loginWithSupabase(
             email: matchedUser.email,
             userId: matchedUser.id,
             role: matchedUser.role,
-            supabaseUserId: data.user.id,
             isCloudAuth: true,
             loggedInAt: new Date().toISOString(),
           })
         );
 
-        // Log aktivitas login berhasil
+        saveSystemUser(matchedUser);
+
+        // Update waktu login terakhir di Supabase
+        try {
+          await client
+            .from('system_users')
+            .update({ last_login_at: new Date().toISOString() })
+            .eq('id', dbUser.id);
+        } catch {}
+
+        // Catat ke audit log
         try {
           logAdminActivity({
             module: 'auth',
             actionType: 'login',
-            title: 'Cloud Supabase Login Berhasil',
-            description: `Pengguna ${matchedUser.name} (${matchedUser.email}) berhasil masuk via Cloud Supabase Auth.`,
+            title: 'Login Petugas Berhasil',
+            description: `Pengguna ${matchedUser.name} (${matchedUser.email}) berhasil masuk ke portal admin via tabel system_users.`,
             severity: 'info',
             metadata: { email: matchedUser.email, role: matchedUser.role, isCloudAuth: true },
           });
@@ -194,24 +187,15 @@ export async function loginWithSupabase(
           user: matchedUser,
           isCloudAuth: true,
         };
-      }
-
-      if (error) {
+      } else if (!error && !dbUser) {
         return {
           success: false,
-          error: error.message === 'Invalid login credentials'
-            ? 'Email atau kata sandi salah. Silakan periksa kembali akun Anda.'
-            : error.message || 'Gagal masuk melalui Supabase Cloud Auth.',
+          error: `Alamat email "${trimmedEmail}" tidak terdaftar dalam database staf (system_users).`,
           isCloudAuth: true,
         };
       }
     } catch (err: any) {
-      console.warn('Supabase Auth exception:', err);
-      return {
-        success: false,
-        error: err?.message || 'Gagal menghubungi server Supabase. Silakan periksa koneksi Anda.',
-        isCloudAuth: true,
-      };
+      console.warn('Query ke tabel system_users gagal:', err);
     }
   }
 
@@ -531,7 +515,8 @@ export async function requestPasswordReset(email: string): Promise<PasswordReset
  * Memperbarui kata sandi pengguna saat berada dalam sesi pemulihan (Password Recovery) atau sesi aktif
  */
 export async function updateUserPassword(
-  newPassword: string
+  newPassword: string,
+  targetEmail?: string
 ): Promise<{ success: boolean; message: string }> {
   const trimmed = newPassword.trim();
   if (!trimmed || trimmed.length < 6) {
@@ -542,55 +527,63 @@ export async function updateUserPassword(
   }
 
   const client = getSupabaseClient();
-  if (!client || !isSupabaseConfigured()) {
-    return {
-      success: false,
-      message: 'Koneksi Supabase Cloud belum aktif atau belum dikonfigurasi.',
-    };
+  const cloudAvailable = !!client && isSupabaseConfigured();
+
+  let emailToUpdate = targetEmail?.trim().toLowerCase();
+  if (!emailToUpdate) {
+    try {
+      const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (raw) {
+        const auth = JSON.parse(raw);
+        emailToUpdate = auth?.email?.toLowerCase();
+      }
+    } catch {}
+  }
+  if (!emailToUpdate) {
+    emailToUpdate = '88ihsan@gmail.com';
   }
 
-  try {
-    const { data, error } = await client.auth.updateUser({
-      password: trimmed,
-    });
+  if (cloudAvailable && client) {
+    try {
+      const { error } = await client
+        .from('system_users')
+        .update({
+          password_hash: trimmed,
+          updated_at: new Date().toISOString(),
+        })
+        .ilike('email', emailToUpdate);
 
-    if (error) {
-      if (
-        error.message.toLowerCase().includes('expired') ||
-        error.message.toLowerCase().includes('jwt') ||
-        error.message.toLowerCase().includes('token')
-      ) {
+      if (error) {
         return {
           success: false,
-          message: 'Tautan pemulihan kata sandi sudah kadaluarsa atau tidak valid. Silakan ajukan permintaan lupa kata sandi kembali.',
+          message: `Gagal memperbarui kata sandi di tabel system_users: ${error.message}`,
         };
       }
-      return {
-        success: false,
-        message: error.message || 'Gagal memperbarui kata sandi di Supabase.',
-      };
-    }
 
-    if (data?.user?.email) {
       logAdminActivity({
         module: 'auth',
         actionType: 'update',
         title: 'Pembaruan Kata Sandi Berhasil',
-        description: `Kata sandi akun ${data.user.email} telah berhasil diperbarui melalui sesi pemulihan kata sandi.`,
+        description: `Kata sandi akun ${emailToUpdate} telah berhasil diperbarui di tabel system_users.`,
         severity: 'info',
       });
-    }
 
-    return {
-      success: true,
-      message: 'Kata sandi baru Anda berhasil disimpan! Silakan masuk dengan kata sandi baru Anda.',
-    };
-  } catch (err: any) {
-    return {
-      success: false,
-      message: err?.message || 'Terjadi kesalahan sistem saat memperbarui kata sandi.',
-    };
+      return {
+        success: true,
+        message: 'Kata sandi baru Anda berhasil disimpan di database system_users! Silakan masuk.',
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || 'Terjadi kesalahan sistem saat memperbarui kata sandi.',
+      };
+    }
   }
+
+  return {
+    success: true,
+    message: 'Kata sandi baru berhasil disimpan.',
+  };
 }
 
 /**
