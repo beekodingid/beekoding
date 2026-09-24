@@ -196,11 +196,22 @@ export async function loginWithSupabase(
         };
       }
 
-      // Jika error spesifik seperti invalid credentials atau belum terdaftar di Supabase Auth,
-      // kita coba cek apakah ini akun bawaan yang bisa di-fallback lokal
-      console.warn('Supabase Auth signIn error:', error?.message);
+      if (error) {
+        return {
+          success: false,
+          error: error.message === 'Invalid login credentials'
+            ? 'Email atau kata sandi salah. Silakan periksa kembali akun Anda.'
+            : error.message || 'Gagal masuk melalui Supabase Cloud Auth.',
+          isCloudAuth: true,
+        };
+      }
     } catch (err: any) {
-      console.warn('Supabase Auth exception, falling back to local auth:', err);
+      console.warn('Supabase Auth exception:', err);
+      return {
+        success: false,
+        error: err?.message || 'Gagal menghubungi server Supabase. Silakan periksa koneksi Anda.',
+        isCloudAuth: true,
+      };
     }
   }
 

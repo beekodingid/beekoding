@@ -1990,7 +1990,7 @@ export function resetInquiriesToDefault(): ConsultationInquiry[] {
 // 5. AUTENTIKASI & AKUN ADMINISTRATOR
 // ==========================================
 
-const DEFAULT_ADMIN_EMAIL = 'admin@beekoding.id';
+const DEFAULT_ADMIN_EMAIL = '88ihsan@gmail.com';
 const DEFAULT_ADMIN_PASSWORD = 'admin123';
 
 export function getAdminCredentials(): { email: string; passwordHash: string; updatedAt?: string } {
@@ -2040,7 +2040,7 @@ export const DEFAULT_SYSTEM_USERS: SystemUser[] = [
   {
     id: 'usr-admin-01',
     name: 'Febri Hasan',
-    email: 'admin@beekoding.id',
+    email: '88ihsan@gmail.com',
     role: 'administrator',
     roleTitle: 'Super Administrator & Academic Strategist',
     phone: '+62 853-1131-7127',
