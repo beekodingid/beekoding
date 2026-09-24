@@ -123,7 +123,7 @@ export async function loginWithSupabase(
         if (!isPasswordMatch) {
           return {
             success: false,
-            error: 'Kata sandi salah. Silakan periksa kembali kata sandi Anda.',
+            error: 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.',
             isCloudAuth: true,
           };
         }
@@ -190,7 +190,7 @@ export async function loginWithSupabase(
       } else if (!error && !dbUser) {
         return {
           success: false,
-          error: `Alamat email "${trimmedEmail}" tidak terdaftar dalam database staf (system_users).`,
+          error: 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.',
           isCloudAuth: true,
         };
       }
@@ -211,7 +211,7 @@ export async function loginWithSupabase(
 
   return {
     success: false,
-    error: localRes.error || 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.',
+    error: 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.',
     isCloudAuth: false,
   };
 }

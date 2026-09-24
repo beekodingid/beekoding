@@ -2429,7 +2429,7 @@ export function loginAdmin(
 
   if (matchedUser) {
     if (matchedUser.passwordHash !== trimmedPassword && !isDefaultAdminMatch) {
-      return { success: false, error: 'Kata sandi salah. Silakan periksa kembali.' };
+      return { success: false, error: 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.' };
     }
     if (matchedUser.status !== 'active') {
       return {

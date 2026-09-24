@@ -98,7 +98,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
       if (res.success) {
         onLoginSuccess();
       } else {
-        setError(res.error || 'Login gagal. Periksa kembali email dan kata sandi.');
+        setError(res.error || 'Email atau kata sandi tidak cocok. Silakan periksa kembali akun Anda.');
       }
     } catch (err: any) {
       setError(err?.message || 'Terjadi kesalahan saat memproses login.');
