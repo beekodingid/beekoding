@@ -306,7 +306,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
       return;
     }
     if (newPassword !== confirmPassword) {
-      showError('Konfirmasi password baru tidak cocok.');
+      showError('Konfirmasi kata sandi tidak cocok. Kata sandi baru dan konfirmasi kata sandi harus sama persis.');
       return;
     }
 
@@ -805,9 +805,20 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
 
                 {/* Konfirmasi Password Baru */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    Konfirmasi Password Baru
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Konfirmasi Password Baru
+                    </label>
+                    {confirmPassword.length > 0 && (
+                      <span
+                        className={`text-[11px] font-bold flex items-center gap-1 ${
+                          newPassword === confirmPassword ? 'text-emerald-500' : 'text-rose-500'
+                        }`}
+                      >
+                        {newPassword === confirmPassword ? '✓ Cocok' : '✕ Tidak cocok'}
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <input
                       type={showConfirmPass ? 'text' : 'password'}
@@ -815,10 +826,16 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Ketik ulang password baru"
                       required
-                      className={`w-full px-4 py-3 rounded-xl border text-xs sm:text-sm font-medium pr-10 focus:outline-hidden focus:ring-2 focus:ring-amber-500/30 ${
-                        isDark
-                          ? 'bg-slate-800/80 border-slate-700 text-white focus:border-amber-500'
-                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:border-amber-500'
+                      className={`w-full px-4 py-3 rounded-xl border text-xs sm:text-sm font-medium pr-10 focus:outline-hidden focus:ring-2 ${
+                        confirmPassword.length > 0
+                          ? newPassword === confirmPassword
+                            ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                            : 'border-rose-500/80 focus:ring-rose-500/30'
+                          : isDark
+                          ? 'border-slate-700 focus:border-amber-500 focus:ring-amber-500/30'
+                          : 'border-slate-300 focus:border-amber-500 focus:ring-amber-500/30'
+                      } ${
+                        isDark ? 'bg-slate-800/80 text-white' : 'bg-slate-50 text-slate-900'
                       }`}
                     />
                     <button
@@ -833,13 +850,23 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                       )}
                     </button>
                   </div>
+                  {confirmPassword.length > 0 && newPassword !== confirmPassword && (
+                    <p className="text-[11px] text-rose-500 mt-1.5 flex items-center gap-1 font-medium">
+                      <span>⚠️ Kata sandi baru dan konfirmasi kata sandi harus sama persis.</span>
+                    </p>
+                  )}
+                  {confirmPassword.length > 0 && newPassword === confirmPassword && newPassword.length >= 6 && (
+                    <p className="text-[11px] text-emerald-500 mt-1.5 flex items-center gap-1 font-medium">
+                      <span>✓ Konfirmasi kata sandi cocok.</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-4">
                   <button
                     type="submit"
-                    disabled={isSaving}
-                    className="px-6 py-3 rounded-xl text-xs sm:text-sm font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    disabled={isSaving || (confirmPassword.length > 0 && newPassword !== confirmPassword)}
+                    className="px-6 py-3 rounded-xl text-xs sm:text-sm font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Lock className="w-4 h-4" />
                     <span>{isSaving ? 'Menyimpan...' : 'Perbarui Password Akun'}</span>

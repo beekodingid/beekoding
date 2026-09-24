@@ -60,7 +60,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
     if (cleanPass !== cleanConfirm) {
       setForgotFeedback({
         type: 'error',
-        text: 'Konfirmasi kata sandi tidak cocok. Harap periksa kembali kedua kolom.',
+        text: 'Konfirmasi kata sandi tidak cocok. Kata sandi baru dan konfirmasi kata sandi harus sama persis.',
       });
       return;
     }
@@ -407,9 +407,20 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
 
                 {/* Konfirmasi Kata Sandi Baru */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">
-                    Konfirmasi Kata Sandi Baru
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                      Konfirmasi Kata Sandi Baru
+                    </label>
+                    {forgotConfirmPass.length > 0 && (
+                      <span
+                        className={`text-[11px] font-bold flex items-center gap-1 ${
+                          forgotNewPass === forgotConfirmPass ? 'text-emerald-500' : 'text-rose-500'
+                        }`}
+                      >
+                        {forgotNewPass === forgotConfirmPass ? '✓ Cocok' : '✕ Tidak cocok'}
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <ShieldCheck className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
@@ -419,10 +430,16 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                       value={forgotConfirmPass}
                       onChange={(e) => setForgotConfirmPass(e.target.value)}
                       placeholder="Ketik ulang kata sandi baru"
-                      className={`w-full pl-10 pr-11 py-2 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500'
-                          : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                      className={`w-full pl-10 pr-11 py-2 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
+                        forgotConfirmPass.length > 0
+                          ? forgotNewPass === forgotConfirmPass
+                            ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                            : 'border-rose-500/80 focus:ring-rose-500/30'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-700 focus:ring-amber-500'
+                          : 'bg-slate-50 border-slate-300 focus:ring-amber-500'
+                      } ${
+                        isDark ? 'bg-slate-900 text-white placeholder-slate-500' : 'bg-slate-50 text-slate-900 placeholder-slate-400'
                       }`}
                     />
                     <button
@@ -433,16 +450,22 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                       {showForgotConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
+                  {forgotConfirmPass.length > 0 && forgotNewPass !== forgotConfirmPass && (
+                    <p className="text-[11px] text-rose-500 mt-1.5 flex items-center gap-1 font-medium">
+                      <span>⚠️ Kata sandi baru dan konfirmasi kata sandi harus sama persis.</span>
+                    </p>
+                  )}
+                  {forgotConfirmPass.length > 0 && forgotNewPass === forgotConfirmPass && forgotNewPass.length >= 6 && (
+                    <p className="text-[11px] text-emerald-500 mt-1.5 flex items-center gap-1 font-medium">
+                      <span>✓ Kata sandi cocok dan siap disimpan.</span>
+                    </p>
+                  )}
                 </div>
-
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Kata sandi baru akan langsung diperbarui di database staf (<span className="text-amber-500 font-mono">system_users</span>) tanpa menunggu konfirmasi email.
-                </p>
-
+                
                 <button
                   type="submit"
-                  disabled={forgotLoading}
-                  className="w-full py-2.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  disabled={forgotLoading || (forgotConfirmPass.length > 0 && forgotNewPass !== forgotConfirmPass)}
+                  className="w-full py-2.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {forgotLoading ? (
                     <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />

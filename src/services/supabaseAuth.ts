@@ -432,7 +432,7 @@ export async function resetPasswordInSystemUsers(
       if (!dbUser) {
         return {
           success: false,
-          message: `Alamat email "${trimmedEmail}" tidak terdaftar dalam tabel database staf (system_users).`,
+          message: `Alamat email "${trimmedEmail}" tidak terdaftar.`,
         };
       }
 
