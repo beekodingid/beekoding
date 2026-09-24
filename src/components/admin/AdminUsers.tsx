@@ -36,6 +36,11 @@ import {
   X,
   LogIn,
   Upload,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Lock,
+  User,
 } from 'lucide-react';
 
 interface AdminUsersProps {
@@ -128,6 +133,84 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
   const [formAllowedTabs, setFormAllowedTabs] = useState<AdminTab[]>([...INSTRUCTOR_RECOMMENDED_TABS]);
   const [isUploadingStaffAvatar, setIsUploadingStaffAvatar] = useState(false);
 
+  // State Validasi Form Pengguna
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [formTouched, setFormTouched] = useState<Record<string, boolean>>({});
+  const [showFormPassword, setShowFormPassword] = useState(false);
+
+  const validateField = (field: string, value: string): string => {
+    switch (field) {
+      case 'name': {
+        const val = value.trim();
+        if (!val) return 'Nama lengkap wajib diisi.';
+        if (val.length < 3) return 'Nama lengkap minimal 3 karakter.';
+        if (val.length > 70) return 'Nama lengkap maksimal 70 karakter.';
+        if (!/^[a-zA-ZÀ-ÿ\s.,'-]+$/.test(val)) {
+          return 'Nama hanya boleh berupa huruf dan tanda baca umum (titik/koma untuk gelar).';
+        }
+        return '';
+      }
+      case 'email': {
+        const val = value.trim().toLowerCase();
+        if (!val) return 'Email pengguna wajib diisi.';
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(val)) {
+          return 'Format email tidak valid (contoh: staf@beekoding.id).';
+        }
+        const duplicate = users.find(
+          (u) => u.email.toLowerCase() === val && (!editingUser || u.id !== editingUser.id)
+        );
+        if (duplicate) {
+          return `Email sudah terdaftar untuk pengguna: ${duplicate.name}.`;
+        }
+        return '';
+      }
+      case 'password': {
+        const val = value.trim();
+        if (!editingUser && !val) return 'Kata sandi wajib diisi untuk pengguna baru.';
+        if (val && val.length < 6) return 'Kata sandi minimal harus 6 karakter.';
+        if (val && val.length > 60) return 'Kata sandi maksimal 60 karakter.';
+        return '';
+      }
+      case 'role': {
+        if (!value) return 'Peran (role) utama wajib dipilih.';
+        const validRoles: UserRole[] = ['administrator', 'instructor', 'counselor', 'custom'];
+        if (!validRoles.includes(value as UserRole)) {
+          return 'Peran yang dipilih tidak valid.';
+        }
+        return '';
+      }
+      case 'phone': {
+        const val = value.trim();
+        if (!val) return 'No. WhatsApp / telepon wajib diisi.';
+        const digitsOnly = val.replace(/[^0-9]/g, '');
+        if (digitsOnly.length < 10) return 'Nomor telepon terlalu pendek (minimal 10 digit).';
+        if (digitsOnly.length > 15) return 'Nomor telepon terlalu panjang (maksimal 15 digit).';
+        const cleanForPrefix = val.replace(/[\s.-]/g, '');
+        if (!cleanForPrefix.startsWith('08') && !cleanForPrefix.startsWith('+628') && !cleanForPrefix.startsWith('628')) {
+          return 'Gunakan format nomor Indonesia yang valid (diawali 08... atau +628...).';
+        }
+        return '';
+      }
+      default:
+        return '';
+    }
+  };
+
+  const handleFieldBlur = (field: string, value: string) => {
+    setFormTouched((prev) => ({ ...prev, [field]: true }));
+    const error = validateField(field, value);
+    setFormErrors((prev) => ({ ...prev, [field]: error }));
+  };
+
+  const handleFieldChange = (field: string, value: string, setter: (v: string) => void) => {
+    setter(value);
+    if (formTouched[field]) {
+      const error = validateField(field, value);
+      setFormErrors((prev) => ({ ...prev, [field]: error }));
+    }
+  };
+
   const handleStaffAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -184,7 +267,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setEditingUser(null);
     setFormName('');
     setFormEmail('');
-    setFormPassword('password123');
+    setFormPassword('');
     setFormRole('instructor');
     setFormRoleTitle('Coding Instructor & Mentor');
     setFormPhone('');
@@ -193,6 +276,9 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setFormBio('');
     setFormStatus('active');
     setFormAllowedTabs([...INSTRUCTOR_RECOMMENDED_TABS]);
+    setFormErrors({});
+    setFormTouched({});
+    setShowFormPassword(false);
     setShowModal(true);
   };
 
@@ -200,7 +286,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setEditingUser(user);
     setFormName(user.name);
     setFormEmail(user.email);
-    setFormPassword(user.passwordHash || 'password123');
+    setFormPassword(user.passwordHash || '');
     setFormRole(user.role);
     setFormRoleTitle(user.roleTitle);
     setFormPhone(user.phone || '');
@@ -209,6 +295,9 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setFormBio(user.bio || '');
     setFormStatus(user.status);
     setFormAllowedTabs([...user.allowedTabs]);
+    setFormErrors({});
+    setFormTouched({});
+    setShowFormPassword(false);
     setShowModal(true);
   };
 
@@ -264,21 +353,47 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
 
   const handleSaveUser = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formName.trim() || !formEmail.trim()) {
-      alert('Mohon isi nama lengkap dan email.');
+
+    // Tandai semua field telah disentuh
+    setFormTouched({
+      name: true,
+      email: true,
+      password: true,
+      role: true,
+      phone: true,
+    });
+
+    const nameErr = validateField('name', formName);
+    const emailErr = validateField('email', formEmail);
+    const passErr = validateField('password', formPassword);
+    const roleErr = validateField('role', formRole);
+    const phoneErr = validateField('phone', formPhone);
+
+    const newErrors: Record<string, string> = {};
+    if (nameErr) newErrors.name = nameErr;
+    if (emailErr) newErrors.email = emailErr;
+    if (passErr) newErrors.password = passErr;
+    if (roleErr) newErrors.role = roleErr;
+    if (phoneErr) newErrors.phone = phoneErr;
+
+    if (formAllowedTabs.length === 0) {
+      newErrors.tabs = 'Pengguna setidaknya harus memiliki izin ke minimal 1 menu modul.';
+    }
+
+    setFormErrors(newErrors);
+
+    // Jika ada error, hentikan proses penyimpanan
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
-    if (formAllowedTabs.length === 0) {
-      alert('Pengguna setidaknya harus memiliki izin ke minimal 1 menu.');
-      return;
-    }
+    const cleanPass = formPassword.trim() || (editingUser ? editingUser.passwordHash : 'admin123');
 
     const saved = saveSystemUser({
       id: editingUser ? editingUser.id : undefined,
       name: formName.trim(),
       email: formEmail.trim().toLowerCase(),
-      passwordHash: formPassword.trim() || 'password123',
+      passwordHash: cleanPass,
       role: formRole,
       roleTitle: formRoleTitle.trim() || (formRole === 'administrator' ? 'Administrator' : 'Instruktur / Mentor'),
       phone: formPhone.trim(),
@@ -290,7 +405,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     });
 
     if (isSupabaseConfigured()) {
-      registerStaffUserInCloud(saved, formPassword.trim()).then((cloudRes) => {
+      registerStaffUserInCloud(saved, cleanPass).then((cloudRes) => {
         if (cloudRes?.message) {
           console.log(cloudRes.message);
         }
@@ -744,114 +859,257 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
 
             {/* Modal Body (Scrollable) */}
             <form onSubmit={handleSaveUser} className="flex-1 overflow-y-auto pr-1 py-4 space-y-5">
+              {/* Form Validation Errors Banner */}
+              {Object.keys(formErrors).length > 0 && Object.values(formErrors).some(Boolean) && (
+                <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-start gap-2.5 animate-in fade-in">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
+                  <div className="space-y-1">
+                    <p className="font-bold">Mohon periksa dan lengkapi data berikut:</p>
+                    <ul className="list-disc list-inside text-[11px] space-y-0.5">
+                      {Object.values(formErrors)
+                        .filter(Boolean)
+                        .map((err, idx) => (
+                          <li key={idx}>{err}</li>
+                        ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
               {/* Account Basic Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* 1. Nama Lengkap */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                    Nama Lengkap *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    placeholder="Contoh: Sarah Melati, S.Kom."
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white'
-                        : 'bg-slate-50 border-slate-300 text-slate-900'
-                    }`}
-                  />
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Nama Lengkap *
+                    </label>
+                    {formTouched.name && (
+                      <span className={`text-[10px] font-bold ${formErrors.name ? 'text-rose-500' : 'text-emerald-500'}`}>
+                        {formErrors.name ? '✕ Tidak Valid' : '✓ Valid'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      required
+                      value={formName}
+                      onChange={(e) => handleFieldChange('name', e.target.value, setFormName)}
+                      onBlur={(e) => handleFieldBlur('name', e.target.value)}
+                      placeholder="Contoh: Sarah Melati, S.Kom."
+                      className={`w-full pl-9 pr-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                        formTouched.name && formErrors.name
+                          ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
+                          : formTouched.name && !formErrors.name && formName.trim().length >= 3
+                          ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                      }`}
+                    />
+                  </div>
+                  {formTouched.name && formErrors.name && (
+                    <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
+                      <span>⚠️ {formErrors.name}</span>
+                    </p>
+                  )}
                 </div>
 
+                {/* 2. Email Pengguna */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                    Email Pengguna (Username Login) *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formEmail}
-                    onChange={(e) => setFormEmail(e.target.value)}
-                    placeholder="mentor@beekoding.id"
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white'
-                        : 'bg-slate-50 border-slate-300 text-slate-900'
-                    }`}
-                  />
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Email Pengguna (Username Login) *
+                    </label>
+                    {formTouched.email && (
+                      <span className={`text-[10px] font-bold ${formErrors.email ? 'text-rose-500' : 'text-emerald-500'}`}>
+                        {formErrors.email ? '✕ Tidak Valid' : '✓ Valid'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="email"
+                      required
+                      value={formEmail}
+                      onChange={(e) => handleFieldChange('email', e.target.value, setFormEmail)}
+                      onBlur={(e) => handleFieldBlur('email', e.target.value)}
+                      placeholder="mentor@beekoding.id"
+                      className={`w-full pl-9 pr-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                        formTouched.email && formErrors.email
+                          ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
+                          : formTouched.email && !formErrors.email && formEmail.trim().length > 0
+                          ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                      }`}
+                    />
+                  </div>
+                  {formTouched.email && formErrors.email && (
+                    <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
+                      <span>⚠️ {formErrors.email}</span>
+                    </p>
+                  )}
                 </div>
 
+                {/* 3. Kata Sandi (Password) */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                    Kata Sandi (Password) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formPassword}
-                    onChange={(e) => setFormPassword(e.target.value)}
-                    placeholder="Minimal 6 karakter"
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white'
-                        : 'bg-slate-50 border-slate-300 text-slate-900'
-                    }`}
-                  />
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Kata Sandi (Password) *
+                    </label>
+                    {formTouched.password && (
+                      <span className={`text-[10px] font-bold ${formErrors.password ? 'text-rose-500' : 'text-emerald-500'}`}>
+                        {formErrors.password ? '✕ Kurang' : '✓ Aman'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type={showFormPassword ? 'text' : 'password'}
+                      required={!editingUser}
+                      value={formPassword}
+                      onChange={(e) => handleFieldChange('password', e.target.value, setFormPassword)}
+                      onBlur={(e) => handleFieldBlur('password', e.target.value)}
+                      placeholder={editingUser ? 'Kosongkan jika tidak ingin diubah' : 'Minimal 6 karakter'}
+                      className={`w-full pl-9 pr-10 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                        formTouched.password && formErrors.password
+                          ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
+                          : formTouched.password && !formErrors.password && formPassword.trim().length >= 6
+                          ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowFormPassword(!showFormPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
+                    >
+                      {showFormPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {formTouched.password && formErrors.password ? (
+                    <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
+                      <span>⚠️ {formErrors.password}</span>
+                    </p>
+                  ) : (
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      {editingUser ? 'Isi hanya jika ingin memperbarui kata sandi staf.' : 'Minimal 6 karakter kombinasi huruf atau angka.'}
+                    </p>
+                  )}
                 </div>
 
+                {/* 4. Peran (Role) Utama */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                    Peran (Role) Utama *
-                  </label>
-                  <select
-                    value={formRole}
-                    onChange={(e) => handleRoleChangeInForm(e.target.value as UserRole)}
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white'
-                        : 'bg-slate-50 border-slate-300 text-slate-900'
-                    }`}
-                  >
-                    <option value="instructor">Instruktur / Mentor Pengajar</option>
-                    <option value="administrator">Super Administrator</option>
-                    <option value="counselor">Konselor Akademik & Student Advisor</option>
-                    <option value="custom">Kustom (Peran Khusus)</option>
-                  </select>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Peran (Role) Utama *
+                    </label>
+                    {formTouched.role && (
+                      <span className={`text-[10px] font-bold ${formErrors.role ? 'text-rose-500' : 'text-emerald-500'}`}>
+                        {formErrors.role ? '✕ Pilih Role' : '✓ Terpilih'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <ShieldCheck className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <select
+                      value={formRole}
+                      onChange={(e) => {
+                        handleRoleChangeInForm(e.target.value as UserRole);
+                        handleFieldChange('role', e.target.value, () => {});
+                      }}
+                      onBlur={(e) => handleFieldBlur('role', e.target.value)}
+                      className={`w-full pl-9 pr-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                        formTouched.role && formErrors.role
+                          ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                      }`}
+                    >
+                      <option value="instructor">Instruktur / Mentor Pengajar</option>
+                      <option value="administrator">Super Administrator</option>
+                      <option value="counselor">Konselor Akademik & Student Advisor</option>
+                      <option value="custom">Kustom (Peran Khusus)</option>
+                    </select>
+                  </div>
+                  {formTouched.role && formErrors.role && (
+                    <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
+                      <span>⚠️ {formErrors.role}</span>
+                    </p>
+                  )}
                 </div>
 
+                {/* 5. Gelar / Jabatan Spesialisasi */}
                 <div>
                   <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                     Gelar / Jabatan Spesialisasi
                   </label>
-                  <input
-                    type="text"
-                    value={formRoleTitle}
-                    onChange={(e) => setFormRoleTitle(e.target.value)}
-                    placeholder="Contoh: Senior Coding Mentor & Python Specialist"
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white'
-                        : 'bg-slate-50 border-slate-300 text-slate-900'
-                    }`}
-                  />
+                  <div className="relative">
+                    <Briefcase className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={formRoleTitle}
+                      onChange={(e) => setFormRoleTitle(e.target.value)}
+                      placeholder="Contoh: Senior Coding Mentor & Python Specialist"
+                      className={`w-full pl-9 pr-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-700 text-white'
+                          : 'bg-slate-50 border-slate-300 text-slate-900'
+                      }`}
+                    />
+                  </div>
                 </div>
 
+                {/* 6. No. WhatsApp / Telepon */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                    No. WhatsApp / Telepon
-                  </label>
-                  <input
-                    type="text"
-                    value={formPhone}
-                    onChange={(e) => setFormPhone(e.target.value)}
-                    placeholder="+62 812-xxxx-xxxx"
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white'
-                        : 'bg-slate-50 border-slate-300 text-slate-900'
-                    }`}
-                  />
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      No. WhatsApp / Telepon *
+                    </label>
+                    {formTouched.phone && (
+                      <span className={`text-[10px] font-bold ${formErrors.phone ? 'text-rose-500' : 'text-emerald-500'}`}>
+                        {formErrors.phone ? '✕ Tidak Valid' : '✓ Valid'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="tel"
+                      required
+                      value={formPhone}
+                      onChange={(e) => handleFieldChange('phone', e.target.value, setFormPhone)}
+                      onBlur={(e) => handleFieldBlur('phone', e.target.value)}
+                      placeholder="Contoh: 081234567890 / +6281234567890"
+                      className={`w-full pl-9 pr-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                        formTouched.phone && formErrors.phone
+                          ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
+                          : formTouched.phone && !formErrors.phone && formPhone.trim().length >= 10
+                          ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                          : isDark
+                          ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                      }`}
+                    />
+                  </div>
+                  {formTouched.phone && formErrors.phone ? (
+                    <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
+                      <span>⚠️ {formErrors.phone}</span>
+                    </p>
+                  ) : (
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      Gunakan format Indonesia (awali 08 atau +628, 10-15 digit).
+                    </p>
+                  )}
                 </div>
 
                 {/* Foto Profil / Avatar */}
@@ -975,6 +1233,12 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                 </div>
 
                 {/* Categorized Menu Checklist */}
+                {formErrors.tabs && (
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold flex items-center gap-2 mb-3 animate-in fade-in">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>⚠️ {formErrors.tabs}</span>
+                  </div>
+                )}
                 <div className="space-y-4 pt-1">
                   {MENU_CATEGORIES.map((cat) => {
                     const categoryTabIds = cat.items.map((i) => i.id);
