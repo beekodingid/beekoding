@@ -186,16 +186,37 @@ export async function loginWithSupabase(
           };
         }
 
+        const nowIso = new Date().toISOString();
+
         // Auto-upgrade: Jika di Supabase masih tersimpan kata sandi telanjang,
         // otomatis konversi menjadi hash SHA-256 terenkripsi di background!
+        let passwordHashToSave = dbUser.password_hash;
         if (dbUser.password_hash === trimmedPassword || dbUser.password_hash?.startsWith('scrypt_custom_')) {
           try {
-            const encryptedHash = await hashPasswordSha256(trimmedPassword);
-            await client
-              .from('system_users')
-              .update({ password_hash: encryptedHash, updated_at: new Date().toISOString() })
-              .eq('id', dbUser.id);
+            passwordHashToSave = await hashPasswordSha256(trimmedPassword);
           } catch {}
+        }
+
+        // Update waktu login terakhir dan password_hash di Supabase
+        try {
+          const updatePayload: Record<string, any> = {
+            last_login_at: nowIso,
+            updated_at: nowIso,
+          };
+          if (passwordHashToSave && passwordHashToSave !== dbUser.password_hash) {
+            updatePayload.password_hash = passwordHashToSave;
+          }
+
+          const { error: updateErr } = await client
+            .from('system_users')
+            .update(updatePayload)
+            .eq('id', dbUser.id);
+
+          if (updateErr) {
+            console.warn('Gagal memperbarui last_login_at di Supabase:', updateErr.message);
+          }
+        } catch (err) {
+          console.warn('Gagal memproses update last_login_at:', err);
         }
 
         const matchedUser: SystemUser = {
@@ -212,9 +233,9 @@ export async function loginWithSupabase(
           allowedTabs: dbUser.allowed_tabs_json
             ? JSON.parse(dbUser.allowed_tabs_json)
             : ['dashboard'],
-          passwordHash: dbUser.password_hash || '',
-          lastLoginAt: new Date().toISOString(),
-          createdAt: dbUser.created_at || new Date().toISOString(),
+          passwordHash: passwordHashToSave || dbUser.password_hash || '',
+          lastLoginAt: nowIso,
+          createdAt: dbUser.created_at || nowIso,
         };
 
         // Simpan sesi autentikasi ke localStorage
@@ -226,18 +247,24 @@ export async function loginWithSupabase(
             userId: matchedUser.id,
             role: matchedUser.role,
             isCloudAuth: true,
-            loggedInAt: new Date().toISOString(),
+            loggedInAt: nowIso,
           })
         );
 
         saveSystemUser(matchedUser);
 
-        // Update waktu login terakhir di Supabase
         try {
-          await client
-            .from('system_users')
-            .update({ last_login_at: new Date().toISOString() })
-            .eq('id', dbUser.id);
+          const creds = getAdminCredentials();
+          if (creds.email.toLowerCase() === trimmedEmail || trimmedEmail === 'admin') {
+            localStorage.setItem(
+              STORAGE_KEYS.CREDENTIALS,
+              JSON.stringify({
+                ...creds,
+                passwordHash: passwordHashToSave || creds.passwordHash,
+                updatedAt: nowIso,
+              })
+            );
+          }
         } catch {}
 
         // Catat ke audit log
