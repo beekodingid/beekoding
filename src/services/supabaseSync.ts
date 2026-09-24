@@ -37,6 +37,7 @@ import {
   saveBatches,
   saveTransactions,
   saveAttendanceRecords,
+  saveSystemUsers,
   emitStorageUpdate,
   type AssessmentSubmission,
   type ConsultationInquiry,
@@ -947,6 +948,34 @@ export async function pullAllDataFromSupabase(): Promise<PullResult> {
       errors.push(`class_attendance: ${attError.message}`);
     }
 
+    // 6. Tarik System Users
+    const { data: usrData, error: usrError } = await client.from('system_users').select('*');
+    if (!usrError && usrData && usrData.length > 0) {
+      const localUsers: SystemUser[] = usrData.map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        role: row.role as any,
+        roleTitle: row.role_title,
+        phone: row.phone || undefined,
+        avatar: row.avatar || undefined,
+        institution: row.institution || undefined,
+        bio: row.bio || undefined,
+        status: row.status as any,
+        allowedTabs: row.allowed_tabs_json
+          ? (typeof row.allowed_tabs_json === 'string' ? JSON.parse(row.allowed_tabs_json) : row.allowed_tabs_json)
+          : ['dashboard'],
+        passwordHash: row.password_hash || '',
+        lastLoginAt: row.last_login_at || undefined,
+        createdAt: row.created_at || new Date().toISOString(),
+      }));
+      saveSystemUsers(localUsers);
+      totalPulled += localUsers.length;
+      tablesPulled.push('system_users');
+    } else if (usrError) {
+      errors.push(`system_users: ${usrError.message}`);
+    }
+
   } catch (err: any) {
     errors.push(err?.message || 'Gagal menarik data');
   }
@@ -1175,14 +1204,54 @@ export async function fetchAttendanceFromCloud(): Promise<SessionAttendanceRecor
   }
 }
 
+export async function fetchSystemUsersFromCloud(): Promise<SystemUser[] | null> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return null;
+  try {
+    const { data, error } = await client.from('system_users').select('*').order('created_at', { ascending: false });
+    if (error || !data) {
+      console.warn('fetchSystemUsersFromCloud error:', error);
+      return null;
+    }
+    const mapped: SystemUser[] = data.map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      role: row.role as any,
+      roleTitle: row.role_title,
+      phone: row.phone || undefined,
+      avatar: row.avatar || undefined,
+      institution: row.institution || undefined,
+      bio: row.bio || undefined,
+      status: row.status as any,
+      allowedTabs: row.allowed_tabs_json
+        ? (typeof row.allowed_tabs_json === 'string' ? JSON.parse(row.allowed_tabs_json) : row.allowed_tabs_json)
+        : ['dashboard'],
+      passwordHash: row.password_hash || '',
+      lastLoginAt: row.last_login_at || undefined,
+      createdAt: row.created_at || new Date().toISOString(),
+    }));
+
+    if (mapped.length > 0) {
+      saveSystemUsers(mapped);
+      emitStorageUpdate('system_users');
+    }
+    return mapped;
+  } catch (err) {
+    console.warn('fetchSystemUsersFromCloud exception:', err);
+    return null;
+  }
+}
+
 export async function hydratePriorityModulesFromCloud(): Promise<{ success: boolean; tables: string[] }> {
   if (!isSupabaseConfigured()) return { success: false, tables: [] };
-  const [subs, inqs, batches, txs, att] = await Promise.allSettled([
+  const [subs, inqs, batches, txs, att, usrs] = await Promise.allSettled([
     fetchSubmissionsFromCloud(),
     fetchInquiriesFromCloud(),
     fetchBatchesFromCloud(),
     fetchTransactionsFromCloud(),
     fetchAttendanceFromCloud(),
+    fetchSystemUsersFromCloud(),
   ]);
   const tables: string[] = [];
   if (subs.status === 'fulfilled' && subs.value) tables.push('students_submissions');
@@ -1190,6 +1259,7 @@ export async function hydratePriorityModulesFromCloud(): Promise<{ success: bool
   if (batches.status === 'fulfilled' && batches.value) tables.push('class_batches');
   if (txs.status === 'fulfilled' && txs.value) tables.push('financial_transactions');
   if (att.status === 'fulfilled' && att.value) tables.push('class_attendance');
+  if (usrs.status === 'fulfilled' && usrs.value) tables.push('system_users');
   return { success: tables.length > 0, tables };
 }
 
@@ -1220,6 +1290,10 @@ export function initPriorityRealtimeSync(onUpdate?: (table: string) => void): ()
     .on('postgres_changes', { event: '*', schema: 'public', table: 'class_attendance' }, async () => {
       await fetchAttendanceFromCloud();
       onUpdate?.('class_attendance');
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'system_users' }, async () => {
+      await fetchSystemUsersFromCloud();
+      onUpdate?.('system_users');
     })
     .subscribe();
 
@@ -1613,4 +1687,15 @@ export async function deleteAttendanceFromSupabase(id: string): Promise<void> {
     console.warn('Silent fallback: deleteAttendanceFromSupabase failed', err);
   }
 }
+
+export async function deleteUserFromSupabase(id: string): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return;
+  try {
+    await client.from('system_users').delete().eq('id', id);
+  } catch (err) {
+    console.warn('Silent fallback: deleteUserFromSupabase failed', err);
+  }
+}
+
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   type SystemUser,
   type UserRole,
@@ -18,6 +18,11 @@ import {
   registerStaffUserInCloud,
   hashPasswordSha256,
 } from '../../services/supabaseAuth';
+import {
+  pushUserToSupabase,
+  deleteUserFromSupabase,
+  fetchSystemUsersFromCloud,
+} from '../../services/supabaseSync';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { uploadAvatar } from '../../services/supabaseStorage';
 import {
@@ -133,6 +138,19 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
   const [formStatus, setFormStatus] = useState<'active' | 'inactive'>('active');
   const [formAllowedTabs, setFormAllowedTabs] = useState<AdminTab[]>([...INSTRUCTOR_RECOMMENDED_TABS]);
   const [isUploadingStaffAvatar, setIsUploadingStaffAvatar] = useState(false);
+  const [isSavingUser, setIsSavingUser] = useState(false);
+
+  // Otomatis tarik data pengguna sistem dari Cloud Supabase saat komponen dibuka
+  useEffect(() => {
+    if (isSupabaseConfigured()) {
+      fetchSystemUsersFromCloud().then((cloudUsers) => {
+        if (cloudUsers && cloudUsers.length > 0) {
+          setUsers(cloudUsers);
+          setCurrentUser(getCurrentSystemUser());
+        }
+      });
+    }
+  }, []);
 
   // State Validasi Form Pengguna
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -388,48 +406,72 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
       return;
     }
 
-    // Enkripsi kata sandi menggunakan hash SHA-256 (64 karakter)
-    let securePasswordHash = editingUser?.passwordHash || '';
-    if (formPassword.trim()) {
-      securePasswordHash = await hashPasswordSha256(formPassword.trim());
-    } else if (!securePasswordHash) {
-      securePasswordHash = await hashPasswordSha256('admin123');
-    }
+    setIsSavingUser(true);
+    try {
+      // Enkripsi kata sandi menggunakan hash SHA-256 (64 karakter)
+      let securePasswordHash = editingUser?.passwordHash || '';
+      if (formPassword.trim()) {
+        securePasswordHash = await hashPasswordSha256(formPassword.trim());
+      } else if (!securePasswordHash) {
+        securePasswordHash = await hashPasswordSha256('admin123');
+      }
 
-    const saved = saveSystemUser({
-      id: editingUser ? editingUser.id : undefined,
-      name: formName.trim(),
-      email: formEmail.trim().toLowerCase(),
-      passwordHash: securePasswordHash,
-      role: formRole,
-      roleTitle: formRoleTitle.trim() || (formRole === 'administrator' ? 'Administrator' : 'Instruktur / Mentor'),
-      phone: formPhone.trim(),
-      avatar: formAvatar.trim() || '/febri-hasan.png',
-      institution: formInstitution.trim(),
-      bio: formBio.trim(),
-      status: formStatus,
-      allowedTabs: formAllowedTabs,
-    });
-
-    if (isSupabaseConfigured()) {
-      registerStaffUserInCloud(saved, formPassword.trim() || undefined).then((cloudRes) => {
-        if (cloudRes?.message) {
-          console.log(cloudRes.message);
-        }
+      const saved = saveSystemUser({
+        id: editingUser ? editingUser.id : undefined,
+        name: formName.trim(),
+        email: formEmail.trim().toLowerCase(),
+        passwordHash: securePasswordHash,
+        role: formRole,
+        roleTitle: formRoleTitle.trim() || (formRole === 'administrator' ? 'Administrator' : 'Instruktur / Mentor'),
+        phone: formPhone.trim(),
+        avatar: formAvatar.trim() || '/febri-hasan.png',
+        institution: formInstitution.trim(),
+        bio: formBio.trim(),
+        status: formStatus,
+        allowedTabs: formAllowedTabs,
       });
-    }
 
-    refreshData();
-    setShowModal(false);
-    showToast(editingUser ? 'Perubahan akun berhasil disimpan dengan kata sandi terenkripsi.' : 'Pengguna baru berhasil ditambahkan dengan kata sandi terenkripsi.');
+      let cloudStatusNote = '';
+      if (isSupabaseConfigured()) {
+        try {
+          // 1. Simpan langsung ke tabel system_users di Supabase Cloud (dual-write real-time)
+          await pushUserToSupabase(saved);
+          // 2. Daftarkan / sinkronkan ke Supabase Auth
+          await registerStaffUserInCloud(saved, formPassword.trim() || undefined);
+          cloudStatusNote = ' (Langsung tersimpan di Supabase Cloud & Lokal)';
+        } catch (cloudErr) {
+          console.warn('Gagal sinkronisasi langsung ke Supabase Cloud:', cloudErr);
+          cloudStatusNote = ' (Tersimpan di lokal, sinkronisasi cloud tertunda)';
+        }
+      }
+
+      refreshData();
+      setShowModal(false);
+      showToast(
+        editingUser
+          ? `Perubahan akun "${saved.name}" berhasil disimpan${cloudStatusNote}.`
+          : `Pengguna baru "${saved.name}" berhasil ditambahkan & aktif${cloudStatusNote}.`
+      );
+    } catch (err: any) {
+      alert(`Gagal menyimpan akun pengguna: ${err?.message || 'Terjadi kesalahan sistem'}`);
+    } finally {
+      setIsSavingUser(false);
+    }
   };
 
-  const handleDelete = (id: string, name: string) => {
+  const handleDelete = async (id: string, name: string) => {
     if (confirm(`Apakah Anda yakin ingin menghapus akun pengguna "${name}"?`)) {
       const res = deleteSystemUser(id);
       if (res.success) {
+        if (isSupabaseConfigured()) {
+          try {
+            await deleteUserFromSupabase(id);
+          } catch (cloudErr) {
+            console.warn('Gagal menghapus user dari Supabase:', cloudErr);
+          }
+        }
         refreshData();
-        showToast(`Akun "${name}" berhasil dihapus.`);
+        showToast(`Akun "${name}" berhasil dihapus dari sistem & database Supabase.`);
       } else {
         alert(res.error || 'Gagal menghapus pengguna.');
       }
@@ -505,10 +547,10 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                 onClick={handleSyncStaffToCloud}
                 disabled={isSyncingStaff}
                 className="px-3.5 py-2 rounded-xl text-xs font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
-                title="Daftarkan seluruh akun staf default ke Supabase Auth"
+                title="Sinkronisasi massal seluruh akun staf default ke Supabase Auth (Catatan: Penambahan/Perubahan pengguna individual sudah otomatis tersimpan langsung ke database Supabase secara real-time tanpa perlu tombol ini)"
               >
                 <Sparkles className={`w-4 h-4 text-emerald-500 ${isSyncingStaff ? 'animate-spin' : ''}`} />
-                <span>{isSyncingStaff ? 'Menyinkronkan...' : 'Daftarkan Staf ke Supabase Auth'}</span>
+                <span>{isSyncingStaff ? 'Menyinkronkan...' : 'Daftarkan Staf ke Supabase Auth (Massal)'}</span>
               </button>
             )}
 
@@ -1325,9 +1367,17 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 cursor-pointer transition-all"
+                  disabled={isSavingUser}
+                  className="px-5 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 cursor-pointer transition-all disabled:opacity-50 flex items-center gap-2"
                 >
-                  {editingUser ? 'Simpan Perubahan Akun' : 'Buat Pengguna Baru'}
+                  {isSavingUser && <Sparkles className="w-3.5 h-3.5 animate-spin text-slate-950" />}
+                  <span>
+                    {isSavingUser
+                      ? 'Menyimpan langsung ke Supabase...'
+                      : editingUser
+                      ? 'Simpan Perubahan Akun'
+                      : 'Buat Pengguna Baru'}
+                  </span>
                 </button>
               </div>
             </form>

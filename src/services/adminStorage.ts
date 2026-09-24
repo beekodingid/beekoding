@@ -626,6 +626,7 @@ export type StorageUpdateType =
   | 'batches'
   | 'transactions'
   | 'attendance'
+  | 'system_users'
   | 'all';
 
 export function emitStorageUpdate(type: StorageUpdateType = 'all'): void {
