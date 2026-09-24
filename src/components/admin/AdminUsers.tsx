@@ -16,6 +16,7 @@ import {
 import {
   provisionDefaultStaffAccounts,
   registerStaffUserInCloud,
+  hashPasswordSha256,
 } from '../../services/supabaseAuth';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { uploadAvatar } from '../../services/supabaseStorage';
@@ -351,7 +352,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     }
   };
 
-  const handleSaveUser = (e: React.FormEvent) => {
+  const handleSaveUser = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Tandai semua field telah disentuh
@@ -387,13 +388,19 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
       return;
     }
 
-    const cleanPass = formPassword.trim() || (editingUser ? editingUser.passwordHash : 'admin123');
+    // Enkripsi kata sandi menggunakan hash SHA-256 (64 karakter)
+    let securePasswordHash = editingUser?.passwordHash || '';
+    if (formPassword.trim()) {
+      securePasswordHash = await hashPasswordSha256(formPassword.trim());
+    } else if (!securePasswordHash) {
+      securePasswordHash = await hashPasswordSha256('admin123');
+    }
 
     const saved = saveSystemUser({
       id: editingUser ? editingUser.id : undefined,
       name: formName.trim(),
       email: formEmail.trim().toLowerCase(),
-      passwordHash: cleanPass,
+      passwordHash: securePasswordHash,
       role: formRole,
       roleTitle: formRoleTitle.trim() || (formRole === 'administrator' ? 'Administrator' : 'Instruktur / Mentor'),
       phone: formPhone.trim(),
@@ -405,7 +412,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     });
 
     if (isSupabaseConfigured()) {
-      registerStaffUserInCloud(saved, cleanPass).then((cloudRes) => {
+      registerStaffUserInCloud(saved, formPassword.trim() || undefined).then((cloudRes) => {
         if (cloudRes?.message) {
           console.log(cloudRes.message);
         }
@@ -414,7 +421,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
 
     refreshData();
     setShowModal(false);
-    showToast(editingUser ? 'Perubahan akun berhasil disimpan.' : 'Pengguna baru berhasil ditambahkan.');
+    showToast(editingUser ? 'Perubahan akun berhasil disimpan dengan kata sandi terenkripsi.' : 'Pengguna baru berhasil ditambahkan dengan kata sandi terenkripsi.');
   };
 
   const handleDelete = (id: string, name: string) => {

@@ -1,4 +1,5 @@
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
+import { hashPasswordSha256 } from './supabaseAuth';
 import {
   getAdminProfile,
   getSubmissions,
@@ -1366,10 +1367,14 @@ export async function pushUserToSupabase(u: SystemUser): Promise<void> {
   const client = getSupabaseClient();
   if (!client || !isSupabaseConfigured()) return;
   try {
+    let secureHash = u.passwordHash;
+    if (secureHash && secureHash.length !== 64) {
+      secureHash = await hashPasswordSha256(secureHash);
+    }
     await client.from('system_users').upsert({
       id: u.id,
       name: u.name,
-      email: u.email,
+      email: u.email.toLowerCase(),
       role: u.role,
       role_title: u.roleTitle,
       phone: u.phone || null,
@@ -1378,8 +1383,9 @@ export async function pushUserToSupabase(u: SystemUser): Promise<void> {
       bio: u.bio || null,
       status: u.status,
       allowed_tabs_json: JSON.stringify(u.allowedTabs),
-      password_hash: u.passwordHash,
-    }, { onConflict: 'id' });
+      password_hash: secureHash,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'email' });
   } catch (err) {
     console.warn('Silent fallback: pushUserToSupabase failed', err);
   }
