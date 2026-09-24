@@ -59,8 +59,13 @@ export function App() {
   // Deteksi hash URL #talent, #admin, atau #portal untuk direct link
   useEffect(() => {
     const handleHashCheck = () => {
-      const hash = window.location.hash;
-      if (hash === '#admin') {
+      const hash = window.location.hash || '';
+      const search = window.location.search || '';
+      if (
+        hash.startsWith('#admin') ||
+        hash.includes('type=recovery') ||
+        search.includes('type=recovery')
+      ) {
         setShowAdmin(true);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);

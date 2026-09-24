@@ -517,6 +517,72 @@ export async function requestPasswordReset(email: string): Promise<PasswordReset
 }
 
 /**
+ * Memperbarui kata sandi pengguna saat berada dalam sesi pemulihan (Password Recovery) atau sesi aktif
+ */
+export async function updateUserPassword(
+  newPassword: string
+): Promise<{ success: boolean; message: string }> {
+  const trimmed = newPassword.trim();
+  if (!trimmed || trimmed.length < 6) {
+    return {
+      success: false,
+      message: 'Kata sandi baru minimal harus 6 karakter.',
+    };
+  }
+
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) {
+    return {
+      success: false,
+      message: 'Koneksi Supabase Cloud belum aktif atau belum dikonfigurasi.',
+    };
+  }
+
+  try {
+    const { data, error } = await client.auth.updateUser({
+      password: trimmed,
+    });
+
+    if (error) {
+      if (
+        error.message.toLowerCase().includes('expired') ||
+        error.message.toLowerCase().includes('jwt') ||
+        error.message.toLowerCase().includes('token')
+      ) {
+        return {
+          success: false,
+          message: 'Tautan pemulihan kata sandi sudah kadaluarsa atau tidak valid. Silakan ajukan permintaan lupa kata sandi kembali.',
+        };
+      }
+      return {
+        success: false,
+        message: error.message || 'Gagal memperbarui kata sandi di Supabase.',
+      };
+    }
+
+    if (data?.user?.email) {
+      logAdminActivity({
+        module: 'auth',
+        actionType: 'update',
+        title: 'Pembaruan Kata Sandi Berhasil',
+        description: `Kata sandi akun ${data.user.email} telah berhasil diperbarui melalui sesi pemulihan kata sandi.`,
+        severity: 'info',
+      });
+    }
+
+    return {
+      success: true,
+      message: 'Kata sandi baru Anda berhasil disimpan! Silakan masuk dengan kata sandi baru Anda.',
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err?.message || 'Terjadi kesalahan sistem saat memperbarui kata sandi.',
+    };
+  }
+}
+
+/**
  * Menyetel ulang kata sandi dengan verifikasi Master PIN Keamanan
  */
 export async function resetPasswordWithPin(

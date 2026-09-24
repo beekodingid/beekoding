@@ -44,6 +44,7 @@ import { AdminQuizzes } from './AdminQuizzes';
 import { AdminReferrals } from './AdminReferrals';
 import { AdminUsers } from './AdminUsers';
 import { AdminWhatsAppGateway } from './AdminWhatsAppGateway';
+import { SetNewPasswordModal } from './SetNewPasswordModal';
 
 interface AdminViewProps {
   onBackToHome: () => void;
@@ -58,6 +59,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
   const [inquiries, setInquiries] = useState<ConsultationInquiry[]>(() => getInquiries());
   const [selectedReport, setSelectedReport] = useState<AssessmentSubmission | null>(null);
   const [selectedInquiry, setSelectedInquiry] = useState<ConsultationInquiry | null>(null);
+  const [showNewPasswordModal, setShowNewPasswordModal] = useState(false);
 
   const refreshSubmissions = () => {
     const list = getSubmissions();
@@ -103,12 +105,21 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
       refreshInquiries();
     });
 
-    // 5. Supabase Auth state change listener
+    // 5. Cek apakah ada parameter recovery di URL
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    if (hash.includes('type=recovery') || search.includes('type=recovery')) {
+      setShowNewPasswordModal(true);
+    }
+
+    // 6. Supabase Auth state change listener
     let authUnsub = () => {};
     const client = getSupabaseClient();
     if (client && isSupabaseConfigured()) {
       const { data: { subscription } } = client.auth.onAuthStateChange((event) => {
-        if (event === 'SIGNED_OUT') {
+        if (event === 'PASSWORD_RECOVERY') {
+          setShowNewPasswordModal(true);
+        } else if (event === 'SIGNED_OUT') {
           setIsAuthenticated(false);
         } else if (event === 'SIGNED_IN') {
           setIsAuthenticated(true);
@@ -158,10 +169,20 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
   // If not logged in, render Admin Login screen
   if (!isAuthenticated) {
     return (
-      <AdminLogin
-        onLoginSuccess={handleLoginSuccess}
-        onBackToHome={onBackToHome}
-      />
+      <>
+        <SetNewPasswordModal
+          isOpen={showNewPasswordModal}
+          onClose={() => setShowNewPasswordModal(false)}
+          onSuccess={() => {
+            setShowNewPasswordModal(false);
+            handleLoginSuccess();
+          }}
+        />
+        <AdminLogin
+          onLoginSuccess={handleLoginSuccess}
+          onBackToHome={onBackToHome}
+        />
+      </>
     );
   }
 
@@ -170,6 +191,15 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
 
   return (
     <>
+      <SetNewPasswordModal
+        isOpen={showNewPasswordModal}
+        onClose={() => setShowNewPasswordModal(false)}
+        onSuccess={() => {
+          setShowNewPasswordModal(false);
+          refreshSubmissions();
+          refreshInquiries();
+        }}
+      />
       <div className="print:hidden">
         <AdminLayout
           key={profileKey}
