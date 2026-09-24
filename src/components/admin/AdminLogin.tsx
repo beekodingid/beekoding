@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   loginWithSupabase,
-  requestPasswordReset,
+  resetPasswordInSystemUsers,
 } from '../../services/supabaseAuth';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { useTheme } from '../../context/ThemeContext';
@@ -17,7 +17,6 @@ import {
   X,
   AlertCircle,
   PhoneCall,
-  Send,
 } from 'lucide-react';
 
 interface AdminLoginProps {
@@ -36,22 +35,54 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
   // State untuk Modal Lupa Kata Sandi
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotNewPass, setForgotNewPass] = useState('');
+  const [forgotConfirmPass, setForgotConfirmPass] = useState('');
+  const [showForgotPass, setShowForgotPass] = useState(false);
+  const [showForgotConfirm, setShowForgotConfirm] = useState(false);
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotFeedback, setForgotFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const handleRequestEmailReset = async (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    setForgotLoading(true);
     setForgotFeedback(null);
+
+    const cleanPass = forgotNewPass.trim();
+    const cleanConfirm = forgotConfirmPass.trim();
+
+    if (cleanPass.length < 6) {
+      setForgotFeedback({
+        type: 'error',
+        text: 'Kata sandi baru minimal harus 6 karakter.',
+      });
+      return;
+    }
+
+    if (cleanPass !== cleanConfirm) {
+      setForgotFeedback({
+        type: 'error',
+        text: 'Konfirmasi kata sandi tidak cocok. Harap periksa kembali kedua kolom.',
+      });
+      return;
+    }
+
+    setForgotLoading(true);
     try {
-      const res = await requestPasswordReset(forgotEmail);
+      const res = await resetPasswordInSystemUsers(forgotEmail, cleanPass);
       if (res.success) {
         setForgotFeedback({ type: 'success', text: res.message });
+        setEmail(forgotEmail);
+        setPassword(cleanPass);
+        setTimeout(() => {
+          setShowForgotModal(false);
+          setForgotNewPass('');
+          setForgotConfirmPass('');
+          setForgotFeedback(null);
+        }, 1800);
       } else {
         setForgotFeedback({ type: 'error', text: res.message });
       }
     } catch (err: any) {
-      setForgotFeedback({ type: 'error', text: err?.message || 'Gagal mengirim permintaan reset kata sandi.' });
+      setForgotFeedback({ type: 'error', text: err?.message || 'Gagal mengatur ulang kata sandi.' });
     } finally {
       setForgotLoading(false);
     }
@@ -321,7 +352,8 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 </div>
               )}
 
-              <form onSubmit={handleRequestEmailReset} className="space-y-4">
+              <form onSubmit={handleResetPassword} className="space-y-3.5">
+                {/* Email Terdaftar */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">
                     Email Terdaftar
@@ -333,7 +365,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                       required
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      placeholder="admin@beekoding.id"
+                      placeholder="88ihsan@gmail.com"
                       className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
                         isDark
                           ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500'
@@ -341,10 +373,71 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                       }`}
                     />
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
-                    Tautan pengaturan ulang kata sandi akan dikirimkan langsung ke email Anda melalui sistem Supabase Cloud Auth.
-                  </p>
                 </div>
+
+                {/* Kata Sandi Baru */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">
+                    Kata Sandi Baru
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type={showForgotPass ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      value={forgotNewPass}
+                      onChange={(e) => setForgotNewPass(e.target.value)}
+                      placeholder="Minimal 6 karakter"
+                      className={`w-full pl-10 pr-11 py-2 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPass(!showForgotPass)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors"
+                    >
+                      {showForgotPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Konfirmasi Kata Sandi Baru */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-400">
+                    Konfirmasi Kata Sandi Baru
+                  </label>
+                  <div className="relative">
+                    <ShieldCheck className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type={showForgotConfirm ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      value={forgotConfirmPass}
+                      onChange={(e) => setForgotConfirmPass(e.target.value)}
+                      placeholder="Ketik ulang kata sandi baru"
+                      className={`w-full pl-10 pr-11 py-2 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500'
+                          : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotConfirm(!showForgotConfirm)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors"
+                    >
+                      {showForgotConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Kata sandi baru akan langsung diperbarui di database staf (<span className="text-amber-500 font-mono">system_users</span>) tanpa menunggu konfirmasi email.
+                </p>
 
                 <button
                   type="submit"
@@ -355,8 +448,8 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                     <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Send className="w-4 h-4" />
-                      <span>Kirim Tautan Pemulihan</span>
+                      <KeyRound className="w-4 h-4" />
+                      <span>Simpan & Perbarui Kata Sandi</span>
                     </>
                   )}
                 </button>

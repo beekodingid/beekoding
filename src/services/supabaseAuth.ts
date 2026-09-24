@@ -384,6 +384,126 @@ export interface PasswordResetResult {
 }
 
 /**
+ * Mengatur ulang kata sandi staf langsung di tabel system_users (tanpa ketergantungan email SMTP Supabase)
+ */
+export async function resetPasswordInSystemUsers(
+  email: string,
+  newPassword: string
+): Promise<{ success: boolean; message: string; userName?: string }> {
+  const trimmedEmail = email.trim().toLowerCase();
+  const trimmedPass = newPassword.trim();
+
+  if (!trimmedEmail) {
+    return { success: false, message: 'Silakan masukkan alamat email akun Anda.' };
+  }
+
+  // Validasi format email dasar
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmedEmail)) {
+    return {
+      success: false,
+      message: 'Format alamat email tidak valid.',
+    };
+  }
+
+  if (!trimmedPass || trimmedPass.length < 6) {
+    return { success: false, message: 'Kata sandi baru minimal harus 6 karakter.' };
+  }
+
+  const client = getSupabaseClient();
+  const cloudAvailable = !!client && isSupabaseConfigured();
+
+  if (cloudAvailable && client) {
+    try {
+      // 1. Cek apakah email terdaftar di tabel system_users
+      const { data: dbUser, error: findErr } = await client
+        .from('system_users')
+        .select('id, name, email, status')
+        .ilike('email', trimmedEmail)
+        .maybeSingle();
+
+      if (findErr) {
+        return {
+          success: false,
+          message: `Gagal mengakses database: ${findErr.message}`,
+        };
+      }
+
+      if (!dbUser) {
+        return {
+          success: false,
+          message: `Alamat email "${trimmedEmail}" tidak terdaftar dalam tabel database staf (system_users).`,
+        };
+      }
+
+      if (dbUser.status !== 'active') {
+        return {
+          success: false,
+          message: 'Akun Anda sedang dinonaktifkan. Silakan hubungi Administrator.',
+        };
+      }
+
+      // 2. Perbarui langsung kata sandi di tabel system_users
+      const { error: updateErr } = await client
+        .from('system_users')
+        .update({
+          password_hash: trimmedPass,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', dbUser.id);
+
+      if (updateErr) {
+        return {
+          success: false,
+          message: `Gagal memperbarui kata sandi: ${updateErr.message}`,
+        };
+      }
+
+      // 3. Catat di audit log
+      try {
+        logAdminActivity({
+          module: 'auth',
+          actionType: 'update',
+          title: 'Reset Kata Sandi Berhasil',
+          description: `Kata sandi akun ${dbUser.name} (${dbUser.email}) berhasil diperbarui langsung di tabel system_users.`,
+          severity: 'info',
+        });
+      } catch {}
+
+      return {
+        success: true,
+        userName: dbUser.name,
+        message: `Kata sandi untuk ${dbUser.name} berhasil diperbarui! Silakan masuk dengan kata sandi baru Anda.`,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || 'Terjadi kesalahan sistem saat memperbarui kata sandi.',
+      };
+    }
+  }
+
+  // Fallback lokal jika offline
+  const users = getSystemUsers();
+  const user = users.find((u) => u.email.toLowerCase() === trimmedEmail);
+  if (!user) {
+    return {
+      success: false,
+      message: `Alamat email "${trimmedEmail}" tidak ditemukan dalam daftar staf.`,
+    };
+  }
+
+  user.passwordHash = trimmedPass;
+  saveSystemUser(user);
+
+  return {
+    success: true,
+    userName: user.name,
+    message: `Kata sandi untuk ${user.name} berhasil diperbarui!`,
+  };
+}
+
+/**
  * Mengirimkan permintaan reset password ke email via Supabase Cloud Auth dengan validasi email terdaftar
  */
 export async function requestPasswordReset(email: string): Promise<PasswordResetResult> {
