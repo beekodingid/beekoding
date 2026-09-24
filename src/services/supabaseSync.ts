@@ -1,5 +1,5 @@
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
-import { hashPasswordSha256 } from './supabaseAuth';
+import { hashPasswordSha256 } from './cryptoUtils';
 import {
   getAdminProfile,
   getSubmissions,

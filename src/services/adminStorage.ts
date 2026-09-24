@@ -4,19 +4,59 @@ import {
   type TalentQuestion,
   QUESTION_BANK,
 } from '../data/talentQuestions';
-import {
-  pushSubmissionToSupabase,
-  pushInquiryToSupabase,
-  pushBatchToSupabase,
-  pushTransactionToSupabase,
-  pushAttendanceToSupabase,
-  pushSettingsToSupabase,
-  deleteSubmissionFromSupabase,
-  deleteInquiryFromSupabase,
-  deleteBatchFromSupabase,
-  deleteTransactionFromSupabase,
-  deleteAttendanceFromSupabase,
-} from './supabaseSync';
+import { STORAGE_KEYS } from './storageKeys';
+
+// Background dual-write to Supabase (Dynamic import avoids ESM circular dependencies)
+function triggerSupabaseSync(callback: (sync: typeof import('./supabaseSync')) => Promise<any>): void {
+  import('./supabaseSync').then(callback).catch((err) => {
+    console.warn('Silent fallback: Supabase background sync failed', err);
+  });
+}
+
+function pushSubmissionToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushSubmissionToSupabase(item));
+  return Promise.resolve();
+}
+function deleteSubmissionFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteSubmissionFromSupabase(id));
+  return Promise.resolve();
+}
+function pushInquiryToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushInquiryToSupabase(item));
+  return Promise.resolve();
+}
+function deleteInquiryFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteInquiryFromSupabase(id));
+  return Promise.resolve();
+}
+function pushBatchToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushBatchToSupabase(item));
+  return Promise.resolve();
+}
+function deleteBatchFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteBatchFromSupabase(id));
+  return Promise.resolve();
+}
+function pushTransactionToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushTransactionToSupabase(item));
+  return Promise.resolve();
+}
+function deleteTransactionFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteTransactionFromSupabase(id));
+  return Promise.resolve();
+}
+function pushAttendanceToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushAttendanceToSupabase(item));
+  return Promise.resolve();
+}
+function deleteAttendanceFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteAttendanceFromSupabase(id));
+  return Promise.resolve();
+}
+function pushSettingsToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushSettingsToSupabase(item));
+  return Promise.resolve();
+}
 
 export type FollowUpStatus = 'baru' | 'dihubungi' | 'terdaftar' | 'selesai';
 
@@ -580,41 +620,7 @@ export interface InstructorPayrollRecord {
   updatedAt: string;
 }
 
-export const STORAGE_KEYS = {
-  SUBMISSIONS: 'beekoding_admin_submissions',
-  QUESTIONS: 'beekoding_admin_questions',
-  AUTH: 'beekoding_admin_auth',
-  INQUIRIES: 'beekoding_admin_inquiries',
-  PROFILE: 'beekoding_admin_profile',
-  CREDENTIALS: 'beekoding_admin_credentials',
-  BATCHES: 'beekoding_admin_batches',
-  TEMPLATES: 'beekoding_admin_templates',
-  TRANSACTIONS: 'beekoding_admin_transactions',
-  CERTIFICATES: 'beekoding_admin_certificates',
-  PROJECTS: 'beekoding_admin_projects',
-  TESTIMONIALS: 'beekoding_admin_testimonials',
-  CURRICULUM: 'beekoding_admin_curriculum',
-  INSTRUCTORS: 'beekoding_admin_instructors',
-  ATTENDANCE: 'beekoding_admin_attendance',
-  REPORTS: 'beekoding_admin_academic_reports',
-  VOUCHERS: 'beekoding_admin_vouchers',
-  QUESTS: 'beekoding_admin_quests',
-  BADGES: 'beekoding_admin_badges',
-  GAMIFICATION: 'beekoding_admin_gamification',
-  ANNOUNCEMENTS: 'beekoding_admin_announcements',
-  PAYROLL: 'beekoding_admin_payroll',
-  RESOURCES: 'beekoding_admin_learning_resources',
-  EVENTS: 'beekoding_admin_events',
-  COUNSELING: 'beekoding_admin_counseling',
-  AUDIT_LOGS: 'beekoding_admin_audit_logs',
-  QUIZZES: 'beekoding_admin_quizzes',
-  QUIZ_ATTEMPTS: 'beekoding_student_quiz_attempts',
-  AMBASSADORS: 'beekoding_admin_ambassadors',
-  REFERRALS: 'beekoding_admin_referrals',
-  SYSTEM_USERS: 'beekoding_admin_system_users',
-  GATEWAY_CONFIG: 'beekoding_admin_whatsapp_gateway_config',
-  GATEWAY_QUEUE: 'beekoding_admin_whatsapp_gateway_queue',
-};
+export { STORAGE_KEYS } from './storageKeys';
 
 // ==========================================
 // REAL-TIME STORAGE UPDATE EVENT BUS
