@@ -8,6 +8,7 @@ import {
   loginAdmin,
   logoutAdmin,
   STORAGE_KEYS,
+  getAdminCredentials,
 } from './adminStorage';
 
 const AUTH_STORAGE_KEY = STORAGE_KEYS.AUTH;
@@ -443,21 +444,70 @@ export async function resetPasswordInSystemUsers(
         };
       }
 
-      // 2. Perbarui langsung kata sandi di tabel system_users
-      const { error: updateErr } = await client
-        .from('system_users')
-        .update({
-          password_hash: trimmedPass,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', dbUser.id);
+      let updatedSuccessfully = false;
 
-      if (updateErr) {
+      // Cara 1: Coba via RPC function reset_system_user_password (SECURITY DEFINER)
+      try {
+        const { data: rpcResult, error: rpcErr } = await client.rpc('reset_system_user_password', {
+          target_email: trimmedEmail,
+          new_password: trimmedPass,
+        });
+        if (!rpcErr && rpcResult === true) {
+          updatedSuccessfully = true;
+        }
+      } catch {}
+
+      // Cara 2: Coba direct update dengan .select() untuk verifikasi row benar-benar terupdate
+      if (!updatedSuccessfully) {
+        const { data: updatedRows, error: updateErr } = await client
+          .from('system_users')
+          .update({
+            password_hash: trimmedPass,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', dbUser.id)
+          .select();
+
+        if (updateErr) {
+          return {
+            success: false,
+            message: `Gagal memperbarui kata sandi: ${updateErr.message}`,
+          };
+        }
+
+        if (updatedRows && updatedRows.length > 0) {
+          updatedSuccessfully = true;
+        }
+      }
+
+      // Jika update di database ditolak oleh RLS (0 rows affected)
+      if (!updatedSuccessfully) {
         return {
           success: false,
-          message: `Gagal memperbarui kata sandi: ${updateErr.message}`,
+          message: 'Pembaruan kata sandi di Supabase belum diizinkan oleh kebijakan RLS (Row Level Security). Harap jalankan script izin update system_users di Supabase SQL Editor.',
         };
       }
+
+      // Sinkronkan ke penyimpanan lokal
+      try {
+        const creds = getAdminCredentials();
+        if (creds.email.toLowerCase() === trimmedEmail || trimmedEmail === 'admin') {
+          localStorage.setItem(
+            STORAGE_KEYS.CREDENTIALS,
+            JSON.stringify({
+              ...creds,
+              passwordHash: trimmedPass,
+              updatedAt: new Date().toISOString(),
+            })
+          );
+        }
+        const users = getSystemUsers();
+        const user = users.find((u) => u.email.toLowerCase() === trimmedEmail);
+        if (user) {
+          user.passwordHash = trimmedPass;
+          saveSystemUser(user);
+        }
+      } catch {}
 
       // 3. Catat di audit log
       try {

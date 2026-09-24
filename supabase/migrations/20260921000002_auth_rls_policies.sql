@@ -207,7 +207,35 @@ CREATE POLICY "Public can check registered email in system_users"
     TO anon
     USING (true);
 
+-- Publik/Staf bisa memperbarui kata sandi di system_users saat pemulihan kata sandi
+DROP POLICY IF EXISTS "Public can update password on system_users" ON system_users;
+CREATE POLICY "Public can update password on system_users"
+    ON system_users FOR UPDATE
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Fungsi RPC aman untuk mereset kata sandi system_users
+CREATE OR REPLACE FUNCTION reset_system_user_password(target_email text, new_password text)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    UPDATE system_users
+    SET password_hash = new_password,
+        updated_at = NOW()
+    WHERE LOWER(email) = LOWER(TRIM(target_email))
+      AND status = 'active';
+      
+    RETURN FOUND;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION reset_system_user_password(text, text) TO anon, authenticated;
+
 -- ============================================================================
 -- CATATAN PENGGUNAAN:
 -- Jalankan query di atas di menu "SQL Editor" pada Supabase Dashboard Anda.
 -- ============================================================================
+
