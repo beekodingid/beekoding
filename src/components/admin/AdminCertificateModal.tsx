@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { type StudentCertificate } from '../../services/adminStorage';
 import { printIsolatedElement } from '../../services/printUtils';
+import { QRCodeView } from '../common/QRCodeView';
 import {
   Printer,
   Share2,
@@ -193,15 +194,18 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
             {/* Top Bar: Beekoding Logo & Header */}
             <div className="relative z-10 text-center pt-2">
               <div className="inline-flex items-center justify-center gap-3 mb-1">
-                {/* <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-2xl shadow-md text-slate-950">
-                  <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-8 h-8" />
-                </div> */}
                 <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-500 flex items-center justify-center text-2xl shadow-sm">
                   <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-10 h-10" />
                 </div>
                 <div className="text-left">
                   <h2 className="text-2xl font-black tracking-wider text-slate-900 font-sans">
-                    Bee<span className="text-amber-600">koding</span>
+                    <span
+                                    className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
+                                      isDark ? 'text-white' : 'text-slate-900'
+                                    }`}
+                                  >
+                                    Bee<span className="text-amber-500">koding</span>
+                                  </span>
                   </h2>
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.25em] font-sans">
                     Academy of Computational Thinking & AI
@@ -279,22 +283,36 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
                 <p className="text-[10px] text-slate-500">Founder & Chief Educator</p>
               </div>
 
-              {/* Center: Official Embossed Gold Seal Badge */}
-              <div className="flex flex-col items-center justify-center -translate-y-2">
-                <div className="relative w-24 h-24 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 border-4 border-amber-200/80 shadow-xl flex flex-col items-center justify-center text-slate-950 p-2 text-center">
-                  <div className="absolute -inset-1 rounded-full border border-dashed border-amber-700/50 pointer-events-none" />
-                  <span className="text-[7px] font-black uppercase tracking-widest text-amber-950">
-                    BEEKODING
-                  </span>
-                  <span className="text-2xl leading-none my-0.5">🎖️</span>
-                  <span className="text-[7px] font-bold uppercase tracking-wider text-amber-950">
-                    VERIFIED SEAL
-                  </span>
+              {/* Center: Official Embossed Gold Seal Badge & Verification QR */}
+              <div className="flex items-center justify-center gap-4 -translate-y-2">
+                {/* Real Scan-able QR Code */}
+                <div className="flex flex-col items-center">
+                  <QRCodeView
+                    value={`https://beekoding.id/#portal?cert=${encodeURIComponent(certificate.certificateNumber)}`}
+                    size={64}
+                    darkColor="#78350f"
+                    showScanLabel={true}
+                    alt={`QR Verifikasi ${certificate.certificateNumber}`}
+                  />
                 </div>
 
-                {/* Verification Code Box */}
-                <div className="mt-2 text-center font-mono text-[10px] text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200">
-                  ID: <span className="font-bold text-slate-800">{certificate.certificateNumber}</span>
+                {/* Gold Seal Badge */}
+                <div className="flex flex-col items-center justify-center">
+                  <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 border-4 border-amber-200/80 shadow-xl flex flex-col items-center justify-center text-slate-950 p-1.5 text-center">
+                    <div className="absolute -inset-1 rounded-full border border-dashed border-amber-700/50 pointer-events-none" />
+                    <span className="text-[7px] font-black uppercase tracking-widest text-amber-950">
+                      BEEKODING
+                    </span>
+                    <span className="text-xl leading-none my-0.5">🎖️</span>
+                    <span className="text-[7px] font-bold uppercase tracking-wider text-amber-950">
+                      VERIFIED SEAL
+                    </span>
+                  </div>
+
+                  {/* Verification Code Box */}
+                  <div className="mt-1 text-center font-mono text-[9px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 max-w-[130px] truncate">
+                    ID: <span className="font-bold text-slate-800">{certificate.certificateNumber}</span>
+                  </div>
                 </div>
               </div>
 

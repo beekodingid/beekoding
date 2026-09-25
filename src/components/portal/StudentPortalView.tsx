@@ -89,6 +89,7 @@ import {
 import { AdminCertificateModal } from '../admin/AdminCertificateModal';
 import { AdminPrintableReportModal } from '../admin/AdminPrintableReportModal';
 import { AdminInvoiceModal } from '../admin/AdminInvoiceModal';
+import { QRCodeView } from '../common/QRCodeView';
 
 interface StudentPortalViewProps {
   onClose?: () => void;
@@ -2581,8 +2582,8 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                             'Telah berhasil menyelesaikan seluruh materi pembelajaran coding, proyek aplikasi mandiri, dan uji kompetensi pemrograman pada kurikulum resmi Beekoding.'}
                         </p>
 
-                        {/* Signatures */}
-                        <div className="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-amber-500/20 text-xs">
+                        {/* Signatures & Verification QR */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-6 mt-10 pt-6 border-t border-amber-500/20 text-xs">
                           <div>
                             <div className="font-bold text-slate-900 dark:text-white">
                               {cert.instructorName || 'Febri Hasan, S.Kom., M.T.'}
@@ -2591,6 +2592,17 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                               Lead Assessment & Mentor
                             </span>
                           </div>
+
+                          <div className="flex flex-col items-center justify-center">
+                            <QRCodeView
+                              value={`https://beekoding.id/#portal?cert=${encodeURIComponent(cert.certificateNumber)}`}
+                              size={64}
+                              darkColor="#78350f"
+                              showScanLabel={true}
+                              alt={`QR Verifikasi ${cert.certificateNumber}`}
+                            />
+                          </div>
+
                           <div>
                             <div className="font-bold text-slate-900 dark:text-white">
                               {cert.advisorName || 'Dr. Ir. Hendra Wijaya'}

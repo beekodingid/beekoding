@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { StudentAcademicReport } from '../../services/adminStorage';
 import { printIsolatedElement } from '../../services/printUtils';
+import { QRCodeView } from '../common/QRCodeView';
 
 interface AdminPrintableReportModalProps {
   report: StudentAcademicReport | null;
@@ -428,17 +429,26 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
                 <p className="text-[10px] text-slate-400">Beekoding Academic Mentor</p>
               </div>
 
-              {/* Center: Digital Verified Seal */}
-              <div className="flex flex-col items-center justify-center">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-amber-500 flex flex-col items-center justify-center bg-white p-1">
-                  <span className="text-base"><img src="/beekoding-logo.jpg" alt="Beekoding" className='w-8 h-8'/></span>
-                  <span className="text-[7px] font-black text-amber-800 uppercase text-center leading-tight">
-                    BEEKODING VERIFIED
+              {/* Center: Digital Verified Seal & Scan QR */}
+              <div className="flex items-center justify-center gap-3">
+                <QRCodeView
+                  value={`https://beekoding.id/#portal?report=${encodeURIComponent(report.id)}`}
+                  size={54}
+                  darkColor="#0f172a"
+                  showScanLabel={true}
+                  alt={`QR Verifikasi Rapor ${report.id}`}
+                />
+                <div className="flex flex-col items-center justify-center">
+                  <div className="w-13 h-13 rounded-full border-2 border-dashed border-amber-500 flex flex-col items-center justify-center bg-white p-1 shadow-sm">
+                    <span className="text-base"><img src="/beekoding-logo.png" alt="Beekoding" className='w-7 h-7 object-contain'/></span>
+                    <span className="text-[6px] font-black text-amber-800 uppercase text-center leading-tight">
+                      BEEKODING
+                    </span>
+                  </div>
+                  <span className="text-[7.5px] font-mono text-slate-400 mt-1 max-w-[85px] truncate">
+                    ID: {report.id}
                   </span>
                 </div>
-                <span className="text-[8px] font-mono text-slate-400 mt-1">
-                  SECURE-REPORT-{report.id}
-                </span>
               </div>
 
               {/* Right: Founder & Lead Officer */}
