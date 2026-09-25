@@ -10,6 +10,7 @@ import {
   Send,
 } from 'lucide-react';
 import type { StudentAcademicReport } from '../../services/adminStorage';
+import { triggerPrintWithOrientation } from '../../services/printUtils';
 
 interface AdminPrintableReportModalProps {
   report: StudentAcademicReport | null;
@@ -58,7 +59,7 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
   if (!isOpen || !report) return null;
 
   const handlePrint = () => {
-    window.print();
+    triggerPrintWithOrientation('portrait');
   };
 
   const formatDateIndo = (dateStr: string) => {
@@ -141,10 +142,10 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:inset-auto print:overflow-visible">
       {/* Container Dialog */}
       <div
-        className={`w-full max-w-4xl max-h-[96vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden my-auto ${
+        className={`w-full max-w-4xl max-h-[96vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden my-auto print:border-none print:shadow-none print:max-w-none print:rounded-none print:max-h-none print:overflow-visible ${
           isDark ? 'bg-[#10131b] border-slate-800 text-slate-100' : 'bg-white border-slate-200 text-slate-800'
         }`}
       >
@@ -216,12 +217,12 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
         </div>
 
         {/* Scrollable Printable Sheet Container */}
-        <div className="overflow-y-auto p-4 sm:p-6 flex-1 bg-slate-100 dark:bg-[#0b0d13]">
+        <div className="overflow-y-auto p-4 sm:p-6 flex-1 bg-slate-100 dark:bg-[#0b0d13] print:p-0 print:bg-white print:overflow-visible">
           {/* Official A4 Document Sheet */}
           <div
             ref={printRef}
             id="printable-report-sheet"
-            className="w-full max-w-[800px] mx-auto bg-white text-slate-900 rounded-2xl shadow-xl p-8 sm:p-10 border border-slate-200 relative overflow-hidden"
+            className="w-full max-w-[800px] mx-auto bg-white text-slate-900 rounded-2xl shadow-xl p-8 sm:p-10 border border-slate-200 relative overflow-hidden print:shadow-none print:border-none print:p-6 print:max-w-none print:rounded-none print:w-full print:min-h-0"
             style={{ minHeight: '1080px' }}
           >
             {/* Top Honeycomb Decorative Header Bar */}

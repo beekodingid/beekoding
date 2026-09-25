@@ -3,6 +3,7 @@ import {
   type CounselingSession,
   generateCounselingWhatsAppReminder,
 } from '../../services/adminStorage';
+import { triggerPrintWithOrientation } from '../../services/printUtils';
 import {
   X,
   Printer,
@@ -30,7 +31,7 @@ export const AdminCounselingNoteModal: React.FC<AdminCounselingNoteModalProps> =
   if (!isOpen) return null;
 
   const handlePrint = () => {
-    window.print();
+    triggerPrintWithOrientation('portrait');
   };
 
   const handleSendWA = () => {

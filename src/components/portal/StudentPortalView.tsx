@@ -84,7 +84,11 @@ import {
   type ReferralRecord,
   type StudentCertificate,
   type StudentAcademicReport,
+  type TransactionRecord,
 } from '../../services/adminStorage';
+import { AdminCertificateModal } from '../admin/AdminCertificateModal';
+import { AdminPrintableReportModal } from '../admin/AdminPrintableReportModal';
+import { AdminInvoiceModal } from '../admin/AdminInvoiceModal';
 
 interface StudentPortalViewProps {
   onClose?: () => void;
@@ -183,6 +187,11 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
   const [referralFriendCourse, setReferralFriendCourse] = useState('Visual Scratch & AI Prompting');
   const [referralFriendNotes, setReferralFriendNotes] = useState('');
   const [referralSubmitMsg, setReferralSubmitMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Printable & Preview Modals State
+  const [selectedCertificateForModal, setSelectedCertificateForModal] = useState<StudentCertificate | null>(null);
+  const [selectedReportForModal, setSelectedReportForModal] = useState<StudentAcademicReport | null>(null);
+  const [selectedTransactionForModal, setSelectedTransactionForModal] = useState<TransactionRecord | null>(null);
 
   // Load all data from storage with reactive states
   const [submissions, setSubmissions] = useState(() => getSubmissions());
@@ -2405,11 +2414,11 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                           </div>
                           <button
                             type="button"
-                            onClick={() => window.print()}
-                            className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-colors cursor-pointer"
+                            onClick={() => setSelectedReportForModal(rep)}
+                            className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-colors cursor-pointer shadow-sm shadow-purple-600/20"
                           >
                             <Printer className="w-3.5 h-3.5" />
-                            <span>Cetak Rapor A4</span>
+                            <span>Lihat & Cetak Rapor A4</span>
                           </button>
                         </div>
                       </div>
@@ -2626,11 +2635,11 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
 
                           <button
                             type="button"
-                            onClick={() => window.print()}
+                            onClick={() => setSelectedCertificateForModal(cert)}
                             className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center gap-1.5 transition-colors shadow-md shadow-amber-500/20 cursor-pointer"
                           >
                             <Printer className="w-3.5 h-3.5" />
-                            <span>Cetak Piagam PDF</span>
+                            <span>Lihat & Cetak Piagam PDF</span>
                           </button>
                         </div>
                       </div>
@@ -2799,11 +2808,11 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
 
                           <button
                             type="button"
-                            onClick={() => window.print()}
+                            onClick={() => setSelectedTransactionForModal(tx)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                           >
                             <Printer className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Cetak Kwitansi</span>
+                            <span>Lihat & Cetak Kwitansi</span>
                           </button>
                         </div>
                       </div>
@@ -4557,6 +4566,34 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
               </div>
             </div>
           </div>
+        )}
+
+        {/* MODAL: OFFICIAL CERTIFICATE STUDIO / PRINT */}
+        {selectedCertificateForModal && (
+          <AdminCertificateModal
+            certificate={selectedCertificateForModal}
+            isDark={isDark}
+            onClose={() => setSelectedCertificateForModal(null)}
+          />
+        )}
+
+        {/* MODAL: OFFICIAL ACADEMIC REPORT SHEET / PRINT */}
+        {selectedReportForModal && (
+          <AdminPrintableReportModal
+            report={selectedReportForModal}
+            isOpen={!!selectedReportForModal}
+            isDark={isDark}
+            onClose={() => setSelectedReportForModal(null)}
+          />
+        )}
+
+        {/* MODAL: OFFICIAL INVOICE & RECEIPT / PRINT */}
+        {selectedTransactionForModal && (
+          <AdminInvoiceModal
+            transaction={selectedTransactionForModal}
+            isDark={isDark}
+            onClose={() => setSelectedTransactionForModal(null)}
+          />
         )}
       </main>
     </div>

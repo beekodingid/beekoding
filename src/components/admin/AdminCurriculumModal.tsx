@@ -13,6 +13,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import type { LessonSession, CurriculumTier } from '../../services/adminStorage';
+import { triggerPrintWithOrientation } from '../../services/printUtils';
 
 interface AdminCurriculumModalProps {
   isOpen: boolean;
@@ -76,7 +77,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
   const sortedSessions = [...sessions].sort((a, b) => a.sessionNumber - b.sessionNumber);
 
   const handlePrint = () => {
-    window.print();
+    triggerPrintWithOrientation('portrait');
   };
 
   const handleCopySummary = () => {

@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import {
   type TransactionRecord,
 } from '../../services/adminStorage';
+import { triggerPrintWithOrientation } from '../../services/printUtils';
 import {
   Printer,
   Share2,
@@ -53,7 +54,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
   };
 
   const handlePrint = () => {
-    window.print();
+    triggerPrintWithOrientation('portrait');
   };
 
   const generateWhatsAppMessage = () => {

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { type StudentCertificate } from '../../services/adminStorage';
+import { triggerPrintWithOrientation } from '../../services/printUtils';
 import {
   Printer,
   Share2,
@@ -39,7 +40,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
   };
 
   const handlePrint = () => {
-    window.print();
+    triggerPrintWithOrientation('landscape');
   };
 
   const generateWhatsAppMessage = () => {

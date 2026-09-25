@@ -163,8 +163,8 @@ html.light ::-webkit-scrollbar-thumb {
 /* Global Print Styles */
 @media print {
   @page {
-    size: A4 landscape;
-    margin: 6mm 8mm 6mm 8mm;
+    size: auto;
+    margin: 8mm;
   }
   *, *::before, *::after {
     -webkit-print-color-adjust: exact !important;
@@ -183,6 +183,17 @@ html.light ::-webkit-scrollbar-thumb {
   .print\:hidden,
   .no-print {
     display: none !important;
+  }
+  /* Page break utilities */
+  .break-inside-avoid,
+  .print\:break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  .break-before-page,
+  .print\:break-before-page {
+    break-before: page !important;
+    page-break-before: always !important;
   }
 }
 
