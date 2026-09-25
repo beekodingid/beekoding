@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   type CounselingSession,
   generateCounselingWhatsAppReminder,
 } from '../../services/adminStorage';
-import { triggerPrintWithOrientation } from '../../services/printUtils';
+import { printIsolatedElement } from '../../services/printUtils';
 import {
   X,
   Printer,
@@ -28,10 +28,15 @@ export const AdminCounselingNoteModal: React.FC<AdminCounselingNoteModalProps> =
   session,
   isDark,
 }) => {
+  const printRef = useRef<HTMLDivElement>(null);
+
   if (!isOpen) return null;
 
   const handlePrint = () => {
-    triggerPrintWithOrientation('portrait');
+    printIsolatedElement(printRef.current, {
+      orientation: 'portrait',
+      title: `Catatan-Konseling-${session.studentName.replace(/\s+/g, '_')}`,
+    });
   };
 
   const handleSendWA = () => {
@@ -97,7 +102,7 @@ export const AdminCounselingNoteModal: React.FC<AdminCounselingNoteModalProps> =
         {/* ========================================== */}
         {/* PRINTABLE A4 CONTENT CONTAINER             */}
         {/* ========================================== */}
-        <div className="p-8 sm:p-12 max-h-[80vh] overflow-y-auto print:max-h-none print:p-8 print:overflow-visible bg-white text-slate-900">
+        <div ref={printRef} className="p-8 sm:p-12 max-h-[80vh] overflow-y-auto print:max-h-none print:p-8 print:overflow-visible bg-white text-slate-900">
           {/* Header Kop Surat Resmi */}
           <div className="flex items-center justify-between border-b-2 border-amber-500 pb-5 mb-6">
             <div className="flex items-center gap-4">

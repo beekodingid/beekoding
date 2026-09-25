@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   X,
   Printer,
@@ -13,7 +13,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import type { LessonSession, CurriculumTier } from '../../services/adminStorage';
-import { triggerPrintWithOrientation } from '../../services/printUtils';
+import { printIsolatedElement } from '../../services/printUtils';
 
 interface AdminCurriculumModalProps {
   isOpen: boolean;
@@ -70,6 +70,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
   const [copied, setCopied] = useState(false);
   const [waPhone, setWaPhone] = useState('');
   const [showWaInput, setShowWaInput] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
 
   if (!isOpen) return null;
 
@@ -77,7 +78,10 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
   const sortedSessions = [...sessions].sort((a, b) => a.sessionNumber - b.sessionNumber);
 
   const handlePrint = () => {
-    triggerPrintWithOrientation('portrait');
+    printIsolatedElement(printRef.current, {
+      orientation: 'portrait',
+      title: `Silabus-Kurikulum-${meta.title.replace(/\s+/g, '_')}`,
+    });
   };
 
   const handleCopySummary = () => {
@@ -226,7 +230,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
         )}
 
         {/* Printable Document Body */}
-        <div className="p-6 sm:p-10 max-h-[82vh] overflow-y-auto print:max-h-none print:p-6 print:text-black">
+        <div ref={printRef} className="p-6 sm:p-10 max-h-[82vh] overflow-y-auto print:max-h-none print:p-6 print:text-black">
           {/* Document Header with Logo */}
           <div className="border-b-2 border-amber-500 pb-5 mb-6">
             <div className="flex items-start justify-between">

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import {
   type TransactionRecord,
 } from '../../services/adminStorage';
-import { triggerPrintWithOrientation } from '../../services/printUtils';
+import { printIsolatedElement } from '../../services/printUtils';
 import {
   Printer,
   Share2,
@@ -54,7 +54,10 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
   };
 
   const handlePrint = () => {
-    triggerPrintWithOrientation('portrait');
+    printIsolatedElement(printRef.current, {
+      orientation: 'portrait',
+      title: `Kwitansi-${transaction.invoiceNumber}`,
+    });
   };
 
   const generateWhatsAppMessage = () => {

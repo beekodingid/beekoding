@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { type StudentCertificate } from '../../services/adminStorage';
-import { triggerPrintWithOrientation } from '../../services/printUtils';
+import { printIsolatedElement } from '../../services/printUtils';
 import {
   Printer,
   Share2,
@@ -40,7 +40,11 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
   };
 
   const handlePrint = () => {
-    triggerPrintWithOrientation('landscape');
+    printIsolatedElement(printRef.current, {
+      orientation: 'landscape',
+      isCertificate: true,
+      title: `Sertifikat-${certificate.studentName.replace(/\s+/g, '_')}`,
+    });
   };
 
   const generateWhatsAppMessage = () => {
@@ -165,7 +169,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
         <div className="p-4 sm:p-8 bg-slate-950/20 overflow-x-auto flex justify-center print:p-0 print:bg-white">
           <div
             ref={printRef}
-            className="w-[1000px] h-[705px] min-w-[1000px] min-h-[705px] bg-[#fffdfa] text-slate-900 p-8 relative flex flex-col justify-between shadow-2xl border-[12px] border-amber-900/10 rounded-2xl overflow-hidden print:border-[10px] print:rounded-none print:shadow-none print:w-full print:h-screen print:min-w-0 print:min-h-0"
+            className="w-[1000px] h-[705px] min-w-[1000px] min-h-[705px] bg-[#fffdfa] text-slate-900 p-8 relative flex flex-col justify-between shadow-2xl border-[12px] border-amber-900/10 rounded-2xl overflow-hidden print:border-[10px] print:rounded-none print:shadow-none print:w-[287mm] print:h-[200mm] print:max-w-[287mm] print:max-h-[200mm] print:min-w-0 print:min-h-0 print:m-0"
             style={{
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
               fontFamily: '"Cinzel", "Playfair Display", "Times New Roman", serif, sans-serif',

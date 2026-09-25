@@ -10,7 +10,7 @@ import {
   Send,
 } from 'lucide-react';
 import type { StudentAcademicReport } from '../../services/adminStorage';
-import { triggerPrintWithOrientation } from '../../services/printUtils';
+import { printIsolatedElement } from '../../services/printUtils';
 
 interface AdminPrintableReportModalProps {
   report: StudentAcademicReport | null;
@@ -59,7 +59,10 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
   if (!isOpen || !report) return null;
 
   const handlePrint = () => {
-    triggerPrintWithOrientation('portrait');
+    printIsolatedElement(printRef.current, {
+      orientation: 'portrait',
+      title: `Rapor-${report.studentName.replace(/\s+/g, '_')}`,
+    });
   };
 
   const formatDateIndo = (dateStr: string) => {
@@ -222,8 +225,7 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
           <div
             ref={printRef}
             id="printable-report-sheet"
-            className="w-full max-w-[800px] mx-auto bg-white text-slate-900 rounded-2xl shadow-xl p-8 sm:p-10 border border-slate-200 relative overflow-hidden print:shadow-none print:border-none print:p-6 print:max-w-none print:rounded-none print:w-full print:min-h-0"
-            style={{ minHeight: '1080px' }}
+            className="w-full max-w-[800px] mx-auto bg-white text-slate-900 rounded-2xl shadow-xl p-8 sm:p-10 border border-slate-200 relative overflow-hidden min-h-[900px] print:shadow-none print:border-none print:p-6 print:max-w-[190mm] print:rounded-none print:w-full print:min-h-0"
           >
             {/* Top Honeycomb Decorative Header Bar */}
             <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600" />
