@@ -1375,8 +1375,9 @@ export async function pushBatchToSupabase(b: ClassBatch): Promise<void> {
       enrolled_count: b.enrolledStudents.length,
       status: b.status,
       meet_url: b.meetUrl || null,
-      session_dates_json: JSON.stringify([]),
+      session_dates_json: JSON.stringify([b.startDate, b.endDate].filter(Boolean)),
       enrolled_students_json: JSON.stringify(b.enrolledStudents),
+      created_at: toIsoTimestamp(b.createdAt),
     }, { onConflict: 'id' });
   } catch (err) {
     console.warn('Silent fallback: pushBatchToSupabase failed', err);
@@ -1496,6 +1497,40 @@ export async function pushAttendanceToSupabase(at: SessionAttendanceRecord): Pro
   try {
     const rawBatchId = at.batchId || 'batch-2026-01';
     const normalizedBatchId = rawBatchId.replace(/^(batch-\d{4}-)0+(\d{2})$/, '$1$2');
+
+    // Pastikan batch induk ada di class_batches agar foreign key fk_attendance_batch tidak error
+    try {
+      const { data: batchExists } = await client
+        .from('class_batches')
+        .select('id')
+        .eq('id', normalizedBatchId)
+        .maybeSingle();
+
+      if (!batchExists) {
+        const localBatches = getBatches();
+        const matched = localBatches.find((b) => b.id === at.batchId || b.id === normalizedBatchId);
+        await client.from('class_batches').upsert({
+          id: normalizedBatchId,
+          name: matched?.name || at.batchName || 'Kelas Beekoding',
+          level: matched?.programType || 'Junior Explorer',
+          age_tier: matched?.tier || 'junior',
+          schedule_day: matched?.scheduleDays?.join(', ') || 'Sabtu, Minggu',
+          schedule_time: matched?.scheduleTime || '09:00 - 10:30 WIB',
+          instructor_id: null,
+          instructor_name: at.instructorName || 'Kak Febri Hasan',
+          quota: matched?.maxCapacity || 8,
+          enrolled_count: matched?.enrolledStudents?.length || 0,
+          status: matched?.status || 'ongoing',
+          meet_url: matched?.meetUrl || null,
+          session_dates_json: JSON.stringify([]),
+          enrolled_students_json: JSON.stringify(matched?.enrolledStudents || []),
+          created_at: toIsoTimestamp(matched?.createdAt || new Date().toISOString()),
+        }, { onConflict: 'id' });
+      }
+    } catch (parentErr) {
+      console.warn('Batch parent ensure check:', parentErr);
+    }
+
     await client.from('class_attendance').upsert({
       id: at.id,
       batch_id: normalizedBatchId,
@@ -1507,6 +1542,7 @@ export async function pushAttendanceToSupabase(at: SessionAttendanceRecord): Pro
       topic: at.sessionTopic,
       notes: at.classNotes || null,
       students_attendance_json: JSON.stringify(at.students),
+      created_at: toIsoTimestamp(at.createdAt),
     }, { onConflict: 'id' });
   } catch (err) {
     console.warn('Silent fallback: pushAttendanceToSupabase failed', err);

@@ -34,7 +34,14 @@ import {
   RotateCcw,
   X,
   Laptop,
+  RefreshCw,
 } from 'lucide-react';
+import {
+  fetchBatchesFromCloud,
+  pushBatchToSupabase,
+  deleteBatchFromSupabase,
+} from '../../services/supabaseSync';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface AdminBatchesProps {
   isDark: boolean;
@@ -44,6 +51,19 @@ const ALL_DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
 
 export const AdminBatches: React.FC<AdminBatchesProps> = ({ isDark }) => {
   const [batches, setBatches] = useState<ClassBatch[]>(() => getBatches());
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
+  const [isSavingBatch, setIsSavingBatch] = useState(false);
+
+  // Tarik data batch otomatis dari Supabase Cloud saat komponen dibuka
+  useEffect(() => {
+    if (isSupabaseConfigured()) {
+      fetchBatchesFromCloud().then((cloudBatches) => {
+        if (cloudBatches && cloudBatches.length > 0) {
+          setBatches(cloudBatches);
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     return onStorageUpdate((type) => {
@@ -147,64 +167,113 @@ export const AdminBatches: React.FC<AdminBatchesProps> = ({ isDark }) => {
     setIsFormModalOpen(true);
   };
 
+  // Tarik data batch manual dari Cloud Supabase
+  const handlePullFromSupabase = async () => {
+    setIsSyncingCloud(true);
+    try {
+      const cloudBatches = await fetchBatchesFromCloud();
+      if (cloudBatches && cloudBatches.length > 0) {
+        setBatches(cloudBatches);
+        showAlert('success', `Berhasil menarik ${cloudBatches.length} batch kelas dari Supabase Cloud!`);
+      } else if (cloudBatches && cloudBatches.length === 0) {
+        showAlert('success', 'Tabel class_batches di Supabase Cloud saat ini masih kosong.');
+      } else {
+        showAlert('error', 'Gagal menarik data dari Supabase. Periksa koneksi internet atau konfigurasi database.');
+      }
+    } catch (err: any) {
+      showAlert('error', err?.message || 'Terjadi kesalahan saat sinkronisasi batch kelas.');
+    } finally {
+      setIsSyncingCloud(false);
+    }
+  };
+
   // Save Batch Form (Create or Update)
-  const handleSaveBatch = (e: React.FormEvent) => {
+  const handleSaveBatch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formName.trim()) {
       showAlert('error', 'Nama batch wajib diisi.');
       return;
     }
 
-    if (editingBatch) {
-      updateBatch(editingBatch.id, {
-        name: formName.trim(),
-        programType: formProgram.trim(),
-        tier: formTier,
-        format: formFormat,
-        locationOrPlatform: formLocation.trim(),
-        meetUrl: formMeetUrl.trim() || undefined,
-        startDate: formStartDate,
-        endDate: formEndDate,
-        scheduleDays: formDays,
-        scheduleTime: formTime.trim(),
-        totalSessions: Number(formTotalSessions),
-        maxCapacity: Number(formMaxCapacity),
-        instructorName: formInstructor.trim(),
-        price: Number(formPrice),
-        status: formStatus,
-        notes: formNotes.trim() || undefined,
-      });
-      showAlert('success', `Batch "${formName}" berhasil diperbarui.`);
-    } else {
-      createBatch({
-        name: formName.trim(),
-        programType: formProgram.trim(),
-        tier: formTier,
-        format: formFormat,
-        locationOrPlatform: formLocation.trim(),
-        meetUrl: formMeetUrl.trim() || undefined,
-        startDate: formStartDate,
-        endDate: formEndDate,
-        scheduleDays: formDays,
-        scheduleTime: formTime.trim(),
-        totalSessions: Number(formTotalSessions),
-        maxCapacity: Number(formMaxCapacity),
-        instructorName: formInstructor.trim(),
-        price: Number(formPrice),
-        status: formStatus,
-        notes: formNotes.trim() || undefined,
-      });
-      showAlert('success', `Batch "${formName}" berhasil dibuat.`);
-    }
+    setIsSavingBatch(true);
+    try {
+      let savedBatch: ClassBatch | null = null;
+      if (editingBatch) {
+        savedBatch = updateBatch(editingBatch.id, {
+          name: formName.trim(),
+          programType: formProgram.trim(),
+          tier: formTier,
+          format: formFormat,
+          locationOrPlatform: formLocation.trim(),
+          meetUrl: formMeetUrl.trim() || undefined,
+          startDate: formStartDate,
+          endDate: formEndDate,
+          scheduleDays: formDays,
+          scheduleTime: formTime.trim(),
+          totalSessions: Number(formTotalSessions),
+          maxCapacity: Number(formMaxCapacity),
+          instructorName: formInstructor.trim(),
+          price: Number(formPrice),
+          status: formStatus,
+          notes: formNotes.trim() || undefined,
+        });
 
-    setIsFormModalOpen(false);
-    refreshBatches();
+        if (savedBatch && isSupabaseConfigured()) {
+          try {
+            await pushBatchToSupabase(savedBatch);
+          } catch (cloudErr) {
+            console.warn('Silent cloud sync batch warning:', cloudErr);
+          }
+        }
+        showAlert('success', `Batch "${formName}" berhasil diperbarui & disinkronkan ke Supabase.`);
+      } else {
+        savedBatch = createBatch({
+          name: formName.trim(),
+          programType: formProgram.trim(),
+          tier: formTier,
+          format: formFormat,
+          locationOrPlatform: formLocation.trim(),
+          meetUrl: formMeetUrl.trim() || undefined,
+          startDate: formStartDate,
+          endDate: formEndDate,
+          scheduleDays: formDays,
+          scheduleTime: formTime.trim(),
+          totalSessions: Number(formTotalSessions),
+          maxCapacity: Number(formMaxCapacity),
+          instructorName: formInstructor.trim(),
+          price: Number(formPrice),
+          status: formStatus,
+          notes: formNotes.trim() || undefined,
+        });
+
+        if (savedBatch && isSupabaseConfigured()) {
+          try {
+            await pushBatchToSupabase(savedBatch);
+          } catch (cloudErr) {
+            console.warn('Silent cloud sync batch warning:', cloudErr);
+          }
+        }
+        showAlert('success', `Batch "${formName}" berhasil dibuat & disinkronkan ke Supabase.`);
+      }
+
+      setIsFormModalOpen(false);
+      refreshBatches();
+    } finally {
+      setIsSavingBatch(false);
+    }
   };
 
-  const handleDeleteBatch = (batch: ClassBatch) => {
+  const handleDeleteBatch = async (batch: ClassBatch) => {
     if (window.confirm(`Yakin ingin menghapus batch "${batch.name}"? Data siswa di batch ini akan terhapus.`)) {
       deleteBatch(batch.id);
-      showAlert('success', `Batch "${batch.name}" berhasil dihapus.`);
+      if (isSupabaseConfigured()) {
+        try {
+          await deleteBatchFromSupabase(batch.id);
+        } catch (cloudErr) {
+          console.warn('Gagal menghapus batch di cloud:', cloudErr);
+        }
+      }
+      showAlert('success', `Batch "${batch.name}" berhasil dihapus dari sistem & database Supabase.`);
       refreshBatches();
     }
   };
@@ -236,7 +305,10 @@ export const AdminBatches: React.FC<AdminBatchesProps> = ({ isDark }) => {
     });
 
     if (res.success && res.batch) {
-      showAlert('success', `${enrollStudentName} berhasil didaftarkan ke batch.`);
+      if (isSupabaseConfigured()) {
+        pushBatchToSupabase(res.batch).catch(() => {});
+      }
+      showAlert('success', `${enrollStudentName} berhasil didaftarkan ke batch & disinkronkan ke Supabase.`);
       setEnrollStudentName('');
       setEnrollParentName('');
       setEnrollParentPhone('');
@@ -250,7 +322,10 @@ export const AdminBatches: React.FC<AdminBatchesProps> = ({ isDark }) => {
     if (window.confirm(`Keluarkan ${studentName} dari batch ini?`)) {
       const res = removeStudentFromBatch(batchId, studentId);
       if (res.success) {
-        showAlert('success', `${studentName} berhasil dikeluarkan dari batch.`);
+        if (res.batch && isSupabaseConfigured()) {
+          pushBatchToSupabase(res.batch).catch(() => {});
+        }
+        showAlert('success', `${studentName} berhasil dikeluarkan dari batch & disinkronkan ke Supabase.`);
         refreshBatches();
       } else {
         showAlert('error', res.error || 'Gagal mengeluarkan siswa.');
@@ -448,6 +523,21 @@ Jika ada pertanyaan seputar persiapan, silakan hubungi kami. Mari bersama mencet
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={handlePullFromSupabase}
+            disabled={isSyncingCloud}
+            className={`p-3 rounded-2xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+              isDark
+                ? 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs'
+            }`}
+            title="Tarik data batch terbaru dari Supabase Cloud"
+          >
+            <RefreshCw className={`w-4 h-4 text-sky-400 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{isSyncingCloud ? 'Menyinkronkan...' : 'Sinkron Cloud'}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => {
@@ -1206,9 +1296,17 @@ Jika ada pertanyaan seputar persiapan, silakan hubungi kami. Mari bersama mencet
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                  disabled={isSavingBatch}
+                  className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2"
                 >
-                  {editingBatch ? 'Simpan Perubahan' : 'Buat Batch Kelas'}
+                  {isSavingBatch && <Sparkles className="w-3.5 h-3.5 animate-spin" />}
+                  <span>
+                    {isSavingBatch
+                      ? 'Menyimpan ke Cloud...'
+                      : editingBatch
+                      ? 'Simpan Perubahan'
+                      : 'Buat Batch Kelas'}
+                  </span>
                 </button>
               </div>
             </form>

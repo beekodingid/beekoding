@@ -24,6 +24,8 @@ import {
   createAttendanceRecord,
   updateAttendanceRecord,
 } from '../../services/adminStorage';
+import { pushAttendanceToSupabase } from '../../services/supabaseSync';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface AdminAttendanceModalProps {
   record: SessionAttendanceRecord | null;
@@ -76,6 +78,7 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
 }) => {
   const [batches] = useState<ClassBatch[]>(() => getBatches());
   const [curriculum] = useState(() => getCurriculumSessions());
+  const [isSaving, setIsSaving] = useState(false);
 
   const defaultBatch = batches[0];
   const initialResolvedTier = record
@@ -291,8 +294,8 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
   };
 
   // Submit Handler
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!selectedBatchId) {
       setFormError('Silakan pilih Batch Kelas terlebih dahulu.');
       return;
@@ -320,6 +323,7 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
         homeworkAssigned: homeworkAssigned.trim(),
       };
 
+      setIsSaving(true);
       let saved: SessionAttendanceRecord | null = null;
       if (record) {
         saved = updateAttendanceRecord(record.id, payload);
@@ -328,6 +332,13 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
       }
 
       if (saved) {
+        if (isSupabaseConfigured()) {
+          try {
+            await pushAttendanceToSupabase(saved);
+          } catch (cloudErr) {
+            console.warn('Silent cloud sync attendance warning:', cloudErr);
+          }
+        }
         onSaved(saved);
         onClose();
       } else {
@@ -336,6 +347,8 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
     } catch (err) {
       console.error(err);
       setFormError('Terjadi kesalahan saat menyimpan presensi.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -706,10 +719,11 @@ export const AdminAttendanceModal: React.FC<AdminAttendanceModalProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+              disabled={isSaving}
+              className="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
             >
-              <Check className="w-4 h-4" />
-              <span>{record ? 'Simpan Perubahan' : 'Simpan Presensi Sesi'}</span>
+              {isSaving ? <Sparkles className="w-4 h-4 animate-spin text-slate-950" /> : <Check className="w-4 h-4" />}
+              <span>{isSaving ? 'Menyimpan ke Cloud...' : record ? 'Simpan Perubahan' : 'Simpan Presensi Sesi'}</span>
             </button>
           </div>
         </div>

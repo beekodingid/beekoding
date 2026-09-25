@@ -17,6 +17,7 @@ import {
   ChevronDown,
   ChevronUp,
   TrendingUp,
+  RefreshCw,
 } from 'lucide-react';
 import {
   type SessionAttendanceRecord,
@@ -28,6 +29,11 @@ import {
   getBatches,
   onStorageUpdate,
 } from '../../services/adminStorage';
+import {
+  fetchAttendanceFromCloud,
+  deleteAttendanceFromSupabase,
+} from '../../services/supabaseSync';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { AdminAttendanceModal } from './AdminAttendanceModal';
 
 interface AdminAttendanceProps {
@@ -55,6 +61,18 @@ const TIER_COLORS: Record<string, { bg: string; text: string; border: string }> 
 export const AdminAttendance: React.FC<AdminAttendanceProps> = ({ isDark = false }) => {
   const [records, setRecords] = useState<SessionAttendanceRecord[]>(() => getAttendanceRecords());
   const [batches] = useState(() => getBatches());
+  const [isSyncingCloud, setIsSyncingCloud] = useState<boolean>(false);
+
+  // Tarik data presensi otomatis dari Cloud Supabase saat komponen dibuka
+  useEffect(() => {
+    if (isSupabaseConfigured()) {
+      fetchAttendanceFromCloud().then((cloudRecords) => {
+        if (cloudRecords && cloudRecords.length > 0) {
+          setRecords(cloudRecords);
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     return onStorageUpdate((type) => {
@@ -82,14 +100,36 @@ export const AdminAttendance: React.FC<AdminAttendanceProps> = ({ isDark = false
     setRecords(getAttendanceRecords());
   };
 
+  // Tarik presensi dari Supabase Cloud
+  const handlePullFromSupabase = async () => {
+    setIsSyncingCloud(true);
+    try {
+      const cloudRecords = await fetchAttendanceFromCloud();
+      if (cloudRecords && cloudRecords.length > 0) {
+        setRecords(cloudRecords);
+      }
+    } catch (err) {
+      console.warn('Gagal menarik data presensi dari cloud:', err);
+    } finally {
+      setIsSyncingCloud(false);
+    }
+  };
+
   // Handle Delete
-  const handleDelete = (id: string, batchName: string, sessionNum: number) => {
+  const handleDelete = async (id: string, batchName: string, sessionNum: number) => {
     if (
       window.confirm(
         `Yakin ingin menghapus rekaman presensi Sesi ${sessionNum} untuk ${batchName}? Tindakan ini tidak dapat dibatalkan.`
       )
     ) {
       deleteAttendanceRecord(id);
+      if (isSupabaseConfigured()) {
+        try {
+          await deleteAttendanceFromSupabase(id);
+        } catch (err) {
+          console.warn('Gagal menghapus presensi di cloud:', err);
+        }
+      }
       reloadData();
     }
   };
@@ -244,6 +284,20 @@ export const AdminAttendance: React.FC<AdminAttendanceProps> = ({ isDark = false
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={handlePullFromSupabase}
+            disabled={isSyncingCloud}
+            title="Tarik rekaman presensi terbaru dari Supabase Cloud"
+            className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              isDark
+                ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 shadow-sm'
+            }`}
+          >
+            <RefreshCw className={`w-4 h-4 text-sky-400 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{isSyncingCloud ? 'Sinkron...' : 'Sinkron Cloud'}</span>
+          </button>
+
           <button
             onClick={handleResetDefault}
             title="Reset ke Sampel Default"
