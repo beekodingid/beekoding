@@ -149,7 +149,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 }`}
               >
                 <img
-                  src="/favicon.png"
+                  src="/beekoding-logo.png"
                   alt="Beekoding Mascot"
                   className="w-11 h-11 object-contain"
                 />
@@ -157,12 +157,16 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
             </div>
 
             <div className="flex items-center justify-center gap-2 mb-1.5">
-              <span className="text-2xl font-black tracking-tight">
-                bee<span className="text-amber-500">koding</span>
+              <span
+                className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                Bee<span className="text-amber-500">koding</span>
               </span>
-              <span className="text-xs font-bold text-amber-500 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25">
-                Admin Portal
-              </span>
+              <span className="text-[10px] font-extrabold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                      Admin
+                    </span>
             </div>
             <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Pusat Pengelolaan Data Siswa & Bank Soal Asesmen Bakat Anak

@@ -86,20 +86,24 @@ export const TalentAssessmentView: React.FC<TalentAssessmentViewProps> = ({ onCl
                   }`}
                 >
                   <img
-                    src="/favicon.png"
+                    src="/beekoding-logo.png"
                     alt="Beekoding Mascot"
                     className="w-7 h-7 object-contain"
                   />
                 </div>
               </div>
-              <div>
-                <span className="text-base sm:text-lg font-black tracking-tight flex items-center">
-                  bee<span className="text-amber-500">koding</span>
-                  <span className="text-xs font-normal text-amber-500/80 ml-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
-                    Talent Anak
-                  </span>
-                </span>
-              </div>
+              <div className="flex items-center gap-1.5">
+                    <span
+                className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                Bee<span className="text-amber-500">koding</span>
+              </span>
+                    <span className="text-[10px] font-extrabold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                      Talenta
+                    </span>
+                  </div>
             </div>
           </div>
 

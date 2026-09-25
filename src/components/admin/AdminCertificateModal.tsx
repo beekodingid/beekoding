@@ -187,18 +187,21 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
 
             {/* Watermark Logo Background */}
             <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
-              <span className="text-[280px]">🐝</span>
+              <span className="text-[280px]"><img src='/beekoding-logo.jpg' alt="Beekoding Logo" className='w-full h-full'/></span>
             </div>
 
             {/* Top Bar: Beekoding Logo & Header */}
             <div className="relative z-10 text-center pt-2">
               <div className="inline-flex items-center justify-center gap-3 mb-1">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-2xl shadow-md text-slate-950">
-                  🐝
+                {/* <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-2xl shadow-md text-slate-950">
+                  <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-8 h-8" />
+                </div> */}
+                <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-500 flex items-center justify-center text-2xl shadow-sm">
+                  <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-10 h-10" />
                 </div>
                 <div className="text-left">
-                  <h2 className="text-2xl font-black tracking-wider text-slate-900 uppercase font-sans">
-                    Bee<span className="text-amber-600">Koding</span>
+                  <h2 className="text-2xl font-black tracking-wider text-slate-900 font-sans">
+                    Bee<span className="text-amber-600">koding</span>
                   </h2>
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.25em] font-sans">
                     Academy of Computational Thinking & AI

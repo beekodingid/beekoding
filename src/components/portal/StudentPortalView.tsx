@@ -968,19 +968,23 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                   }`}
                 >
                   <img
-                    src="/favicon.png"
+                    src="/beekoding-logo.png"
                     alt="Beekoding"
                     className="w-6 h-6 object-contain"
                   />
                 </div>
               </div>
-              <div>
-                <span className="font-bold text-sm sm:text-base font-['Space_Grotesk'] tracking-tight block leading-none">
-                  Portal Siswa & Wali
-                </span>
-                <span className="text-[10px] text-amber-500 font-semibold tracking-wider uppercase">
-                  Beekoding Academic Hub
-                </span>
+              <div className="flex items-center gap-1.5">
+                <span
+                className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                Bee<span className="text-amber-500">koding</span>
+              </span>
+                <span className="text-[10px] font-extrabold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                      Portal
+                    </span>
               </div>
             </div>
           </div>

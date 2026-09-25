@@ -233,8 +233,8 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
             {/* 1. Official Academy Header */}
             <div className="flex items-center justify-between border-b-2 border-slate-200 pb-5 mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border-2 border-amber-500 flex items-center justify-center text-2xl shadow-sm">
-                  🐝
+                <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-500 flex items-center justify-center text-2xl shadow-sm">
+                  <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-10 h-10" />
                 </div>
                 <div>
                   <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase flex items-center gap-2">
@@ -247,7 +247,7 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
                     Next-Gen Coding & Artificial Intelligence Academy for Kids & Teens
                   </p>
                   <p className="text-[10px] text-slate-500 mt-0.5">
-                    Jl. Terusan Babakan Jeruk No. 88, Pasteur, Bandung • WA: +62 853-1131-7127 •
+                    Jl. Karees IV No. 20, Palumbonsari, Karawang • WA: +62 818-1890-1737 •
                     beekoding.id
                   </p>
                 </div>
@@ -430,8 +430,8 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
 
               {/* Center: Digital Verified Seal */}
               <div className="flex flex-col items-center justify-center">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-amber-500 flex flex-col items-center justify-center bg-amber-50/70 p-1">
-                  <span className="text-base">🐝</span>
+                <div className="w-16 h-16 rounded-full border-2 border-dashed border-amber-500 flex flex-col items-center justify-center bg-white p-1">
+                  <span className="text-base"><img src="/beekoding-logo.jpg" alt="Beekoding" className='w-8 h-8'/></span>
                   <span className="text-[7px] font-black text-amber-800 uppercase text-center leading-tight">
                     BEEKODING VERIFIED
                   </span>

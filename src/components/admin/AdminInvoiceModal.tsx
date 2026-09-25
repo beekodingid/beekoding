@@ -162,9 +162,6 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
           }`}
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
-              🐝
-            </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -172,9 +169,6 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                 </h3>
                 {getStatusBadge()}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                {transaction.invoiceNumber}
-              </p>
             </div>
           </div>
 
@@ -185,7 +179,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
               className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 hover:bg-amber-400 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Cetak / PDF</span>
+              <span>Cetak / Simpan PDF</span>
             </button>
             <button
               type="button"
@@ -281,12 +275,12 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
           {/* Header Lembaga & No Invoice */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b-2 border-slate-200 gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500 flex items-center justify-center text-3xl shadow-sm text-slate-950">
-                🐝
-              </div>
+              <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-500 flex items-center justify-center text-2xl shadow-sm">
+                  <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-10 h-10" />
+                </div>
               <div>
                 <h1 className="text-2xl font-black tracking-tight text-slate-900">
-                  Bee<span className="text-amber-500">Koding</span>
+                  Bee<span className="text-amber-500">koding</span>
                 </h1>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   Next Gen Coding & AI Academy
@@ -491,13 +485,8 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                   <span className="text-[8px] font-black uppercase tracking-tighter">
                     BEEKODING
                   </span>
-                  <span className="text-base leading-none">🐝</span>
+                  <span className="text-base leading-none"><img src="/beekoding-logo.jpg" alt="Beekoding" className="w-7 h-7" /></span>
                   <span className="text-[7px] font-bold">OFFICIAL</span>
-                </div>
-
-                {/* Tanda Tangan Digital */}
-                <div className="relative font-serif italic text-base font-bold text-slate-800 tracking-wide select-none rotate-[-4deg]">
-                  Febri Hasan
                 </div>
               </div>
 

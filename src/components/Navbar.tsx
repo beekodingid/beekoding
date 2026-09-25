@@ -83,8 +83,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <img
-                    src="/favicon.png"
-                    alt="Beekoding Mascot"
+                    src="/beekoding-logo.png"
+                    alt="Beekoding"
                     className="w-7 h-7 sm:w-8 sm:h-8 object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 </div>
@@ -102,14 +102,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}
               >
-                bee<span className="text-amber-500">koding</span>
+                Bee<span className="text-amber-500">koding</span>
               </span>
               <span
                 className={`block text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold -mt-0.5 ${
                   isDark ? 'text-amber-300/80' : 'text-amber-700'
                 }`}
               >
-                Coding & AI Lab
+                Next-Gen Coding & AI Learning for Kids
               </span>
             </div>
           </a>

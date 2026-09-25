@@ -435,8 +435,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 }`}
               >
                 <img
-                  src="/bee-mascot.png"
-                  alt="Beekoding Mascot"
+                  src="/beekoding-logo.png"
+                  alt="Beekoding"
                   className="w-8 h-8 object-contain"
                 />
               </div>
@@ -483,7 +483,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                     }`}
                   >
                     <img
-                      src="/favicon.png"
+                      src="/beekoding-logo.png"
                       alt="Beekoding Mascot"
                       className="w-8 h-8 object-contain"
                     />
@@ -491,9 +491,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-lg font-black tracking-tight flex items-center">
-                      bee<span className="text-amber-500">koding</span>
-                    </span>
+                    <span
+                className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                Bee<span className="text-amber-500">koding</span>
+              </span>
                     <span className="text-[10px] font-extrabold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
                       Admin
                     </span>
@@ -1057,7 +1061,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-400">Portal Admin</span>
+                <span className="text-xs font-semibold text-slate-400">Admin</span>
                 <span className="text-xs text-slate-400">/</span>
                 <h1 className="text-sm lg:text-base font-black tracking-tight text-slate-900 dark:text-white">
                   {currentNavItem.label}

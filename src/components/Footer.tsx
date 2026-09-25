@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = ({
                   }`}
                 >
                   <img
-                    src="/favicon.png"
+                    src="/beekoding-logo.png"
                     alt="Beekoding Mascot"
                     className="w-8 h-8 object-contain"
                   />
@@ -57,10 +57,16 @@ export const Footer: React.FC<FooterProps> = ({
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}
               >
-                bee<span className="text-amber-500">koding</span>
+                Bee<span className="text-amber-500">koding</span>
               </span>
             </a>
-
+            <span
+                className={`block text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold -mt-0.5 ${
+                  isDark ? 'text-amber-300/80' : 'text-amber-700'
+                }`}
+              >
+                Next-Gen Coding & AI Learning for Kids
+              </span>
             <p
               className={`text-sm leading-relaxed max-w-sm ${
                 isDark ? 'text-slate-300' : 'text-slate-700'

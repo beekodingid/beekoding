@@ -63,16 +63,15 @@ export const TalentOnboarding: React.FC<TalentOnboardingProps> = ({ onStart, isD
           <Sparkles className="w-3.5 h-3.5" />
           <span>Diagnostic Aptitude & Digital Talent Test</span>
         </div>
-        <h1
-          className={`text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-4 ${
-            isDark ? 'text-white' : 'text-slate-900'
-          }`}
-        >
-          Temukan Potensi & Gaya Belajar <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
-            Kecerdasan Digital Ananda
-          </span>
-        </h1>
+        <h2
+              className={`text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight font-['Space_Grotesk'] ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}
+            >
+              Temukan Potensi & Gaya Belajar{' '}
+              <br />
+              <span className="text-gradient-honey">Kecerdasan Digital Ananda.</span>
+            </h2>
         <p
           className={`text-sm sm:text-base max-w-2xl mx-auto leading-relaxed ${
             isDark ? 'text-slate-300' : 'text-slate-600'
@@ -92,7 +91,7 @@ export const TalentOnboarding: React.FC<TalentOnboardingProps> = ({ onStart, isD
             }`}
           >
             <Clock className="w-3.5 h-3.5 text-amber-500" />
-            8 Babak (5 Soal/Babak • Total 40 Soal)
+            <b>8 Babak</b> (10 Soal/Babak • Total 80 Soal • 20-30 Menit)
           </span>
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border ${
@@ -112,7 +111,7 @@ export const TalentOnboarding: React.FC<TalentOnboardingProps> = ({ onStart, isD
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-            100% Gratis & Laporan Konsultasi WA
+            <b>100% Gratis</b> & Laporan Konsultasi WA
           </span>
         </div>
       </div>
@@ -366,7 +365,7 @@ export const TalentOnboarding: React.FC<TalentOnboardingProps> = ({ onStart, isD
                 type="submit"
                 className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:brightness-110 active:scale-[0.99] transition-all"
               >
-                <span>Mulai Asesmen Bakat (Babak 1)</span>
+                <span>Mulai Asesmen Bakat</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
               <p className="text-[11px] text-center text-slate-400 mt-3">
