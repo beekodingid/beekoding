@@ -741,7 +741,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                       type={showOldPass ? 'text' : 'password'}
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
-                      placeholder="Masukkan password saat ini (default: admin123)"
+                      placeholder="Masukkan password saat ini"
                       required
                       className={`w-full px-4 py-3 rounded-xl border text-xs sm:text-sm font-medium pr-10 focus:outline-hidden focus:ring-2 focus:ring-amber-500/30 ${
                         isDark
@@ -752,7 +752,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowOldPass(!showOldPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
                     >
                       {showOldPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -780,7 +780,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowNewPass(!showNewPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
                     >
                       {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -841,7 +841,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowConfirmPass(!showConfirmPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
                     >
                       {showConfirmPass ? (
                         <EyeOff className="w-4 h-4" />

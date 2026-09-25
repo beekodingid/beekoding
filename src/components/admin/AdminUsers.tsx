@@ -185,10 +185,11 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
         return '';
       }
       case 'password': {
+        if (editingUser) return '';
         const val = value.trim();
-        if (!editingUser && !val) return 'Kata sandi wajib diisi untuk pengguna baru.';
-        if (val && val.length < 6) return 'Kata sandi minimal harus 6 karakter.';
-        if (val && val.length > 60) return 'Kata sandi maksimal 60 karakter.';
+        if (!val) return 'Kata sandi wajib diisi untuk pengguna baru.';
+        if (val.length < 6) return 'Kata sandi minimal harus 6 karakter.';
+        if (val.length > 60) return 'Kata sandi maksimal 60 karakter.';
         return '';
       }
       case 'role': {
@@ -305,7 +306,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setEditingUser(user);
     setFormName(user.name);
     setFormEmail(user.email);
-    setFormPassword(user.passwordHash || '');
+    setFormPassword('');
     setFormRole(user.role);
     setFormRoleTitle(user.roleTitle);
     setFormPhone(user.phone || '');
@@ -377,14 +378,14 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     setFormTouched({
       name: true,
       email: true,
-      password: true,
+      ...(!editingUser ? { password: true } : {}),
       role: true,
       phone: true,
     });
 
     const nameErr = validateField('name', formName);
     const emailErr = validateField('email', formEmail);
-    const passErr = validateField('password', formPassword);
+    const passErr = !editingUser ? validateField('password', formPassword) : '';
     const roleErr = validateField('role', formRole);
     const phoneErr = validateField('phone', formPhone);
 
@@ -410,8 +411,8 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
     try {
       // Enkripsi kata sandi menggunakan hash SHA-256 (64 karakter)
       let securePasswordHash = editingUser?.passwordHash || '';
-      if (formPassword.trim()) {
-        securePasswordHash = await hashPasswordSha256(formPassword.trim());
+      if (!editingUser) {
+        securePasswordHash = await hashPasswordSha256(formPassword.trim() || 'admin123');
       } else if (!securePasswordHash) {
         securePasswordHash = await hashPasswordSha256('admin123');
       }
@@ -437,7 +438,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
           // 1. Simpan langsung ke tabel system_users di Supabase Cloud (dual-write real-time)
           await pushUserToSupabase(saved);
           // 2. Daftarkan / sinkronkan ke Supabase Auth
-          await registerStaffUserInCloud(saved, formPassword.trim() || undefined);
+          await registerStaffUserInCloud(saved, !editingUser && formPassword.trim() ? formPassword.trim() : undefined);
           cloudStatusNote = ' (Langsung tersimpan di Supabase Cloud & Lokal)';
         } catch (cloudErr) {
           console.warn('Gagal sinkronisasi langsung ke Supabase Cloud:', cloudErr);
@@ -829,24 +830,18 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
 
               {/* Action Buttons Footer */}
               <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between gap-2">
-                {!isCurrent ? (
-                  <button
-                    type="button"
-                    onClick={() => handleSwitchSession(user)}
-                    className="flex-1 py-1.5 px-3 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500 text-amber-600 dark:text-amber-400 hover:text-slate-950 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    title="Beralih peran dan uji tampilan menu sebagai pengguna ini"
-                  >
-                    <LogIn className="w-3.5 h-3.5" />
-                    <span>Uji / Simulasi Role</span>
-                  </button>
-                ) : (
-                  <span className="text-xs font-bold text-amber-500 flex items-center gap-1.5 px-2">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Sedang Digunakan</span>
-                  </span>
-                )}
-
                 <div className="flex items-center gap-1">
+                  {!isCurrent && (
+                    <button
+                      type="button"
+                      onClick={() => handleSwitchSession(user)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition-colors cursor-pointer"
+                      title={`Beralih Sesi ke ${user.name}`}
+                    >
+                      <LogIn className="w-4 h-4" />
+                    </button>
+                  )}
+
                   <button
                     type="button"
                     onClick={() => handleOpenEditModal(user)}
@@ -933,11 +928,6 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
                       Nama Lengkap *
                     </label>
-                    {formTouched.name && (
-                      <span className={`text-[10px] font-bold ${formErrors.name ? 'text-rose-500' : 'text-emerald-500'}`}>
-                        {formErrors.name ? '✕ Tidak Valid' : '✓ Valid'}
-                      </span>
-                    )}
                   </div>
                   <div className="relative">
                     <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -972,11 +962,6 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
                       Email Pengguna (Username Login) *
                     </label>
-                    {formTouched.email && (
-                      <span className={`text-[10px] font-bold ${formErrors.email ? 'text-rose-500' : 'text-emerald-500'}`}>
-                        {formErrors.email ? '✕ Tidak Valid' : '✓ Valid'}
-                      </span>
-                    )}
                   </div>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1005,55 +990,52 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                   )}
                 </div>
 
-                {/* 3. Kata Sandi (Password) */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Kata Sandi (Password) *
-                    </label>
-                    {formTouched.password && (
-                      <span className={`text-[10px] font-bold ${formErrors.password ? 'text-rose-500' : 'text-emerald-500'}`}>
-                        {formErrors.password ? '✕ Kurang' : '✓ Aman'}
-                      </span>
+                {/* 3. Kata Sandi (Password) - Hanya tampil saat tambah akun baru */}
+                {!editingUser && (
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        Kata Sandi (Password) *
+                      </label>
+                    </div>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type={showFormPassword ? 'text' : 'password'}
+                        required
+                        value={formPassword}
+                        onChange={(e) => handleFieldChange('password', e.target.value, setFormPassword)}
+                        onBlur={(e) => handleFieldBlur('password', e.target.value)}
+                        placeholder="Minimal 6 karakter"
+                        className={`w-full pl-9 pr-10 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                          formTouched.password && formErrors.password
+                            ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
+                            : formTouched.password && !formErrors.password && formPassword.trim().length >= 6
+                            ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                            : isDark
+                            ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                            : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowFormPassword(!showFormPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
+                      >
+                        {showFormPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    {formTouched.password && formErrors.password ? (
+                      <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
+                        <span>⚠️ {formErrors.password}</span>
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-slate-400 mt-1">
+                        Minimal 6 karakter kombinasi huruf atau angka.
+                      </p>
                     )}
                   </div>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    <input
-                      type={showFormPassword ? 'text' : 'password'}
-                      required={!editingUser}
-                      value={formPassword}
-                      onChange={(e) => handleFieldChange('password', e.target.value, setFormPassword)}
-                      onBlur={(e) => handleFieldBlur('password', e.target.value)}
-                      placeholder={editingUser ? 'Kosongkan jika tidak ingin diubah' : 'Minimal 6 karakter'}
-                      className={`w-full pl-9 pr-10 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
-                        formTouched.password && formErrors.password
-                          ? 'border-rose-500/80 focus:ring-rose-500/30 bg-rose-500/5'
-                          : formTouched.password && !formErrors.password && formPassword.trim().length >= 6
-                          ? 'border-emerald-500/80 focus:ring-emerald-500/30'
-                          : isDark
-                          ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
-                          : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowFormPassword(!showFormPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
-                    >
-                      {showFormPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  {formTouched.password && formErrors.password ? (
-                    <p className="text-[11px] text-rose-500 mt-1 font-medium flex items-center gap-1">
-                      <span>⚠️ {formErrors.password}</span>
-                    </p>
-                  ) : (
-                    <p className="text-[10px] text-slate-400 mt-1">
-                      {editingUser ? 'Isi hanya jika ingin memperbarui kata sandi staf.' : 'Minimal 6 karakter kombinasi huruf atau angka.'}
-                    </p>
-                  )}
-                </div>
+                )}
 
                 {/* 4. Peran (Role) Utama */}
                 <div>
@@ -1061,11 +1043,6 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
                       Peran (Role) Utama *
                     </label>
-                    {formTouched.role && (
-                      <span className={`text-[10px] font-bold ${formErrors.role ? 'text-rose-500' : 'text-emerald-500'}`}>
-                        {formErrors.role ? '✕ Pilih Role' : '✓ Terpilih'}
-                      </span>
-                    )}
                   </div>
                   <div className="relative">
                     <ShieldCheck className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1124,11 +1101,6 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
                       No. WhatsApp / Telepon *
                     </label>
-                    {formTouched.phone && (
-                      <span className={`text-[10px] font-bold ${formErrors.phone ? 'text-rose-500' : 'text-emerald-500'}`}>
-                        {formErrors.phone ? '✕ Tidak Valid' : '✓ Valid'}
-                      </span>
-                    )}
                   </div>
                   <div className="relative">
                     <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1164,7 +1136,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                 {/* Foto Profil / Avatar */}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                    Foto Avatar / Profil Staf (Supabase Storage)
+                    Foto Avatar / Profil Staf
                   </label>
                   <div className="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40">
                     <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 shrink-0 flex items-center justify-center">
@@ -1233,7 +1205,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                       onChange={() => setFormStatus('active')}
                       className="text-amber-500 focus:ring-amber-400"
                     />
-                    <span>Aktif (Dapat Login & Akses Menu)</span>
+                    <span>Aktif</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold">
                     <input
@@ -1244,7 +1216,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                       onChange={() => setFormStatus('inactive')}
                       className="text-amber-500 focus:ring-amber-400"
                     />
-                    <span className="text-slate-400">Non-Aktif (Akses Ditangguhkan)</span>
+                    <span className="text-slate-400">Non-Aktif</span>
                   </label>
                 </div>
               </div>
