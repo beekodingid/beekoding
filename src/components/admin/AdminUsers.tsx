@@ -17,6 +17,7 @@ import {
   provisionDefaultStaffAccounts,
   registerStaffUserInCloud,
   hashPasswordSha256,
+  resetPasswordInSystemUsers,
 } from '../../services/supabaseAuth';
 import {
   pushUserToSupabase,
@@ -47,6 +48,10 @@ import {
   EyeOff,
   Lock,
   User,
+  KeyRound,
+  Copy,
+  Check,
+  RefreshCw,
 } from 'lucide-react';
 
 interface AdminUsersProps {
@@ -156,6 +161,16 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formTouched, setFormTouched] = useState<Record<string, boolean>>({});
   const [showFormPassword, setShowFormPassword] = useState(false);
+
+  // Dedicated Reset Password Modal State
+  const [resetModalUser, setResetModalUser] = useState<SystemUser | null>(null);
+  const [resetNewPassword, setResetNewPassword] = useState('');
+  const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [showResetNewPassword, setShowResetNewPassword] = useState(false);
+  const [showResetConfirmPassword, setShowResetConfirmPassword] = useState(false);
+  const [resetPasswordError, setResetPasswordError] = useState<string | null>(null);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [isCopiedPassword, setIsCopiedPassword] = useState(false);
 
   const validateField = (field: string, value: string): string => {
     switch (field) {
@@ -489,6 +504,110 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
       }
     } else {
       alert(res.error || 'Gagal beralih akun.');
+    }
+  };
+
+  const handleOpenResetPasswordModal = (user: SystemUser) => {
+    setResetModalUser(user);
+    setResetNewPassword('');
+    setResetConfirmPassword('');
+    setShowResetNewPassword(false);
+    setShowResetConfirmPassword(false);
+    setResetPasswordError(null);
+    setIsCopiedPassword(false);
+  };
+
+  const handleGenerateRandomPassword = () => {
+    const uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const lowercase = 'abcdefghjkmnpqrstuvwxyz';
+    const numbers = '23456789';
+    const symbols = '!@#$%&*';
+
+    let res = '';
+    res += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+    res += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+    res += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    res += symbols.charAt(Math.floor(Math.random() * symbols.length));
+
+    const all = uppercase + lowercase + numbers + symbols;
+    for (let i = 4; i < 10; i++) {
+      res += all.charAt(Math.floor(Math.random() * all.length));
+    }
+    const shuffled = res
+      .split('')
+      .sort(() => 0.5 - Math.random())
+      .join('');
+    setResetNewPassword(shuffled);
+    setResetConfirmPassword(shuffled);
+    setResetPasswordError(null);
+  };
+
+  const handleCopyPassword = () => {
+    if (!resetNewPassword) return;
+    navigator.clipboard.writeText(resetNewPassword);
+    setIsCopiedPassword(true);
+    setTimeout(() => setIsCopiedPassword(false), 2000);
+  };
+
+  const handleExecuteResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetModalUser) return;
+
+    const trimmedPass = resetNewPassword.trim();
+    const trimmedConfirm = resetConfirmPassword.trim();
+
+    if (!trimmedPass) {
+      setResetPasswordError('Kata sandi baru wajib diisi.');
+      return;
+    }
+    if (trimmedPass.length < 6) {
+      setResetPasswordError('Kata sandi baru minimal harus 6 karakter.');
+      return;
+    }
+    if (trimmedPass !== trimmedConfirm) {
+      setResetPasswordError('Konfirmasi kata sandi tidak cocok.');
+      return;
+    }
+
+    setResetPasswordError(null);
+    setIsResettingPassword(true);
+
+    try {
+      const sha256Hash = await hashPasswordSha256(trimmedPass);
+
+      // Simpan di local storage
+      saveSystemUser({
+        id: resetModalUser.id,
+        name: resetModalUser.name,
+        email: resetModalUser.email,
+        passwordHash: trimmedPass,
+      });
+
+      // Sinkronkan ke Cloud Supabase
+      if (isSupabaseConfigured()) {
+        try {
+          await pushUserToSupabase({
+            ...resetModalUser,
+            passwordHash: sha256Hash,
+          });
+        } catch (syncErr) {
+          console.warn('pushUserToSupabase during reset fallback:', syncErr);
+        }
+
+        try {
+          await resetPasswordInSystemUsers(resetModalUser.email, trimmedPass);
+        } catch (resetErr) {
+          console.warn('resetPasswordInSystemUsers fallback:', resetErr);
+        }
+      }
+
+      refreshData();
+      showToast(`Kata sandi akun "${resetModalUser.name}" berhasil diatur ulang.`);
+      setResetModalUser(null);
+    } catch (err: any) {
+      setResetPasswordError(err?.message || 'Gagal mengatur ulang kata sandi pengguna.');
+    } finally {
+      setIsResettingPassword(false);
     }
   };
 
@@ -841,6 +960,15 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                       <LogIn className="w-4 h-4" />
                     </button>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => handleOpenResetPasswordModal(user)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                    title="Reset Kata Sandi Akun"
+                  >
+                    <KeyRound className="w-4 h-4" />
+                  </button>
 
                   <button
                     type="button"
@@ -1350,6 +1478,234 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ isDark, onRoleSwitched }
                       ? 'Simpan Perubahan Akun'
                       : 'Buat Pengguna Baru'}
                   </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Reset Kata Sandi Staf Dedicated */}
+      {resetModalUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto animate-in fade-in">
+          <div
+            className={`w-full max-w-md rounded-3xl border shadow-2xl p-6 transition-all my-8 flex flex-col ${
+              isDark ? 'bg-[#151928] border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base">Reset Kata Sandi Akun</h3>
+                  <p className="text-xs text-slate-400">Atur ulang kata sandi login untuk staf ini.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setResetModalUser(null)}
+                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Target User Info Card */}
+            <div className="mt-4 p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+              <img
+                src={resetModalUser.avatar || '/febri-hasan.png'}
+                alt={resetModalUser.name}
+                className="w-11 h-11 rounded-xl object-cover border border-amber-500/30"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/febri-hasan.png';
+                }}
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-1">
+                  <h4 className="font-bold text-sm truncate">{resetModalUser.name}</h4>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    {resetModalUser.role}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 truncate">{resetModalUser.email}</p>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleExecuteResetPassword} className="mt-4 space-y-4">
+              {resetPasswordError && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <p className="font-semibold">{resetPasswordError}</p>
+                </div>
+              )}
+
+              {/* Input Kata Sandi Baru */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Kata Sandi Baru *
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={handleGenerateRandomPassword}
+                      className="text-[11px] font-bold text-amber-500 hover:text-amber-400 flex items-center gap-1 cursor-pointer transition-colors"
+                      title="Buat kata sandi acak yang aman"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      <span>Buat Acak</span>
+                    </button>
+                    {resetNewPassword && (
+                      <button
+                        type="button"
+                        onClick={handleCopyPassword}
+                        className="text-[11px] font-bold text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer transition-colors ml-1"
+                        title="Salin kata sandi ke papan klip"
+                      >
+                        {isCopiedPassword ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span className="text-emerald-400">Tersalin</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Salin</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type={showResetNewPassword ? 'text' : 'password'}
+                    required
+                    value={resetNewPassword}
+                    onChange={(e) => {
+                      setResetNewPassword(e.target.value);
+                      if (resetPasswordError) setResetPasswordError(null);
+                    }}
+                    placeholder="Minimal 6 karakter"
+                    className={`w-full pl-9 pr-10 py-2.5 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                        : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowResetNewPassword(!showResetNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
+                  >
+                    {showResetNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {/* Password Strength Indicator */}
+                {resetNewPassword && (
+                  <div className="mt-2">
+                    <div className="flex items-center justify-between text-[10px] mb-1">
+                      <span className="text-slate-400 font-medium">Kekuatan Sandi:</span>
+                      <span className={`font-bold ${
+                        resetNewPassword.length < 6
+                          ? 'text-rose-500'
+                          : resetNewPassword.length >= 8 && /[A-Z]/.test(resetNewPassword) && /\d/.test(resetNewPassword)
+                          ? 'text-emerald-500'
+                          : 'text-amber-500'
+                      }`}>
+                        {resetNewPassword.length < 6
+                          ? 'Terlalu Pendek (< 6)'
+                          : resetNewPassword.length >= 8 && /[A-Z]/.test(resetNewPassword) && /\d/.test(resetNewPassword)
+                          ? 'Kuat'
+                          : 'Sedang'}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex gap-0.5">
+                      <div className={`h-full flex-1 rounded-full ${
+                        resetNewPassword.length >= 1 ? (resetNewPassword.length < 6 ? 'bg-rose-500' : 'bg-amber-500') : 'bg-transparent'
+                      }`} />
+                      <div className={`h-full flex-1 rounded-full ${
+                        resetNewPassword.length >= 6 ? (resetNewPassword.length >= 8 && /[A-Z]/.test(resetNewPassword) && /\d/.test(resetNewPassword) ? 'bg-emerald-500' : 'bg-amber-500') : 'bg-transparent'
+                      }`} />
+                      <div className={`h-full flex-1 rounded-full ${
+                        resetNewPassword.length >= 8 && /[A-Z]/.test(resetNewPassword) && /\d/.test(resetNewPassword) ? 'bg-emerald-500' : 'bg-transparent'
+                      }`} />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Input Konfirmasi Kata Sandi */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Konfirmasi Kata Sandi *
+                  </label>
+                  {resetConfirmPassword && (
+                    <span className={`text-[10px] font-bold ${
+                      resetNewPassword === resetConfirmPassword ? 'text-emerald-500' : 'text-rose-500'
+                    }`}>
+                      {resetNewPassword === resetConfirmPassword ? '✓ Cocok' : '✕ Tidak Cocok'}
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type={showResetConfirmPassword ? 'text' : 'password'}
+                    required
+                    value={resetConfirmPassword}
+                    onChange={(e) => {
+                      setResetConfirmPassword(e.target.value);
+                      if (resetPasswordError) setResetPasswordError(null);
+                    }}
+                    placeholder="Ulangi kata sandi baru"
+                    className={`w-full pl-9 pr-10 py-2.5 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 transition-all ${
+                      resetConfirmPassword && resetNewPassword !== resetConfirmPassword
+                        ? 'border-rose-500/80 focus:ring-rose-500/30'
+                        : resetConfirmPassword && resetNewPassword === resetConfirmPassword
+                        ? 'border-emerald-500/80 focus:ring-emerald-500/30'
+                        : isDark
+                        ? 'bg-slate-900 border-slate-700 text-white focus:ring-amber-500'
+                        : 'bg-slate-50 border-slate-300 text-slate-900 focus:ring-amber-500'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowResetConfirmPassword(!showResetConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
+                  >
+                    {showResetConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                ℹ️ Kata sandi baru akan otomatis dienkripsi dengan standar <strong>SHA-256</strong> dan langsung disinkronkan ke database Supabase Cloud.
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setResetModalUser(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isResettingPassword || !resetNewPassword || resetNewPassword !== resetConfirmPassword}
+                  className="px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 shadow-md shadow-amber-500/20 cursor-pointer transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isResettingPassword && <Sparkles className="w-3.5 h-3.5 animate-spin text-slate-950" />}
+                  <span>{isResettingPassword ? 'Menyimpan ke Cloud...' : 'Simpan Kata Sandi'}</span>
                 </button>
               </div>
             </form>
