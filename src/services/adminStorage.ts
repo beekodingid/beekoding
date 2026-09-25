@@ -5,6 +5,8 @@ import {
   QUESTION_BANK,
 } from '../data/talentQuestions';
 import { STORAGE_KEYS } from './storageKeys';
+import type { CertificateThemeId } from './certificateThemes';
+export type { CertificateThemeId } from './certificateThemes';
 
 // Background dual-write to Supabase (Dynamic import avoids ESM circular dependencies)
 function triggerSupabaseSync(callback: (sync: typeof import('./supabaseSync')) => Promise<any>): void {
@@ -339,6 +341,7 @@ export interface StudentCertificate {
   honorsTitle: string; // misal: "Dengan Pujian Istimewa (With Distinction)"
   instructorName: string;
   advisorName: string;
+  theme?: CertificateThemeId;
   description?: string;
   customNote?: string;
   createdAt: string;

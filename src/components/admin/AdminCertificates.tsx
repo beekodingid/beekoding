@@ -16,6 +16,10 @@ import { AdminCertificateModal } from './AdminCertificateModal';
 import { ShareParentNotificationModal } from './ShareParentNotificationModal';
 import { generateCertificateNotification } from '../../services/parentNotification';
 import {
+  CERTIFICATE_THEME_LIST,
+  type CertificateThemeId,
+} from '../../services/certificateThemes';
+import {
   Award,
   Plus,
   Search,
@@ -33,6 +37,7 @@ import {
   LayoutGrid,
   List,
   ShieldCheck,
+  Palette,
 } from 'lucide-react';
 
 interface AdminCertificatesProps {
@@ -80,6 +85,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
     'Telah berhasil menyelesaikan seluruh kurikulum intensif, tantangan logika algoritma, dan proyek teknologi interaktif dengan dedikasi serta kreativitas luar biasa.'
   );
   const [formCustomNote, setFormCustomNote] = useState('');
+  const [formTheme, setFormTheme] = useState<CertificateThemeId>('royal_gold');
 
   // Sumber Data untuk Quick Pick
   const batches = useMemo(() => getBatches(), []);
@@ -145,6 +151,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
       'Telah berhasil menyelesaikan seluruh kurikulum intensif, tantangan logika algoritma, dan proyek teknologi interaktif dengan dedikasi serta kreativitas luar biasa.'
     );
     setFormCustomNote('');
+    setFormTheme('royal_gold');
     setIsCreateModalOpen(true);
   };
 
@@ -164,6 +171,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
     setFormAdvisorName(cert.advisorName);
     setFormDescription(cert.description || '');
     setFormCustomNote(cert.customNote || '');
+    setFormTheme(cert.theme || 'royal_gold');
     setIsCreateModalOpen(true);
   };
 
@@ -188,6 +196,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
         honorsTitle: formHonorsTitle.trim(),
         instructorName: formInstructorName.trim(),
         advisorName: formAdvisorName.trim(),
+        theme: formTheme,
         description: formDescription.trim() || undefined,
         customNote: formCustomNote.trim() || undefined,
       });
@@ -210,6 +219,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
         honorsTitle: formHonorsTitle.trim(),
         instructorName: formInstructorName.trim(),
         advisorName: formAdvisorName.trim(),
+        theme: formTheme,
         description: formDescription.trim() || undefined,
         customNote: formCustomNote.trim() || undefined,
       });
@@ -1087,6 +1097,49 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
                     <option value="merit">Merit Award</option>
                     <option value="standard">Sertifikat Standar</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Pilihan Tema Desain Piagam */}
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <Palette className="w-4 h-4 text-amber-500" />
+                  <span>Pilihan Desain / Tema Estetika Piagam</span>
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {CERTIFICATE_THEME_LIST.map((th) => (
+                    <button
+                      key={th.id}
+                      type="button"
+                      onClick={() => setFormTheme(th.id)}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        formTheme === th.id
+                          ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/30 font-bold'
+                          : isDark
+                          ? 'border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-300'
+                          : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-base">
+                          {th.id === 'royal_gold'
+                            ? '👑'
+                            : th.id === 'cyber_dark'
+                            ? '⚡'
+                            : th.id === 'modern_minimal'
+                            ? '🏛️'
+                            : '🐝'}
+                        </span>
+                        {formTheme === th.id && (
+                          <span className="w-2 h-2 rounded-full bg-amber-500" />
+                        )}
+                      </div>
+                      <span className="text-xs font-bold mt-1 block truncate">
+                        {th.name.split('&')[0]}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block truncate">{th.badge}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 

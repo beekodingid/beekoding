@@ -151,7 +151,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 <img
                   src="/beekoding-logo.png"
                   alt="Beekoding Mascot"
-                  className="w-11 h-11 object-contain"
+                  className="w-15 h-15 object-contain"
                 />
               </div>
             </div>

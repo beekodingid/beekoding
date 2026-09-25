@@ -1,7 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { type StudentCertificate } from '../../services/adminStorage';
 import { printIsolatedElement } from '../../services/printUtils';
-import { QRCodeView } from '../common/QRCodeView';
+import {
+  CERTIFICATE_THEME_LIST,
+  type CertificateThemeId,
+} from '../../services/certificateThemes';
+import { CertificateCanvas } from './CertificateCanvas';
 import {
   generateCertificateNotification,
 } from '../../services/parentNotification';
@@ -13,8 +17,7 @@ import {
   X,
   CheckCircle2,
   Award,
-  Sparkles,
-  ShieldCheck,
+  Palette,
 } from 'lucide-react';
 
 interface AdminCertificateModalProps {
@@ -31,27 +34,17 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
   const printRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<CertificateThemeId>(
+    certificate.theme || 'royal_gold'
+  );
 
   const notificationPayload = generateCertificateNotification(certificate);
-
-  const formatDateIndo = (isoDate: string) => {
-    try {
-      const d = new Date(isoDate);
-      return d.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
-    } catch {
-      return isoDate;
-    }
-  };
 
   const handlePrint = () => {
     printIsolatedElement(printRef.current, {
       orientation: 'landscape',
       isCertificate: true,
-      title: `Sertifikat-${certificate.studentName.replace(/\s+/g, '_')}`,
+      title: `Sertifikat-${activeTheme}-${certificate.studentName.replace(/\s+/g, '_')}`,
     });
   };
 
@@ -71,7 +64,7 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
       >
         {/* Header Modal - Hidden on Print */}
         <div
-          className={`flex items-center justify-between px-6 py-4 border-b print:hidden ${
+          className={`flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b print:hidden ${
             isDark ? 'border-slate-800 bg-slate-900/60' : 'border-slate-100 bg-slate-50'
           }`}
         >
@@ -90,6 +83,38 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
               </div>
               <p className="text-xs text-slate-500 font-mono">{certificate.certificateNumber}</p>
             </div>
+          </div>
+
+          {/* Theme Selector Toolbar */}
+          <div className="flex items-center gap-1.5 bg-slate-200/70 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-300/50 dark:border-slate-700">
+            <div className="px-2 py-1 text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+              <Palette className="w-3.5 h-3.5 text-amber-500" />
+              <span className="hidden sm:inline">Tema:</span>
+            </div>
+            {CERTIFICATE_THEME_LIST.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setActiveTheme(t.id)}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeTheme === t.id
+                    ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-300/50 dark:hover:bg-slate-700/50'
+                }`}
+                title={t.description}
+              >
+                <span>
+                  {t.id === 'royal_gold'
+                    ? '👑'
+                    : t.id === 'cyber_dark'
+                    ? '⚡'
+                    : t.id === 'modern_minimal'
+                    ? '🏛️'
+                    : '🐝'}
+                </span>
+                <span className="text-[11px]">{t.name.split('&')[0].trim()}</span>
+              </button>
+            ))}
           </div>
 
           <div className="flex items-center gap-2">
@@ -134,180 +159,11 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
 
         {/* Certificate Display Area (A4 Landscape Formatted) */}
         <div className="p-4 sm:p-8 bg-slate-950/20 overflow-x-auto flex justify-center print:p-0 print:bg-white">
-          <div
-            ref={printRef}
-            className="w-[1000px] h-[705px] min-w-[1000px] min-h-[705px] bg-[#fffdfa] text-slate-900 p-8 relative flex flex-col justify-between shadow-2xl border-[12px] border-amber-900/10 rounded-2xl overflow-hidden print:border-[10px] print:rounded-none print:shadow-none print:w-[287mm] print:h-[200mm] print:max-w-[287mm] print:max-h-[200mm] print:min-w-0 print:min-h-0 print:m-0"
-            style={{
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              fontFamily: '"Cinzel", "Playfair Display", "Times New Roman", serif, sans-serif',
-            }}
-          >
-            {/* Ornate Outer Gold Border Frame */}
-            <div className="absolute inset-3 border-2 border-amber-500/40 rounded-xl pointer-events-none" />
-            <div className="absolute inset-5 border border-dashed border-amber-600/30 rounded-lg pointer-events-none" />
-
-            {/* Corner Ornaments */}
-            <div className="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-amber-600 pointer-events-none" />
-            <div className="absolute top-6 right-6 w-12 h-12 border-t-2 border-r-2 border-amber-600 pointer-events-none" />
-            <div className="absolute bottom-6 left-6 w-12 h-12 border-b-2 border-l-2 border-amber-600 pointer-events-none" />
-            <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-amber-600 pointer-events-none" />
-
-            {/* Watermark Logo Background */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
-              <span className="text-[280px]"><img src='/beekoding-logo.jpg' alt="Beekoding Logo" className='w-full h-full'/></span>
-            </div>
-
-            {/* Top Bar: Beekoding Logo & Header */}
-            <div className="relative z-10 text-center pt-2">
-              <div className="inline-flex items-center justify-center gap-3 mb-1">
-                <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-500 flex items-center justify-center text-2xl shadow-sm">
-                  <img src="/beekoding-logo.jpg" alt="Beekoding Logo" className="w-10 h-10" />
-                </div>
-                <div className="text-left">
-                  <h2 className="text-2xl font-black tracking-wider text-slate-900 font-sans">
-                    <span
-                                    className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
-                                      isDark ? 'text-white' : 'text-slate-900'
-                                    }`}
-                                  >
-                                    Bee<span className="text-amber-500">koding</span>
-                                  </span>
-                  </h2>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.25em] font-sans">
-                    Academy of Computational Thinking & AI
-                  </p>
-                </div>
-              </div>
-
-              {/* Diploma Title */}
-              <div className="mt-3">
-                <span className="inline-block text-[11px] font-bold tracking-[0.3em] uppercase text-amber-700 font-sans border-b border-amber-500/40 pb-0.5">
-                  Official Academic Award
-                </span>
-                <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-widest text-slate-900 mt-1">
-                  Certificate of Excellence
-                </h1>
-                <p className="text-xs italic text-slate-500 mt-0.5 font-serif">
-                  Piagam Penghargaan & Kelulusan Resmi
-                </p>
-              </div>
-            </div>
-
-            {/* Center Body: Presented To & Student Name */}
-            <div className="relative z-10 text-center my-auto py-2">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-sans">
-                Diberikan dengan penuh rasa bangga dan apresiasi kepada:
-              </p>
-
-              {/* Student Name */}
-              <div className="my-3">
-                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-wide font-serif capitalize">
-                  {certificate.studentName}
-                </h3>
-                <div className="w-48 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-2" />
-              </div>
-
-              {/* Achievement Description */}
-              <div className="max-w-2xl mx-auto px-4 font-sans text-xs text-slate-700 leading-relaxed">
-                {certificate.description || (
-                  <p>
-                    Telah berhasil menyelesaikan seluruh kurikulum intensif, tantangan logika algoritma,
-                    dan proyek teknologi interaktif dengan dedikasi serta kreativitas luar biasa.
-                  </p>
-                )}
-                {certificate.customNote && (
-                  <p className="mt-1.5 text-[11px] text-amber-800 font-medium italic">
-                    "{certificate.customNote}"
-                  </p>
-                )}
-              </div>
-
-              {/* Program & Honors Pill */}
-              <div className="mt-4 flex items-center justify-center gap-2 flex-wrap font-sans">
-                <span className="px-4 py-1.5 rounded-full bg-slate-900 text-amber-400 text-xs font-bold shadow-sm tracking-wide">
-                  {certificate.programName}
-                </span>
-
-                <span className="px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-800 border border-amber-500/50 text-xs font-bold tracking-wide flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span>{certificate.honorsTitle}</span>
-                </span>
-              </div>
-            </div>
-
-            {/* Bottom Footer: Signatures, Gold Seal & Verification */}
-            <div className="relative z-10 grid grid-cols-3 items-end pt-4 border-t border-slate-200/80 font-sans">
-              {/* Left Signatory: Founder & Lead Educator */}
-              <div className="text-center">
-                <div className="h-14 flex items-center justify-center">
-                  <span className="font-serif italic text-lg font-bold text-slate-800 rotate-[-5deg] select-none">
-                    Febri Hasan
-                  </span>
-                </div>
-                <div className="w-36 h-px bg-slate-400 mx-auto" />
-                <h5 className="font-bold text-xs text-slate-900 mt-1">{certificate.instructorName}</h5>
-                <p className="text-[10px] text-slate-500">Founder & Chief Educator</p>
-              </div>
-
-              {/* Center: Official Embossed Gold Seal Badge & Verification QR */}
-              <div className="flex items-center justify-center gap-4 -translate-y-2">
-                {/* Real Scan-able QR Code */}
-                <div className="flex flex-col items-center">
-                  <QRCodeView
-                    value={`https://beekoding.id/#portal?cert=${encodeURIComponent(certificate.certificateNumber)}`}
-                    size={64}
-                    darkColor="#78350f"
-                    showScanLabel={true}
-                    alt={`QR Verifikasi ${certificate.certificateNumber}`}
-                  />
-                </div>
-
-                {/* Gold Seal Badge */}
-                <div className="flex flex-col items-center justify-center">
-                  <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 border-4 border-amber-200/80 shadow-xl flex flex-col items-center justify-center text-slate-950 p-1.5 text-center">
-                    <div className="absolute -inset-1 rounded-full border border-dashed border-amber-700/50 pointer-events-none" />
-                    <span className="text-[7px] font-black uppercase tracking-widest text-amber-950">
-                      BEEKODING
-                    </span>
-                    <span className="text-xl leading-none my-0.5">🎖️</span>
-                    <span className="text-[7px] font-bold uppercase tracking-wider text-amber-950">
-                      VERIFIED SEAL
-                    </span>
-                  </div>
-
-                  {/* Verification Code Box */}
-                  <div className="mt-1 text-center font-mono text-[9px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 max-w-[130px] truncate">
-                    ID: <span className="font-bold text-slate-800">{certificate.certificateNumber}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Signatory: Academic Advisor / Co-Signature */}
-              <div className="text-center">
-                <div className="h-14 flex items-center justify-center">
-                  <span className="font-serif italic text-lg font-bold text-slate-800 rotate-[-3deg] select-none">
-                    Hendra Wijaya
-                  </span>
-                </div>
-                <div className="w-36 h-px bg-slate-400 mx-auto" />
-                <h5 className="font-bold text-xs text-slate-900 mt-1">{certificate.advisorName}</h5>
-                <p className="text-[10px] text-slate-500">Academic Board Advisor</p>
-              </div>
-            </div>
-
-            {/* Bottom Meta Bar: Issue Date & Authenticity */}
-            <div className="relative z-10 flex items-center justify-between text-[10px] text-slate-400 pt-2 font-sans">
-              <span>
-                Diterbitkan pada:{' '}
-                <strong className="text-slate-600">{formatDateIndo(certificate.issueDate)}</strong>
-              </span>
-              <span className="flex items-center gap-1 text-slate-400">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                Kode Validasi Keaslian: <strong className="font-mono text-slate-700">{certificate.verificationCode}</strong>
-              </span>
-              <span>PT Beekoding Edukasi Nusantara</span>
-            </div>
-          </div>
+          <CertificateCanvas
+            certificate={certificate}
+            themeId={activeTheme}
+            printRef={printRef}
+          />
         </div>
 
         {/* Copy Notification Toast */}
