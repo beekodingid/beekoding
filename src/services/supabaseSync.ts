@@ -38,6 +38,8 @@ import {
   saveTransactions,
   saveAttendanceRecords,
   saveSystemUsers,
+  saveCertificates,
+  saveAcademicReports,
   emitStorageUpdate,
   type AssessmentSubmission,
   type ConsultationInquiry,
@@ -47,6 +49,7 @@ import {
   type CodingEvent,
   type SessionAttendanceRecord,
   type StudentAcademicReport,
+  type StudentCertificate,
   type SystemUser,
   type AdminUser,
   type ClassAnnouncement,
@@ -976,6 +979,28 @@ export async function pullAllDataFromSupabase(): Promise<PullResult> {
       errors.push(`system_users: ${usrError.message}`);
     }
 
+    // 7. Tarik Certificates
+    try {
+      const certs = await fetchCertificatesFromCloud();
+      if (certs && certs.length > 0) {
+        totalPulled += certs.length;
+        tablesPulled.push('student_certificates');
+      }
+    } catch (cErr: any) {
+      errors.push(`student_certificates: ${cErr?.message || 'Gagal'}`);
+    }
+
+    // 8. Tarik Academic Reports
+    try {
+      const reps = await fetchAcademicReportsFromCloud();
+      if (reps && reps.length > 0) {
+        totalPulled += reps.length;
+        tablesPulled.push('academic_reports');
+      }
+    } catch (rErr: any) {
+      errors.push(`academic_reports: ${rErr?.message || 'Gagal'}`);
+    }
+
   } catch (err: any) {
     errors.push(err?.message || 'Gagal menarik data');
   }
@@ -1243,15 +1268,143 @@ export async function fetchSystemUsersFromCloud(): Promise<SystemUser[] | null> 
   }
 }
 
+export async function fetchCertificatesFromCloud(): Promise<StudentCertificate[] | null> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return null;
+  try {
+    const { data, error } = await client
+      .from('student_certificates')
+      .select('*')
+      .order('issue_date', { ascending: false });
+
+    if (error || !data) {
+      console.warn('fetchCertificatesFromCloud error:', error);
+      return null;
+    }
+
+    const local = getCertificates();
+    const mapped: StudentCertificate[] = data.map((row: any) => {
+      const existing = local.find(
+        (l) => l.id === row.id || l.certificateNumber === row.certificate_number
+      );
+      return {
+        id: row.id,
+        certificateNumber: row.certificate_number,
+        verificationCode: row.verification_code || `BK-VER-${Math.floor(1000 + Math.random() * 9000)}`,
+        studentName: row.student_name,
+        parentName: existing?.parentName,
+        parentPhone: existing?.parentPhone,
+        programName: row.course_name,
+        batchName: existing?.batchName,
+        issueDate: row.issue_date || new Date().toISOString().split('T')[0],
+        certificateType: (existing?.certificateType || 'completion') as any,
+        honorsLevel: (existing?.honorsLevel || 'merit') as any,
+        honorsTitle: existing?.honorsTitle || 'Dengan Pujian Istimewa (With Distinction)',
+        instructorName: row.instructor_name || 'Kak Febri Hasan',
+        advisorName: existing?.advisorName || 'Arya Pratama, M.Kom',
+        description: existing?.description,
+        customNote: existing?.customNote,
+        createdAt: row.created_at || new Date().toISOString(),
+        updatedAt: row.created_at || new Date().toISOString(),
+      };
+    });
+
+    if (mapped.length > 0) {
+      saveCertificates(mapped);
+      emitStorageUpdate('certificates');
+    }
+    return mapped;
+  } catch (err) {
+    console.warn('fetchCertificatesFromCloud exception:', err);
+    return null;
+  }
+}
+
+export async function fetchAcademicReportsFromCloud(): Promise<StudentAcademicReport[] | null> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return null;
+  try {
+    const { data, error } = await client
+      .from('academic_reports')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !data) {
+      console.warn('fetchAcademicReportsFromCloud error:', error);
+      return null;
+    }
+
+    const local = getAcademicReports();
+    const mapped: StudentAcademicReport[] = data.map((row: any) => {
+      const existing = local.find((l) => l.id === row.id);
+      const scores = {
+        computationalThinking: Number(row.logic_score) || 85,
+        creativityDesign: Number(row.creativity_score) || 85,
+        problemSolving: Number(row.problem_solving_score) || 85,
+        codeMastery: Number(row.syntax_score || row.problem_solving_score) || 85,
+        teamworkAttitude: Number(row.presentation_score) || 85,
+      };
+      const avg = Number(
+        (
+          (scores.computationalThinking +
+            scores.creativityDesign +
+            scores.problemSolving +
+            scores.codeMastery +
+            scores.teamworkAttitude) /
+          5
+        ).toFixed(1)
+      );
+      return {
+        id: row.id,
+        studentId: row.student_id || 'stud-001',
+        studentName: row.student_name,
+        parentName: existing?.parentName || 'Wali Murid',
+        parentPhone: existing?.parentPhone || '',
+        batchId: row.batch_id,
+        batchName: row.batch_name || 'Kelas Beekoding',
+        tier: (row.level || 'junior') as any,
+        reportPeriod: (existing?.reportPeriod || row.period || '2026') as any,
+        attendanceRate: row.attendance_rate || 100,
+        scores,
+        averageScore: avg,
+        gradeLetter: (row.overall_grade || 'A') as any,
+        predicateTitle: existing?.predicateTitle || 'Sangat Baik (Distinction)',
+        capstoneProjectTitle: row.project_title || 'Proyek Koding Mandiri',
+        capstoneProjectDesc:
+          existing?.capstoneProjectDesc || 'Implementasi logika pemrograman mandiri.',
+        instructorNotes: row.teacher_notes || '',
+        nextStepRecommendation:
+          existing?.nextStepRecommendation ||
+          'Dianjurkan melanjutkan ke modul tingkat berikutnya.',
+        instructorName: row.instructor_name || 'Kak Febri Hasan',
+        issueDate: toIsoDate(row.created_at),
+        createdAt: row.created_at || new Date().toISOString(),
+        updatedAt: row.created_at || new Date().toISOString(),
+      };
+    });
+
+    if (mapped.length > 0) {
+      saveAcademicReports(mapped);
+      emitStorageUpdate('reports');
+    }
+    return mapped;
+  } catch (err) {
+    console.warn('fetchAcademicReportsFromCloud exception:', err);
+    return null;
+  }
+}
+
 export async function hydratePriorityModulesFromCloud(): Promise<{ success: boolean; tables: string[] }> {
   if (!isSupabaseConfigured()) return { success: false, tables: [] };
-  const [subs, inqs, batches, txs, att, usrs] = await Promise.allSettled([
+  const [subs, inqs, batches, txs, att, usrs, certs, reps] = await Promise.allSettled([
     fetchSubmissionsFromCloud(),
     fetchInquiriesFromCloud(),
     fetchBatchesFromCloud(),
     fetchTransactionsFromCloud(),
     fetchAttendanceFromCloud(),
     fetchSystemUsersFromCloud(),
+    fetchCertificatesFromCloud(),
+    fetchAcademicReportsFromCloud(),
   ]);
   const tables: string[] = [];
   if (subs.status === 'fulfilled' && subs.value) tables.push('students_submissions');
@@ -1260,6 +1413,8 @@ export async function hydratePriorityModulesFromCloud(): Promise<{ success: bool
   if (txs.status === 'fulfilled' && txs.value) tables.push('financial_transactions');
   if (att.status === 'fulfilled' && att.value) tables.push('class_attendance');
   if (usrs.status === 'fulfilled' && usrs.value) tables.push('system_users');
+  if (certs.status === 'fulfilled' && certs.value) tables.push('student_certificates');
+  if (reps.status === 'fulfilled' && reps.value) tables.push('academic_reports');
   return { success: tables.length > 0, tables };
 }
 
@@ -1731,6 +1886,50 @@ export async function deleteUserFromSupabase(id: string): Promise<void> {
     await client.from('system_users').delete().eq('id', id);
   } catch (err) {
     console.warn('Silent fallback: deleteUserFromSupabase failed', err);
+  }
+}
+
+export async function pushCertificateToSupabase(c: StudentCertificate): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return;
+  try {
+    await client.from('student_certificates').upsert({
+      id: c.id,
+      certificate_number: c.certificateNumber,
+      student_id: null,
+      student_name: c.studentName,
+      course_name: c.programName,
+      level: c.certificateType || 'Bootcamp',
+      issue_date: toIsoDate(c.issueDate),
+      instructor_name: c.instructorName,
+      verification_code: c.verificationCode,
+      qr_code_url: null,
+      pdf_url: null,
+      status: 'valid',
+      created_at: toIsoTimestamp(c.createdAt),
+    }, { onConflict: 'id' });
+  } catch (err) {
+    console.warn('Silent fallback: pushCertificateToSupabase failed', err);
+  }
+}
+
+export async function deleteCertificateFromSupabase(id: string): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return;
+  try {
+    await client.from('student_certificates').delete().eq('id', id);
+  } catch (err) {
+    console.warn('Silent fallback: deleteCertificateFromSupabase failed', err);
+  }
+}
+
+export async function deleteReportFromSupabase(id: string): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client || !isSupabaseConfigured()) return;
+  try {
+    await client.from('academic_reports').delete().eq('id', id);
+  } catch (err) {
+    console.warn('Silent fallback: deleteReportFromSupabase failed', err);
   }
 }
 

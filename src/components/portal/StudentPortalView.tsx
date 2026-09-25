@@ -40,6 +40,7 @@ import {
   HelpCircle,
   Gift,
   Users,
+  RefreshCw,
 } from 'lucide-react';
 import {
   getSubmissions,
@@ -67,6 +68,7 @@ import {
   getAmbassadors,
   getReferralRecords,
   createReferralRecord,
+  onStorageUpdate,
   type ClassBatch,
   type SessionAttendanceRecord,
   type StudentGamificationProfile,
@@ -80,6 +82,8 @@ import {
   type QuizAttempt,
   type AmbassadorProfile,
   type ReferralRecord,
+  type StudentCertificate,
+  type StudentAcademicReport,
 } from '../../services/adminStorage';
 
 interface StudentPortalViewProps {
@@ -180,19 +184,148 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
   const [referralFriendNotes, setReferralFriendNotes] = useState('');
   const [referralSubmitMsg, setReferralSubmitMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  // Load all data from storage
-  const submissions = useMemo(() => getSubmissions(), []);
-  const batches = useMemo(() => getBatches(), []);
-  const attendanceRecords = useMemo(() => getAttendanceRecords(), []);
-  const reports = useMemo(() => getAcademicReports(), []);
-  const certificates = useMemo(() => getCertificates(), []);
-  const transactions = useMemo(() => getTransactions(), []);
-  const projects = useMemo(() => getStudentProjects(), []);
-  const vouchers = useMemo(() => getPromoVouchers(), []);
-  const quests = useMemo(() => getCodingQuests(), []);
-  const badgesCatalog = useMemo(() => getAchievementBadges(), []);
-  const gamificationProfiles = useMemo(() => getGamificationProfiles(), []);
-  const announcements = useMemo(() => getClassAnnouncements(), []);
+  // Load all data from storage with reactive states
+  const [submissions, setSubmissions] = useState(() => getSubmissions());
+  const [batches, setBatches] = useState<ClassBatch[]>(() => getBatches());
+  const [attendanceRecords, setAttendanceRecords] = useState<SessionAttendanceRecord[]>(() => getAttendanceRecords());
+  const [reports, setReports] = useState<StudentAcademicReport[]>(() => getAcademicReports());
+  const [certificates, setCertificates] = useState<StudentCertificate[]>(() => getCertificates());
+  const [transactions, setTransactions] = useState(() => getTransactions());
+  const [projects, setProjects] = useState(() => getStudentProjects());
+  const [vouchers, setVouchers] = useState(() => getPromoVouchers());
+  const [quests, setQuests] = useState(() => getCodingQuests());
+  const [badgesCatalog, setBadgesCatalog] = useState(() => getAchievementBadges());
+  const [gamificationProfiles, setGamificationProfiles] = useState(() => getGamificationProfiles());
+  const [announcements, setAnnouncements] = useState(() => getClassAnnouncements());
+  const [isCloudSyncing, setIsCloudSyncing] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+
+  // Subscribe to storage update events across all modules
+  useEffect(() => {
+    return onStorageUpdate((type) => {
+      if (type === 'submissions' || type === 'all') setSubmissions(getSubmissions());
+      if (type === 'batches' || type === 'all') setBatches(getBatches());
+      if (type === 'attendance' || type === 'all') setAttendanceRecords(getAttendanceRecords());
+      if (type === 'reports' || type === 'all') setReports(getAcademicReports());
+      if (type === 'certificates' || type === 'all') setCertificates(getCertificates());
+      if (type === 'transactions' || type === 'all') setTransactions(getTransactions());
+      if (type === 'all') {
+        setProjects(getStudentProjects());
+        setVouchers(getPromoVouchers());
+        setQuests(getCodingQuests());
+        setBadgesCatalog(getAchievementBadges());
+        setGamificationProfiles(getGamificationProfiles());
+        setAnnouncements(getClassAnnouncements());
+      }
+    });
+  }, []);
+
+  // Background Cloud Sync on Mount
+  const handleManualSync = useCallback(async () => {
+    try {
+      setIsCloudSyncing(true);
+      const { pullAllDataFromSupabase } = await import('../../services/supabaseSync');
+      await pullAllDataFromSupabase();
+      setSubmissions(getSubmissions());
+      setBatches(getBatches());
+      setAttendanceRecords(getAttendanceRecords());
+      setReports(getAcademicReports());
+      setCertificates(getCertificates());
+      setTransactions(getTransactions());
+      setProjects(getStudentProjects());
+      setVouchers(getPromoVouchers());
+      setQuests(getCodingQuests());
+      setBadgesCatalog(getAchievementBadges());
+      setGamificationProfiles(getGamificationProfiles());
+      setAnnouncements(getClassAnnouncements());
+      setLastSyncTime(new Date());
+    } catch (err) {
+      console.warn('Student portal cloud sync notice:', err);
+    } finally {
+      setIsCloudSyncing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    handleManualSync();
+  }, [handleManualSync]);
+
+  // URL Parameters Auto-detection (?cert=..., ?phone=..., ?report=..., ?student=..., ?tab=...)
+  useEffect(() => {
+    const parseUrlParams = () => {
+      if (typeof window === 'undefined') return;
+
+      const fullUrl = window.location.href;
+      let certParam: string | null = null;
+      let phoneParam: string | null = null;
+      let reportParam: string | null = null;
+      let studentParam: string | null = null;
+      let tabParam: PortalTab | null = null;
+
+      try {
+        const urlObj = new URL(fullUrl);
+        certParam = urlObj.searchParams.get('cert');
+        phoneParam = urlObj.searchParams.get('phone');
+        reportParam = urlObj.searchParams.get('report');
+        studentParam = urlObj.searchParams.get('student');
+        tabParam = urlObj.searchParams.get('tab') as PortalTab | null;
+      } catch {
+        // Fallback for older browsers
+      }
+
+      // Check query in hash (e.g. #portal?cert=BK-CERT/2026/06/001)
+      if (window.location.hash.includes('?')) {
+        const hashQuery = window.location.hash.split('?')[1];
+        const hashParams = new URLSearchParams(hashQuery);
+        if (!certParam) certParam = hashParams.get('cert');
+        if (!phoneParam) phoneParam = hashParams.get('phone');
+        if (!reportParam) reportParam = hashParams.get('report');
+        if (!studentParam) studentParam = hashParams.get('student');
+        if (!tabParam) tabParam = hashParams.get('tab') as PortalTab | null;
+      }
+
+      if (certParam) {
+        setSearchInput(certParam);
+        const cert = certificates.find(
+          (c) =>
+            c.certificateNumber.toLowerCase() === certParam!.toLowerCase() ||
+            c.verificationCode.toLowerCase() === certParam!.toLowerCase() ||
+            c.id.toLowerCase() === certParam!.toLowerCase()
+        );
+        if (cert) {
+          setSelectedStudentName(cert.studentName);
+          if (cert.parentPhone) setSelectedStudentPhone(cert.parentPhone);
+        } else {
+          setSelectedStudentName(certParam);
+        }
+        setActiveTab('certificate');
+      } else if (reportParam) {
+        setSearchInput(reportParam);
+        const rep = reports.find((r) => r.id.toLowerCase() === reportParam!.toLowerCase());
+        if (rep) {
+          setSelectedStudentName(rep.studentName);
+          if (rep.parentPhone) setSelectedStudentPhone(rep.parentPhone);
+        } else {
+          setSelectedStudentName(reportParam);
+        }
+        setActiveTab('report');
+      } else if (phoneParam) {
+        setSearchInput(phoneParam);
+        setSelectedStudentPhone(phoneParam);
+        setSelectedStudentName(null);
+        if (tabParam) setActiveTab(tabParam);
+      } else if (studentParam) {
+        setSearchInput(studentParam);
+        setSelectedStudentName(studentParam);
+        setSelectedStudentPhone(null);
+        if (tabParam) setActiveTab(tabParam);
+      }
+    };
+
+    parseUrlParams();
+    window.addEventListener('hashchange', parseUrlParams);
+    return () => window.removeEventListener('hashchange', parseUrlParams);
+  }, [certificates, reports]);
 
   // Format Helper
   const formatRupiah = (val: number) => {
@@ -227,14 +360,24 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
     const repMatch = reports.filter((r) => {
       const p = (r.parentPhone || '').replace(/\D/g, '');
       const n = (r.studentName || '').toLowerCase().trim();
-      return (normPhone && p.includes(normPhone)) || (normName && n.includes(normName));
+      const id = (r.id || '').toLowerCase().trim();
+      return (
+        (normPhone && p.includes(normPhone)) ||
+        (normName && (n.includes(normName) || id.includes(normName)))
+      );
     });
 
     // 3. Check Certificates
     const certMatch = certificates.filter((c) => {
       const p = (c.parentPhone || '').replace(/\D/g, '');
       const n = (c.studentName || '').toLowerCase().trim();
-      return (normPhone && p.includes(normPhone)) || (normName && n.includes(normName));
+      const num = (c.certificateNumber || '').toLowerCase().trim();
+      const code = (c.verificationCode || '').toLowerCase().trim();
+      const id = (c.id || '').toLowerCase().trim();
+      return (
+        (normPhone && p.includes(normPhone)) ||
+        (normName && (n.includes(normName) || num.includes(normName) || code.includes(normName) || id.includes(normName)))
+      );
     });
 
     // 4. Check Transactions
@@ -728,7 +871,32 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
     const query = searchInput.trim();
     if (!query) return;
 
-    // Check if digits -> phone
+    // 1. Direct Certificate Match by Number or Verification Code
+    const certFound = certificates.find(
+      (c) =>
+        c.certificateNumber.toLowerCase() === query.toLowerCase() ||
+        c.verificationCode.toLowerCase() === query.toLowerCase() ||
+        c.id.toLowerCase() === query.toLowerCase()
+    );
+    if (certFound) {
+      setSelectedStudentName(certFound.studentName);
+      if (certFound.parentPhone) setSelectedStudentPhone(certFound.parentPhone);
+      setActiveTab('certificate');
+      return;
+    }
+
+    // 2. Direct Academic Report Match by ID
+    const repFound = reports.find(
+      (r) => r.id.toLowerCase() === query.toLowerCase()
+    );
+    if (repFound) {
+      setSelectedStudentName(repFound.studentName);
+      if (repFound.parentPhone) setSelectedStudentPhone(repFound.parentPhone);
+      setActiveTab('report');
+      return;
+    }
+
+    // 3. Digits -> phone
     const isDigits = /^[0-9+ ]+$/.test(query);
     if (isDigits) {
       setSelectedStudentPhone(query);
@@ -809,7 +977,26 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
           </div>
 
           {/* Right Header Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={handleManualSync}
+              disabled={isCloudSyncing}
+              title={
+                isCloudSyncing
+                  ? 'Menyinkronkan data Cloud...'
+                  : lastSyncTime
+                  ? `Sinkronisasi terakhir: ${lastSyncTime.toLocaleTimeString('id-ID')}`
+                  : 'Sinkronkan data terbaru dari Cloud'
+              }
+              className={`p-2 rounded-xl border transition-colors flex items-center justify-center cursor-pointer text-xs ${
+                isDark
+                  ? 'border-slate-700 text-slate-300 hover:bg-slate-800'
+                  : 'border-slate-300 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isCloudSyncing ? 'animate-spin text-amber-500' : ''}`} />
+            </button>
             {studentData && (
               <button
                 type="button"
@@ -871,7 +1058,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
               <form onSubmit={handleSearchSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">
-                    Masukkan No. WhatsApp Wali Murid atau Nama Lengkap Siswa
+                    Cari Siswa, No. WhatsApp, atau No. Sertifikat / Kode Verifikasi
                   </label>
                   <div className="relative">
                     <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-amber-500" />
@@ -879,7 +1066,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                       type="text"
                       value={searchInput}
                       onChange={(e) => setSearchInput(e.target.value)}
-                      placeholder="Contoh: 081234567890 atau Kenzo Alvaro"
+                      placeholder="Contoh: 081234567890, Kenzo Alvaro, atau BK-CERT/..."
                       className={`w-full pl-12 pr-28 py-3.5 rounded-2xl text-sm sm:text-base font-medium border outline-none transition-all ${
                         isDark
                           ? 'bg-slate-900/90 border-slate-700 text-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20'

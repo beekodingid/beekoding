@@ -57,6 +57,22 @@ function pushSettingsToSupabase(item: any): Promise<void> {
   triggerSupabaseSync((s) => s.pushSettingsToSupabase(item));
   return Promise.resolve();
 }
+function pushCertificateToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushCertificateToSupabase(item));
+  return Promise.resolve();
+}
+function deleteCertificateFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteCertificateFromSupabase(id));
+  return Promise.resolve();
+}
+function pushReportToSupabase(item: any): Promise<void> {
+  triggerSupabaseSync((s) => s.pushReportToSupabase(item));
+  return Promise.resolve();
+}
+function deleteReportFromSupabase(id: string): Promise<void> {
+  triggerSupabaseSync((s) => s.deleteReportFromSupabase(id));
+  return Promise.resolve();
+}
 
 export type FollowUpStatus = 'baru' | 'dihubungi' | 'terdaftar' | 'selesai';
 
@@ -633,6 +649,8 @@ export type StorageUpdateType =
   | 'transactions'
   | 'attendance'
   | 'system_users'
+  | 'certificates'
+  | 'reports'
   | 'all';
 
 export function emitStorageUpdate(type: StorageUpdateType = 'all'): void {
@@ -4747,6 +4765,7 @@ export function getCertificates(): StudentCertificate[] {
 export function saveCertificates(certificates: StudentCertificate[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.CERTIFICATES, JSON.stringify(certificates));
+    emitStorageUpdate('certificates');
   } catch (err) {
     console.error('Failed to save certificates:', err);
   }
@@ -4784,6 +4803,8 @@ export function createCertificate(
 
   const updated = [newCert, ...certificates];
   saveCertificates(updated);
+  pushCertificateToSupabase(newCert).catch(() => {});
+  emitStorageUpdate('certificates');
   return newCert;
 }
 
@@ -4804,6 +4825,8 @@ export function updateCertificate(
 
   certificates[index] = updatedCert;
   saveCertificates(certificates);
+  pushCertificateToSupabase(updatedCert).catch(() => {});
+  emitStorageUpdate('certificates');
   return updatedCert;
 }
 
@@ -4812,6 +4835,8 @@ export function deleteCertificate(id: string): boolean {
   const filtered = certificates.filter((c) => c.id !== id);
   if (filtered.length === certificates.length) return false;
   saveCertificates(filtered);
+  deleteCertificateFromSupabase(id).catch(() => {});
+  emitStorageUpdate('certificates');
   return true;
 }
 
@@ -6959,6 +6984,7 @@ export function getAcademicReports(): StudentAcademicReport[] {
 export function saveAcademicReports(reports: StudentAcademicReport[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(reports));
+    emitStorageUpdate('reports');
   } catch (err) {
     console.error('Failed to save academic reports:', err);
   }
@@ -6977,6 +7003,8 @@ export function createAcademicReport(
 
   reports.unshift(newReport);
   saveAcademicReports(reports);
+  pushReportToSupabase(newReport).catch(() => {});
+  emitStorageUpdate('reports');
   return newReport;
 }
 
@@ -6997,6 +7025,8 @@ export function updateAcademicReport(
 
   reports[index] = updatedReport;
   saveAcademicReports(reports);
+  pushReportToSupabase(updatedReport).catch(() => {});
+  emitStorageUpdate('reports');
   return updatedReport;
 }
 
@@ -7005,6 +7035,8 @@ export function deleteAcademicReport(id: string): boolean {
   const filtered = reports.filter((r) => r.id !== id);
   if (filtered.length === reports.length) return false;
   saveAcademicReports(filtered);
+  deleteReportFromSupabase(id).catch(() => {});
+  emitStorageUpdate('reports');
   return true;
 }
 

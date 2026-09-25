@@ -73,7 +73,11 @@ export function App() {
         setShowTalentAssessment(true);
         setShowAdmin(false);
         setShowStudentPortal(false);
-      } else if (hash === '#portal') {
+      } else if (
+        hash.startsWith('#portal') ||
+        search.includes('cert=') ||
+        search.includes('report=')
+      ) {
         setShowStudentPortal(true);
         setShowAdmin(false);
         setShowTalentAssessment(false);
