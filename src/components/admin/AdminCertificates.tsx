@@ -13,6 +13,8 @@ import {
   getSubmissions,
 } from '../../services/adminStorage';
 import { AdminCertificateModal } from './AdminCertificateModal';
+import { ShareParentNotificationModal } from './ShareParentNotificationModal';
+import { generateCertificateNotification } from '../../services/parentNotification';
 import {
   Award,
   Plus,
@@ -46,6 +48,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
 
   // Modal State
   const [selectedCert, setSelectedCert] = useState<StudentCertificate | null>(null);
+  const [sharingCert, setSharingCert] = useState<StudentCertificate | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingCert, setEditingCert] = useState<StudentCertificate | null>(null);
   const [copiedCertNum, setCopiedCertNum] = useState<string | null>(null);
@@ -265,30 +268,9 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
     showAlert('info', `Data asesmen ${s.profile.childName} dimuat ke formulir.`);
   };
 
-  // WhatsApp Sender
+  // WhatsApp & Email Share Modal
   const handleSendWhatsAppDirect = (cert: StudentCertificate) => {
-    if (!cert.parentPhone) {
-      showAlert('info', 'Nomor telepon orang tua belum tersedia pada data sertifikat ini.');
-      return;
-    }
-    const cleanPhone = cert.parentPhone.replace(/\D/g, '');
-    let target = cleanPhone;
-    if (target.startsWith('0')) {
-      target = '62' + target.substring(1);
-    }
-    const message = [
-      `Halo Kak *${cert.parentName || 'Orang Tua / Wali'}*, salam hangat dari Beekoding! 🐝🎓`,
-      ``,
-      `Kami mengucapkan selamat atas kelulusan ananda *${cert.studentName}* pada program:`,
-      `• *${cert.programName}*`,
-      `• *Predikat*: ${cert.honorsTitle}`,
-      `• *No. Sertifikat*: ${cert.certificateNumber}`,
-      `• *Kode Validasi*: ${cert.verificationCode}`,
-      ``,
-      `Piagam digital resmi ananda siap dicetak & dibagikan. Terima kasih telah mempercayakan pembelajaran logika dan coding ananda bersama kami! 🚀`,
-    ].join('\n');
-
-    window.open(`https://wa.me/${target}?text=${encodeURIComponent(message)}`, '_blank');
+    setSharingCert(cert);
   };
 
   // Export CSV
@@ -859,6 +841,20 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ isDark }) 
           certificate={selectedCert}
           isDark={isDark}
           onClose={() => setSelectedCert(null)}
+        />
+      )}
+
+      {/* Modal Bagikan ke Orang Tua (WA & Email) */}
+      {sharingCert && (
+        <ShareParentNotificationModal
+          isOpen={!!sharingCert}
+          onClose={() => setSharingCert(null)}
+          title="Kirim E-Sertifikat ke Orang Tua / Wali"
+          documentType="certificate"
+          studentName={sharingCert.studentName}
+          identifier={sharingCert.certificateNumber}
+          payload={generateCertificateNotification(sharingCert)}
+          isDark={isDark}
         />
       )}
 

@@ -330,6 +330,7 @@ export interface StudentCertificate {
   studentName: string;
   parentName?: string;
   parentPhone?: string;
+  parentEmail?: string;
   programName: string;
   batchName?: string;
   issueDate: string; // YYYY-MM-DD
@@ -477,6 +478,7 @@ export interface StudentAcademicReport {
   studentName: string;
   parentName: string;
   parentPhone: string;
+  parentEmail?: string;
   batchId: string;
   batchName: string;
   tier: 'junior' | 'middle' | 'teens';

@@ -26,6 +26,8 @@ import {
 } from '../../services/adminStorage';
 import { AdminAcademicReportModal } from './AdminAcademicReportModal';
 import { AdminPrintableReportModal } from './AdminPrintableReportModal';
+import { ShareParentNotificationModal } from './ShareParentNotificationModal';
+import { generateReportNotification } from '../../services/parentNotification';
 
 interface AdminAcademicReportsProps {
   isDark?: boolean;
@@ -98,6 +100,7 @@ export const AdminAcademicReports: React.FC<AdminAcademicReportsProps> = ({
   const [selectedPrintReport, setSelectedPrintReport] = useState<StudentAcademicReport | null>(
     null
   );
+  const [sharingReport, setSharingReport] = useState<StudentAcademicReport | null>(null);
 
   const reloadData = () => {
     setReports(getAcademicReports());
@@ -164,44 +167,9 @@ export const AdminAcademicReports: React.FC<AdminAcademicReportsProps> = ({
   // Analytics
   const stats = useMemo(() => calculateReportStats(reports), [reports]);
 
-  // 1-Click WhatsApp Direct
+  // 1-Click WhatsApp & Email Share Modal
   const handleDirectWA = (r: StudentAcademicReport) => {
-    const periodLabel =
-      r.reportPeriod === 'final_term' ? 'Akhir Sesi (Final-Term)' : 'Tengah Sesi (Mid-Term)';
-
-    const text = [
-      `🐝 *RAPOR HASIL BELAJAR SISWA BEEKODING* 📊`,
-      `---------------------------------------`,
-      `Yth. Bapak/Ibu *${r.parentName}*,`,
-      ``,
-      `Berikut adalah rangkuman evaluasi belajar ananda:`,
-      `⭐ *${r.studentName.toUpperCase()}*`,
-      `📚 *Kelas*: ${r.batchName} (${r.tier.toUpperCase()})`,
-      `🗓️ *Periode*: ${periodLabel}`,
-      `✅ *Kehadiran*: ${r.attendanceRate}%`,
-      `🎯 *Nilai Rata-rata*: *${r.averageScore} / 100*`,
-      `🏅 *Predikat*: *${r.gradeLetter}* (${r.predicateTitle})`,
-      ``,
-      `🚀 *Karya Capstone Project*:`,
-      `"${r.capstoneProjectTitle}"`,
-      ``,
-      `📝 *Catatan Mentor (${r.instructorName})*:`,
-      `"${r.instructorNotes}"`,
-      ``,
-      `💡 *Rekomendasi Level*:`,
-      `"${r.nextStepRecommendation}"`,
-      ``,
-      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
-    ].join('\n');
-
-    const cleanPhone = r.parentPhone.replace(/\D/g, '');
-    const normalizedPhone = cleanPhone.startsWith('0')
-      ? '62' + cleanPhone.substring(1)
-      : cleanPhone.startsWith('62')
-      ? cleanPhone
-      : '62' + cleanPhone;
-
-    window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(text)}`, '_blank');
+    setSharingReport(r);
   };
 
   return (
@@ -662,6 +630,20 @@ export const AdminAcademicReports: React.FC<AdminAcademicReportsProps> = ({
             setIsPrintModalOpen(false);
             setSelectedPrintReport(null);
           }}
+          isDark={isDark}
+        />
+      )}
+
+      {/* Modal Kirim Rapor ke Orang Tua (WA & Email) */}
+      {sharingReport && (
+        <ShareParentNotificationModal
+          isOpen={!!sharingReport}
+          onClose={() => setSharingReport(null)}
+          title="Kirim Rapor Belajar ke Orang Tua / Wali"
+          documentType="report"
+          studentName={sharingReport.studentName}
+          identifier={`Rapor ID: ${sharingReport.id}`}
+          payload={generateReportNotification(sharingReport)}
           isDark={isDark}
         />
       )}

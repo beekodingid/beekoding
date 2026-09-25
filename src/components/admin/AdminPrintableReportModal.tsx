@@ -7,11 +7,15 @@ import {
   Award,
   Sparkles,
   BookOpen,
-  Send,
+  Share2,
 } from 'lucide-react';
 import type { StudentAcademicReport } from '../../services/adminStorage';
 import { printIsolatedElement } from '../../services/printUtils';
 import { QRCodeView } from '../common/QRCodeView';
+import {
+  generateReportNotification,
+} from '../../services/parentNotification';
+import { ShareParentNotificationModal } from './ShareParentNotificationModal';
 
 interface AdminPrintableReportModalProps {
   report: StudentAcademicReport | null;
@@ -56,8 +60,11 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   if (!isOpen || !report) return null;
+
+  const notificationPayload = generateReportNotification(report);
 
   const handlePrint = () => {
     printIsolatedElement(printRef.current, {
@@ -79,70 +86,10 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
     }
   };
 
-  const generateWhatsAppMessage = () => {
-    const periodLabel =
-      report.reportPeriod === 'final_term' ? 'Akhir Sesi (Final-Term)' : 'Tengah Sesi (Mid-Term)';
-
-    const lines = [
-      `🐝 *RAPOR HASIL BELAJAR SISWA BEEKODING* 📊`,
-      `---------------------------------------`,
-      `Yth. Bapak/Ibu *${report.parentName}*,`,
-      ``,
-      `Berikut adalah rangkuman evaluasi kemajuan belajar ananda:`,
-      `⭐ *${report.studentName.toUpperCase()}*`,
-      `📚 *Kelas*: ${report.batchName}`,
-      `🎯 *Jenjang*: ${report.tier.toUpperCase()}`,
-      `🗓️ *Periode*: ${periodLabel}`,
-      `📅 *Tanggal Terbit*: ${formatDateIndo(report.issueDate)}`,
-      `✅ *Tingkat Kehadiran*: ${report.attendanceRate}%`,
-      ``,
-      `*PENCAPAIAN KOMPETENSI CODING:*`,
-      `• Nilai Rata-rata: *${report.averageScore} / 100*`,
-      `• Predikat: *${report.gradeLetter}* (${report.predicateTitle})`,
-      ``,
-      `*DETAIL 5 ASPEK KOMPETENSI:*`,
-      `1. Logika & Computational Thinking: ${report.scores.computationalThinking}/100`,
-      `2. Kreativitas & Desain: ${report.scores.creativityDesign}/100`,
-      `3. Problem Solving & Debugging: ${report.scores.problemSolving}/100`,
-      `4. Penguasaan Sintaks & Alat: ${report.scores.codeMastery}/100`,
-      `5. Sikap Belajar & Kolaborasi: ${report.scores.teamworkAttitude}/100`,
-      ``,
-      `🚀 *Karya Proyek Capstone*:`,
-      `"${report.capstoneProjectTitle}"`,
-      report.capstoneProjectDesc ? `_${report.capstoneProjectDesc}_` : '',
-      ``,
-      `📝 *Catatan Evaluasi Instruktur (${report.instructorName})*:`,
-      `"${report.instructorNotes}"`,
-      ``,
-      `💡 *Rekomendasi Langkah Berikutnya*:`,
-      `"${report.nextStepRecommendation}"`,
-      ``,
-      `Terima kasih atas kepercayaan Bapak/Ibu mendampingi ananda belajar coding & AI bersama Beekoding. Lembar rapor resmi A4 PDF dapat diunduh melalui portal sekolah.`,
-      `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
-    ]
-      .filter(Boolean)
-      .join('\n');
-
-    return lines;
-  };
-
   const handleCopyWA = () => {
-    const text = generateWhatsAppMessage();
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(notificationPayload.whatsappText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
-  };
-
-  const handleOpenWA = () => {
-    const text = generateWhatsAppMessage();
-    const cleanPhone = report.parentPhone.replace(/\D/g, '');
-    const normalizedPhone = cleanPhone.startsWith('0')
-      ? '62' + cleanPhone.substring(1)
-      : cleanPhone.startsWith('62')
-      ? cleanPhone
-      : '62' + cleanPhone;
-
-    window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
@@ -192,13 +139,14 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
               <span>{copied ? 'Tersalin!' : 'Salin Pesan WA'}</span>
             </button>
 
-            {/* Kirim Langsung WA ke Orang Tua */}
+            {/* Kirim ke Orang Tua (WA & Email) */}
             <button
-              onClick={handleOpenWA}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shadow-emerald-600/20 transition-all cursor-pointer"
+              onClick={() => setIsShareModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shadow-emerald-600/20 transition-all cursor-pointer"
+              title="Kirim Rapor ke WhatsApp atau Email Orang Tua"
             >
-              <Send className="w-3.5 h-3.5" />
-              <span>Kirim WA ke Orang Tua</span>
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Kirim ke Orang Tua</span>
             </button>
 
             {/* Cetak PDF / A4 */}
@@ -461,6 +409,20 @@ export const AdminPrintableReportModal: React.FC<AdminPrintableReportModalProps>
           </div>
         </div>
       </div>
+
+      {/* Modal Kirim Notifikasi Rapor ke Orang Tua */}
+      {isShareModalOpen && (
+        <ShareParentNotificationModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          title="Kirim Rapor Belajar ke Orang Tua / Wali"
+          documentType="report"
+          studentName={report.studentName}
+          identifier={`Rapor ID: ${report.id}`}
+          payload={notificationPayload}
+          isDark={isDark}
+        />
+      )}
     </div>
   );
 };

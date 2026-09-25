@@ -3,6 +3,10 @@ import { type StudentCertificate } from '../../services/adminStorage';
 import { printIsolatedElement } from '../../services/printUtils';
 import { QRCodeView } from '../common/QRCodeView';
 import {
+  generateCertificateNotification,
+} from '../../services/parentNotification';
+import { ShareParentNotificationModal } from './ShareParentNotificationModal';
+import {
   Printer,
   Share2,
   Copy,
@@ -26,6 +30,9 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const notificationPayload = generateCertificateNotification(certificate);
 
   const formatDateIndo = (isoDate: string) => {
     try {
@@ -48,50 +55,10 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
     });
   };
 
-  const generateWhatsAppMessage = () => {
-    const lines = [
-      `🎉 *SELAMAT! SERTIFIKAT KELULUSAN BEEKODING* 🎓🐝`,
-      `---------------------------------------`,
-      `Kepada Yth. *${certificate.parentName || 'Orang Tua / Wali'}*,`,
-      ``,
-      `Kami segenap tim akademik *Beekoding* mengucapkan selamat atas pencapaian luar biasa ananda:`,
-      `⭐ *${certificate.studentName.toUpperCase()}* ⭐`,
-      ``,
-      `Telah resmi dinyatakan *LULUS & MENYELESAIKAN* program:`,
-      `📚 *${certificate.programName}*`,
-      certificate.batchName ? `🏷️ *Batch*: ${certificate.batchName}` : '',
-      `🏅 *Predikat*: *${certificate.honorsTitle}*`,
-      `📜 *No. Registrasi Sertifikat*: \`${certificate.certificateNumber}\``,
-      `🔐 *Kode Verifikasi*: \`${certificate.verificationCode}\``,
-      `📅 *Tanggal Terbit*: ${formatDateIndo(certificate.issueDate)}`,
-      ``,
-      `Sertifikat ini merupakan bukti penguasaan kemampuan computational thinking, logika pemrograman, dan kesiapan teknologi masa depan.`,
-      ``,
-      `Semoga prestasi ini memicu semangat ananda untuk terus berkreasi dan berinovasi di era kecerdasan buatan! 🚀`,
-      ``,
-      `Salam hangat & bangga,`,
-      `*Febri Hasan, S.Kom., M.T.*`,
-      `_Founder & Lead Educator Beekoding_`,
-      `🌐 www.beekoding.id`,
-    ];
-    return lines.filter(Boolean).join('\n');
-  };
-
   const handleCopyText = () => {
-    navigator.clipboard.writeText(generateWhatsAppMessage());
+    navigator.clipboard.writeText(notificationPayload.whatsappText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSendWhatsApp = () => {
-    if (!certificate.parentPhone) return;
-    const cleanPhone = certificate.parentPhone.replace(/\D/g, '');
-    let target = cleanPhone;
-    if (target.startsWith('0')) {
-      target = '62' + target.substring(1);
-    }
-    const text = encodeURIComponent(generateWhatsAppMessage());
-    window.open(`https://wa.me/${target}?text=${text}`, '_blank');
   };
 
   return (
@@ -135,23 +102,22 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
               <span>Cetak / Simpan PDF</span>
             </button>
 
-            {certificate.parentPhone && (
-              <button
-                type="button"
-                onClick={handleSendWhatsApp}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-500 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
-                title="Kirim Ucapan & Sertifikat ke WhatsApp Orang Tua"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                <span>Kirim WA</span>
-              </button>
-            )}
+            {/* Tombol Bagikan ke Orang Tua (WA & Email) */}
+            <button
+              type="button"
+              onClick={() => setIsShareModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-500 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+              title="Kirim Verifikasi & E-Sertifikat via WhatsApp atau Email Orang Tua"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Kirim ke Orang Tua</span>
+            </button>
 
             <button
               type="button"
               onClick={handleCopyText}
               className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
-              title="Salin Rincian Sertifikat"
+              title="Salin Rincian & Tautan Sertifikat"
             >
               <Copy className="w-4 h-4" />
             </button>
@@ -352,6 +318,20 @@ export const AdminCertificateModal: React.FC<AdminCertificateModalProps> = ({
           </div>
         )}
       </div>
+
+      {/* Modal Kirim Notifikasi Orang Tua */}
+      {isShareModalOpen && (
+        <ShareParentNotificationModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          title="Kirim E-Sertifikat ke Orang Tua / Wali"
+          documentType="certificate"
+          studentName={certificate.studentName}
+          identifier={certificate.certificateNumber}
+          payload={notificationPayload}
+          isDark={isDark}
+        />
+      )}
     </div>
   );
 };
