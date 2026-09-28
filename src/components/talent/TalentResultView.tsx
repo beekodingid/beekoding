@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import {
   type AssessmentResult,
   CATEGORIES,
@@ -8,6 +8,8 @@ import {
 } from '../../data/talentQuestions';
 import { siteConfig } from '../../data/content';
 import { TalentRadarChart } from './TalentRadarChart';
+import { ConfettiCelebration } from './ConfettiCelebration';
+import { printIsolatedElement } from '../../services/printUtils';
 import {
   Sparkles,
   Award,
@@ -15,6 +17,10 @@ import {
   RotateCcw,
   BookOpen,
   ArrowRight,
+  Share2,
+  Printer,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 interface TalentResultViewProps {
@@ -36,10 +42,60 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
   const whatsappMessage = generateWhatsAppMessage(result);
   const whatsappUrl = `https://wa.me/${siteConfig.phoneRaw}?text=${whatsappMessage}`;
 
+  const [showConfetti, setShowConfetti] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const printAreaRef = useRef<HTMLDivElement | null>(null);
+
+  const handleCopyText = async () => {
+    const summaryText =
+      `✨ *Hasil Diagnostic Bakat Digital Beekoding* ✨\n\n` +
+      `👤 *Nama*: ${profile.childName}\n` +
+      `🎓 *Jenjang*: ${getTierLabel(profile.tier)}\n` +
+      `📊 *Rata-rata Skor*: ${totalScore}/100\n\n` +
+      `🌟 *Top 3 Pilar Unggulan*:\n` +
+      topStrengths.map((k, i) => `${i + 1}. ${CATEGORIES[k].name} (${scores[k]}%)`).join('\n') +
+      `\n\n🚀 *Rekomendasi Program*: ${recommendedProgram.title}\n\n` +
+      `Yuk cek potensi & bakat digital anak di: https://beekoding.pages.dev/#talent`;
+
+    try {
+      await navigator.clipboard.writeText(summaryText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Fallback
+    }
+  };
+
+  const handleShareNative = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: `Hasil Diagnostic Bakat Digital - ${profile.childName}`,
+          text: `Peta Bakat Digital Ananda ${profile.childName}: Skor ${totalScore}/100. Rekomendasi: ${recommendedProgram.title}.`,
+          url: 'https://beekoding.pages.dev/#talent',
+        });
+      } catch {
+        // Ignored or cancelled
+      }
+    } else {
+      handleCopyText();
+    }
+  };
+
+  const handlePrint = () => {
+    printIsolatedElement(printAreaRef.current, {
+      title: `Hasil Asesmen Bakat Beekoding - ${profile.childName}`,
+      orientation: 'portrait',
+    });
+  };
+
   return (
-    <div className="max-w-5xl mx-auto py-6 sm:py-10 px-4 sm:px-6 animate-fadeIn">
+    <div className="max-w-5xl mx-auto py-6 sm:py-10 px-4 sm:px-6 animate-fadeIn relative">
+      {/* Celebratory Confetti on Complete */}
+      {showConfetti && <ConfettiCelebration onComplete={() => setShowConfetti(false)} />}
+
       {/* Header Banner */}
-      <div className="text-center mb-8 sm:mb-10">
+      <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs font-extrabold uppercase tracking-wider mb-3">
           <Award className="w-4 h-4" />
           <span>Hasil Diagnostic Assessment Bakat Digital</span>
@@ -58,6 +114,65 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           Jenjang: <strong>{getTierLabel(profile.tier)}</strong> • Tanggal Evaluasi: {completedAt}
         </p>
       </div>
+
+      {/* Quick Action Toolbar (Share, Copy, Print PDF, Confetti) */}
+      <div className="flex flex-wrap items-center justify-center gap-2.5 mb-8">
+        <button
+          type="button"
+          onClick={handleShareNative}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+            isDark
+              ? 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30'
+              : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300'
+          }`}
+        >
+          <Share2 className="w-4 h-4" />
+          <span>Bagikan Hasil</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleCopyText}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+            isDark
+              ? 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
+              : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm'
+          }`}
+        >
+          {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+          <span>{copied ? 'Tersalin ke Clipboard! ✨' : 'Salin Ringkasan'}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handlePrint}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+            isDark
+              ? 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
+              : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm'
+          }`}
+        >
+          <Printer className="w-4 h-4" />
+          <span>Cetak / Simpan PDF</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setShowConfetti(true)}
+          title="Rayakan lagi!"
+          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+            isDark
+              ? 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border-purple-500/30'
+              : 'bg-purple-50 hover:bg-purple-100 text-purple-900 border-purple-300'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-purple-400" />
+          <span>🎉</span>
+        </button>
+      </div>
+
+      {/* Printable Area Wrapper */}
+      <div ref={printAreaRef}>
 
       {/* Main Score & Radar Hero Card */}
       <div
@@ -287,6 +402,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
             );
           })}
         </div>
+      </div>
       </div>
 
       {/* Bottom Action Footer */}
