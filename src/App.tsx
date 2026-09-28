@@ -10,6 +10,7 @@ import { WhyUs } from './components/WhyUs';
 import { Footer } from './components/Footer';
 import { TrialEventsSection } from './components/TrialEventsSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { PWAInstallPrompt } from './components/common/PWAInstallPrompt';
 import { type CodingEvent } from './services/adminStorage';
 
 // Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed
@@ -258,6 +259,9 @@ export function App() {
 
       {/* Floating WhatsApp chat widget */}
       <FloatingWhatsApp />
+
+      {/* PWA Add to Home Screen Prompt */}
+      <PWAInstallPrompt />
 
       {/* Summer AI & Coding Bootcamp 2026 Curriculum Modal */}
       {bootcampModalOpen && (
