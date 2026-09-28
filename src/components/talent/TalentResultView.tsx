@@ -21,6 +21,8 @@ import {
   Printer,
   Copy,
   Check,
+  Clock,
+  Zap,
 } from 'lucide-react';
 
 interface TalentResultViewProps {
@@ -47,11 +49,16 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
   const printAreaRef = useRef<HTMLDivElement | null>(null);
 
   const handleCopyText = async () => {
+    const timeInfo = result.durationFormatted
+      ? `⏱️ *Waktu Pengerjaan*: ${result.durationFormatted} (${result.paceAnalysis?.speedLabel || 'Selesai'})\n\n`
+      : '';
+
     const summaryText =
       `✨ *Hasil Diagnostic Bakat Digital Beekoding* ✨\n\n` +
       `👤 *Nama*: ${profile.childName}\n` +
       `🎓 *Jenjang*: ${getTierLabel(profile.tier)}\n` +
-      `📊 *Rata-rata Skor*: ${totalScore}/100\n\n` +
+      `📊 *Rata-rata Skor*: ${totalScore}/100\n` +
+      timeInfo +
       `🌟 *Top 3 Pilar Unggulan*:\n` +
       topStrengths.map((k, i) => `${i + 1}. ${CATEGORIES[k].name} (${scores[k]}%)`).join('\n') +
       `\n\n🚀 *Rekomendasi Program*: ${recommendedProgram.title}\n\n` +
@@ -69,9 +76,10 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
   const handleShareNative = async () => {
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
+        const timePart = result.durationFormatted ? ` • Durasi: ${result.durationFormatted}` : '';
         await navigator.share({
           title: `Hasil Diagnostic Bakat Digital - ${profile.childName}`,
-          text: `Peta Bakat Digital Ananda ${profile.childName}: Skor ${totalScore}/100. Rekomendasi: ${recommendedProgram.title}.`,
+          text: `Peta Bakat Digital Ananda ${profile.childName}: Skor ${totalScore}/100${timePart}. Rekomendasi: ${recommendedProgram.title}.`,
           url: 'https://beekoding.pages.dev/#talent',
         });
       } catch {
@@ -223,6 +231,37 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
                   : 'Kategori: Berkembang & Siap Dilatih (Developing Potential) 🌱'}
               </p>
             </div>
+
+            {/* Waktu Pengerjaan & Analisis Ketangkasan */}
+            {result.durationFormatted && (
+              <div
+                className={`p-4 rounded-2xl border text-xs transition-all ${
+                  isDark
+                    ? 'bg-slate-900/60 border-slate-800 text-slate-200'
+                    : 'bg-white border-amber-200 text-slate-800 shadow-sm'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-1.5 font-bold text-amber-500">
+                    <Clock className="w-4 h-4" />
+                    <span>Waktu Pengerjaan: {result.durationFormatted}</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                    {result.paceAnalysis?.speedLabel || 'Selesai'}
+                  </span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-slate-400">
+                  {result.paceAnalysis?.description ||
+                    'Menyelesaikan 80 butir soal asesmen dengan ritme konsentrasi yang baik.'}
+                </p>
+                {result.paceAnalysis?.avgSecondsPerQuestion && (
+                  <p className="text-[10px] font-mono text-slate-500 mt-1.5 flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-amber-500" />
+                    <span>Rata-rata: {result.paceAnalysis.avgSecondsPerQuestion} detik/soal (80 Soal)</span>
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Quick Strengths Summary */}
             <div className="space-y-2">

@@ -81,7 +81,7 @@ export const AdminQuestionBank: React.FC<AdminQuestionBankProps> = ({ isDark }) 
     setFormTier(activeTier);
     setFormCategory('logical');
     setFormSectionNumber(1);
-    setFormQuestionNumber((currentQuestions.length % 5) + 1);
+    setFormQuestionNumber(currentQuestions.length + 1);
     setFormPrompt('');
     setFormVisualHint('');
     setFormOptions([

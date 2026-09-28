@@ -1629,7 +1629,14 @@ export function getAllQuestions(): Record<AgeTier, TalentQuestion[]> {
       return QUESTION_BANK;
     }
     const parsed = JSON.parse(raw);
-    return parsed.junior && parsed.middle && parsed.teens ? parsed : QUESTION_BANK;
+    if (parsed.junior && parsed.middle && parsed.teens) {
+      if (parsed.junior.length < QUESTION_BANK.junior.length) {
+        localStorage.setItem(STORAGE_KEYS.QUESTIONS, JSON.stringify(QUESTION_BANK));
+        return QUESTION_BANK;
+      }
+      return parsed;
+    }
+    return QUESTION_BANK;
   } catch (err) {
     console.error('Error loading question bank:', err);
     return QUESTION_BANK;
