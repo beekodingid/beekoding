@@ -54,6 +54,21 @@ export const siteConfig = {
   aboutQuote: "Belajar coding dan AI semenyenangkan terbang bebas, semanis madu saat melihat karya pertama mereka berfungsi.",
 };
 
+/**
+ * Helper dinamis untuk membuat link WhatsApp terpersonalisasi sesuai program yang diminati
+ */
+export function getWhatsAppInquiryUrl(programTitle?: string, note?: string): string {
+  const base = `https://wa.me/${siteConfig.phoneRaw}`;
+  if (!programTitle) {
+    return siteConfig.whatsappUrl;
+  }
+  const text = `Halo Beekoding, saya ingin tanya dan konsultasi mengenai program *${programTitle}* untuk anak saya.${
+    note ? `\n\nCatatan: ${note}` : ''
+  }\n\nMohon info ketersediaan jadwal, biaya, dan silabusnya ya Kak. Terima kasih!`;
+  return `${base}?text=${encodeURIComponent(text)}`;
+}
+
+
 export const statsData = [
   { value: "10,000+", label: "Siswa Belajar Coding" },
   { value: "65+", label: "Sekolah & Mitra Kampus" },

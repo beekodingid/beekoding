@@ -86,10 +86,19 @@ import {
   type StudentAcademicReport,
   type TransactionRecord,
 } from '../../services/adminStorage';
-import { AdminCertificateModal } from '../admin/AdminCertificateModal';
-import { AdminPrintableReportModal } from '../admin/AdminPrintableReportModal';
-import { AdminInvoiceModal } from '../admin/AdminInvoiceModal';
 import { QRCodeView } from '../common/QRCodeView';
+
+// Lazy-loaded heavy modal modules for maximum Student Portal rendering performance
+const AdminCertificateModal = React.lazy(() =>
+  import('../admin/AdminCertificateModal').then((m) => ({ default: m.AdminCertificateModal }))
+);
+const AdminPrintableReportModal = React.lazy(() =>
+  import('../admin/AdminPrintableReportModal').then((m) => ({ default: m.AdminPrintableReportModal }))
+);
+const AdminInvoiceModal = React.lazy(() =>
+  import('../admin/AdminInvoiceModal').then((m) => ({ default: m.AdminInvoiceModal }))
+);
+
 
 interface StudentPortalViewProps {
   onClose?: () => void;
@@ -4586,30 +4595,36 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
 
         {/* MODAL: OFFICIAL CERTIFICATE STUDIO / PRINT */}
         {selectedCertificateForModal && (
-          <AdminCertificateModal
-            certificate={selectedCertificateForModal}
-            isDark={isDark}
-            onClose={() => setSelectedCertificateForModal(null)}
-          />
+          <React.Suspense fallback={null}>
+            <AdminCertificateModal
+              certificate={selectedCertificateForModal}
+              isDark={isDark}
+              onClose={() => setSelectedCertificateForModal(null)}
+            />
+          </React.Suspense>
         )}
 
         {/* MODAL: OFFICIAL ACADEMIC REPORT SHEET / PRINT */}
         {selectedReportForModal && (
-          <AdminPrintableReportModal
-            report={selectedReportForModal}
-            isOpen={!!selectedReportForModal}
-            isDark={isDark}
-            onClose={() => setSelectedReportForModal(null)}
-          />
+          <React.Suspense fallback={null}>
+            <AdminPrintableReportModal
+              report={selectedReportForModal}
+              isOpen={!!selectedReportForModal}
+              isDark={isDark}
+              onClose={() => setSelectedReportForModal(null)}
+            />
+          </React.Suspense>
         )}
 
         {/* MODAL: OFFICIAL INVOICE & RECEIPT / PRINT */}
         {selectedTransactionForModal && (
-          <AdminInvoiceModal
-            transaction={selectedTransactionForModal}
-            isDark={isDark}
-            onClose={() => setSelectedTransactionForModal(null)}
-          />
+          <React.Suspense fallback={null}>
+            <AdminInvoiceModal
+              transaction={selectedTransactionForModal}
+              isDark={isDark}
+              onClose={() => setSelectedTransactionForModal(null)}
+            />
+          </React.Suspense>
         )}
       </main>
     </div>

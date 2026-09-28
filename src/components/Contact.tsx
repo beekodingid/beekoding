@@ -7,12 +7,14 @@ import {
   Mail,
   Phone,
   MessageSquare,
+  MessageCircle,
   CheckCircle2,
   Send,
   Building,
   User,
   ExternalLink,
 } from 'lucide-react';
+
 
 interface ContactProps {
   selectedProgram?: string;
@@ -245,7 +247,19 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
                   <p className={`text-sm max-w-md mx-auto ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                     Data Anda untuk program <strong>{formData.program}</strong> telah kami terima. Tim konselor Beekoding akan segera menghubungi Anda melalui nomor <strong>{formData.phone || formData.email}</strong>.
                   </p>
-                  <div className="pt-4">
+                  <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a
+                      href={`https://wa.me/${siteConfig.phoneRaw}?text=${encodeURIComponent(
+                        `Halo Kak Admin Beekoding, saya ${formData.name} (${formData.role}).\nSaya baru saja mengisi formulir konsultasi untuk program *${formData.program}* via website beekoding.id.\n\nMohon informasi ketersediaan kuota dan panduannya ya Kak. Terima kasih!`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-xl shadow-emerald-500/25 transition-all"
+                    >
+                      <MessageCircle className="w-4 h-4 fill-slate-950" />
+                      <span>Chat WhatsApp Sekarang (Respon Cepat)</span>
+                    </a>
+
                     <button
                       onClick={() => {
                         setSubmitted(false);
@@ -258,8 +272,10 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
                           message: '',
                         });
                       }}
-                      className={`px-6 py-2.5 rounded-full text-xs font-bold transition-colors ${
-                        isDark ? 'bg-[#1e2436] hover:bg-[#28314a] text-slate-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                      className={`w-full sm:w-auto px-5 py-3 rounded-xl text-xs font-bold transition-colors border ${
+                        isDark
+                          ? 'bg-[#1e2436] hover:bg-[#28314a] text-slate-300 border-slate-700'
+                          : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                       }`}
                     >
                       Kirim Pertanyaan Lain

@@ -1,5 +1,7 @@
 import React from 'react';
-import { flagshipPrograms, siteConfig } from '../data/content';
+import { flagshipPrograms, getWhatsAppInquiryUrl } from '../data/content';
+
+
 import { useTheme } from '../context/ThemeContext';
 import {
   Sparkles,
@@ -251,6 +253,15 @@ export const Programs: React.FC<ProgramsProps> = ({
                             <span>Amankan Kursi Batch 2026</span>
                             <ArrowRight className="w-4 h-4 text-amber-500" />
                           </a>
+
+                          <a
+                            href={getWhatsAppInquiryUrl('Summer AI & Coding Bootcamp 2026')}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-amber-500 hover:text-amber-400 font-bold transition-colors inline-block pt-1"
+                          >
+                            Tanya kuota batch via WhatsApp →
+                          </a>
                         </div>
                       ) : (
                         <div className="space-y-3">
@@ -272,10 +283,10 @@ export const Programs: React.FC<ProgramsProps> = ({
                           </a>
 
                           <a
-                            href={siteConfig.whatsappUrl}
+                            href={getWhatsAppInquiryUrl(prog.title)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-amber-500 hover:text-amber-600 font-bold transition-colors inline-block"
+                            className="text-xs text-amber-500 hover:text-amber-400 font-bold transition-colors inline-block"
                           >
                             Tanya jadwal via WhatsApp →
                           </a>

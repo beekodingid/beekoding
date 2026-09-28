@@ -1,5 +1,5 @@
 import React from 'react';
-import { modularPrograms } from '../data/content';
+import { modularPrograms, getWhatsAppInquiryUrl } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
 import {
   Sparkles,
@@ -12,7 +12,9 @@ import {
   Users,
   CheckCircle,
   ArrowRight,
+  MessageCircle,
 } from 'lucide-react';
+
 
 interface ModularProgramsProps {
   onSelectProgramForInquiry: (title: string) => void;
@@ -170,14 +172,27 @@ export const ModularPrograms: React.FC<ModularProgramsProps> = ({
                     <span>{mod.students}</span>
                   </div>
 
-                  <a
-                    href="#contact"
-                    onClick={() => onSelectProgramForInquiry(mod.title)}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-500 hover:text-amber-600 group-hover:translate-x-1 transition-transform"
-                  >
-                    <span>Ajukan Modul</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={getWhatsAppInquiryUrl(mod.title)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`Tanya modul ${mod.title} via WhatsApp`}
+                      className="p-1.5 rounded-lg text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                      aria-label={`Tanya modul ${mod.title} via WhatsApp`}
+                    >
+                      <MessageCircle className="w-4 h-4 fill-emerald-500/20" />
+                    </a>
+
+                    <a
+                      href="#contact"
+                      onClick={() => onSelectProgramForInquiry(mod.title)}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-500 hover:text-amber-600 group-hover:translate-x-1 transition-transform"
+                    >
+                      <span>Ajukan Modul</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
               </div>
             );
