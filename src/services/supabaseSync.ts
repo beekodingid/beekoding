@@ -1024,10 +1024,10 @@ export async function fetchSubmissionsFromCloud(): Promise<AssessmentSubmission[
   const client = getSupabaseClient();
   if (!client || !isSupabaseConfigured()) return null;
   try {
-    let result = await client.from('students_submissions').select('*').order('created_at', { ascending: false });
+    let result = await client.from('students_submissions').select('*').order('created_at', { ascending: false }).limit(250);
     if (result.error) {
       console.warn('fetchSubmissionsFromCloud with order failed, trying plain select:', result.error);
-      result = await client.from('students_submissions').select('*');
+      result = await client.from('students_submissions').select('*').limit(250);
     }
     const { data, error } = result;
     if (error || !data) {
@@ -1075,10 +1075,10 @@ export async function fetchInquiriesFromCloud(): Promise<ConsultationInquiry[] |
   const client = getSupabaseClient();
   if (!client || !isSupabaseConfigured()) return null;
   try {
-    let result = await client.from('consultation_inquiries').select('*').order('created_at', { ascending: false });
+    let result = await client.from('consultation_inquiries').select('*').order('created_at', { ascending: false }).limit(250);
     if (result.error) {
       console.warn('fetchInquiriesFromCloud with order failed, falling back to unordered select:', result.error);
-      result = await client.from('consultation_inquiries').select('*');
+      result = await client.from('consultation_inquiries').select('*').limit(250);
     }
     const { data, error } = result;
     if (error || !data) {
@@ -1155,7 +1155,7 @@ export async function fetchTransactionsFromCloud(): Promise<TransactionRecord[] 
   const client = getSupabaseClient();
   if (!client || !isSupabaseConfigured()) return null;
   try {
-    const { data, error } = await client.from('financial_transactions').select('*').order('created_at', { ascending: false });
+    const { data, error } = await client.from('financial_transactions').select('*').order('created_at', { ascending: false }).limit(250);
     if (error || !data) {
       console.warn('fetchTransactionsFromCloud error:', error);
       return null;
@@ -1201,7 +1201,7 @@ export async function fetchAttendanceFromCloud(): Promise<SessionAttendanceRecor
   const client = getSupabaseClient();
   if (!client || !isSupabaseConfigured()) return null;
   try {
-    const { data, error } = await client.from('class_attendance').select('*').order('session_date', { ascending: false });
+    const { data, error } = await client.from('class_attendance').select('*').order('session_date', { ascending: false }).limit(300);
     if (error || !data) {
       console.warn('fetchAttendanceFromCloud error:', error);
       return null;
@@ -1275,7 +1275,8 @@ export async function fetchCertificatesFromCloud(): Promise<StudentCertificate[]
     const { data, error } = await client
       .from('student_certificates')
       .select('*')
-      .order('issue_date', { ascending: false });
+      .order('issue_date', { ascending: false })
+      .limit(250);
 
     if (error || !data) {
       console.warn('fetchCertificatesFromCloud error:', error);
@@ -1327,7 +1328,8 @@ export async function fetchAcademicReportsFromCloud(): Promise<StudentAcademicRe
     const { data, error } = await client
       .from('academic_reports')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(250);
 
     if (error || !data) {
       console.warn('fetchAcademicReportsFromCloud error:', error);

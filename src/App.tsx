@@ -7,16 +7,24 @@ import { Programs } from './components/Programs';
 import { ModularPrograms } from './components/ModularPrograms';
 import { Audience } from './components/Audience';
 import { WhyUs } from './components/WhyUs';
-import { Founder } from './components/Founder';
-import { Gallery } from './components/Gallery';
-import { StudentShowcase } from './components/StudentShowcase';
-import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { TrialEventsSection } from './components/TrialEventsSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { type CodingEvent } from './services/adminStorage';
 
-// Lazy-loaded heavy modules for maximum initial page load speed
+// Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed
+const StudentShowcase = lazy(() =>
+  import('./components/StudentShowcase').then((m) => ({ default: m.StudentShowcase }))
+);
+const Founder = lazy(() =>
+  import('./components/Founder').then((m) => ({ default: m.Founder }))
+);
+const Gallery = lazy(() =>
+  import('./components/Gallery').then((m) => ({ default: m.Gallery }))
+);
+const Contact = lazy(() =>
+  import('./components/Contact').then((m) => ({ default: m.Contact }))
+);
 const TalentAssessmentView = lazy(() =>
   import('./components/talent/TalentAssessmentView').then((m) => ({ default: m.TalentAssessmentView }))
 );
@@ -224,18 +232,20 @@ export function App() {
         <TrialEventsSection onOpenTrialEventsModal={handleOpenTrialEvents} />
         <Audience />
         <WhyUs />
-        <StudentShowcase
-          onOpenTalentAssessment={handleOpenTalentAssessment}
-          onOpenConsultation={() => {
-            const contactElement = document.getElementById('contact');
-            if (contactElement) {
-              contactElement.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-        />
-        <Founder />
-        <Gallery />
-        <Contact selectedProgram={selectedProgramForInquiry} />
+        <Suspense fallback={null}>
+          <StudentShowcase
+            onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenConsultation={() => {
+              const contactElement = document.getElementById('contact');
+              if (contactElement) {
+                contactElement.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          />
+          <Founder />
+          <Gallery />
+          <Contact selectedProgram={selectedProgramForInquiry} />
+        </Suspense>
       </main>
 
       {/* Footer */}

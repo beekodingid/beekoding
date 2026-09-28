@@ -10,17 +10,21 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
+          const normalizedId = id.replace(/\\/g, '/');
+          if (normalizedId.includes('node_modules')) {
+            if (normalizedId.includes('/react/') || normalizedId.includes('/react-dom/')) {
               return 'vendor-react';
             }
-            if (id.includes('lucide-react')) {
+            if (normalizedId.includes('/lucide-react/')) {
               return 'vendor-icons';
             }
-            if (id.includes('@supabase')) {
+            if (normalizedId.includes('/@supabase/')) {
               return 'vendor-supabase';
             }
             return 'vendor';
+          }
+          if (normalizedId.includes('src/services/adminStorage') || normalizedId.includes('src/data/talentQuestions')) {
+            return 'app-data';
           }
         },
       },
