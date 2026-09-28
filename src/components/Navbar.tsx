@@ -54,6 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Nav links lengkap 10 menu (dipertahankan penuh sesuai permintaan)
   const navLinks = [
     { name: 'Beranda', href: '#home' },
     { name: 'Tentang', href: '#about' },
@@ -84,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Top Urgency & Announcement Banner */}
       {showAnnouncement && (
         <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 text-slate-950 px-3 py-1.5 text-xs font-bold transition-all relative z-10 shadow-sm border-b border-amber-500/30">
-          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-2">
+          <div className="w-full max-w-[1880px] px-3 sm:px-6 lg:px-8 xl:px-10 mx-auto flex items-center justify-between gap-2">
             <div className="flex-1 flex items-center justify-center gap-2 text-center overflow-hidden">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-950 text-amber-300 text-[10px] font-black uppercase tracking-wider flex-shrink-0 animate-pulse">
                 🔥 Batch Baru Dibuka
@@ -123,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       )}
 
       <div
-        className={`max-w-[1440px] mx-auto px-3 sm:px-5 lg:px-6 flex items-center justify-between gap-2 xl:gap-4 transition-all duration-300 ${
+        className={`w-full max-w-[1880px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between gap-3 xl:gap-5 transition-all duration-300 ${
           isScrolled ? 'py-2.5' : 'py-3 sm:py-3.5'
         }`}
       >
@@ -164,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Bee<span className="text-amber-500">koding</span>
               </span>
               <span
-                className={`block text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold -mt-0.5 ${
+                className={`hidden 2xl:block text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold -mt-0.5 ${
                   isDark ? 'text-amber-300/80' : 'text-amber-700'
                 }`}
               >
@@ -174,11 +175,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
         </div>
 
-        {/* Center: Centered Desktop Navigation */}
-        <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-1">
+        {/* Center: Centered Desktop Navigation with all 10 Menu Links */}
+        <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-1 xl:px-2">
           <nav
             aria-label="Navigasi Utama"
-            className={`flex items-center gap-0.5 xl:gap-1 px-2 xl:px-3 py-1.5 rounded-full backdrop-blur-md shadow-inner transition-colors ${
+            className={`flex items-center gap-0.5 xl:gap-1 px-2.5 xl:px-3 py-1.5 rounded-full backdrop-blur-md shadow-inner transition-colors ${
               isDark
                 ? 'bg-[#161924]/85 border border-amber-500/20'
                 : 'bg-white/85 border border-amber-300/60 shadow-amber-500/5'
@@ -191,7 +192,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={link.name}
                   href={link.href}
                   onClick={() => setActiveLink(link.href)}
-                  className={`whitespace-nowrap px-2 xl:px-2.5 py-1 text-xs xl:text-[13px] rounded-full transition-all duration-200 ${
+                  className={`whitespace-nowrap px-1.5 xl:px-2 2xl:px-2.5 py-1 text-[11px] xl:text-xs 2xl:text-[13px] rounded-full transition-all duration-200 ${
                     isActive
                       ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-bold shadow-sm shadow-amber-500/30'
                       : isDark
@@ -206,11 +207,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
         </div>
 
-        {/* Header Actions: Theme Switch + Buttons */}
+        {/* Header Actions: Buttons + Theme Switch */}
         <div className="hidden sm:flex items-center gap-1.5 xl:gap-2 flex-shrink-0">
-          {/* Light / Dark Mode Switch */}
-          <ThemeToggle />
-
           {/* Tombol Portal Siswa & Wali Murid */}
           <button
             type="button"
@@ -248,6 +246,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </button>
 
+          {/* Tombol Daftar */}
           <a
             href="#contact"
             onClick={() => setActiveLink('#contact')}
@@ -256,6 +255,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Daftar</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
+
+          {/* Light / Dark Mode Switch di Ujung Kanan */}
+          <ThemeToggle />
         </div>
 
         {/* Mobile: Toggle + Menu Button */}
