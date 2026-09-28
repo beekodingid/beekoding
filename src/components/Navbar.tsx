@@ -63,33 +63,43 @@ export const Navbar: React.FC<NavbarProps> = ({
     ];
 
     const updateScrollSpy = () => {
-      const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 30);
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 30);
 
-      // 1. Cek jika sudah mendekati bagian terbawah halaman -> aktifkan #contact
+      // 1. Jika masih di bagian paling atas layar -> aktifkan #home
+      if (scrollY < 100) {
+        setActiveLink('#home');
+        ticking = false;
+        return;
+      }
+
+      // 2. Jika sudah mendekati bagian paling bawah halaman -> aktifkan #contact
       const isNearBottom =
-        window.innerHeight + scrollPosition >= document.documentElement.scrollHeight - 100;
+        window.innerHeight + scrollY >= document.documentElement.scrollHeight - 80;
       if (isNearBottom) {
         setActiveLink('#contact');
         ticking = false;
         return;
       }
 
-      // 2. Scan section dari atas ke bawah untuk menentukan section yang sedang aktif
-      const headerOffset = 150;
-      let currentSection = '#home';
+      // 3. Deteksi section yang sedang melintasi garis pandang viewport (160px di bawah navbar)
+      const viewportTriggerLine = 160;
+      let matchedSection = '';
 
       for (const id of sectionIds) {
         const el = document.getElementById(id);
         if (el) {
-          const top = el.offsetTop - headerOffset;
-          if (scrollPosition >= top) {
-            currentSection = `#${id}`;
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= viewportTriggerLine && rect.bottom > viewportTriggerLine) {
+            matchedSection = `#${id}`;
+            break;
           }
         }
       }
 
-      setActiveLink(currentSection);
+      if (matchedSection) {
+        setActiveLink(matchedSection);
+      }
       ticking = false;
     };
 
