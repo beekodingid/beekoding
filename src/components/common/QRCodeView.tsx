@@ -12,6 +12,9 @@ interface QRCodeViewProps {
   showScanLabel?: boolean;
 }
 
+// In-memory LRU cache to prevent re-generating identical QR Code data URLs
+const qrCodeCache = new Map<string, string>();
+
 export const QRCodeView: React.FC<QRCodeViewProps> = ({
   value,
   size = 96,
@@ -22,12 +25,18 @@ export const QRCodeView: React.FC<QRCodeViewProps> = ({
   alt = 'Scan QR Verifikasi',
   showScanLabel = false,
 }) => {
-  const [dataUrl, setDataUrl] = useState<string>('');
+  const cacheKey = `${value}_${size}_${darkColor}_${lightColor}_${margin}`;
+  const [dataUrl, setDataUrl] = useState<string>(() => (value ? qrCodeCache.get(cacheKey) || '' : ''));
 
   useEffect(() => {
     let isMounted = true;
     if (!value) {
       setDataUrl('');
+      return;
+    }
+
+    if (qrCodeCache.has(cacheKey)) {
+      setDataUrl(qrCodeCache.get(cacheKey)!);
       return;
     }
 
@@ -41,6 +50,7 @@ export const QRCodeView: React.FC<QRCodeViewProps> = ({
       errorCorrectionLevel: 'M',
     })
       .then((url) => {
+        qrCodeCache.set(cacheKey, url);
         if (isMounted) setDataUrl(url);
       })
       .catch((err) => {
@@ -50,7 +60,7 @@ export const QRCodeView: React.FC<QRCodeViewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [value, size, darkColor, lightColor, margin]);
+  }, [value, size, darkColor, lightColor, margin, cacheKey]);
 
   if (!dataUrl) {
     return (

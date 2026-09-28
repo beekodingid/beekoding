@@ -57,6 +57,23 @@ Setelah deploy pertama berhasil:
 
 ---
 
+## 📊 Langkah 4: Mengaktifkan Cloudflare Web Analytics (RUM & Core Web Vitals)
+
+Cloudflare Pages menyediakan analitik kecepatan nyata (Real User Monitoring) tanpa cookie dan tanpa memperlambat loading website:
+
+1. Di Dashboard Cloudflare, buka **Analytics & Logs** -> **Web Analytics**.
+2. Klik **Add a site** -> Pilih nama situs Anda (`beekoding.id` atau proyek Pages `beekoding`).
+3. Pilih metode **Automatic (Cloudflare injects beacon automatically)** atau salin token beacon jika diminta.
+4. Pada tab **Speed** di dashboard Cloudflare, Anda dapat memantau skor nyata pengunjung Indonesia:
+   - **LCP (Largest Contentful Paint)**
+   - **FID / INP (Interaction to Next Paint)**
+   - **CLS (Cumulative Layout Shift)**
+
+---
+
 ## 📁 Berkas Khusus yang Sudah Disediakan Otomatis di Proyek:
+- **`public/manifest.webmanifest`**: Konfigurasi PWA (Progressive Web App) agar aplikasi dapat diinstal di smartphone (Add to Home Screen).
+- **`public/sw.js`**: Service Worker untuk offline caching dan instan reload.
 - **`public/_redirects`**: Mencegah error 404 saat pengguna me-refresh halaman rute SPA (`#talent`, `#portal`, `#admin`).
 - **`public/_headers`**: Proteksi keamanan (anti-clickjacking, nosniff) dan optimasi cache aset Vite agar loading website super cepat di seluruh dunia.
+

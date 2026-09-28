@@ -172,12 +172,23 @@ export function printIsolatedElement(
           console.warn('Iframe print error, falling back to window.print', err);
           triggerPrintWithOrientation(orientation);
         } finally {
-          // Cleanup iframe after printing
-          setTimeout(() => {
-            if (iframe.parentNode) {
+          // Cleanup iframe memory safely after print dialog completes
+          const cleanupIframe = () => {
+            if (iframe && iframe.parentNode) {
+              try {
+                if (iframe.contentWindow?.document?.body) {
+                  iframe.contentWindow.document.body.innerHTML = '';
+                }
+              } catch {}
               iframe.parentNode.removeChild(iframe);
             }
-          }, 1500);
+          };
+
+          if (iframe.contentWindow) {
+            iframe.contentWindow.addEventListener('afterprint', cleanupIframe, { once: true });
+          }
+          // Safe fallback cleanup if afterprint is suppressed by browser
+          setTimeout(cleanupIframe, 30000);
         }
       }, 350);
     };
