@@ -6,6 +6,7 @@ Allow: /#modular
 Allow: /#events
 Allow: /#about
 Allow: /#contact
+Allow: /#faq
 Allow: /#talent
 Allow: /#portal
 

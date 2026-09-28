@@ -54,6 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { name: 'Karya Siswa', href: '#showcase' },
     { name: 'Visi', href: '#founder' },
     { name: 'Kegiatan', href: '#gallery' },
+    { name: 'FAQ', href: '#faq' },
     { name: 'Kontak', href: '#contact' },
   ];
 

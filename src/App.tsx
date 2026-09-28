@@ -23,6 +23,9 @@ const Founder = lazy(() =>
 const Gallery = lazy(() =>
   import('./components/Gallery').then((m) => ({ default: m.Gallery }))
 );
+const FAQ = lazy(() =>
+  import('./components/FAQ').then((m) => ({ default: m.FAQ }))
+);
 const Contact = lazy(() =>
   import('./components/Contact').then((m) => ({ default: m.Contact }))
 );
@@ -245,6 +248,7 @@ export function App() {
           />
           <Founder />
           <Gallery />
+          <FAQ />
           <Contact selectedProgram={selectedProgramForInquiry} />
         </Suspense>
       </main>
