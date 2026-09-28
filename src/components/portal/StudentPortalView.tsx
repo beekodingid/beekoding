@@ -87,6 +87,9 @@ import {
   type TransactionRecord,
 } from '../../services/adminStorage';
 import { QRCodeView } from '../common/QRCodeView';
+import { ArrowLeft } from 'lucide-react';
+import { siteConfig } from '../../data/content';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 // Lazy-loaded heavy modal modules for maximum Student Portal rendering performance
 const AdminCertificateModal = React.lazy(() =>
@@ -157,6 +160,8 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
   const [activeTab, setActiveTab] = useState<PortalTab>('overview');
   const [selectedStudentPhone, setSelectedStudentPhone] = useState<string | null>(null);
   const [selectedStudentName, setSelectedStudentName] = useState<string | null>(null);
+  const [isValidatingSearch, setIsValidatingSearch] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [resourcesList, setResourcesList] = useState<LearningResource[]>(() => getLearningResources());
   const [resourceFilterType, setResourceFilterType] = useState<string>('all');
@@ -269,6 +274,321 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
     handleManualSync();
   }, [handleManualSync]);
 
+  interface ValidatedStudentMatch {
+    studentName: string;
+    parentPhone: string | null;
+    matchedBy: 'certificate' | 'report' | 'phone' | 'name';
+    matchedLabel: string;
+    preferredTab?: PortalTab;
+  }
+
+  // Fungsi validasi pencarian siswa terdaftar dari Supabase / LocalStorage
+  const findStudentMatch = useCallback(
+    (
+      rawQuery: string,
+      customData?: {
+        certs?: StudentCertificate[];
+        reps?: StudentAcademicReport[];
+        bts?: ClassBatch[];
+        subs?: any[];
+        txs?: any[];
+        gams?: any[];
+        atts?: any[];
+        evts?: any[];
+        couns?: any[];
+      }
+    ): ValidatedStudentMatch | null => {
+      const q = rawQuery.trim();
+      if (!q) return null;
+
+      const certsList = customData?.certs || certificates;
+      const repsList = customData?.reps || reports;
+      const btsList = customData?.bts || batches;
+      const subsList = customData?.subs || submissions;
+      const txsList = customData?.txs || transactions;
+      const gamsList = customData?.gams || gamificationProfiles;
+      const attsList = customData?.atts || attendanceRecords;
+      const evtsList = customData?.evts || eventsList;
+      const counsList = customData?.couns || counselingList;
+
+      const qLower = q.toLowerCase();
+
+      // 1. Check No. Sertifikat / Kode Verifikasi
+      const certFound = certsList.find(
+        (c) =>
+          (c.certificateNumber && c.certificateNumber.toLowerCase() === qLower) ||
+          (c.verificationCode && c.verificationCode.toLowerCase() === qLower) ||
+          (c.id && c.id.toLowerCase() === qLower)
+      );
+      if (certFound) {
+        return {
+          studentName: certFound.studentName,
+          parentPhone: certFound.parentPhone || null,
+          matchedBy: 'certificate',
+          matchedLabel: `Sertifikat ${certFound.certificateNumber || certFound.verificationCode}`,
+          preferredTab: 'certificate',
+        };
+      }
+
+      // 2. Check No. Rapor ID
+      const repFound = repsList.find((r) => r.id && r.id.toLowerCase() === qLower);
+      if (repFound) {
+        return {
+          studentName: repFound.studentName,
+          parentPhone: repFound.parentPhone || null,
+          matchedBy: 'report',
+          matchedLabel: `Rapor ${repFound.id}`,
+          preferredTab: 'report',
+        };
+      }
+
+      // 3. Check No. WhatsApp (minimal 8 digit nomor telepon)
+      const digitsOnly = q.replace(/\D/g, '');
+      if (digitsOnly.length >= 8) {
+        const isPhoneMatch = (phoneStr?: string | null) => {
+          if (!phoneStr) return false;
+          const pDigits = phoneStr.replace(/\D/g, '');
+          return (
+            pDigits.length >= 8 &&
+            (pDigits.includes(digitsOnly) || digitsOnly.includes(pDigits))
+          );
+        };
+
+        // Check batches enrolled students
+        for (const b of btsList) {
+          const st = b.enrolledStudents.find((s) => isPhoneMatch(s.parentPhone));
+          if (st) {
+            return {
+              studentName: st.studentName,
+              parentPhone: st.parentPhone || digitsOnly,
+              matchedBy: 'phone',
+              matchedLabel: `No. WhatsApp ${digitsOnly}`,
+            };
+          }
+        }
+
+        // Check certificates
+        const certByPhone = certsList.find((c) => isPhoneMatch(c.parentPhone));
+        if (certByPhone) {
+          return {
+            studentName: certByPhone.studentName,
+            parentPhone: certByPhone.parentPhone || digitsOnly,
+            matchedBy: 'phone',
+            matchedLabel: `No. WhatsApp ${digitsOnly}`,
+          };
+        }
+
+        // Check reports
+        const repByPhone = repsList.find((r) => isPhoneMatch(r.parentPhone));
+        if (repByPhone) {
+          return {
+            studentName: repByPhone.studentName,
+            parentPhone: repByPhone.parentPhone || digitsOnly,
+            matchedBy: 'phone',
+            matchedLabel: `No. WhatsApp ${digitsOnly}`,
+          };
+        }
+
+        // Check submissions
+        const subByPhone = subsList.find((s) => isPhoneMatch(s.profile?.parentPhone));
+        if (subByPhone) {
+          return {
+            studentName: subByPhone.profile?.childName || 'Siswa',
+            parentPhone: subByPhone.profile?.parentPhone || digitsOnly,
+            matchedBy: 'phone',
+            matchedLabel: `No. WhatsApp ${digitsOnly}`,
+          };
+        }
+
+        // Check transactions
+        const txByPhone = txsList.find((t) => isPhoneMatch(t.parentPhone));
+        if (txByPhone) {
+          return {
+            studentName: txByPhone.studentName,
+            parentPhone: txByPhone.parentPhone || digitsOnly,
+            matchedBy: 'phone',
+            matchedLabel: `No. WhatsApp ${digitsOnly}`,
+          };
+        }
+
+        // Check gamification
+        const gamByPhone = gamsList.find((g) => isPhoneMatch(g.parentPhone));
+        if (gamByPhone) {
+          return {
+            studentName: gamByPhone.studentName,
+            parentPhone: gamByPhone.parentPhone || digitsOnly,
+            matchedBy: 'phone',
+            matchedLabel: `No. WhatsApp ${digitsOnly}`,
+          };
+        }
+
+        // Check attendance
+        for (const rec of attsList) {
+          const st = rec.students.find((s: any) => isPhoneMatch(s.parentPhone));
+          if (st) {
+            return {
+              studentName: st.studentName,
+              parentPhone: st.parentPhone || digitsOnly,
+              matchedBy: 'phone',
+              matchedLabel: `No. WhatsApp ${digitsOnly}`,
+            };
+          }
+        }
+
+        // Check events
+        for (const evt of evtsList) {
+          const reg = evt.registrations.find((r: any) => isPhoneMatch(r.parentPhone));
+          if (reg) {
+            return {
+              studentName: reg.childName || 'Siswa',
+              parentPhone: reg.parentPhone || digitsOnly,
+              matchedBy: 'phone',
+              matchedLabel: `No. WhatsApp ${digitsOnly}`,
+            };
+          }
+        }
+
+        // Check counseling
+        const counByPhone = counsList.find((c) => isPhoneMatch(c.parentPhone));
+        if (counByPhone) {
+          return {
+            studentName: counByPhone.studentName,
+            parentPhone: counByPhone.parentPhone || digitsOnly,
+            matchedBy: 'phone',
+            matchedLabel: `No. WhatsApp ${digitsOnly}`,
+          };
+        }
+      }
+
+      // 4. Check Nama Siswa (minimal 2 karakter)
+      if (q.length >= 2) {
+        const isNameMatch = (candName?: string | null) => {
+          if (!candName) return false;
+          const cLower = candName.toLowerCase().trim();
+          return cLower === qLower || cLower.includes(qLower) || qLower.includes(cLower);
+        };
+
+        // Check enrolled students in batches
+        for (const b of btsList) {
+          const st = b.enrolledStudents.find((s) => isNameMatch(s.studentName));
+          if (st) {
+            return {
+              studentName: st.studentName,
+              parentPhone: st.parentPhone || null,
+              matchedBy: 'name',
+              matchedLabel: `Nama Siswa: ${st.studentName}`,
+            };
+          }
+        }
+
+        // Check certificates
+        const certByName = certsList.find((c) => isNameMatch(c.studentName));
+        if (certByName) {
+          return {
+            studentName: certByName.studentName,
+            parentPhone: certByName.parentPhone || null,
+            matchedBy: 'name',
+            matchedLabel: `Nama Siswa: ${certByName.studentName}`,
+          };
+        }
+
+        // Check reports
+        const repByName = repsList.find((r) => isNameMatch(r.studentName));
+        if (repByName) {
+          return {
+            studentName: repByName.studentName,
+            parentPhone: repByName.parentPhone || null,
+            matchedBy: 'name',
+            matchedLabel: `Nama Siswa: ${repByName.studentName}`,
+          };
+        }
+
+        // Check submissions
+        const subByName = subsList.find((s) => isNameMatch(s.profile?.childName));
+        if (subByName) {
+          return {
+            studentName: subByName.profile?.childName || q,
+            parentPhone: subByName.profile?.parentPhone || null,
+            matchedBy: 'name',
+            matchedLabel: `Nama Siswa: ${subByName.profile?.childName}`,
+          };
+        }
+
+        // Check transactions
+        const txByName = txsList.find((t) => isNameMatch(t.studentName));
+        if (txByName) {
+          return {
+            studentName: txByName.studentName,
+            parentPhone: txByName.parentPhone || null,
+            matchedBy: 'name',
+            matchedLabel: `Nama Siswa: ${txByName.studentName}`,
+          };
+        }
+
+        // Check gamification
+        const gamByName = gamsList.find((g) => isNameMatch(g.studentName));
+        if (gamByName) {
+          return {
+            studentName: gamByName.studentName,
+            parentPhone: gamByName.parentPhone || null,
+            matchedBy: 'name',
+            matchedLabel: `Nama Siswa: ${gamByName.studentName}`,
+          };
+        }
+
+        // Check attendance
+        for (const rec of attsList) {
+          const st = rec.students.find((s: any) => isNameMatch(s.studentName));
+          if (st) {
+            return {
+              studentName: st.studentName,
+              parentPhone: st.parentPhone || null,
+              matchedBy: 'name',
+              matchedLabel: `Nama Siswa: ${st.studentName}`,
+            };
+          }
+        }
+
+        // Check events
+        for (const evt of evtsList) {
+          const reg = evt.registrations.find((r: any) => isNameMatch(r.childName));
+          if (reg) {
+            return {
+              studentName: reg.childName || q,
+              parentPhone: reg.parentPhone || null,
+              matchedBy: 'name',
+              matchedLabel: `Nama Siswa: ${reg.childName}`,
+            };
+          }
+        }
+
+        // Check counseling
+        const counByName = counsList.find((c) => isNameMatch(c.studentName));
+        if (counByName) {
+          return {
+            studentName: counByName.studentName,
+            parentPhone: counByName.parentPhone || null,
+            matchedBy: 'name',
+            matchedLabel: `Nama Siswa: ${counByName.studentName}`,
+          };
+        }
+      }
+
+      return null;
+    },
+    [
+      certificates,
+      reports,
+      batches,
+      submissions,
+      transactions,
+      gamificationProfiles,
+      attendanceRecords,
+      eventsList,
+      counselingList,
+    ]
+  );
+
   // URL Parameters Auto-detection (?cert=..., ?phone=..., ?report=..., ?student=..., ?tab=...)
   useEffect(() => {
     const parseUrlParams = () => {
@@ -303,48 +623,30 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
         if (!tabParam) tabParam = hashParams.get('tab') as PortalTab | null;
       }
 
-      if (certParam) {
-        setSearchInput(certParam);
-        const cert = certificates.find(
-          (c) =>
-            c.certificateNumber.toLowerCase() === certParam!.toLowerCase() ||
-            c.verificationCode.toLowerCase() === certParam!.toLowerCase() ||
-            c.id.toLowerCase() === certParam!.toLowerCase()
-        );
-        if (cert) {
-          setSelectedStudentName(cert.studentName);
-          if (cert.parentPhone) setSelectedStudentPhone(cert.parentPhone);
+      const rawParam = certParam || reportParam || phoneParam || studentParam;
+      if (rawParam) {
+        setSearchInput(rawParam);
+        const match = findStudentMatch(rawParam);
+        if (match) {
+          setSelectedStudentName(match.studentName);
+          setSelectedStudentPhone(match.parentPhone);
+          if (certParam) setActiveTab('certificate');
+          else if (reportParam) setActiveTab('report');
+          else if (tabParam) setActiveTab(tabParam);
+          else if (match.preferredTab) setActiveTab(match.preferredTab);
+          setValidationError(null);
         } else {
-          setSelectedStudentName(certParam);
+          setValidationError(
+            `Data siswa untuk parameter "${rawParam}" tidak ditemukan di database. Pastikan nomor sertifikat, no. WhatsApp, atau nama siswa valid.`
+          );
         }
-        setActiveTab('certificate');
-      } else if (reportParam) {
-        setSearchInput(reportParam);
-        const rep = reports.find((r) => r.id.toLowerCase() === reportParam!.toLowerCase());
-        if (rep) {
-          setSelectedStudentName(rep.studentName);
-          if (rep.parentPhone) setSelectedStudentPhone(rep.parentPhone);
-        } else {
-          setSelectedStudentName(reportParam);
-        }
-        setActiveTab('report');
-      } else if (phoneParam) {
-        setSearchInput(phoneParam);
-        setSelectedStudentPhone(phoneParam);
-        setSelectedStudentName(null);
-        if (tabParam) setActiveTab(tabParam);
-      } else if (studentParam) {
-        setSearchInput(studentParam);
-        setSelectedStudentName(studentParam);
-        setSelectedStudentPhone(null);
-        if (tabParam) setActiveTab(tabParam);
       }
     };
 
     parseUrlParams();
     window.addEventListener('hashchange', parseUrlParams);
     return () => window.removeEventListener('hashchange', parseUrlParams);
-  }, [certificates, reports]);
+  }, [findStudentMatch]);
 
   // Format Helper
   const formatRupiah = (val: number) => {
@@ -524,6 +826,21 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
       const n = (c.studentName || '').toLowerCase().trim();
       return (normPhone && p.includes(normPhone)) || (normName && n.includes(normName));
     });
+
+    const hasAnyVerifiedRecord =
+      !!subMatch ||
+      repMatch.length > 0 ||
+      certMatch.length > 0 ||
+      txMatch.length > 0 ||
+      enrolledBatches.length > 0 ||
+      matchedAttendance.length > 0 ||
+      !!gamificationProfile ||
+      matchedEvents.length > 0 ||
+      matchedCounseling.length > 0;
+
+    if (!hasAnyVerifiedRecord) {
+      return null;
+    }
 
     return {
       studentName,
@@ -884,45 +1201,77 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
     }
   };
 
-  // Handle Search Submission
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  // Handle Search Submission with strict Supabase / local validation
+  const handleSearchSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const query = searchInput.trim();
     if (!query) return;
 
-    // 1. Direct Certificate Match by Number or Verification Code
-    const certFound = certificates.find(
-      (c) =>
-        c.certificateNumber.toLowerCase() === query.toLowerCase() ||
-        c.verificationCode.toLowerCase() === query.toLowerCase() ||
-        c.id.toLowerCase() === query.toLowerCase()
-    );
-    if (certFound) {
-      setSelectedStudentName(certFound.studentName);
-      if (certFound.parentPhone) setSelectedStudentPhone(certFound.parentPhone);
-      setActiveTab('certificate');
-      return;
+    setValidationError(null);
+
+    // 1. Try finding a match from currently loaded local storage state
+    let match = findStudentMatch(query);
+
+    // 2. If not found locally and Supabase is configured, pull fresh data from Supabase & retry
+    if (!match && isSupabaseConfigured()) {
+      setIsValidatingSearch(true);
+      try {
+        const { pullAllDataFromSupabase } = await import('../../services/supabaseSync');
+        await pullAllDataFromSupabase();
+
+        const freshCerts = getCertificates();
+        const freshReps = getAcademicReports();
+        const freshBts = getBatches();
+        const freshSubs = getSubmissions();
+        const freshTxs = getTransactions();
+        const freshGams = getGamificationProfiles();
+        const freshAtts = getAttendanceRecords();
+        const freshEvts = getCodingEvents();
+        const freshCouns = getCounselingSessions();
+
+        setCertificates(freshCerts);
+        setReports(freshReps);
+        setBatches(freshBts);
+        setSubmissions(freshSubs);
+        setTransactions(freshTxs);
+        setGamificationProfiles(freshGams);
+        setAttendanceRecords(freshAtts);
+        setEventsList(freshEvts);
+        setCounselingList(freshCouns);
+        setLastSyncTime(new Date());
+
+        match = findStudentMatch(query, {
+          certs: freshCerts,
+          reps: freshReps,
+          bts: freshBts,
+          subs: freshSubs,
+          txs: freshTxs,
+          gams: freshGams,
+          atts: freshAtts,
+          evts: freshEvts,
+          couns: freshCouns,
+        });
+      } catch (err) {
+        console.warn('Gagal verifikasi data Supabase:', err);
+      } finally {
+        setIsValidatingSearch(false);
+      }
     }
 
-    // 2. Direct Academic Report Match by ID
-    const repFound = reports.find(
-      (r) => r.id.toLowerCase() === query.toLowerCase()
-    );
-    if (repFound) {
-      setSelectedStudentName(repFound.studentName);
-      if (repFound.parentPhone) setSelectedStudentPhone(repFound.parentPhone);
-      setActiveTab('report');
-      return;
-    }
-
-    // 3. Digits -> phone
-    const isDigits = /^[0-9+ ]+$/.test(query);
-    if (isDigits) {
-      setSelectedStudentPhone(query);
-      setSelectedStudentName(null);
+    // 3. Evaluate match result
+    if (match) {
+      setSelectedStudentName(match.studentName);
+      setSelectedStudentPhone(match.parentPhone);
+      setValidationError(null);
+      if (match.preferredTab) {
+        setActiveTab(match.preferredTab);
+      }
     } else {
-      setSelectedStudentName(query);
+      setSelectedStudentName(null);
       setSelectedStudentPhone(null);
+      setValidationError(
+        'Data siswa tidak ditemukan di database Beekoding. Pastikan memasukkan Nama Siswa yang terdaftar, No. WhatsApp aktif, atau No. Sertifikat / Kode Verifikasi yang valid.'
+      );
     }
   };
 
@@ -938,6 +1287,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
     setSelectedStudentPhone(null);
     setSelectedStudentName(null);
     setSearchInput('');
+    setValidationError(null);
   };
 
   return (
@@ -957,18 +1307,19 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
-            {/* <button
-              onClick={onClose}
-              className={`p-2 rounded-xl border transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer ${
-                isDark
-                  ? 'bg-slate-800/80 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700'
-                  : 'bg-amber-50 border-amber-200 text-amber-900 hover:bg-amber-100'
-              }`}
-              title="Kembali ke Beranda"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Ke Beranda</span>
-            </button> */}
+            <button
+                          type="button"
+                          onClick={_onClose}
+                          className={`p-2 rounded-xl border transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer ${
+                            isDark
+                              ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
+                              : 'bg-slate-50 border-slate-200 text-slate-700 hover:text-slate-900 hover:border-slate-300'
+                          }`}
+                          title="Kembali ke Beranda"
+                        >
+                          <ArrowLeft className="w-4 h-4" />
+                          <span className="hidden sm:inline">Beranda</span>
+                        </button>
 
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 p-[1.5px]">
@@ -1088,9 +1439,13 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                     <input
                       type="text"
                       value={searchInput}
-                      onChange={(e) => setSearchInput(e.target.value)}
+                      onChange={(e) => {
+                        setSearchInput(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
                       placeholder="Contoh: 081234567890, Kenzo Alvaro, atau BK-CERT/..."
-                      className={`w-full pl-12 pr-28 py-3.5 rounded-2xl text-sm sm:text-base font-medium border outline-none transition-all ${
+                      disabled={isValidatingSearch}
+                      className={`w-full pl-12 pr-36 py-3.5 rounded-2xl text-sm sm:text-base font-medium border outline-none transition-all ${
                         isDark
                           ? 'bg-slate-900/90 border-slate-700 text-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20'
                           : 'bg-slate-50 border-slate-300 text-slate-900 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
@@ -1098,22 +1453,52 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                     />
                     <button
                       type="submit"
-                      disabled={!searchInput.trim()}
-                      className={`absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                        searchInput.trim()
+                      disabled={!searchInput.trim() || isValidatingSearch}
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        searchInput.trim() && !isValidatingSearch
                           ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 hover:brightness-110 shadow-md shadow-amber-500/25'
                           : 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
                       }`}
                     >
-                      Buka Portal
+                      {isValidatingSearch ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin text-slate-950" />
+                          <span>Verifikasi...</span>
+                        </>
+                      ) : (
+                        <span>Buka Portal</span>
+                      )}
                     </button>
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Data terenkripsi dan diverifikasi sesuai nomor kontak pendaftaran awal.</span>
+                    <span>Diverifikasi otomatis dengan database Supabase Beekoding berdasarkan Nama Siswa, No. WhatsApp, atau No. Sertifikat / Kode Verifikasi.</span>
                   </p>
                 </div>
               </form>
+
+              {validationError && (
+                <div className="mt-4 p-4 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
+                  <div className="flex items-start gap-2.5">
+                    <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-red-800 dark:text-red-200">Akses Ditolak / Data Tidak Ditemukan</p>
+                      <p className="mt-0.5 text-xs text-red-600 dark:text-red-400">{validationError}</p>
+                    </div>
+                  </div>
+                  <a
+                    href={`${siteConfig.whatsappUrl}?text=${encodeURIComponent(
+                      `Halo Admin Beekoding, saya kesulitan mengakses Portal Siswa dengan kata kunci: "${searchInput}". Mohon bantuannya untuk verifikasi data murid.`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-colors shrink-0 shadow-sm"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5" />
+                    <span>Bantuan Admin</span>
+                  </a>
+                </div>
+              )}
 
               {/* Quick Demo Selector Chips */}
               {/* <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
