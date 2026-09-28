@@ -160,7 +160,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <span>Executive Analytics & Assessment Control</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Dashboard Pengelolaan Tes Bakat Digital
+            Dashboard Pengelolaan Tes Bakat Anak
           </h2>
           <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
             Pantau hasil evaluasi bakat siswa dari jenjang SD, SMP, hingga SMA, tindak lanjuti pendaftaran orang tua, dan perbarui bank soal 8 pilar kecerdasan.
