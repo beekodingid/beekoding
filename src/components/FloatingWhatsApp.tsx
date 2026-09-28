@@ -124,7 +124,7 @@ export const FloatingWhatsApp: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="font-bold text-base leading-tight">Si Lebah Beekoding</h3>
+                  <h3 className="font-bold text-base leading-tight">Beeby</h3>
                   <Sparkles className="w-3.5 h-3.5 text-amber-900 fill-amber-900" />
                 </div>
                 <p className="text-xs font-medium text-amber-950/80 flex items-center gap-1">
@@ -233,7 +233,7 @@ export const FloatingWhatsApp: React.FC = () => {
                 : 'bg-white/95 border-amber-400/60 text-slate-800 shadow-slate-900/10'
             }`}
           >
-            <span>Ada pertanyaan? Tanya Si Lebah yuk!</span>
+            <span>Ada pertanyaan? Tanya Si Beeby yuk!</span>
             <img src="/bee-mascot.png" alt="Mascot" className="w-5 h-5 object-contain" />
           </button>
         )}
