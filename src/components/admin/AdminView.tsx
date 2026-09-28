@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import {
   isAdminAuthenticated,
@@ -17,34 +17,48 @@ import { checkSupabaseSession, logoutWithSupabase } from '../../services/supabas
 import { AdminLogin } from './AdminLogin';
 import { AdminLayout, type AdminTab } from './AdminLayout';
 import { AdminDashboard } from './AdminDashboard';
-import { AdminStudentsList } from './AdminStudentsList';
-import { AdminQuestionBank } from './AdminQuestionBank';
-import { AdminReportModal } from './AdminReportModal';
-import { AdminInquiriesList } from './AdminInquiriesList';
-import { AdminInquiryModal } from './AdminInquiryModal';
-import { AdminSettings } from './AdminSettings';
-import { AdminBatches } from './AdminBatches';
-import { AdminWhatsAppTemplates } from './AdminWhatsAppTemplates';
-import { AdminTransactions } from './AdminTransactions';
-import { AdminCertificates } from './AdminCertificates';
-import { AdminShowcase } from './AdminShowcase';
-import { AdminCurriculum } from './AdminCurriculum';
-import { AdminInstructors } from './AdminInstructors';
-import { AdminAttendance } from './AdminAttendance';
-import { AdminAcademicReports } from './AdminAcademicReports';
-import { AdminVouchers } from './AdminVouchers';
-import { AdminQuests } from './AdminQuests';
-import { AdminAnnouncements } from './AdminAnnouncements';
-import { AdminPayroll } from './AdminPayroll';
-import { AdminResources } from './AdminResources';
-import { AdminEvents } from './AdminEvents';
-import { AdminCounseling } from './AdminCounseling';
-import { AdminAuditLog } from './AdminAuditLog';
-import { AdminQuizzes } from './AdminQuizzes';
-import { AdminReferrals } from './AdminReferrals';
-import { AdminUsers } from './AdminUsers';
-import { AdminWhatsAppGateway } from './AdminWhatsAppGateway';
 import { SetNewPasswordModal } from './SetNewPasswordModal';
+
+// Lazy-loaded Admin tab modules to drastically reduce initial bundle size
+const AdminStudentsList = lazy(() => import('./AdminStudentsList').then((m) => ({ default: m.AdminStudentsList })));
+const AdminQuestionBank = lazy(() => import('./AdminQuestionBank').then((m) => ({ default: m.AdminQuestionBank })));
+const AdminReportModal = lazy(() => import('./AdminReportModal').then((m) => ({ default: m.AdminReportModal })));
+const AdminInquiriesList = lazy(() => import('./AdminInquiriesList').then((m) => ({ default: m.AdminInquiriesList })));
+const AdminInquiryModal = lazy(() => import('./AdminInquiryModal').then((m) => ({ default: m.AdminInquiryModal })));
+const AdminSettings = lazy(() => import('./AdminSettings').then((m) => ({ default: m.AdminSettings })));
+const AdminBatches = lazy(() => import('./AdminBatches').then((m) => ({ default: m.AdminBatches })));
+const AdminWhatsAppTemplates = lazy(() => import('./AdminWhatsAppTemplates').then((m) => ({ default: m.AdminWhatsAppTemplates })));
+const AdminTransactions = lazy(() => import('./AdminTransactions').then((m) => ({ default: m.AdminTransactions })));
+const AdminCertificates = lazy(() => import('./AdminCertificates').then((m) => ({ default: m.AdminCertificates })));
+const AdminShowcase = lazy(() => import('./AdminShowcase').then((m) => ({ default: m.AdminShowcase })));
+const AdminCurriculum = lazy(() => import('./AdminCurriculum').then((m) => ({ default: m.AdminCurriculum })));
+const AdminInstructors = lazy(() => import('./AdminInstructors').then((m) => ({ default: m.AdminInstructors })));
+const AdminAttendance = lazy(() => import('./AdminAttendance').then((m) => ({ default: m.AdminAttendance })));
+const AdminAcademicReports = lazy(() => import('./AdminAcademicReports').then((m) => ({ default: m.AdminAcademicReports })));
+const AdminVouchers = lazy(() => import('./AdminVouchers').then((m) => ({ default: m.AdminVouchers })));
+const AdminQuests = lazy(() => import('./AdminQuests').then((m) => ({ default: m.AdminQuests })));
+const AdminAnnouncements = lazy(() => import('./AdminAnnouncements').then((m) => ({ default: m.AdminAnnouncements })));
+const AdminPayroll = lazy(() => import('./AdminPayroll').then((m) => ({ default: m.AdminPayroll })));
+const AdminResources = lazy(() => import('./AdminResources').then((m) => ({ default: m.AdminResources })));
+const AdminEvents = lazy(() => import('./AdminEvents').then((m) => ({ default: m.AdminEvents })));
+const AdminCounseling = lazy(() => import('./AdminCounseling').then((m) => ({ default: m.AdminCounseling })));
+const AdminAuditLog = lazy(() => import('./AdminAuditLog').then((m) => ({ default: m.AdminAuditLog })));
+const AdminQuizzes = lazy(() => import('./AdminQuizzes').then((m) => ({ default: m.AdminQuizzes })));
+const AdminReferrals = lazy(() => import('./AdminReferrals').then((m) => ({ default: m.AdminReferrals })));
+const AdminUsers = lazy(() => import('./AdminUsers').then((m) => ({ default: m.AdminUsers })));
+const AdminWhatsAppGateway = lazy(() => import('./AdminWhatsAppGateway').then((m) => ({ default: m.AdminWhatsAppGateway })));
+
+function AdminTabFallback() {
+  return (
+    <div className="py-24 flex flex-col items-center justify-center text-center">
+      <div className="relative w-12 h-12 mb-3 flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full border-3 border-amber-500/20 border-t-amber-500 animate-spin" />
+      </div>
+      <p className="text-xs font-semibold text-slate-400 tracking-wide uppercase">Memuat modul administrasi...</p>
+    </div>
+  );
+}
+
 
 interface AdminViewProps {
   onBackToHome: () => void;
@@ -210,7 +224,8 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
           newCount={newSubmissionsCount}
           newInquiriesCount={newInquiriesCount}
         >
-          {currentTab === 'dashboard' && (
+          <Suspense fallback={<AdminTabFallback />}>
+            {currentTab === 'dashboard' && (
             <AdminDashboard
               submissions={submissions}
               isDark={isDark}
@@ -361,27 +376,32 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
               }}
             />
           )}
+          </Suspense>
         </AdminLayout>
       </div>
 
       {/* Modal View Detail Laporan Siswa */}
       {selectedReport && (
-        <AdminReportModal
-          submission={selectedReport}
-          isDark={isDark}
-          onClose={handleCloseReport}
-          onUpdate={handleReportUpdated}
-        />
+        <Suspense fallback={null}>
+          <AdminReportModal
+            submission={selectedReport}
+            isDark={isDark}
+            onClose={handleCloseReport}
+            onUpdate={handleReportUpdated}
+          />
+        </Suspense>
       )}
 
       {/* Modal View Detail Permohonan & Follow-Up Konsultasi/Pendaftaran */}
       {selectedInquiry && (
-        <AdminInquiryModal
-          inquiry={selectedInquiry}
-          isDark={isDark}
-          onClose={() => setSelectedInquiry(null)}
-          onUpdate={handleInquiryUpdated}
-        />
+        <Suspense fallback={null}>
+          <AdminInquiryModal
+            inquiry={selectedInquiry}
+            isDark={isDark}
+            onClose={() => setSelectedInquiry(null)}
+            onUpdate={handleInquiryUpdated}
+          />
+        </Suspense>
       )}
     </>
   );

@@ -1,9 +1,10 @@
-import event1Img from '../assets/images/event-1.png';
-import event2Img from '../assets/images/event-2.png';
-import event3Img from '../assets/images/event-3.png';
-import event4Img from '../assets/images/event-4.png';
-import event5Img from '../assets/images/event-5.png';
-import event6Img from '../assets/images/event-6.png';
+import event1Img from '../assets/images/event-1.webp';
+import event2Img from '../assets/images/event-2.webp';
+import event3Img from '../assets/images/event-3.webp';
+import event4Img from '../assets/images/event-4.webp';
+import event5Img from '../assets/images/event-5.webp';
+import event6Img from '../assets/images/event-6.webp';
+
 
 export interface GalleryItem {
   id: string;
