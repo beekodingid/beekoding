@@ -20,6 +20,9 @@ const StudentShowcase = lazy(() =>
 const Founder = lazy(() =>
   import('./components/Founder').then((m) => ({ default: m.Founder }))
 );
+const CourseFinder = lazy(() =>
+  import('./components/CourseFinder').then((m) => ({ default: m.CourseFinder }))
+);
 const Gallery = lazy(() =>
   import('./components/Gallery').then((m) => ({ default: m.Gallery }))
 );
@@ -234,6 +237,12 @@ export function App() {
         />
         <ModularPrograms onSelectProgramForInquiry={handleSelectProgramForInquiry} />
         <TrialEventsSection onOpenTrialEventsModal={handleOpenTrialEvents} />
+        <Suspense fallback={null}>
+          <CourseFinder
+            onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenTrialEventsModal={handleOpenTrialEvents}
+          />
+        </Suspense>
         <Audience />
         <WhyUs />
         <Suspense fallback={null}>

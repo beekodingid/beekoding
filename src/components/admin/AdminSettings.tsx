@@ -665,7 +665,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                   type="text"
                   value={institution}
                   onChange={(e) => setInstitution(e.target.value)}
-                  placeholder="Beekoding & Akar Inti Teknologi"
+                  placeholder="Beekoding"
                   className={`w-full px-4 py-3 rounded-xl border text-xs sm:text-sm font-medium transition-colors focus:outline-hidden focus:ring-2 focus:ring-amber-500/30 ${
                     isDark
                       ? 'bg-slate-800/80 border-slate-700 text-white focus:border-amber-500'

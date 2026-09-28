@@ -220,11 +220,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               : 'bg-[#fffdf8]/98 border-amber-300/80 text-slate-900 shadow-xl'
           }`}
         >
-          <div className="flex items-center justify-between pb-4 border-b border-amber-500/20 mb-2">
-            <span className="text-xs font-bold text-slate-400">Pilih Mode Tampilan:</span>
-            <ThemeToggle showLabel />
-          </div>
-
           <nav className="flex flex-col gap-1.5">
             {navLinks.map((link) => {
               const isActive = activeLink === link.href;

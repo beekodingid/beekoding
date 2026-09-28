@@ -157,4 +157,4 @@ Fondasi & Literasi AI       Studio Kreativitas Media    Logika Coding & Komputas
 
 ---
 
-*Hak Cipta © 2026 Beekoding. Dirancang oleh Tim Riset Pedagogi & Kurikulum Akar Inti Teknologi.*
+*Hak Cipta © 2026 Beekoding. Dirancang oleh Tim Riset Pedagogi.*

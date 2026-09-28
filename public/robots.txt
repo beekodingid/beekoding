@@ -4,6 +4,7 @@ Allow: /
 Allow: /#programs
 Allow: /#modular
 Allow: /#events
+Allow: /#course-finder
 Allow: /#about
 Allow: /#contact
 Allow: /#faq

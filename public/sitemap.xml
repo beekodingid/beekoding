@@ -51,6 +51,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://beekoding.pages.dev/#course-finder</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://beekoding.pages.dev/#portal</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>

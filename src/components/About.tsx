@@ -97,8 +97,8 @@ export const About: React.FC = () => {
             </p>
 
             <p
-              className={`text-base leading-relaxed font-light ${
-                isDark ? 'text-slate-300' : 'text-slate-600'
+              className={`text-lg leading-relaxed font-normal ${
+                isDark ? 'text-slate-300' : 'text-slate-700'
               }`}
             >
               {siteConfig.aboutText2}

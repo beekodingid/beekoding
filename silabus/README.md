@@ -82,4 +82,4 @@ Setiap modul dan sesi diukur pencapaiannya berdasarkan matriks 8 pilar pemikiran
 
 ---
 
-*Hak Cipta © 2026 Beekoding (PT Akar Inti Teknologi). Seluruh hak cipta dilindungi undang-undang.*
+*Hak Cipta © 2026 Beekoding (PT Sarang Edukasi Digital). Seluruh hak cipta dilindungi undang-undang.*

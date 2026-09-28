@@ -46,7 +46,7 @@ export const FAQ: React.FC = () => {
           </div>
 
           <h2
-            className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 ${
+            className={`text-3xl sm:text-5xl font-extrabold tracking-tight mb-5 font-['Space_Grotesk'] ${
               isDark ? 'text-white' : 'text-slate-900'
             }`}
           >

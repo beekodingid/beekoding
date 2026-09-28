@@ -268,7 +268,7 @@ export const whyChooseUs = [
 export const founderData = {
   name: "Febri Hasan & Dewan Ahli Beekoding",
   title: "Founder & Chief Academic Strategist — Beekoding",
-  credentials: "12+ Tahun Pengalaman Edukasi • Akar Inti Teknologi • Ahli Strategi Pendidikan",
+  credentials: "12+ Tahun Pengalaman Edukasi • Ahli Strategi Pendidikan",
   bio1: "Febri Hasan dan tim pengembang kurikulum Beekoding memiliki rekam jejak lebih dari 12 tahun dalam bidang inovasi teknologi pendidikan dan riset pedagogi. Berakar dari pengalaman di Akar Inti Teknologi, beliau memadukan standar teknologi industri modern dengan pendekatan belajar yang hangat dan mudah dipahami anak-anak.",
   bio2: "Sebagai founder dan praktisi teknologi pendidikan, beliau mendedikasikan Beekoding untuk mengubah paradigma menghafal menjadi budaya berpikir kreatif, eksperimen tanpa takut salah, dan menghasilkan karya nyata.",
   quote: "Anak-anak tidak hanya membutuhkan setumpuk teori. Mereka butuh kemampuan memecahkan masalah nyata dan rasa percaya diri untuk berinovasi.",

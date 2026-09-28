@@ -111,7 +111,7 @@ export const galleryItems: GalleryItem[] = [
     category: 'workshop',
     title: 'Workshop Guru: Transformasi Pedagogi AI Ramah Anak',
     caption: 'Sesi bimbingan intensif bagi tenaga pendidik sekolah mitra untuk mengintegrasikan alat bantu AI ke dalam modul ajar kelas interaktif.',
-    location: 'Ruang Edukasi Akar Inti Teknologi',
+    location: 'Ruang Edukasi Beekoding',
     date: 'Maret 2026',
     metricBadge: '65+ Pendidik Tersertifikasi',
     learningImpact: 'Standarisasi Pengajaran Coding & Etika AI untuk Sekolah Dasar-Menengah',
@@ -152,6 +152,6 @@ export const galleryImpactHighlights = [
   {
     value: '12+ Thn',
     label: 'Fondasi Pendidik',
-    sublabel: 'Metode pedagogi teruji oleh praktisi Akar Inti Teknologi & Beekoding',
+    sublabel: 'Metode pedagogi teruji oleh praktisi Beekoding',
   },
 ];
