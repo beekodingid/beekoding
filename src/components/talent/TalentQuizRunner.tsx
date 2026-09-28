@@ -15,6 +15,7 @@ import {
   Zap,
   Clock,
   Timer,
+  Pause,
 } from 'lucide-react';
 
 interface TalentQuizRunnerProps {
@@ -59,17 +60,28 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Jalankan stopwatch real-time
+  // Jalankan stopwatch real-time (otomatis jeda/pause saat sesi istirahat antar babak)
   useEffect(() => {
+    if (showIntermission) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+
     timerRef.current = setInterval(() => {
       setTotalElapsedSeconds((prev) => prev + 1);
       setSectionSeconds((prev) => prev + 1);
     }, 1000);
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     };
-  }, []);
+  }, [showIntermission]);
 
   const formatStopwatch = (totalSecs: number): string => {
     const mins = Math.floor(totalSecs / 60);
@@ -104,10 +116,11 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
     if (currentQuestionIndexInSection < currentSectionQuestions.length - 1) {
       setCurrentQuestionIndexInSection((prev) => prev + 1);
     } else {
-      // Rekam durasi babak yang baru saja selesai
+      // Rekam durasi murni babak yang baru saja selesai
+      const currentDuration = sectionSeconds;
       setSectionDurations((prev) => ({
         ...prev,
-        [currentCategoryKey]: (prev[currentCategoryKey] || 0) + sectionSeconds,
+        [currentCategoryKey]: currentDuration,
       }));
       setShowIntermission(true);
     }
@@ -128,14 +141,12 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
       setCurrentQuestionIndexInSection(0);
     } else {
       // Babak ke-8 selesai! Selesaikan kuis dan kirim hasil beserta data waktu
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
 
-      const finalSectionDurations: Record<AssessmentCategory, number> = {
-        ...sectionDurations,
-        [currentCategoryKey]: (sectionDurations[currentCategoryKey] || 0) + sectionSeconds,
-      };
-
-      onFinish(answers, totalElapsedSeconds, finalSectionDurations);
+      onFinish(answers, totalElapsedSeconds, sectionDurations);
     }
   };
 
@@ -152,10 +163,12 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
   const isLastQuestionInSection =
     currentQuestionIndexInSection === currentSectionQuestions.length - 1;
 
-  // Rata-rata detik per soal di babak yang baru selesai
-  const currentSectionDurationSecs =
-    (sectionDurations[currentCategoryKey] || 0) + sectionSeconds;
-  const currentSectionAvgSecs = Math.round((currentSectionDurationSecs / 10) * 10) / 10;
+  // Durasi babak: saat jeda gunakan waktu terekam babak tersebut, saat babak aktif gunakan sectionSeconds
+  const currentSectionDurationSecs = showIntermission
+    ? sectionDurations[currentCategoryKey] || sectionSeconds
+    : sectionSeconds;
+  const currentSectionAvgSecs =
+    Math.max(0.1, Math.round((currentSectionDurationSecs / 10) * 10) / 10);
 
   return (
     <div className="max-w-4xl mx-auto py-4 sm:py-6 px-4 sm:px-6">
@@ -181,17 +194,34 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            {/* Live Stopwatch Badge */}
+            {/* Live Stopwatch Badge (Menampilkan status Berjalan vs Dijeda) */}
             <div
               className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold border transition-colors ${
-                isDark
+                showIntermission
+                  ? isDark
+                    ? 'bg-amber-500/20 border-amber-400 text-amber-300'
+                    : 'bg-amber-100 border-amber-400 text-amber-950 shadow-sm'
+                  : isDark
                   ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
                   : 'bg-amber-50 border-amber-300 text-amber-900 shadow-sm'
               }`}
-              title="Waktu pengerjaan tes berjalan"
+              title={
+                showIntermission
+                  ? 'Timer dijeda otomatis selama sesi istirahat'
+                  : 'Waktu pengerjaan tes berjalan'
+              }
             >
-              <Timer className="w-3.5 h-3.5 animate-pulse text-amber-500" />
-              <span>⏱️ {formatStopwatch(totalElapsedSeconds)}</span>
+              {showIntermission ? (
+                <>
+                  <Pause className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                  <span>⏱️ {formatStopwatch(totalElapsedSeconds)} (Dijeda)</span>
+                </>
+              ) : (
+                <>
+                  <Timer className="w-3.5 h-3.5 animate-pulse text-amber-500" />
+                  <span>⏱️ {formatStopwatch(totalElapsedSeconds)}</span>
+                </>
+              )}
             </div>
 
             {/* Total Questions Count & Percentage */}
@@ -410,20 +440,25 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
                 : `Hebat sekali ${profile.childName}! Kamu baru saja menyelesaikan 10 soal ${currentCategoryInfo.name}. Boleh tarik napas dan minum air sejenak.`}
             </p>
 
-            {/* Waktu Babak Card */}
+            {/* Waktu Babak Card dengan indikator Auto-Pause */}
             <div
-              className={`p-3 rounded-2xl border text-xs mb-4 flex items-center justify-center gap-3 ${
+              className={`p-3.5 rounded-2xl border text-xs mb-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 ${
                 isDark
                   ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
                   : 'bg-amber-50 border-amber-200 text-amber-900'
               }`}
             >
-              <Clock className="w-4 h-4 text-amber-500 shrink-0" />
-              <span>
-                Waktu Babak Ini:{' '}
-                <strong>{formatDuration(currentSectionDurationSecs)}</strong> (rata-rata{' '}
-                {currentSectionAvgSecs} dtk/soal)
-              </span>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-amber-500 shrink-0" />
+                <span>
+                  Waktu Babak Ini: <strong>{formatDuration(currentSectionDurationSecs)}</strong> (rata-rata{' '}
+                  {currentSectionAvgSecs} dtk/soal)
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block" />
+                <span>Timer Dijeda (Istirahat Santai)</span>
+              </div>
             </div>
 
             <div
