@@ -9,7 +9,7 @@ export const FloatingWhatsApp: React.FC = () => {
       <div className="hidden sm:flex flex-col items-end gap-1">
         <div className="px-3.5 py-1.5 rounded-2xl rounded-br-none bg-[#181d2a] border border-amber-500/40 text-xs font-bold text-amber-300 shadow-2xl backdrop-blur-md flex items-center gap-1.5">
           <span>Ada pertanyaan? Tanya Si Lebah yuk!</span>
-          <span className="text-sm">🐝</span>
+          <span className="text-sm"><img src="/bee-mascot.png" alt="Mascot" className="w-5 h-5 object-contain" /></span>
         </div>
       </div>
 
@@ -30,10 +30,10 @@ export const FloatingWhatsApp: React.FC = () => {
         </div>
 
         {/* WhatsApp Button */}
-        <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 flex items-center justify-center shadow-2xl shadow-emerald-500/40 hover:scale-105 transition-all duration-300 relative border-2 border-amber-400/40">
+        <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-800 to-teal-500 hover:from-emerald-600 hover:to-teal-300 text-slate-950 flex items-center justify-center shadow-2xl shadow-emerald-500/40 hover:scale-105 transition-all duration-300 relative border-2 border-amber-400/40">
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-400 animate-ping" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-300 border-2 border-[#0d0f15]" />
-          <MessageCircle className="w-7 h-7 fill-slate-950 stroke-none" />
+          <img src="/whatsapp.png" alt="WhatsApp Button" className="w-10 h-10 object-contain hover:scale-105 transition-transform duration-300" />
         </div>
       </a>
     </div>
