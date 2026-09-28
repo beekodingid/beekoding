@@ -210,7 +210,26 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="hidden sm:flex items-center gap-1.5 xl:gap-2 flex-shrink-0">
           {/* Light / Dark Mode Switch */}
           <ThemeToggle />
-            <span/><span/>
+
+          {/* Tombol Portal Siswa & Wali Murid */}
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenStudentPortal) onOpenStudentPortal();
+              else window.location.hash = '#portal';
+            }}
+            className={`whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer ${
+              isDark
+                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/40 hover:bg-sky-500/25 hover:border-sky-400'
+                : 'bg-sky-50 text-sky-900 border border-sky-300 hover:bg-sky-100'
+            }`}
+            title="Portal Siswa & Wali Murid"
+          >
+            <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+            <span className="hidden xl:inline">Portal Siswa</span>
+            <span className="xl:hidden">Portal</span>
+          </button>
+
           {/* Tombol Tes Bakat Anak (Gratis) */}
           <button
             type="button"
@@ -222,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <Brain className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-            <span className="hidden xl:inline">Tes Bakat</span>
+            <span className="hidden xl:inline">Tes Bakat Anak</span>
             <span className="xl:hidden">Bakat</span>
             <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950">
               Free
@@ -305,7 +324,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               );
             })}
             <div className="pt-4 flex flex-col gap-3">
-              {/* Tes Bakat Digital Anak */}
+              {/* Tes Bakat Anak */}
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
