@@ -1,0 +1,21 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /#programs
+Allow: /#modular
+Allow: /#events
+Allow: /#about
+Allow: /#contact
+Allow: /#talent
+Allow: /#portal
+
+# Disallow private administrative and recovery endpoints
+Disallow: /#admin*
+Disallow: /*?type=recovery*
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://beekoding.pages.dev/sitemap.xml
+Sitemap: https://beekoding.id/sitemap.xml
