@@ -47,10 +47,63 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+    let ticking = false;
+
+    const sectionIds = [
+      'home',
+      'about',
+      'programs',
+      'events',
+      'why-us',
+      'showcase',
+      'founder',
+      'gallery',
+      'faq',
+      'contact',
+    ];
+
+    const updateScrollSpy = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 30);
+
+      // 1. Cek jika sudah mendekati bagian terbawah halaman -> aktifkan #contact
+      const isNearBottom =
+        window.innerHeight + scrollPosition >= document.documentElement.scrollHeight - 100;
+      if (isNearBottom) {
+        setActiveLink('#contact');
+        ticking = false;
+        return;
+      }
+
+      // 2. Scan section dari atas ke bawah untuk menentukan section yang sedang aktif
+      const headerOffset = 150;
+      let currentSection = '#home';
+
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop - headerOffset;
+          if (scrollPosition >= top) {
+            currentSection = `#${id}`;
+          }
+        }
+      }
+
+      setActiveLink(currentSection);
+      ticking = false;
     };
-    window.addEventListener('scroll', handleScroll);
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollSpy);
+        ticking = true;
+      }
+    };
+
+    // Panggil sekali saat pertama kali dimuat
+    updateScrollSpy();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
