@@ -851,7 +851,7 @@ export async function resetPasswordWithPin(
   if (!validPins.includes(trimmedPin)) {
     return {
       success: false,
-      message: 'PIN Otorisasi Darurat salah. Hubungi Super Admin (+62 853-1131-7127) untuk mendapatkan PIN bantuan.',
+      message: 'PIN Otorisasi Darurat salah. Hubungi Super Admin (+62 818-1890-1737) untuk mendapatkan PIN bantuan.',
     };
   }
 

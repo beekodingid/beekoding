@@ -284,7 +284,7 @@ export const Gallery: React.FC = () => {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
               <a
-                href="https://wa.me/6285311317127?text=Halo%20Beekoding%2C%20saya%20tertarik%20melihat%20dokumentasi%20kegiatan%20dan%20ingin%20tanya%20jadwal%20workshop."
+                href="https://wa.me/6281818901737?text=Halo%20Beekoding%2C%20saya%20tertarik%20melihat%20dokumentasi%20kegiatan%20dan%20ingin%20tanya%20jadwal%20workshop."
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`px-6 py-3 rounded-xl font-bold text-center text-xs transition-colors flex items-center justify-center gap-2 border ${
