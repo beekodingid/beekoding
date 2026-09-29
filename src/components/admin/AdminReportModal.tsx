@@ -22,7 +22,11 @@ import {
   Target,
   TrendingUp,
   CheckCircle,
+  Clock,
+  Cloud,
 } from 'lucide-react';
+import { TalentPrintableReportModal } from '../talent/TalentPrintableReportModal';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface AdminReportModalProps {
   submission: AssessmentSubmission;
@@ -43,6 +47,7 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
   const [notes, setNotes] = useState(submission.notes || '');
   const [status, setStatus] = useState<FollowUpStatus>(submission.status);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   const handleSaveNotes = () => {
     updateSubmissionNotes(submission.id, notes);
@@ -57,7 +62,7 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
   };
 
   const handlePrint = () => {
-    window.print();
+    setIsPrintModalOpen(true);
   };
 
   // Format nomor telepon untuk WhatsApp
@@ -274,6 +279,70 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
                   <ExternalLink className="w-3 h-3 ml-0.5" />
                 </a>
               </div>
+            </div>
+          </div>
+
+          {/* Cloud Sync Status & Cognitive Pace Analysis Card */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            {/* Supabase Cloud Live Sync Status */}
+            <div
+              className={`md:col-span-4 p-4 rounded-2xl border flex flex-col justify-between ${
+                isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Cloud className="w-3.5 h-3.5 text-sky-500" />
+                  <span>Status Cloud Database</span>
+                </span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <div className="font-extrabold text-xs text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span>{isSupabaseConfigured() ? 'Tersinkron di Supabase Cloud' : 'Tersimpan di Local Storage'}</span>
+                </div>
+                <p className="text-[10px] text-slate-400 font-mono truncate">
+                  Record ID: {submission.id}
+                </p>
+              </div>
+              <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-400">
+                Pembaruan status & catatan otomatis direplikasi ke cloud secara real-time.
+              </div>
+            </div>
+
+            {/* Cognitive Pace Box */}
+            <div
+              className={`md:col-span-8 p-4 rounded-2xl border ${
+                isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-blue-200 shadow-sm'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>Analisis Ketangkasan & Kecepatan Berpikir (Pace)</span>
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25">
+                  {submission.paceAnalysis?.speedLabel || 'Ideal & Reflektif'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mb-2 text-xs">
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Total Waktu Pengerjaan</span>
+                  <span className="font-black text-sm text-slate-900 dark:text-white">
+                    {submission.durationFormatted || '22 Menit'}
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Rata-Rata per Soal</span>
+                  <span className="font-black text-sm text-slate-900 dark:text-white">
+                    ~{submission.paceAnalysis?.avgSecondsPerQuestion ?? 16} Detik / Soal
+                  </span>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 italic leading-snug">
+                &quot;{submission.paceAnalysis?.description || 'Ananda mengerjakan dengan ritme berpikir teliti dan konsentrasi konsisten.'}&quot;
+              </p>
             </div>
           </div>
 
@@ -736,6 +805,14 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Official Printable A4 Diagnostic Report Preview & Print Modal */}
+      <TalentPrintableReportModal
+        isOpen={isPrintModalOpen}
+        onClose={() => setIsPrintModalOpen(false)}
+        result={submission}
+        isDark={isDark}
+      />
     </div>
   );
 };

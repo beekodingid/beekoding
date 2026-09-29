@@ -248,7 +248,7 @@ export const TalentPrintableReportModal: React.FC<TalentPrintableReportModalProp
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Cetak / Simpan PDF (A4)</span>
+              <span>Cetak / Simpan PDF</span>
             </button>
 
             {/* Close Button */}

@@ -6,7 +6,7 @@ import {
   exportSubmissionsCSV,
   resetSubmissionsToDefault,
 } from '../../services/adminStorage';
-import { getTierLabel } from '../../data/talentQuestions';
+import { CATEGORIES, getTierLabel } from '../../data/talentQuestions';
 import {
   Search,
   Download,
@@ -23,9 +23,12 @@ import {
   ChevronsRight,
   RefreshCw,
   Cloud,
+  Printer,
+  Clock,
 } from 'lucide-react';
 import { fetchSubmissionsFromCloud } from '../../services/supabaseSync';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
+import { TalentPrintableReportModal } from '../talent/TalentPrintableReportModal';
 
 interface AdminStudentsListProps {
   submissions: AssessmentSubmission[];
@@ -45,6 +48,7 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date-desc' | 'date-asc' | 'score-desc' | 'score-asc'>('date-desc');
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [selectedPrintSubmission, setSelectedPrintSubmission] = useState<AssessmentSubmission | null>(null);
 
   // Pagination State (10, 25, 50)
   const [pageSize, setPageSize] = useState<number>(10);
@@ -227,16 +231,26 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
 
         <div className="flex flex-wrap items-center gap-2.5">
           {isSupabaseConfigured() && (
-            <button
-              type="button"
-              onClick={handlePullFromSupabase}
-              disabled={isSyncingCloud}
-              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 hover:bg-sky-500 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-              title="Tarik data siswa hasil asesmen terbaru langsung dari database Supabase"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncingCloud ? 'animate-spin' : ''}`} />
-              <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Tarik dari Supabase'}</span>
-            </button>
+            <>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>Realtime Cloud Live</span>
+              </span>
+
+              <button
+                type="button"
+                onClick={handlePullFromSupabase}
+                disabled={isSyncingCloud}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 hover:bg-sky-500 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                title="Tarik data siswa hasil asesmen terbaru langsung dari database Supabase"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncingCloud ? 'animate-spin' : ''}`} />
+                <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Tarik dari Supabase'}</span>
+              </button>
+            </>
           )}
 
           <button
@@ -475,15 +489,30 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
                         </a>
                       </td>
 
-                      {/* Skor & Top Pilar */}
+                      {/* Skor, Top Pilar & Pace */}
                       <td className="py-4 px-4">
                         <div className="flex items-baseline gap-1">
                           <span className="font-black text-base text-amber-500">{sub.totalScore}</span>
                           <span className="text-[10px] text-slate-400">/100</span>
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate max-w-[140px] mt-0.5">
-                          Top: {sub.topStrengths.slice(0, 2).join(', ')}
+                        <div className="text-[10px] text-slate-400 truncate max-w-[150px] mt-0.5 font-medium">
+                          Top: {sub.topStrengths.slice(0, 2).map((k) => CATEGORIES[k]?.name || k).join(', ')}
                         </div>
+                        {(sub.durationFormatted || sub.paceAnalysis) && (
+                          <div className="flex items-center gap-1 flex-wrap mt-1">
+                            {sub.durationFormatted && (
+                              <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                                <Clock className="w-2.5 h-2.5" />
+                                <span>{sub.durationFormatted}</span>
+                              </span>
+                            )}
+                            {sub.paceAnalysis?.speedLabel && (
+                              <span className="inline-flex items-center text-[9px] font-semibold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                <span>{sub.paceAnalysis.speedLabel}</span>
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </td>
 
                       {/* Status Tindak Lanjut (Teks Statis / Read-only) */}
@@ -497,11 +526,26 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
                         <button
                           type="button"
                           onClick={() => onViewReport(sub)}
-                          className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm shadow-amber-500/20 transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                          className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm shadow-amber-500/20 transition-all inline-flex items-center gap-1 cursor-pointer"
                           title="Lihat Detail Laporan Hasil Tes Bakat Anak"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>View</span>
+                        </button>
+
+                        {/* Tombol Cetak Dokumen Resmi A4 */}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPrintSubmission(sub)}
+                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all inline-flex items-center gap-1 cursor-pointer ${
+                            isDark
+                              ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                              : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm'
+                          }`}
+                          title="Cetak Laporan Resmi A4 Format PDF"
+                        >
+                          <Printer className="w-3.5 h-3.5 text-amber-500" />
+                          <span>Cetak A4</span>
                         </button>
 
                         {/* Tombol Hapus */}
@@ -694,6 +738,14 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Modal Cetak Laporan Resmi A4 Dokumen Siswa */}
+      <TalentPrintableReportModal
+        isOpen={!!selectedPrintSubmission}
+        onClose={() => setSelectedPrintSubmission(null)}
+        result={selectedPrintSubmission}
+        isDark={isDark}
+      />
     </div>
   );
 };

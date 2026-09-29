@@ -158,7 +158,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           }`}
         >
           <Printer className="w-4 h-4 text-amber-500" />
-          <span>Cetak / Simpan PDF (A4)</span>
+          <span>Cetak / Simpan PDF</span>
         </button>
 
         <button
@@ -299,7 +299,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
               className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 hover:brightness-110 active:scale-[0.98] transition-all"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Kirim Hasil ke Konsultan Beekoding (WA)</span>
+              <span>Kirim Hasil ke Konsultan Beekoding</span>
             </a>
           </div>
         </div>

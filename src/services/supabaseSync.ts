@@ -242,27 +242,39 @@ export async function syncAllLocalDataToSupabase(): Promise<SyncResult> {
 
     // 5. students_submissions
     const submissions = getSubmissions();
-    const submissionRows = submissions.map((s: any) => ({
-      id: s.id,
-      child_name: s.profile?.childName || 'Siswa',
-      child_age: s.profile?.childAge || 7,
-      grade_level: s.profile?.gradeLevel || null,
-      parent_name: s.profile?.parentName || 'Orang Tua',
-      parent_phone: s.profile?.parentPhone || '',
-      parent_email: null,
-      tier: s.profile?.tier || 'junior',
-      total_score: s.totalScore || 0,
-      scores_json: JSON.stringify(s.scores || {}),
-      top_strengths_json: JSON.stringify(s.topStrengths || []),
-      growth_areas_json: JSON.stringify(s.growthAreas || []),
-      recommended_program_name: s.recommendedProgram?.title || '',
-      recommended_program_level: '',
-      recommended_program_desc: s.recommendedProgram?.description || '',
-      answers_json: s.answers ? JSON.stringify(s.answers) : null,
-      status: s.status || 'baru',
-      notes: s.notes || null,
-      created_at: s.createdAt || new Date().toISOString(),
-    }));
+    const submissionRows = submissions.map((s: any) => {
+      const packedAnswers = {
+        _meta: {
+          durationSeconds: s.durationSeconds,
+          durationFormatted: s.durationFormatted,
+          paceAnalysis: s.paceAnalysis,
+          sectionDurations: s.sectionDurations,
+        },
+        answers: s.answers || {},
+      };
+
+      return {
+        id: s.id,
+        child_name: s.profile?.childName || 'Siswa',
+        child_age: s.profile?.childAge || 7,
+        grade_level: s.profile?.gradeLevel || null,
+        parent_name: s.profile?.parentName || 'Orang Tua',
+        parent_phone: s.profile?.parentPhone || '',
+        parent_email: null,
+        tier: s.profile?.tier || 'junior',
+        total_score: s.totalScore || 0,
+        scores_json: JSON.stringify(s.scores || {}),
+        top_strengths_json: JSON.stringify(s.topStrengths || []),
+        growth_areas_json: JSON.stringify(s.growthAreas || []),
+        recommended_program_name: s.recommendedProgram?.title || '',
+        recommended_program_level: '',
+        recommended_program_desc: s.recommendedProgram?.description || '',
+        answers_json: JSON.stringify(packedAnswers),
+        status: s.status || 'baru',
+        notes: s.notes || null,
+        created_at: s.createdAt || new Date().toISOString(),
+      };
+    });
     await syncTable('students_submissions', submissionRows);
 
     // 6. consultation_inquiries
@@ -1034,31 +1046,60 @@ export async function fetchSubmissionsFromCloud(): Promise<AssessmentSubmission[
       console.warn('fetchSubmissionsFromCloud error:', error);
       return null;
     }
-    const mapped: AssessmentSubmission[] = data.map((row: any, idx: number) => ({
-      id: String(row.id || `sub-${Date.now()}-${idx}`),
-      completedAt: row.created_at || row.completedAt || new Date().toISOString(),
-      profile: {
-        childName: String(row.child_name || 'Siswa Beekoding'),
-        childAge: Number(row.child_age) || 8,
-        gradeLevel: String(row.grade_level || 'SD'),
-        parentName: String(row.parent_name || 'Orang Tua'),
-        parentPhone: String(row.parent_phone || '-'),
-        tier: (['junior', 'middle', 'senior'].includes(row.tier) ? row.tier : 'junior') as any,
-      },
-      totalScore: Number(row.total_score) || 0,
-      scores: row.scores_json ? (typeof row.scores_json === 'string' ? JSON.parse(row.scores_json) : row.scores_json) : {},
-      topStrengths: row.top_strengths_json ? (typeof row.top_strengths_json === 'string' ? JSON.parse(row.top_strengths_json) : row.top_strengths_json) : [],
-      growthAreas: row.growth_areas_json ? (typeof row.growth_areas_json === 'string' ? JSON.parse(row.growth_areas_json) : row.growth_areas_json) : [],
-      recommendedProgram: {
-        title: String(row.recommended_program_name || 'Beekoding Foundation'),
-        description: String(row.recommended_program_desc || 'Program belajar koding terpersonalisasi.'),
-        whyFit: 'Kurikulum disesuaikan dengan dominasi profil bakat anak.',
-      },
-      answers: row.answers_json ? (typeof row.answers_json === 'string' ? JSON.parse(row.answers_json) : row.answers_json) : undefined,
-      status: (['baru', 'dihubungi', 'terdaftar', 'selesai'].includes(row.status) ? row.status : 'baru') as any,
-      notes: row.notes || undefined,
-      createdAt: row.created_at || row.createdAt || new Date().toISOString(),
-    }));
+    const mapped: AssessmentSubmission[] = data.map((row: any, idx: number) => {
+      let answersData: Record<string, string> | undefined = undefined;
+      let durationSec: number | undefined = undefined;
+      let durationFmt: string | undefined = undefined;
+      let paceAn: any = undefined;
+      let secDurations: any = undefined;
+
+      if (row.answers_json) {
+        try {
+          const parsed = typeof row.answers_json === 'string' ? JSON.parse(row.answers_json) : row.answers_json;
+          if (parsed && typeof parsed === 'object' && parsed._meta) {
+            durationSec = parsed._meta.durationSeconds;
+            durationFmt = parsed._meta.durationFormatted;
+            paceAn = parsed._meta.paceAnalysis;
+            secDurations = parsed._meta.sectionDurations;
+            answersData = parsed.answers;
+          } else {
+            answersData = parsed;
+          }
+        } catch {
+          answersData = undefined;
+        }
+      }
+
+      return {
+        id: String(row.id || `sub-${Date.now()}-${idx}`),
+        completedAt: row.created_at || row.completedAt || new Date().toISOString(),
+        profile: {
+          childName: String(row.child_name || 'Siswa Beekoding'),
+          childAge: Number(row.child_age) || 8,
+          gradeLevel: String(row.grade_level || 'SD'),
+          parentName: String(row.parent_name || 'Orang Tua'),
+          parentPhone: String(row.parent_phone || '-'),
+          tier: (['junior', 'middle', 'senior'].includes(row.tier) ? row.tier : 'junior') as any,
+        },
+        totalScore: Number(row.total_score) || 0,
+        scores: row.scores_json ? (typeof row.scores_json === 'string' ? JSON.parse(row.scores_json) : row.scores_json) : {},
+        topStrengths: row.top_strengths_json ? (typeof row.top_strengths_json === 'string' ? JSON.parse(row.top_strengths_json) : row.top_strengths_json) : [],
+        growthAreas: row.growth_areas_json ? (typeof row.growth_areas_json === 'string' ? JSON.parse(row.growth_areas_json) : row.growth_areas_json) : [],
+        recommendedProgram: {
+          title: String(row.recommended_program_name || 'Beekoding Foundation'),
+          description: String(row.recommended_program_desc || 'Program belajar koding terpersonalisasi.'),
+          whyFit: 'Kurikulum disesuaikan dengan dominasi profil bakat anak.',
+        },
+        durationSeconds: durationSec,
+        durationFormatted: durationFmt,
+        paceAnalysis: paceAn,
+        sectionDurations: secDurations,
+        answers: answersData,
+        status: (['baru', 'dihubungi', 'terdaftar', 'selesai'].includes(row.status) ? row.status : 'baru') as any,
+        notes: row.notes || undefined,
+        createdAt: row.created_at || row.createdAt || new Date().toISOString(),
+      };
+    });
 
     if (mapped.length > 0) {
       saveSubmissions(mapped);
@@ -1467,6 +1508,16 @@ export async function pushSubmissionToSupabase(s: AssessmentSubmission): Promise
   const client = getSupabaseClient();
   if (!client || !isSupabaseConfigured()) return;
   try {
+    const packedAnswers = {
+      _meta: {
+        durationSeconds: s.durationSeconds,
+        durationFormatted: s.durationFormatted,
+        paceAnalysis: s.paceAnalysis,
+        sectionDurations: s.sectionDurations,
+      },
+      answers: s.answers || {},
+    };
+
     await client.from('students_submissions').upsert({
       id: s.id,
       child_name: s.profile?.childName || 'Siswa',
@@ -1483,7 +1534,7 @@ export async function pushSubmissionToSupabase(s: AssessmentSubmission): Promise
       recommended_program_name: s.recommendedProgram?.title || '',
       recommended_program_level: '',
       recommended_program_desc: s.recommendedProgram?.description || '',
-      answers_json: s.answers ? JSON.stringify(s.answers) : null,
+      answers_json: JSON.stringify(packedAnswers),
       status: s.status || 'baru',
       notes: s.notes || null,
       created_at: s.createdAt || new Date().toISOString(),
