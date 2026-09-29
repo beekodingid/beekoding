@@ -32,6 +32,8 @@ export interface QuestionOption {
   text: string;
   score: number; // 0 - 20 (atau bobot poin)
   explanation?: string;
+  image?: string; // URL gambar, SVG, atau base64 data-URL
+  imageAlt?: string;
 }
 
 export interface TalentQuestion {
@@ -42,6 +44,7 @@ export interface TalentQuestion {
   questionNumber: number; // 1 - 10 di tiap babak aktif
   prompt: string;
   visualHint?: string; // emoji / diagram representatif
+  image?: string; // gambar ilustrasi pertanyaan jika ada
   options: QuestionOption[];
 }
 

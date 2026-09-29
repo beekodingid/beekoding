@@ -944,23 +944,27 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
     "options": [
       {
         "id": "A",
-        "text": "➡️ (Menunjuk ke Kanan)",
-        "score": 20
+        "text": "➡️ Menunjuk ke Kanan",
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef3c7'/><path d='M25 50 H75 M55 30 L75 50 L55 70' fill='none' stroke='%23d97706' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
       },
       {
         "id": "B",
-        "text": "⬇️ (Menunjuk ke Bawah)",
-        "score": 5
+        "text": "⬇️ Menunjuk ke Bawah",
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fee2e2'/><path d='M50 25 V75 M30 55 L50 75 L70 55' fill='none' stroke='%23dc2626' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
       },
       {
         "id": "C",
-        "text": "⬅️ (Menunjuk ke Kiri)",
-        "score": 0
+        "text": "⬅️ Menunjuk ke Kiri",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e0f2fe'/><path d='M75 50 H25 M45 30 L25 50 L45 70' fill='none' stroke='%230284c7' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
       },
       {
         "id": "D",
-        "text": "Tetap ke atas",
-        "score": 0
+        "text": "⬆️ Tetap Menunjuk ke Atas",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f1f5f9'/><path d='M50 75 V25 M30 45 L50 25 L70 45' fill='none' stroke='%23475569' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
       }
     ]
   },
@@ -1441,22 +1445,26 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
       {
         "id": "A",
         "text": "Kotak Hitam ⬛",
-        "score": 20
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e293b'/><rect x='20' y='20' width='60' height='60' rx='10' fill='%230f172a'/></svg>"
       },
       {
         "id": "B",
         "text": "Lingkaran Putih ⚪",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f1f5f9'/><circle cx='50' cy='50' r='30' fill='%23ffffff' stroke='%23cbd5e1' stroke-width='4'/></svg>"
       },
       {
         "id": "C",
-        "text": "Segitiga 🔺",
-        "score": 0
+        "text": "Segitiga Merah 🔺",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fee2e2'/><polygon points='50,20 82,75 18,75' fill='%23ef4444'/></svg>"
       },
       {
         "id": "D",
-        "text": "Bintang ⭐",
-        "score": 0
+        "text": "Bintang Emas ⭐",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef3c7'/><polygon points='50,15 61,38 86,38 66,54 74,78 50,63 26,78 34,54 14,38 39,38' fill='%23f59e0b'/></svg>"
       }
     ]
   },

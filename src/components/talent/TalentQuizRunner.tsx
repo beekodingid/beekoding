@@ -16,6 +16,8 @@ import {
   Clock,
   Timer,
   Pause,
+  CheckCircle2,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 interface TalentQuizRunnerProps {
@@ -331,40 +333,124 @@ export const TalentQuizRunner: React.FC<TalentQuizRunnerProps> = ({
           </div>
         )}
 
-        {/* Options */}
-        <div className="space-y-3 mb-8">
-          {currentQuestion.options.map((option) => {
-            const isSelected = selectedOptionId === option.id;
+        {/* Question Illustration Image (if available) */}
+        {currentQuestion.image && (
+          <div
+            className={`p-3 rounded-2xl mb-6 border text-center flex items-center justify-center overflow-hidden max-h-72 ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+            }`}
+          >
+            <img
+              src={currentQuestion.image}
+              alt="Ilustrasi Soal"
+              className="max-h-64 max-w-full object-contain rounded-xl"
+            />
+          </div>
+        )}
 
-            return (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => handleSelectOption(currentQuestion.id, option.id)}
-                className={`w-full text-left p-4 rounded-2xl border text-sm sm:text-base transition-all flex items-start gap-3 cursor-pointer ${
-                  isSelected
-                    ? 'bg-amber-500/15 border-amber-500 text-amber-500 font-semibold shadow-md shadow-amber-500/10 scale-[1.01]'
-                    : isDark
-                    ? 'bg-slate-900/40 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/40'
-                    : 'bg-slate-50/80 border-slate-200 text-slate-700 hover:border-amber-300 hover:bg-amber-50/30'
-                }`}
-              >
-                <div
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors ${
+        {/* Options (Adaptive: 2x2 Visual Card Grid vs Standard Text List) */}
+        {currentQuestion.options.some((opt) => !!opt.image) ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 mb-8">
+            {currentQuestion.options.map((option) => {
+              const isSelected = selectedOptionId === option.id;
+
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => handleSelectOption(currentQuestion.id, option.id)}
+                  className={`relative text-left p-4 rounded-3xl border transition-all flex flex-col items-center justify-between cursor-pointer group hover:scale-[1.01] ${
                     isSelected
-                      ? 'bg-amber-500 text-slate-950'
+                      ? 'bg-amber-500/15 border-amber-500 ring-2 ring-amber-400 text-amber-500 shadow-xl shadow-amber-500/15 scale-[1.01]'
                       : isDark
-                      ? 'bg-slate-800 text-slate-400'
-                      : 'bg-slate-200 text-slate-600'
+                      ? 'bg-slate-900/50 border-slate-800 text-slate-300 hover:border-amber-500/50 hover:bg-slate-800/60'
+                      : 'bg-white border-slate-200 text-slate-700 hover:border-amber-400 hover:bg-amber-50/40 shadow-sm'
                   }`}
                 >
-                  {option.id}
-                </div>
-                <div className="flex-1 pt-0.5 leading-relaxed">{option.text}</div>
-              </button>
-            );
-          })}
-        </div>
+                  {/* Top Header Badge */}
+                  <div className="w-full flex items-center justify-between mb-3">
+                    <span
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black transition-colors ${
+                        isSelected
+                          ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30'
+                          : isDark
+                          ? 'bg-slate-800 text-slate-300 group-hover:bg-amber-500/20 group-hover:text-amber-400'
+                          : 'bg-slate-100 text-slate-700 group-hover:bg-amber-100 group-hover:text-amber-900'
+                      }`}
+                    >
+                      {option.id}
+                    </span>
+
+                    {isSelected && (
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-amber-500 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/30 animate-fadeIn">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Pilihan Anda</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Visual Image / Diagram Preview */}
+                  <div className="w-full h-36 sm:h-44 rounded-2xl overflow-hidden bg-slate-950/5 dark:bg-black/30 border border-slate-200 dark:border-slate-800/80 flex items-center justify-center p-2 mb-3 transition-colors">
+                    {option.image ? (
+                      <img
+                        src={option.image}
+                        alt={option.imageAlt || option.text || `Pilihan ${option.id}`}
+                        className="max-h-full max-w-full object-contain transition-transform group-hover:scale-105 duration-200"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="text-center text-slate-400">
+                        <ImageIcon className="w-8 h-8 mx-auto mb-1 opacity-50" />
+                        <span className="text-xs">Gambar</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Caption / Label Text */}
+                  {option.text && (
+                    <div className="w-full text-center text-xs sm:text-sm font-semibold leading-snug px-1">
+                      {option.text}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="space-y-3 mb-8">
+            {currentQuestion.options.map((option) => {
+              const isSelected = selectedOptionId === option.id;
+
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => handleSelectOption(currentQuestion.id, option.id)}
+                  className={`w-full text-left p-4 rounded-2xl border text-sm sm:text-base transition-all flex items-start gap-3 cursor-pointer ${
+                    isSelected
+                      ? 'bg-amber-500/15 border-amber-500 text-amber-500 font-semibold shadow-md shadow-amber-500/10 scale-[1.01]'
+                      : isDark
+                      ? 'bg-slate-900/40 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/40'
+                      : 'bg-slate-50/80 border-slate-200 text-slate-700 hover:border-amber-300 hover:bg-amber-50/30'
+                  }`}
+                >
+                  <div
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors ${
+                      isSelected
+                        ? 'bg-amber-500 text-slate-950'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-400'
+                        : 'bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {option.id}
+                  </div>
+                  <div className="flex-1 pt-0.5 leading-relaxed">{option.text}</div>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Navigation Buttons */}
         <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-200/60 dark:border-slate-800/60">
