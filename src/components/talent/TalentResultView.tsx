@@ -176,6 +176,47 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
         </button>
       </div>
 
+      {/* Automated WhatsApp Notification & Free Trial Class Card */}
+      <div
+        className={`p-4 sm:p-5 rounded-2xl border mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all shadow-sm ${
+          isDark
+            ? 'bg-gradient-to-r from-emerald-950/40 via-slate-900/60 to-emerald-950/30 border-emerald-500/30'
+            : 'bg-gradient-to-r from-emerald-50 via-white to-emerald-50/70 border-emerald-200'
+        }`}
+      >
+        <div className="flex items-center gap-3.5 w-full sm:w-auto">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/25">
+            <MessageCircle className="w-6 h-6 fill-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                Notifikasi WhatsApp Otomatis
+              </span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
+            <h3 className="font-black text-sm sm:text-base text-slate-900 dark:text-white">
+              Hasil Tes & Tiket Free Trial Class Siap di WhatsApp
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
+              Rangkuman skor ananda <strong className="text-slate-700 dark:text-slate-200">{profile.childName}</strong> beserta tautan laporan resmi A4 telah disiapkan untuk nomor WhatsApp orang tua <strong className="text-slate-700 dark:text-slate-200">{profile.parentPhone}</strong>.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-600/25 transition-all cursor-pointer"
+          >
+            <MessageCircle className="w-4 h-4 fill-white" />
+            <span>Klaim Trial Class via WA</span>
+          </a>
+        </div>
+      </div>
+
       {/* Main Score & Radar Hero Card */}
       <div
         className={`p-6 sm:p-8 rounded-3xl border mb-8 relative overflow-hidden transition-all ${

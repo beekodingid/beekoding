@@ -27,7 +27,7 @@ export interface ShareParentNotificationModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  documentType: 'certificate' | 'report';
+  documentType: 'certificate' | 'report' | 'talent';
   studentName: string;
   identifier: string; // Certificate Number or Report ID
   payload: NotificationPayload;
@@ -85,7 +85,12 @@ export const ShareParentNotificationModal: React.FC<ShareParentNotificationModal
       alert('Silakan masukkan nomor WhatsApp orang tua terlebih dahulu.');
       return;
     }
-    const trigger = documentType === 'certificate' ? 'custom_broadcast' : 'report_card_published';
+    const trigger =
+      documentType === 'certificate'
+        ? 'custom_broadcast'
+        : documentType === 'talent'
+        ? 'talent_assessment_completed'
+        : 'report_card_published';
     queueToWhatsAppGateway(phone, payload.recipientName, trigger, waText);
     setQueuedSuccess(true);
     setTimeout(() => setQueuedSuccess(false), 4000);
@@ -122,7 +127,7 @@ export const ShareParentNotificationModal: React.FC<ShareParentNotificationModal
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-black tracking-tight">{title}</h3>
                 <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                  {documentType === 'certificate' ? 'Sertifikat' : 'Rapor Belajar'}
+                  {documentType === 'certificate' ? 'Sertifikat' : documentType === 'talent' ? 'Tes Bakat Digital' : 'Rapor Belajar'}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">

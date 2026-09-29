@@ -111,6 +111,13 @@ const TRIGGER_META: Record<
     timing: 'Terkirim saat evaluasi kuis mingguan dirilis oleh instruktur',
     defaultTemplate: 'Tantangan kuis logika koding interaktif untuk mengasah pemahaman materi.',
   },
+  talent_assessment_completed: {
+    label: 'Hasil Diagnostic Bakat Digital Anak',
+    icon: Award,
+    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    timing: 'Terkirim otomatis saat anak menyelesaikan 80 soal Tes Bakat',
+    defaultTemplate: 'Rangkuman skor 8 pilar kecerdasan, pilar unggulan, link laporan resmi A4, dan undangan klaim Free Trial Class.',
+  },
   custom_broadcast: {
     label: 'Siaran Pengumuman Khusus',
     icon: Bell,

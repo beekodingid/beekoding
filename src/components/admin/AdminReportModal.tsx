@@ -26,6 +26,8 @@ import {
   Cloud,
 } from 'lucide-react';
 import { TalentPrintableReportModal } from '../talent/TalentPrintableReportModal';
+import { ShareParentNotificationModal } from './ShareParentNotificationModal';
+import { generateTalentAssessmentNotification } from '../../services/parentNotification';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface AdminReportModalProps {
@@ -48,6 +50,7 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
   const [status, setStatus] = useState<FollowUpStatus>(submission.status);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const handleSaveNotes = () => {
     updateSubmissionNotes(submission.id, notes);
@@ -68,31 +71,6 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
   // Format nomor telepon untuk WhatsApp
   const rawPhone = profile.parentPhone.replace(/[^0-9]/g, '');
   const cleanPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
-
-  // Draf pesan konsultasi WhatsApp
-  const strengthsText = topStrengths
-    .map((s) => `• *${CATEGORIES[s].name}* (${scores[s]}/100)`)
-    .join('\n');
-
-  const growthText = growthAreas
-    .map((g) => `• *${CATEGORIES[g].name}* (${scores[g]}/100)`)
-    .join('\n');
-
-  const waText = encodeURIComponent(
-    `Halo Bapak/Ibu ${profile.parentName || ''} 👋,\n\n` +
-      `Salam hangat dari Beekoding! 🐝\n` +
-      `Kami telah mereview hasil Diagnostic Aptitude & Talent Test ananda *${profile.childName}* (${profile.childAge} thn, ${profile.gradeLevel || 'Siswa'}).\n\n` +
-      `📊 *Ringkasan Hasil Evaluasi 8 Pilar:*\n` +
-      `• Rata-rata Skor: *${totalScore}/100*\n` +
-      `• Kekuatan Utama:\n${strengthsText}\n\n` +
-      `🌱 *Area yang Ingin Ditumbuhkan:*\n${growthText}\n\n` +
-      `🎯 *Rekomendasi Program Belajar:*\n` +
-      `*${recommendedProgram.title}*\n` +
-      `_${recommendedProgram.whyFit}_\n\n` +
-      `Apakah Bapak/Ibu bersedia meluangkan waktu untuk sesi konsultasi kurikulum gratis bersama Lead Instructor kami? Terima kasih! 🙏`
-  );
-
-  const waLink = `https://wa.me/${cleanPhone}?text=${waText}`;
 
   const getScoreBadgeText = (score: number) => {
     if (score >= 80) return 'Potensi Luar Biasa (High Aptitude) 🌟';
@@ -213,16 +191,15 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
               <span className="hidden sm:inline">Cetak PDF</span>
             </button>
 
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5"
-              title="Kirim Laporan via WhatsApp"
+            <button
+              type="button"
+              onClick={() => setIsShareModalOpen(true)}
+              className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5 cursor-pointer"
+              title="Kirim Notifikasi Hasil Tes & Link Laporan ke WhatsApp Orang Tua"
             >
               <MessageCircle className="w-4 h-4" />
               <span className="hidden sm:inline">Kirim ke WA</span>
-            </a>
+            </button>
 
             <button
               type="button"
@@ -813,6 +790,20 @@ export const AdminReportModal: React.FC<AdminReportModalProps> = ({
         result={submission}
         isDark={isDark}
       />
+
+      {/* Modal Kirim Notifikasi WhatsApp ke Orang Tua */}
+      {isShareModalOpen && (
+        <ShareParentNotificationModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          title="Kirim Hasil Tes Bakat ke WhatsApp Orang Tua"
+          documentType="talent"
+          studentName={profile.childName}
+          identifier={`Asesmen ID: ${submission.id}`}
+          payload={generateTalentAssessmentNotification(submission)}
+          isDark={isDark}
+        />
+      )}
     </div>
   );
 };

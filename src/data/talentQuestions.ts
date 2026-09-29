@@ -494,7 +494,12 @@ ${growthText}
 *${recommendedProgram.title}*
 _${recommendedProgram.whyFit}_
 
-Mohon informasi jadwal kelas atau sesi konsultasi lanjutan untuk ananda. Terima kasih! 🙏`;
+🎁 *Klaim Sesi Free Trial Class:*
+Saya ingin mengklaim *1x Sesi Trial Coding Interaktif GRATIS* untuk ananda sesuai rekomendasi di atas.
+
+🔗 *Laporan Resmi*: https://beekoding.id/#portal?child=${encodeURIComponent(profile.childName)}
+
+Mohon info jadwal kelas trial dan konsultasi kurikulum ananda. Terima kasih! 🙏`;
 
   return encodeURIComponent(text);
 }

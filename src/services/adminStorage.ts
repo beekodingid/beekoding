@@ -11975,6 +11975,7 @@ export type DispatchTriggerType =
   | 'counseling_reminder'
   | 'trial_class_invitation'
   | 'quiz_announcement'
+  | 'talent_assessment_completed'
   | 'custom_broadcast';
 
 export type DispatchMessageStatus = 'pending' | 'processing' | 'delivered' | 'read' | 'failed';
@@ -12031,6 +12032,7 @@ export const DEFAULT_GATEWAY_CONFIG: WhatsAppGatewayConfig = {
     counseling_reminder: true,
     trial_class_invitation: false,
     quiz_announcement: false,
+    talent_assessment_completed: true,
     custom_broadcast: false,
   },
   updatedAt: new Date().toISOString(),

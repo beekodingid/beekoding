@@ -4,6 +4,7 @@ import {
   enqueueMessage,
   type DispatchTriggerType,
 } from './adminStorage';
+import { CATEGORIES, getTierLabel, type AssessmentResult } from '../data/talentQuestions';
 
 export const PORTAL_BASE_URL = 'https://beekoding.id/#portal';
 
@@ -220,6 +221,95 @@ export function generateReportNotification(report: StudentAcademicReport): Notif
     recipientName: parentName,
     recipientPhone: report.parentPhone || '',
     recipientEmail: (report as { parentEmail?: string }).parentEmail || '',
+    portalUrl,
+    whatsappText: whatsappLines.join('\n'),
+    emailSubject,
+    emailBody: emailBodyLines.join('\n'),
+  };
+}
+
+/**
+ * Buat payload pesan notifikasi untuk Hasil Diagnostic Bakat Digital Anak
+ */
+export function generateTalentAssessmentNotification(result: AssessmentResult): NotificationPayload {
+  const parentName = result.profile.parentName || 'Bapak/Ibu Orang Tua';
+  const childName = result.profile.childName;
+  const childAge = result.profile.childAge;
+  const gradeLevel = result.profile.gradeLevel || 'Siswa';
+  const tier = getTierLabel(result.profile.tier);
+  const portalUrl = `https://beekoding.id/#portal?child=${encodeURIComponent(childName)}`;
+
+  const top3 = result.topStrengths
+    .slice(0, 3)
+    .map((k, i) => `${i + 1}. *${CATEGORIES[k]?.name || k}* (${result.scores[k]}%)`)
+    .join('\n');
+
+  const paceInfo = result.paceAnalysis
+    ? `⏱️ *Waktu Pengerjaan*: ${result.durationFormatted || '22 Menit'} (${result.paceAnalysis.speedLabel})\n`
+    : '';
+
+  const whatsappLines = [
+    `🐝 *HASIL DIAGNOSTIC BAKAT DIGITAL ANAK - BEEKODING* 📊✨`,
+    `--------------------------------------------------`,
+    `Kepada Yth. *${parentName}*,`,
+    ``,
+    `Terima kasih telah mendampingi ananda:`,
+    `⭐ *${childName.toUpperCase()}* (${childAge} Tahun • ${gradeLevel} • ${tier})`,
+    `mengikuti sesi *80 Soal Diagnostic Pemetaan Bakat Digital & Computational Thinking* di Beekoding Academy.`,
+    ``,
+    `📊 *RANGKUMAN HASIL EVALUASI:*`,
+    `• Nilai Rata-rata: *${result.totalScore} / 100*`,
+    paceInfo ? paceInfo.trim() : '',
+    ``,
+    `🌟 *TOP 3 PILAR KEUNGGULAN ANANDA:*`,
+    top3,
+    ``,
+    `🚀 *REKOMENDASI PROGRAM KELAS:*`,
+    `*${result.recommendedProgram.title}*`,
+    `_${result.recommendedProgram.whyFit}_`,
+    ``,
+    `🎁 *KLAIM TIKET FREE TRIAL CODING INTERAKTIF:*`,
+    `Sebagai apresiasi atas semangat ananda, kami mengundang ananda untuk mengikuti *1x Sesi Trial Coding Interaktif (Online/Offline) GRATIS* bersama Lead Mentor Beekoding!`,
+    ``,
+    `🔗 *Buka Laporan Interaktif & Unduh Dokumen Resmi A4*:`,
+    portalUrl,
+    ``,
+    `📲 Untuk konsultasi jadwal kelas trial atau diskusi kurikulum langsung dengan Lead Instructor, silakan balas pesan ini atau hubungi Hotline WhatsApp Beekoding di *+62 818-1890-1737*.`,
+    ``,
+    `Salam hangat & sukses selalu,`,
+    `*Tim Akademik & Konsultan Bakat Beekoding*`,
+    `_Next-Gen Coding & AI Academy for Kids & Teens_`,
+    `🌐 https://beekoding.id`,
+  ].filter(Boolean);
+
+  const emailSubject = `[Beekoding] Laporan Hasil Diagnostic Bakat Digital Ananda ${childName} (${result.totalScore}/100)`;
+
+  const emailBodyLines = [
+    `Kepada Yth. Bapak/Ibu ${parentName},`,
+    ``,
+    `Salam hangat dari Beekoding Academy!`,
+    ``,
+    `Berikut kami sampaikan rangkuman hasil asesmen diagnostic pemetaan bakat digital ananda:`,
+    `Nama Siswa: ${childName} (${childAge} Tahun)`,
+    `Jenjang / Usia: ${tier}`,
+    `Rata-rata Skor: ${result.totalScore} / 100`,
+    `Rekomendasi Program: ${result.recommendedProgram.title}`,
+    ``,
+    `Bapak/Ibu juga berhak mengklaim 1x Sesi Free Trial Class Coding interaktif untuk ananda.`,
+    ``,
+    `Tautan Laporan Lengkap & Unduh Berkas PDF A4:`,
+    portalUrl,
+    ``,
+    `Hormat kami,`,
+    `Tim Akademik Beekoding`,
+    `Hotline WA: +62 818-1890-1737`,
+    `Website: https://beekoding.id`,
+  ];
+
+  return {
+    recipientName: parentName,
+    recipientPhone: result.profile.parentPhone || '',
+    recipientEmail: '',
     portalUrl,
     whatsappText: whatsappLines.join('\n'),
     emailSubject,

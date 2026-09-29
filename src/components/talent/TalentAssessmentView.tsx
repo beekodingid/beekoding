@@ -13,7 +13,8 @@ import { TalentOnboarding } from './TalentOnboarding';
 import { TalentQuizRunner } from './TalentQuizRunner';
 import { TalentResultView } from './TalentResultView';
 import { ArrowLeft } from 'lucide-react';
-import { saveSubmission, getQuestionsByTier } from '../../services/adminStorage';
+import { saveSubmission, getQuestionsByTier, processSingleQueuedMessage } from '../../services/adminStorage';
+import { queueToWhatsAppGateway, generateTalentAssessmentNotification } from '../../services/parentNotification';
 
 interface TalentAssessmentViewProps {
   onClose: () => void;
@@ -57,6 +58,25 @@ export const TalentAssessmentView: React.FC<TalentAssessmentViewProps> = ({ onCl
       sectionDurations
     );
     saveSubmission(computedResult, answers);
+
+    // Auto-enqueue & dispatch WhatsApp notification to parent
+    try {
+      if (profile.parentPhone) {
+        const notifPayload = generateTalentAssessmentNotification(computedResult);
+        const queuedMsg = queueToWhatsAppGateway(
+          profile.parentPhone,
+          profile.parentName || `Orang Tua ${profile.childName}`,
+          'talent_assessment_completed',
+          notifPayload.whatsappText
+        );
+        if (queuedMsg?.id) {
+          processSingleQueuedMessage(queuedMsg.id);
+        }
+      }
+    } catch (e) {
+      console.warn('Auto WhatsApp notification queue error:', e);
+    }
+
     setResult(computedResult);
     setCurrentStep('result');
   };

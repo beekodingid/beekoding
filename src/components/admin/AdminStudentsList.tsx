@@ -25,10 +25,13 @@ import {
   Cloud,
   Printer,
   Clock,
+  MessageSquare,
 } from 'lucide-react';
 import { fetchSubmissionsFromCloud } from '../../services/supabaseSync';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { TalentPrintableReportModal } from '../talent/TalentPrintableReportModal';
+import { ShareParentNotificationModal } from './ShareParentNotificationModal';
+import { generateTalentAssessmentNotification } from '../../services/parentNotification';
 
 interface AdminStudentsListProps {
   submissions: AssessmentSubmission[];
@@ -49,6 +52,7 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
   const [sortBy, setSortBy] = useState<'date-desc' | 'date-asc' | 'score-desc' | 'score-asc'>('date-desc');
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [selectedPrintSubmission, setSelectedPrintSubmission] = useState<AssessmentSubmission | null>(null);
+  const [shareModalSubmission, setShareModalSubmission] = useState<AssessmentSubmission | null>(null);
 
   // Pagination State (10, 25, 50)
   const [pageSize, setPageSize] = useState<number>(10);
@@ -548,6 +552,17 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
                           <span>Cetak A4</span>
                         </button>
 
+                        {/* Tombol Kirim WhatsApp ke Orang Tua */}
+                        <button
+                          type="button"
+                          onClick={() => setShareModalSubmission(sub)}
+                          className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shadow-emerald-600/20 transition-all inline-flex items-center gap-1 cursor-pointer"
+                          title="Kirim Notifikasi Hasil Tes & Link Laporan Resmi ke WhatsApp Orang Tua"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          <span>Kirim WA</span>
+                        </button>
+
                         {/* Tombol Hapus */}
                         {deleteConfirmId === sub.id ? (
                           <div className="inline-flex items-center gap-1">
@@ -746,6 +761,20 @@ export const AdminStudentsList: React.FC<AdminStudentsListProps> = ({
         result={selectedPrintSubmission}
         isDark={isDark}
       />
+
+      {/* Modal Kirim Notifikasi WhatsApp Resmi ke Orang Tua */}
+      {shareModalSubmission && (
+        <ShareParentNotificationModal
+          isOpen={!!shareModalSubmission}
+          onClose={() => setShareModalSubmission(null)}
+          title="Kirim Hasil Tes Bakat ke WhatsApp Orang Tua"
+          documentType="talent"
+          studentName={shareModalSubmission.profile.childName}
+          identifier={`Asesmen ID: ${shareModalSubmission.id}`}
+          payload={generateTalentAssessmentNotification(shareModalSubmission)}
+          isDark={isDark}
+        />
+      )}
     </div>
   );
 };
