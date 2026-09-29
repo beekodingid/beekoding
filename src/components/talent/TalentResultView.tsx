@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   type AssessmentResult,
   CATEGORIES,
@@ -9,7 +9,7 @@ import {
 import { siteConfig } from '../../data/content';
 import { TalentRadarChart } from './TalentRadarChart';
 import { ConfettiCelebration } from './ConfettiCelebration';
-import { printIsolatedElement } from '../../services/printUtils';
+import { TalentPrintableReportModal } from './TalentPrintableReportModal';
 import {
   Sparkles,
   Award,
@@ -46,7 +46,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
 
   const [showConfetti, setShowConfetti] = useState(true);
   const [copied, setCopied] = useState(false);
-  const printAreaRef = useRef<HTMLDivElement | null>(null);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   const handleCopyText = async () => {
     const timeInfo = result.durationFormatted
@@ -91,10 +91,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
   };
 
   const handlePrint = () => {
-    printIsolatedElement(printAreaRef.current, {
-      title: `Hasil Asesmen Bakat Beekoding - ${profile.childName}`,
-      orientation: 'portrait',
-    });
+    setIsPrintModalOpen(true);
   };
 
   return (
@@ -156,12 +153,12 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           onClick={handlePrint}
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
             isDark
-              ? 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
-              : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-sm'
+              ? 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/40'
+              : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300 shadow-sm'
           }`}
         >
-          <Printer className="w-4 h-4" />
-          <span>Cetak / Simpan PDF</span>
+          <Printer className="w-4 h-4 text-amber-500" />
+          <span>Cetak / Simpan PDF (A4)</span>
         </button>
 
         <button
@@ -178,9 +175,6 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           <span>🎉</span>
         </button>
       </div>
-
-      {/* Printable Area Wrapper */}
-      <div ref={printAreaRef}>
 
       {/* Main Score & Radar Hero Card */}
       <div
@@ -442,14 +436,13 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           })}
         </div>
       </div>
-      </div>
 
       {/* Bottom Action Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-800">
         <button
           type="button"
           onClick={onRetake}
-          className={`w-full sm:w-auto px-5 py-3 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors ${
+          className={`w-full sm:w-auto px-5 py-3 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer ${
             isDark
               ? 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
               : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
@@ -459,17 +452,26 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           <span>Ulangi Asesmen (Ganti Profil / Usia)</span>
         </button>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto">
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Cetak Hasil Resmi A4</span>
+          </button>
+
           <button
             type="button"
             onClick={onBackToHome}
-            className={`w-full sm:w-auto px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
+            className={`w-full sm:w-auto px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-colors cursor-pointer ${
               isDark
                 ? 'bg-slate-800 hover:bg-slate-700 text-white'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-900'
             }`}
           >
-            Kembali ke Beranda Beekoding
+            Kembali ke Beranda
           </button>
 
           <a
@@ -483,6 +485,14 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
           </a>
         </div>
       </div>
+
+      {/* Official A4 Printable Report Modal */}
+      <TalentPrintableReportModal
+        isOpen={isPrintModalOpen}
+        onClose={() => setIsPrintModalOpen(false)}
+        result={result}
+        isDark={isDark}
+      />
     </div>
   );
 };
