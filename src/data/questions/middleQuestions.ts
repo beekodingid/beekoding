@@ -1007,22 +1007,26 @@ export const MIDDLE_QUESTIONS: TalentQuestion[] = [
       {
         "id": "A",
         "text": "8 balok kecil (2 x 2 x 2 = 8)",
-        "score": 20
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ecfdf5'/><g fill='%23059669' stroke='%23064e3b' stroke-width='2'><rect x='25' y='25' width='22' height='22' rx='3'/><rect x='51' y='25' width='22' height='22' rx='3'/><rect x='25' y='51' width='22' height='22' rx='3'/><rect x='51' y='51' width='22' height='22' rx='3'/></g><text x='50' y='88' font-size='11' text-anchor='middle' fill='%23065f46' font-weight='bold'>2x2x2 (8 Balok)</text></svg>"
       },
       {
         "id": "B",
         "text": "6 balok kecil",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><g fill='%2394a3b8' stroke='%2364748b' stroke-width='2'><rect x='25' y='30' width='22' height='22' rx='3'/><rect x='51' y='30' width='22' height='22' rx='3'/><rect x='25' y='56' width='22' height='22' rx='3'/></g><text x='50' y='88' font-size='11' text-anchor='middle' fill='%23475569' font-weight='bold'>6 Balok</text></svg>"
       },
       {
         "id": "C",
         "text": "12 balok kecil",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><g fill='%2394a3b8' stroke='%2364748b' stroke-width='2'><rect x='20' y='25' width='16' height='16' rx='2'/><rect x='40' y='25' width='16' height='16' rx='2'/><rect x='60' y='25' width='16' height='16' rx='2'/><rect x='20' y='45' width='16' height='16' rx='2'/><rect x='40' y='45' width='16' height='16' rx='2'/><rect x='60' y='45' width='16' height='16' rx='2'/></g><text x='50' y='88' font-size='11' text-anchor='middle' fill='%23475569' font-weight='bold'>12 Balok</text></svg>"
       },
       {
         "id": "D",
         "text": "4 balok kecil",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef2f2'/><g fill='%23f87171' stroke='%23dc2626' stroke-width='2'><rect x='28' y='35' width='20' height='20' rx='3'/><rect x='52' y='35' width='20' height='20' rx='3'/></g><text x='50' y='88' font-size='11' text-anchor='middle' fill='%23991b1b' font-weight='bold'>4 Balok</text></svg>"
       }
     ]
   },
@@ -1471,23 +1475,27 @@ export const MIDDLE_QUESTIONS: TalentQuestion[] = [
     "options": [
       {
         "id": "A",
-        "text": "⚪ (Lingkaran Putih)",
-        "score": 20
+        "text": "⚪ Lingkaran Putih",
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f1f5f9'/><circle cx='50' cy='50' r='32' fill='%23ffffff' stroke='%2394a3b8' stroke-width='6'/></svg>"
       },
       {
         "id": "B",
-        "text": "⚫ (Lingkaran Hitam)",
-        "score": 5
+        "text": "⚫ Lingkaran Hitam",
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><circle cx='50' cy='50' r='32' fill='%231e293b'/></svg>"
       },
       {
         "id": "C",
-        "text": "🔺 (Segitiga)",
-        "score": 0
+        "text": "🔺 Segitiga Merah",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fee2e2'/><polygon points='50,18 85,78 15,78' fill='%23ef4444'/></svg>"
       },
       {
         "id": "D",
-        "text": "⬛ (Kotak)",
-        "score": 0
+        "text": "⬛ Kotak Hitam",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f1f5f9'/><rect x='22' y='22' width='56' height='56' rx='8' fill='%231e293b'/></svg>"
       }
     ]
   },

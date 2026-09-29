@@ -14,23 +14,27 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
     "options": [
       {
         "id": "A",
-        "text": "Kelinci, karena kelinci menyukai wortel",
-        "score": 20
+        "text": "Kelinci, karena menyukai wortel 🥕",
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ecfdf5'/><text x='50' y='65' font-size='48' text-anchor='middle'>🐇🥕</text></svg>"
       },
       {
         "id": "B",
-        "text": "Kucing, karena kucing lapar",
-        "score": 5
+        "text": "Kucing, karena lapar 🐟",
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef3c7'/><text x='50' y='65' font-size='48' text-anchor='middle'>🐱🐟</text></svg>"
       },
       {
         "id": "C",
         "text": "Keduanya mendekat bersamaan",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e0f2fe'/><text x='50' y='65' font-size='42' text-anchor='middle'>🐇🐱</text></svg>"
       },
       {
         "id": "D",
         "text": "Tidak ada hewan yang mendekat",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><text x='50' y='65' font-size='44' text-anchor='middle'>🚫🌿</text></svg>"
       }
     ]
   },
@@ -46,22 +50,26 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
       {
         "id": "A",
         "text": "Terus berjalan maju",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef2f2'/><text x='50' y='65' font-size='48' text-anchor='middle'>🏃💨</text></svg>"
       },
       {
         "id": "B",
         "text": "Segera berhenti dan menunggu",
-        "score": 20
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fee2e2'/><circle cx='50' cy='50' r='36' fill='%23ef4444'/><text x='50' y='62' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>STOP</text></svg>"
       },
       {
         "id": "C",
         "text": "Berlari lebih kencang",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef3c7'/><text x='50' y='65' font-size='48' text-anchor='middle'>⚡🚀</text></svg>"
       },
       {
         "id": "D",
         "text": "Membunyikan klakson saja",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e0f2fe'/><text x='50' y='65' font-size='48' text-anchor='middle'>📢🎵</text></svg>"
       }
     ]
   },
@@ -980,22 +988,26 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
       {
         "id": "A",
         "text": "Hitam ⬛",
-        "score": 20
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e293b'/><rect x='15' y='15' width='70' height='70' rx='14' fill='%230f172a'/><text x='50' y='60' font-size='20' text-anchor='middle' fill='%2394a3b8' font-weight='bold'>HITAM</text></svg>"
       },
       {
         "id": "B",
         "text": "Kuning 🟨",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef3c7'/><rect x='15' y='15' width='70' height='70' rx='14' fill='%23f59e0b'/><text x='50' y='60' font-size='18' text-anchor='middle' fill='%2378350f' font-weight='bold'>KUNING</text></svg>"
       },
       {
         "id": "C",
         "text": "Biru 🟦",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e0f2fe'/><rect x='15' y='15' width='70' height='70' rx='14' fill='%230284c7'/><text x='50' y='60' font-size='20' text-anchor='middle' fill='%23ffffff' font-weight='bold'>BIRU</text></svg>"
       },
       {
         "id": "D",
         "text": "Hijau 🟩",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ecfdf5'/><rect x='15' y='15' width='70' height='70' rx='14' fill='%2310b981'/><text x='50' y='60' font-size='20' text-anchor='middle' fill='%23ffffff' font-weight='bold'>HIJAU</text></svg>"
       }
     ]
   },
@@ -1011,22 +1023,26 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
       {
         "id": "A",
         "text": "Balok Biru 🟦",
-        "score": 20
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f0fdf4'/><rect x='25' y='15' width='50' height='20' rx='6' fill='%230284c7'/><rect x='25' y='40' width='50' height='20' rx='6' fill='%23cbd5e1' opacity='0.4'/><rect x='25' y='65' width='50' height='20' rx='6' fill='%23cbd5e1' opacity='0.4'/><text x='50' y='30' font-size='11' text-anchor='middle' fill='white' font-weight='bold'>BIRU 🟦</text></svg>"
       },
       {
         "id": "B",
         "text": "Balok Merah 🟥",
-        "score": 0
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><rect x='25' y='15' width='50' height='20' rx='6' fill='%23cbd5e1' opacity='0.4'/><rect x='25' y='40' width='50' height='20' rx='6' fill='%23cbd5e1' opacity='0.4'/><rect x='25' y='65' width='50' height='20' rx='6' fill='%23ef4444'/><text x='50' y='80' font-size='11' text-anchor='middle' fill='white' font-weight='bold'>MERAH 🟥</text></svg>"
       },
       {
         "id": "C",
         "text": "Balok Hijau 🟩",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><rect x='25' y='15' width='50' height='20' rx='6' fill='%23cbd5e1' opacity='0.4'/><rect x='25' y='40' width='50' height='20' rx='6' fill='%2310b981'/><rect x='25' y='65' width='50' height='20' rx='6' fill='%23cbd5e1' opacity='0.4'/><text x='50' y='55' font-size='11' text-anchor='middle' fill='white' font-weight='bold'>HIJAU 🟩</text></svg>"
       },
       {
         "id": "D",
         "text": "Semua balok sekaligus",
-        "score": 5
+        "score": 5,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f8fafc'/><rect x='25' y='15' width='50' height='20' rx='6' fill='%230284c7'/><rect x='25' y='40' width='50' height='20' rx='6' fill='%2310b981'/><rect x='25' y='65' width='50' height='20' rx='6' fill='%23ef4444'/><text x='50' y='55' font-size='10' text-anchor='middle' fill='white' font-weight='bold'>SEMUA</text></svg>"
       }
     ]
   },
@@ -1944,23 +1960,27 @@ export const JUNIOR_QUESTIONS: TalentQuestion[] = [
     "options": [
       {
         "id": "A",
-        "text": "Mencampur cat warna kuning dan biru untuk membuat warna hijau!",
-        "score": 20
+        "text": "Mencampur cat kuning dan biru jadi hijau!",
+        "score": 20,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ecfdf5'/><circle cx='30' cy='38' r='18' fill='%23f59e0b'/><circle cx='70' cy='38' r='18' fill='%233b82f6'/><text x='50' y='42' font-size='20' text-anchor='middle' fill='%23334155' font-weight='bold'>+</text><circle cx='50' cy='75' r='18' fill='%2310b981'/><text x='50' y='80' font-size='11' text-anchor='middle' fill='white' font-weight='bold'>HIJAU</text></svg>"
       },
       {
         "id": "B",
-        "text": "Menggambar pohon ajaib musim gugur dengan warna oranye atau ungu",
-        "score": 18
+        "text": "Menggambar pohon musim gugur oranye / ungu",
+        "score": 18,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fff7ed'/><circle cx='50' cy='45' r='28' fill='%23ea580c'/><circle cx='35' cy='52' r='18' fill='%23f59e0b'/><circle cx='65' cy='52' r='18' fill='%23d97706'/><rect x='44' y='65' width='12' height='22' rx='3' fill='%2378350f'/></svg>"
       },
       {
         "id": "C",
-        "text": "Menunggu dibelikan cat baru sebelum melanjutkan",
-        "score": 8
+        "text": "Menunggu dibelikan cat baru",
+        "score": 8,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f1f5f9'/><circle cx='50' cy='50' r='32' fill='%23e2e8f0' stroke='%2394a3b8' stroke-width='4'/><path d='M50 30 V50 H65' stroke='%23475569' stroke-width='5' stroke-linecap='round'/></svg>"
       },
       {
         "id": "D",
-        "text": "Berhenti menggambar dan merobek kertasnya",
-        "score": 0
+        "text": "Berhenti dan merobek kertas",
+        "score": 0,
+        "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fef2f2'/><rect x='28' y='28' width='44' height='44' rx='8' fill='%23ef4444'/></svg>"
       }
     ]
   },
