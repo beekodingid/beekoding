@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, startTransition } from 'react';
 
 type Theme = 'dark' | 'light';
 
@@ -30,7 +30,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    startTransition(() => {
+      setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    });
   };
 
   return (

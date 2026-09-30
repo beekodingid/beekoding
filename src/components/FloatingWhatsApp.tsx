@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, startTransition } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { siteConfig } from '../data/content';
 import {
@@ -135,7 +135,11 @@ export const FloatingWhatsApp: React.FC = () => {
             </div>
 
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                startTransition(() => {
+                  setIsOpen(false);
+                });
+              }}
               aria-label="Tutup menu pertanyaan cepat"
               className="w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 text-slate-950 flex items-center justify-center transition-colors"
             >
@@ -225,7 +229,11 @@ export const FloatingWhatsApp: React.FC = () => {
         {/* Speech bubble / tooltip toggle */}
         {!isOpen && (
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              startTransition(() => {
+                setIsOpen(true);
+              });
+            }}
             aria-label="Buka menu pertanyaan cepat"
             className={`hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl rounded-br-none border shadow-xl backdrop-blur-md text-xs font-bold transition-all duration-300 hover:scale-105 ${
               isDark
@@ -240,7 +248,11 @@ export const FloatingWhatsApp: React.FC = () => {
 
         {/* WhatsApp & Toggle Button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            startTransition(() => {
+              setIsOpen((prev) => !prev);
+            });
+          }}
           aria-expanded={isOpen}
           aria-label={isOpen ? 'Tutup menu WhatsApp' : 'Buka menu pertanyaan cepat WhatsApp'}
           className="relative group focus:outline-none focus:ring-4 focus:ring-amber-400/40 rounded-full"

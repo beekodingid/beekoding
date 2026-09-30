@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense, startTransition } from 'react';
 import { useTheme } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -8,12 +8,14 @@ import { ModularPrograms } from './components/ModularPrograms';
 import { Audience } from './components/Audience';
 import { WhyUs } from './components/WhyUs';
 import { Footer } from './components/Footer';
-import { TrialEventsSection } from './components/TrialEventsSection';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { PWAInstallPrompt } from './components/common/PWAInstallPrompt';
 import { type CodingEvent } from './services/adminStorage';
 
-// Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed
+// Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed & responsiveness
+const TrialEventsSection = lazy(() =>
+  import('./components/TrialEventsSection').then((m) => ({ default: m.TrialEventsSection }))
+);
 const StudentShowcase = lazy(() =>
   import('./components/StudentShowcase').then((m) => ({ default: m.StudentShowcase }))
 );
@@ -53,7 +55,7 @@ function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string 
     <div className="min-h-screen bg-[#0d0f15] text-slate-100 flex flex-col items-center justify-center p-6 select-none">
       <div className="relative w-16 h-16 mb-4 flex items-center justify-center">
         <div className="absolute inset-0 rounded-full border-4 border-amber-500/20 border-t-amber-400 animate-spin" />
-        <span className="text-2xl animate-bounce"><img src="/bee-mascot.png" alt="Mascot" className="w-15 h-15 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" /></span>
+        <span className="text-2xl animate-bounce"><img src="/bee-mascot.webp" alt="Mascot" width={60} height={60} className="w-15 h-15 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" /></span>
       </div>
       <span
                 className={`text-2xl font-black tracking-tight font-['Space_Grotesk']`}
@@ -112,31 +114,43 @@ export function App() {
   }, []);
 
   const handleOpenBootcampModal = () => {
-    setBootcampModalOpen(true);
+    startTransition(() => {
+      setBootcampModalOpen(true);
+    });
   };
 
   const handleCloseBootcampModal = () => {
-    setBootcampModalOpen(false);
+    startTransition(() => {
+      setBootcampModalOpen(false);
+    });
   };
 
   const handleOpenTrialEvents = (event?: CodingEvent) => {
-    setSelectedEventForModal(event || null);
-    setTrialEventsModalOpen(true);
+    startTransition(() => {
+      setSelectedEventForModal(event || null);
+      setTrialEventsModalOpen(true);
+    });
   };
 
   const handleCloseTrialEvents = () => {
-    setTrialEventsModalOpen(false);
-    setSelectedEventForModal(null);
+    startTransition(() => {
+      setTrialEventsModalOpen(false);
+      setSelectedEventForModal(null);
+    });
   };
 
   const handleOpenTalentAssessment = () => {
     window.location.hash = '#talent';
-    setShowTalentAssessment(true);
-    setShowAdmin(false);
+    startTransition(() => {
+      setShowTalentAssessment(true);
+      setShowAdmin(false);
+    });
   };
 
   const handleCloseTalentAssessment = () => {
-    setShowTalentAssessment(false);
+    startTransition(() => {
+      setShowTalentAssessment(false);
+    });
     if (window.location.hash === '#talent') {
       window.history.pushState(null, '', window.location.pathname);
     }
@@ -144,13 +158,17 @@ export function App() {
 
   const handleOpenAdmin = () => {
     window.location.hash = '#admin';
-    setShowAdmin(true);
-    setShowTalentAssessment(false);
-    setShowStudentPortal(false);
+    startTransition(() => {
+      setShowAdmin(true);
+      setShowTalentAssessment(false);
+      setShowStudentPortal(false);
+    });
   };
 
   const handleCloseAdmin = () => {
-    setShowAdmin(false);
+    startTransition(() => {
+      setShowAdmin(false);
+    });
     if (window.location.hash === '#admin') {
       window.history.pushState(null, '', window.location.pathname);
     }
@@ -158,13 +176,17 @@ export function App() {
 
   const handleOpenStudentPortal = () => {
     window.location.hash = '#portal';
-    setShowStudentPortal(true);
-    setShowAdmin(false);
-    setShowTalentAssessment(false);
+    startTransition(() => {
+      setShowStudentPortal(true);
+      setShowAdmin(false);
+      setShowTalentAssessment(false);
+    });
   };
 
   const handleCloseStudentPortal = () => {
-    setShowStudentPortal(false);
+    startTransition(() => {
+      setShowStudentPortal(false);
+    });
     if (window.location.hash === '#portal') {
       window.history.pushState(null, '', window.location.pathname);
     }
@@ -236,7 +258,9 @@ export function App() {
           onSelectProgramForInquiry={handleSelectProgramForInquiry}
         />
         <ModularPrograms onSelectProgramForInquiry={handleSelectProgramForInquiry} />
-        <TrialEventsSection onOpenTrialEventsModal={handleOpenTrialEvents} />
+        <Suspense fallback={null}>
+          <TrialEventsSection onOpenTrialEventsModal={handleOpenTrialEvents} />
+        </Suspense>
         <Suspense fallback={null}>
           <CourseFinder
             onOpenTalentAssessment={handleOpenTalentAssessment}

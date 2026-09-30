@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
@@ -327,7 +327,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex sm:hidden items-center gap-2">
           <ThemeToggle />
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => {
+              startTransition(() => {
+                setMobileMenuOpen((prev) => !prev);
+              });
+            }}
             className={`p-2.5 rounded-xl transition-colors ${
               isDark
                 ? 'text-slate-300 hover:text-amber-400 hover:bg-slate-800/80'
@@ -341,7 +345,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Medium tablet menu button */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onClick={() => {
+            startTransition(() => {
+              setMobileMenuOpen((prev) => !prev);
+            });
+          }}
           className={`hidden sm:flex lg:hidden p-2.5 rounded-xl transition-colors ${
             isDark
               ? 'text-slate-300 hover:text-amber-400 hover:bg-slate-800/80'
