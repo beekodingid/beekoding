@@ -177,8 +177,12 @@ export const About: React.FC = () => {
               }`}
             >
               <img
-                src="/bee-mascot.png"
+                src="/bee-mascot.webp"
                 alt="Beekoding Mascot"
+                width={64}
+                height={64}
+                loading="lazy"
+                decoding="async"
                 className="w-16 h-16 object-contain flex-shrink-0"
               />
               <div>

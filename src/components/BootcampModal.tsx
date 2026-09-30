@@ -68,8 +68,12 @@ export const BootcampModal: React.FC<BootcampModalProps> = ({
         >
           <div className="flex items-start gap-4 sm:gap-6">
             <img
-              src="/bee-mascot.png"
+              src="/bee-mascot.webp"
               alt="Beekoding Mascot"
+              width={80}
+              height={80}
+              loading="lazy"
+              decoding="async"
               className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-md flex-shrink-0"
             />
             <div className="space-y-1.5">

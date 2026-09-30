@@ -118,7 +118,7 @@ export const FloatingWhatsApp: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="w-11 h-11 rounded-2xl bg-white/90 p-1 flex items-center justify-center shadow-md">
-                  <img src="/bee-mascot.png" alt="Mascot Beekoding" className="w-8 h-8 object-contain" />
+                  <img src="/bee-mascot.webp" alt="Mascot Beekoding" width={32} height={32} loading="lazy" decoding="async" className="w-8 h-8 object-contain" />
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-300" />
               </div>
@@ -234,7 +234,7 @@ export const FloatingWhatsApp: React.FC = () => {
             }`}
           >
             <span>Ada pertanyaan? Tanya Si Beeby yuk!</span>
-            <img src="/bee-mascot.png" alt="Mascot" className="w-5 h-5 object-contain" />
+            <img src="/bee-mascot.webp" alt="Mascot" width={20} height={20} loading="lazy" decoding="async" className="w-5 h-5 object-contain" />
           </button>
         )}
 
@@ -252,8 +252,12 @@ export const FloatingWhatsApp: React.FC = () => {
             }`}
           >
             <img
-              src="/bee-mascot.png"
+              src="/bee-mascot.webp"
               alt="Mascot"
+              width={40}
+              height={40}
+              loading="lazy"
+              decoding="async"
               className="w-10 h-10 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]"
             />
           </div>

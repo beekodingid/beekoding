@@ -1,9 +1,10 @@
-const CACHE_NAME = 'beekoding-cache-v1';
+const CACHE_NAME = 'beekoding-cache-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
   '/favicon.png',
+  '/bee-mascot.webp',
   '/bee-mascot.png',
   '/icon-192.png',
   '/icon-512.png',

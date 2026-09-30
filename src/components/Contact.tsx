@@ -125,8 +125,12 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
               }`}
             >
               <img
-                src="/bee-mascot.png"
+                src="/bee-mascot.webp"
                 alt="Bee Mascot"
+                width={64}
+                height={64}
+                loading="lazy"
+                decoding="async"
                 className="w-16 h-16 object-contain flex-shrink-0"
               />
               <div>

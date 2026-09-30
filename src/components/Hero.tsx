@@ -167,12 +167,20 @@ export const Hero: React.FC<HeroProps> = ({
                   {/* Decorative golden honey pedestal circle */}
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-12 bg-amber-500/20 rounded-[100%] blur-md" />
 
-                  {/* The Bee Mascot Image */}
-                  <img
-                    src="/bee-mascot.png"
-                    alt="Beekoding Mascot"
-                    className="w-64 sm:w-80 h-auto object-contain drop-shadow-[0_20px_35px_rgba(245,158,11,0.35)] hover:scale-105 transition-transform duration-300"
-                  />
+                  {/* The Bee Mascot Image (LCP Optimized) */}
+                  <picture>
+                    <source srcSet="/bee-mascot.webp" type="image/webp" />
+                    <img
+                      src="/bee-mascot.png"
+                      alt="Beekoding Mascot"
+                      width={440}
+                      height={600}
+                      fetchPriority="high"
+                      loading="eager"
+                      decoding="async"
+                      className="w-64 sm:w-80 h-auto object-contain drop-shadow-[0_20px_35px_rgba(245,158,11,0.35)] hover:scale-105 transition-transform duration-300 will-change-transform"
+                    />
+                  </picture>
                 </div>
 
                 {/* Floating Interactive Badge Pills */}

@@ -3256,7 +3256,7 @@ CREATE TABLE IF NOT EXISTS whatsapp_queued_messages (
     profile.email || 'halo@beekoding.com',
     profile.phone || '+62 818-1890-1737',
     'Gedung Beekoding EduHub Lt. 3, Jakarta Selatan',
-    profile.avatar || '/bee-mascot.png',
+    profile.avatar || '/bee-mascot.webp',
     'https://beekoding.com',
     'IDR',
     profile.notificationsEnabled ?? true,

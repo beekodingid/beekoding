@@ -92,8 +92,12 @@ export const WhyUs: React.FC = () => {
         >
           <div className="flex items-center gap-6">
             <img
-              src="/bee-mascot.png"
+              src="/bee-mascot.webp"
               alt="Beekoding Mascot"
+              width={96}
+              height={96}
+              loading="lazy"
+              decoding="async"
               className="w-20 h-20 sm:w-24 sm:h-24 object-contain flex-shrink-0 drop-shadow-lg"
             />
             <div className="space-y-2 text-center sm:text-left">

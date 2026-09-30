@@ -198,8 +198,12 @@ export const Programs: React.FC<ProgramsProps> = ({
                           }`}
                         >
                           <img
-                            src="/bee-mascot.png"
+                            src="/bee-mascot.webp"
                             alt="Mascot"
+                            width={28}
+                            height={28}
+                            loading="lazy"
+                            decoding="async"
                             className="w-7 h-7 object-contain"
                           />
                           <span>Sarang Belajar Intensif 25 Hari</span>
