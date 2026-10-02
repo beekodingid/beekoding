@@ -62,10 +62,10 @@ export const TrialEventsSection: React.FC<TrialEventsSectionProps> = ({
           </div>
 
           <h2
-            className={`text-2xl sm:text-4xl font-black tracking-tight font-['Space_Grotesk'] mb-4 ${
-              isDark ? 'text-white' : 'text-slate-900'
-            }`}
-          >
+              className={`text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight font-['Space_Grotesk'] ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}
+            >
             Workshop, Webinar & <span className="text-amber-500">Free Trial Class</span>
           </h2>
 

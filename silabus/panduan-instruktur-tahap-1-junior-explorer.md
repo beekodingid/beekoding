@@ -1,309 +1,296 @@
-# 🐝 PANDUAN LENGKAP INSTRUKTUR: TAHAP 1 — JUNIOR EXPLORER
-### *Kurikulum & Rencana Pembelajaran Siap Ajar (Instruktur Teaching Handbook & Lesson Plans)*
+# 🐝 BUKU PANDUAN UTAMA INSTRUKTUR: TAHAP 1 — JUNIOR EXPLORER (SESI 1 – 96)
+### *Kurikulum Lengkap 2 Tahun Berkelanjutan (Pathway 96 Sesi Siap Ajar)*
+*Pedoman Pedagogi, Rundown Mengajar, Analogi Ramah Anak, Kode Blok Scratch 3.0, Micro:bit Sensor & Proyek Karya Mandiri*
 
-- **Kode Dokumen**: `BK-INSTR-STAGE-01`
-- **Target Usia**: 6 – 9 Tahun (TK B – SD Kelas 1, 2, dan 3)
-- **Prasyarat Siswa**: Zero Experience (Belum pernah koding sebelumnya; cukup mampu mengenali huruf, angka, dan menggunakan mouse/touchpad)
-- **Format Pertemuan**: 12 Sesi Pembelajaran Terpadu @ 75–90 Menit
-- **Platform Utama**: *ScratchJr (Tablet/PC)* & *Scratch 3.0 (Web)*, AI Creative Media Tools, Unplugged Logic Kits
-- **Rasio Mentor**: 1 Instruktur : Maksimal 4–5 Siswa (Online) / 6–8 Siswa (Offline Lab)
+- **Kode Dokumen**: `BK-INSTR-STAGE-01-FULL96`
+- **Target Usia**: 6 – 9 Tahun (TK B, SD Kelas 1, 2, dan 3)
+- **Jenjang Program**: 
+  - **Tahun 1 (Level 1–4 / Sesi 1–48)**: Fondasi Computational Thinking, Scratch 3.0 Game Mechanics, & Physical Computing Micro:bit.
+  - **Tahun 2 (Level 5–8 / Sesi 49–96)**: Scratch Advanced Extensions, Algoritma Matematika, Junior Robotics & Game Jam Portofolio.
+- **Prasyarat Siswa**: Zero Experience (Mampu mengenali huruf/angka sederhana & menggunakan mouse/layar sentuh).
+- **Rasio Pembimbing**: 1 Instruktur : Maksimal 4–5 Siswa (Online) / 6–8 Siswa (Offline Lab).
 
 ---
 
-## 🎯 PEDOMAN PEDAGOGIS & KARAKTERISTIK KOGNITIF ANAK USIA 6–9 TAHUN
-
-Sebagai instruktur Beekoding, pahami prinsip psikologi perkembangan anak pada jenjang ini:
-1. **Peralihan dari Konkret ke Simbolik**: Anak usia 6–9 tahun berpikir melalui apa yang mereka lihat dan sentuh. Selalu mulai dengan contoh visual nyata atau analogi fisik sebelum menyusun blok kode.
-2. **Rentang Perhatian (Attention Span) 15–20 Menit**: Jangan memberikan ceramah teori panjang! Gunakan pola *Chunking*: 10 menit penjelasan/demo $\rightarrow$ 15 menit praktik mandiri $\rightarrow$ 5 menit mini-game/cek bersama.
-3. **Pemberian Reward & Apresiasi Positif (Praise the Effort, Not Just the Result)**: Gunakan stiker virtual, tepuk tangan koding ("Bee High-Five!"), dan puji ketekunan anak ketika berhasil membetulkan kesalahan (*debugging*).
-4. **Kesabaran Motorik Halus**: Sebagian siswa kelas 1 SD masih belajar mengklik ganda (*double-click*) atau *drag-and-drop*. Berikan waktu dan pandu dengan mouse pointer berwarna kontras.
+## 🎯 PRINSIP PEDAGOGIS KHUSUS USIA 6–9 TAHUN
+1. **Pendekatan Konkret ke Abstrak**: Anak usia ini belum siap memahami konsep abstrak seperti variabel memori tanpa analogi fisik (gunakan analogi "Kotak Celengan Berlabel").
+2. **Aturan 15 Menit (Chunking Method)**: 10 menit live demo -> 15 menit praktik mandiri -> 5 menit tepuk koding/ice breaking.
+3. **Praise the Effort, Not Just the Result**: Puji ketekunan saat anak berhasil membetulkan bug (debugging).
+4. **Visual & Auditori**: Manfaatkan suara, musik ceria, dan warna kontras untuk memperkuat memori asosiasi logika.
 
 ---
 
 ## 🧭 RUNDOWN STANDAR SETIAP SESI MENGAJAR (TOTAL 90 MENIT)
-
-| Durasi | Segmen Pembelajaran | Aktivitas Mentor |
+| Menit | Segmen Kelas | Panduan Instruktur |
 | :---: | :--- | :--- |
-| **00 – 10 Min** | **Ice Breaking & Warm-up** | Sapa nama setiap anak, review 1 menit materi minggu lalu, perlihatkan cuplikan game keren yang akan dibuat hari ini. |
-| **10 – 25 Min** | **Live Guided Demo (Show & Tell)** | Mentor mendemokan blok kode langkah demi langkah di layar bersama; jelaskan konsep inti dengan analogi cerita. |
-| **25 – 60 Min** | **Hands-on Student Coding (Praktik)** | Siswa membuka Scratch, menyusun blok dipandu mentor. Mentor meminta siswa share screen bergantian untuk memastikan tidak ada yang tertinggal. |
-| **60 – 75 Min** | **Mini Challenge (Eksplorasi Kreatif)** | Berikan tantangan modifikasi warna, suara, atau kecepatan sesuai imajinasi masing-masing anak. |
-| **75 – 85 Min** | **Showcase & Peer Celebration** | Setiap anak menunjukkan karyanya selama 1–2 menit, teman sekelas memberikan tepuk tangan dan pujian. |
-| **85 – 90 Min** | **Wrap-up & Quest Rumah Ringan** | Rangkuman 1 kalimat hikmah logika hari ini dan pengumuman misi rahasia untuk pertemuan berikutnya. |
+| **00–10'** | **Ice Breaking & Review** | Sapa nama setiap anak, review 1 menit sesi lalu, demonstrasikan karya seru hari ini. |
+| **10–25'** | **Guided Live Demo** | Instruktur mendemokan blok kode di layar bersama langkah-demi-langkah dengan cerita. |
+| **25–60'** | **Hands-on Student Coding** | Siswa menyusun blok di komputernya. Mentor memantau share screen bergantian. |
+| **60–75'** | **Creative Challenge** | Tantangan memodifikasi warna, suara, kecepatan, atau rintangan secara mandiri. |
+| **75–85'** | **Showcase & Celebration** | Siswa memamerkan hasil karyanya, teman sekelas memberi apresiasi tepuk koding. |
+| **85–90'** | **Wrap-up & Quest Rumah** | Kesimpulan 1 kalimat hikmah logika dan pengumuman misi pertemuan berikutnya. |
 
 ---
 
-# 📚 RENCANA PELAKSANAAN PEMBELAJARAN (LESSON PLANS SESI 1 – 12)
+# 📅 RENCANA PEMBELAJARAN TAHUN KE-1 (SESI 01 – 48)
+
+## 📌 LEVEL 1: STARTER FOUNDATION & VISUAL MOTION (SESI 01 – 12)
+- **Sesi 01: Petualangan Robot Lebah (Unplugged Computational Thinking)**
+  - *Konsep*: Algoritma adalah urutan instruksi presisi. Komputer tidak bisa menebak pikiran manusia.
+  - *Analogi*: Robot dapur yang butuh panduan langkah per langkah untuk mengambil botol minum.
+  - *Aktivitas*: Game fisik arah panah [↑] [↑] [→] [↑] di atas grid lantai labirin.
+- **Sesi 02: Menghidupkan Karakter di Scratch (Stage, Sprite & Motion)**
+  - *Konsep*: Aktor panggung (*Sprite*), Panggung (*Stage*), dan Blok Gerak Biru (*Motion*).
+  - *Kode Blok*: `[When Green Flag Clicked] -> move (50) steps -> say [Halo, aku Beeby!] for (2) secs`.
+  - *Tips*: Ajarkan anak memilih background *Flowers* dan sprite *Bee* dikecilkan ke 50%.
+- **Sesi 03: Pemicu Peristiwa (Events: Klik, Sentuh, & Efek Suara)**
+  - *Konsep*: Hubungan sebab-akibat (Cause & Effect) melalui blok topi emas.
+  - *Kode Blok*: `[When this sprite clicked] -> change size by (20) -> start sound [Magic Spell] -> set size to (100)%`.
+  - *Tantangan*: Tambahkan 3 bunga berbeda yang bersuara Pop, Boing, dan Coin.
+- **Sesi 04: Kepakan Sayap Lebah (Perulangan Loop: Repeat & Forever)**
+  - *Konsep*: Menghindari menyusun puluhan blok yang sama dengan perulangan otomatis.
+  - *Kode Blok*: `[When Green Flag Clicked] -> forever [next costume -> wait (0.2) secs -> move (5) steps -> if on edge, bounce]`.
+  - *Common Bug*: Sayap mengepak secepat kilat. Solusi: Pastikan ada `wait (0.2) secs`.
+- **Sesi 05: Percakapan Dua Karakter (Timing & Wait Block)**
+  - *Konsep*: Percakapan dua arah bergantian; karakter saling menunggu giliran bicara.
+  - *Kode Blok*: Sprite A bicara 3 detik -> Sprite B `wait (3) secs` -> baru menjawab `say [Halo juga!]`.
+  - *Analogi*: "Saat teman bicara di telepon, kita mendengarkan dulu baru merespons."
+- **Sesi 06: Ekstensi AI Text-to-Speech (Karakter Berbicara Nyata)**
+  - *Konsep*: Sintesis suara kecerdasan buatan dalam Bahasa Indonesia.
+  - *Kode Blok*: `set voice to [squeak] -> set language to [Indonesian] -> speak [Halo teman-teman Beekoding!]`.
+  - *Tantangan*: Buat katak bersuara berat (*giant*) dan anak kucing bersuara imut (*kitten*).
+- **Sesi 07: Merancang Karakter Hero Bersama AI Generator**
+  - *Konsep*: Prompt gambar ramah anak: [Karakter] + [Pakaian/Topi] + [Gaya Kartun 3D] + [Warna].
+  - *Demo*: *"Cute baby bee with tiny astronaut helmet, 3D Pixar cartoon style"*.
+  - *Aktivitas*: Unduh hasil gambar AI, hapus background, upload sprite ke Scratch anak.
+- **Sesi 08: Evaluasi Mini Proyek 1: Buku Cerita Animasi Interaktif**
+  - *Karya*: Menggabungkan karakter AI, Text-to-Speech, dan tombol navigasi halaman cerita digital.
+  - *Rubrik*: Ada 2 karakter, percakapan bergantian rapi, dan efek suara klik.
+- **Sesi 09: Labirin Sarang Lebah (Navigasi Tombol Panah & Sensing Warna)**
+  - *Konsep*: Kontrol 4 arah tombol keyboard dan deteksi tabrakan tembok (*Color Sensing*).
+  - *Kode Blok*: `if <key [up arrow] pressed?> then [change y by (6)]`. `if <touching color [biru]?> then [go to x: (-200) y: (140)]`.
+  - *Common Bug*: Sprite macet di lorong labirin. Solusi: Perkecil ukuran sprite lebah ke 35%.
+- **Sesi 10: Panen Madu & Variabel Skor (Variables System)**
+  - *Konsep*: Variabel sebagai wadah tabungan angka yang bertambah setiap mengumpulkan nektar.
+  - *Kode Blok*: `set [Skor v] to (0)`. Pada bunga: `if <touching [Bee]?> then [change [Skor v] by (1) -> hide]`.
+  - *Tantangan*: Gandakan (*Duplicate*) bunga menjadi 6 buah di sudut labirin yang berbeda.
+- **Sesi 11: Rintangan Laba-Laba Berpatroli & Layar Game Over**
+  - *Konsep*: Musuh meluncur otomatis (*glide*), siaran pesan (*broadcast message*), dan backdrop kemenangan.
+  - *Kode Blok*: `forever [glide (2) secs to x:(0) y:(50) -> glide (2) secs to x:(0) y:(-50)]`. Tabrakan memicu `broadcast [Game Over]`.
+  - *Penyelesaian*: Jika Skor = 6 -> siarkan `broadcast [You Win]` dan mainkan suara kembang api.
+- **Sesi 12: CAPSTONE LEVEL 1: 'Bee Honey Harvest' & Demo Day Cilik**
+  - *Output*: Game arcade mandiri buatan anak yang utuh dan siap dimainkan.
+  - *Showcase*: Presentasi 2 menit di depan kelas: nama game, cara main, dan fitur yang paling disukai.
+  - *Apresiasi*: Pembagian Sertifikat Kelulusan *Junior Code Explorer Level 1*.
 
 ---
 
-## MODUL 1: FONDASI ALGORITMA VISUAL & GERAK DASAR (SESI 1 – 4)
-
-### SESI 01: Petualangan Robot Lebah (Unplugged Computational Thinking)
-- **Tujuan Pembelajaran**: Siswa memahami bahwa komputer tidak bisa menebak pikiran manusia; komputer hanya menjalankan instruksi urutan langkah (*step-by-step sequence*) yang tepat.
-- **Konsep Kunci**: Algoritma, Instruksi, Urutan (*Sequence*), Arah (Maju, Belok Kanan, Belok Kiri).
-- **Analogi Ramah Anak**: 
-  > *"Bayangkan kamu punya robot pelayan di rumah. Kalau kamu bilang 'Robot, ambil minum!', robot akan bingung karena tidak tahu harus jalan berapa langkah dan membuka kulkas yang mana. Robot butuh instruksi detail: Maju 3 langkah $\rightarrow$ Belok kanan $\rightarrow$ Buka pintu kulkas $\rightarrow$ Ambil botol."*
-- **Aktivitas Praktik Mentor**:
-  1. *Game Unplugged*: Mentor berpura-pura menjadi "Robot Bee yang Rusak". Siswa harus memberikan perintah suara ("Maju 1 langkah!", "Putar ke kanan!") agar mentor berhasil mengambil botol madu di atas meja tanpa menabrak kursi.
-  2. Siswa menggambar diagram peta petak 4x4 di kertas, memandu lebah menuju bunga terdekat dengan panah arah: `[↑] [↑] [→] [↑]`.
-- **Tantangan Siswa**: Temukan jalur tercepat menuju sarang lebah tanpa melewati sarang laba-laba.
-- **Common Bugs & Solusi**: Siswa sering terbalik antara "Belok Kanan" dan "Maju ke Kanan". Mentor mengingatkan: *"Putar badan dulu menghadap arah bunga, baru langkahkan kaki!"*
-
----
-
-### SESI 02: Menghidupkan Karakter di Scratch (Stage, Sprite, & Motion)
-- **Tujuan Pembelajaran**: Siswa mengenal antarmuka Scratch 3.0, mampu memilih karakter (*Sprite*), memilih latar (*Backdrop*), dan menyusun blok gerak pertama.
-- **Konsep Kunci**: *Stage* (Panggung Pertunjukan), *Sprite* (Aktor/Karakter), *Code Workspace* (Buku Mantra Koding).
-- **Langkah Demi Langkah Instruktur (Live Demo Script)**:
-  1. Arahkan siswa membuka `scratch.mit.edu` $\rightarrow$ Klik **Create**.
-  2. Hapus kucing Scratch default, klik tombol kucing kecil di pojok kanan bawah $\rightarrow$ Pilih sprite lebah (*Bee*) atau kumbang (*Ladybug*).
-  3. Klik tombol pemandangan di pojok paling kanan $\rightarrow$ Pilih latar belakang taman bunga (*Garden* / *Flowers*).
-  4. Ambil kategori warna biru **Motion (Gerakan)**:
-     - Tarik blok `move (10) steps`.
-     - Klik blok tersebut dengan mouse. Perhatikan sprite bergerak!
-  5. Tarik kategori warna kuning **Events**:
-     - Pasang balok topi emas `when green flag clicked` di atas blok gerak.
-- **Contoh Script Kode Siswa**:
-  ```text
-  [When Green Flag Clicked]
-    move (50) steps
-    say [Halo, aku Beeby Si Lebah Ceria!] for (2) seconds
-  ```
-- **Tantangan Siswa**: Ubah angka 50 menjadi 100, lalu ganti pesan salam dengan nama panggilan anak masing-masing.
+## 📌 LEVEL 2: GAME MECHANICS & LOGIKA DINAMIS (SESI 13 – 24)
+- **Sesi 13: Game Tangkap Buah Apel Jatuh (Koordinat X dan Y)**
+  - *Konsep*: Memahami sumbu vertikal Y (atas = positif, bawah = negatif).
+  - *Kode Blok*: `[When Green Flag Clicked] -> forever [change y by (-6) -> if <y position < (-160)> then [go to x: (pick random (-200) to (200)) y: (170)]]`.
+  - *Tantangan*: Gerakkan mangkuk penangkap dengan mouse: `set x to (mouse x)`.
+- **Sesi 14: Efek Partikel dan Animasi Skor Terapung**
+  - *Konsep*: Kloning efek kilau saat apel berhasil ditangkap mangkuk.
+  - *Kode Blok*: `when I start as a clone -> repeat (10) [change y by (4) -> change [ghost v] effect by (10)] -> delete this clone`.
+- **Sesi 15: Sistem Timer Hitung Mundur & Alarm Kemenangan**
+  - *Konsep*: Variabel waktu `Waktu`. Loop `repeat until <Waktu = 0> [wait (1) secs -> change [Waktu v] by (-1)]`.
+  - *Analogi*: Jam pasir yang butirannya jatuh satu per satu setiap detik.
+- **Sesi 16: Logika Nyawa (Health Heart) & Buah Beracun**
+  - *Konsep*: Variabel nyawa berkurang jika menangkap buah busuk. Jika Nyawa = 0 -> Game Over.
+  - *Kode Blok*: `if <touching [Buah Busuk]?> then [change [Nyawa v] by (-1) -> start sound [Oops]]`.
+- **Sesi 17: Multi-Level Switching (Kenaikan Tingkat Kesulitan)**
+  - *Konsep*: Jika Skor >= 10, ganti background ke Level 2 dan naikkan kecepatan jatuh apel dari -6 menjadi -10.
+- **Sesi 18: Fisika Lompat Sederhana (Gravitasi & Velocity Y Dasar)**
+  - *Konsep*: Karakter melompat ke atas lalu tertarik kembali ke tanah secara natural.
+  - *Kode Blok*: `if <key [space] pressed?> then [repeat (10) [change y by (8)] -> repeat (10) [change y by (-8)]]`.
+- **Sesi 19: Game Flappy Bee: Menembus Pipa Rintangan**
+  - *Konsep*: Layar bergerak menyamping (scrolling rintangan) dan karakter menjaga ketinggian terbang.
+- **Sesi 20: Papan Peringkat Sederhana (High Score System)**
+  - *Konsep*: Membandingkan nilai: `if <Skor > HighScore> then [set [HighScore v] to (Skor)]`.
+- **Sesi 21: Efek Suara Latar Dinamis (Background Music Loop & Mute Button)**
+  - *Konsep*: Sprite tombol musik yang bisa diklik untuk menghidupkan dan mematikan suara game.
+- **Sesi 22: Brainstorming & Sketsa Storyboard Capstone Level 2**
+  - *Aktivitas*: Anak menggambar alur game impiannya di kertas template Beekoding Game Sheet.
+- **Sesi 23: Produksi Proyek Mandiri: Game Platformer Cilik**
+  - *Praktik*: Siswa membangun game dengan bimbingan 1-on-1 dari instruktur.
+- **Sesi 24: CAPSTONE LEVEL 2: 'Flappy Bee Adventure' & Laporan Semester**
+  - *Output*: Game multi-level interaktif lengkap dengan sistem skor, nyawa, dan suara.
+  - *Apresiasi*: Pembagian Sertifikat Kompetensi Semester 1 & Badge *Master of Game Mechanics*.
 
 ---
 
-### SESI 03: Pemicu Peristiwa (Events: Sentuh, Klik, & Tombol)
-- **Tujuan Pembelajaran**: Siswa memahami hubungan sebab-akibat (*cause and effect*); aksi pengguna memicu reaksi karakter di layar.
-- **Konsep Kunci**: *Event Trigger* (Pemicu), Input Klik Mouse, Efek Visual (Ukuran & Suara).
-- **Analogi Ramah Anak**: 
-  > *"Seperti bel pintu rumah. Rumah kita tidak akan berbunyi kalau belnya tidak ditekan. Tombol klik mouse adalah jari kita yang menekan bel ajaib pada karakter!"*
-- **Langkah Demi Langkah Instruktur**:
-  1. Masukkan sprite bunga (*Flower*).
-  2. Tambahkan script pada sprite bunga:
-  ```text
-  [When this sprite clicked]
-    change size by (20)
-    start sound [Magic Spell v]
-    say [Terima kasih sudah menyiramku! ✨] for (2) seconds
-    wait (1) seconds
-    set size to (100) %
-  ```
-  3. Bimbing siswa mencoba mengklik bunga berulang-ulang di layar panggung.
-- **Tantangan Siswa**: Tambahkan 3 bunga berbeda warna. Ketika diklik, masing-masing mengeluarkan suara nada berbeda (*Pop*, *Boing*, *Coin*).
+## 📌 LEVEL 3: SENSORY & PHYSICAL COMPUTING (SESI 25 – 36)
+- **Sesi 25: Mengenal Dunia Fisik & Mikrokontroler (Micro:bit / Makey Makey)**
+  - *Konsep*: Komputer bukan hanya layar monitor; komputer ada di jam tangan, remote, dan mobil.
+- **Sesi 26: Menampilkan Animasi LED Emotikon & Senyum Digital**
+  - *Kode*: Menyalakan matriks LED 5x5 membentuk ikon hati berdetak dan wajah tersenyum.
+- **Sesi 27: Tombol Fisik A dan B (Input Hardware)**
+  - *Konsep*: Menghubungkan tombol fisik hardware untuk menggerakkan sprite di layar komputer.
+- **Sesi 28: Sensor Goyang (Accelerometer) & Game Dadu Ajaib**
+  - *Konsep*: Deteksi getaran dan kemiringan (Shake gesture). Saat digoyang, angka dadu 1-6 muncul acak.
+- **Sesi 29: Kompas Digital & Sensor Magnetik**
+  - *Konsep*: Menentukan arah mata angin Utara, Selatan, Barat, dan Timur dengan koding.
+- **Sesi 30: Detektor Suara & Sensor Kebisingan Mikrofon**
+  - *Konsep*: Deteksi desibel ruangan. Jika suara tepuk tangan keras, karakter di Scratch melompat.
+- **Sesi 31: Instrumen Musik Pisang Ajaib (Makey Makey Piano)**
+  - *Konsep*: Konduktivitas listrik buah dan playdough. Menyentuh pisang menghasilkan tangga nada Do-Re-Mi.
+- **Sesi 32: Sensor Suhu & Alarm Termometer Pintar**
+  - *Konsep*: Membaca sensor panas. Jika suhu > 30°C, muncul ikon matahari dan suara sirine.
+- **Sesi 33: Jam Tangan Pintar Penghitung Langkah (Smart Pedometer)**
+  - *Konsep*: Menghitung setiap hentakan langkah kaki saat anak melompat di tempat.
+- **Sesi 34: Game Controller Fisik Buatan Sendiri (DIY Cardboard Gamepad)**
+  - *Aktivitas*: Membuat controller game dari kardus dan aluminium foil untuk mengontrol game Scratch.
+- **Sesi 35: Integrasi Proyek Hardware-Software Interaktif**
+  - *Praktik*: Menggabungkan sensor gerak fisik dengan animasi Scratch di layar lebar.
+- **Sesi 36: CAPSTONE LEVEL 3: Pameran Gadget Cilik & Showcase Hardware**
+  - *Output*: Proyek perangkat sensor buatan sendiri yang terhubung dengan game komputer.
+  - *Apresiasi*: Sertifikat *Junior Hardware & Sensory Creator*.
 
 ---
 
-### SESI 04: Kepakan Sayap Lebah (Perulangan: Repeat & Forever)
-- **Tujuan Pembelajaran**: Siswa memahami konsep perulangan otomatis agar tidak perlu menyusun blok yang sama ratusan kali.
-- **Konsep Kunci**: *Loop* (Perulangan), *Forever* (Selamanya), Pergantian Kostum (*Next Costume*).
-- **Analogi Ramah Anak**: 
-  > *"Apakah jantung kita berhenti berdetak saat kita tidur? Tidak, jantung kita bekerja 'Forever' (selamanya). Di koding, kalau kita ingin sayap lebah mengepak terus tanpa henti, kita masukkan ke dalam balok pelindung Forever!"*
-- **Langkah Demi Langkah Instruktur**:
-  1. Pilih sprite Bee. Klik tab **Costumes** di kiri atas, tunjukkan pada anak bahwa sprite lebah punya 2 gambar (sayap naik dan sayap turun).
-  2. Kembali ke tab **Code**, susun script kepakan sayap:
-  ```text
-  [When Green Flag Clicked]
-    forever
-      next costume
-      wait (0.2) seconds
-      move (5) steps
-      if on edge, bounce
-    end
-  ```
-  3. Jelaskan mengapa `wait (0.2) seconds` diperlukan: *"Kalau tidak diberi jeda istirahat, sayap lebah mengepak secepat kilat sampai mata kita pusing!"*
-- **Tantangan Siswa**: Buat lebah berputar haluan saat membentur dinding dengan menambahkan blok `set rotation style [left-right v]`.
+## 📌 LEVEL 4: JUNIOR GAME JAM & KOLABORASI KARYA (SESI 37 – 48)
+- **Sesi 37: Pengenalan Game Jam & Pembentukan Tim Kreator Cilik**
+  - *Konsep*: Bekerja sama dalam tim: pembagian tugas antara desainer aset grafis dan programmer logika.
+- **Sesi 38: Mendesain Dunia Game Impian (World Building & Lore)**
+  - *Aktivitas*: Merancang peta dunia fantasi sarang lebah, desa bunga, dan hutan rintangan.
+- **Sesi 39: Sistem Dialog Kompleks & NPC Quest Pemberi Misi**
+  - *Konsep*: Karakter pendukung (NPC) yang memberikan misi: "Kumpulkan 3 nektar emas untuk membuka gerbang!".
+- **Sesi 40: Sistem Inventori Cilik (Kantung Barang Pemain)**
+  - *Konsep*: List variabel sederhana untuk mencatat item kunci yang sudah didapatkan.
+- **Sesi 41: Boss Fight Battle: Logika Serangan Musuh Raksasa**
+  - *Konsep*: Musuh besar yang memiliki nyawa tebal (*Boss HP = 20*) dan pola tembakan beruntun.
+- **Sesi 42: Efek Visual Layar Bergetar (Screen Shake) & Kamera Mengikuti**
+  - *Konsep*: Mengubah koordinat panggung dengan cepat untuk efek ledakan yang dramatis.
+- **Sesi 43: Audio Foley & Perekaman Suara Karakter Siswa Sendiri**
+  - *Aktivitas*: Siswa merekam suara mereka sendiri lewat mikrofon untuk mengisi dubbing karakter game.
+- **Sesi 44: Debugging Jam: Menemukan & Memperbaiki Bug Teman**
+  - *Konsep*: Belajar membaca kode teman, saling memberi masukan positif, dan memperbaiki error bersama.
+- **Sesi 45: Polishing Game: Menambahkan Menu Pembuka, Kredit & Instruksi**
+  - *Karya*: Membuat tombol "Play", "How to Play", dan nama pencipta game di halaman judul.
+- **Sesi 46: Latihan Presentasi & Public Speaking Cilik**
+  - *Keterampilan*: Melatih kontak mata, intonasi suara percaya diri, dan struktur demo game.
+- **Sesi 47: Final Rehearsal & Uji Coba Bersama Orang Tua**
+  - *Simulasi*: Uji coba memainkan game teman sekelas dan persiapan pameran akbar.
+- **Sesi 48: GRAND CAPSTONE TAHUN KE-1: Junior Coding Expo & Sertifikasi Tahunan**
+  - *Puncak Acara*: Pameran portofolio tahunan, presentasi proyek di depan orang tua dan dewan juri.
+  - *Apresiasi*: Penganugerahan Sertifikat Resmi *Junior Explorer Annual Graduate (48 Sesi)*.
 
 ---
 
-## MODUL 2: DONGENG INTERAKTIF, SENI AI & SUARA (SESI 5 – 8)
+# 📅 RENCANA PEMBELAJARAN TAHUN KE-2 (SESI 49 – 96)
 
-### SESI 05: Komunikasi Dua Karakter & Pergantian Giliran (Broadcast & Wait)
-- **Tujuan Pembelajaran**: Siswa mampu mengatur alur percakapan dua karakter yang santun, saling menunggu giliran bicara.
-- **Konsep Kunci**: Sinkronisasi Waktu (*Timing & Delay*), *Wait Block*, Dialog Balon Kata.
-- **Analogi Ramah Anak**: 
-  > *"Ketika Ayah sedang berbicara, kita mendengarkan dulu. Setelah Ayah selesai, baru giliran kita menjawab. Karakter di koding juga harus saling mendengarkan menggunakan balok Wait!"*
-- **Langkah Demi Langkah Instruktur**:
-  1. Tambahkan 2 karakter di panggung: Karakter A (Lebah) di kiri, Karakter B (Kupu-kupu) di kanan.
-  2. Script Karakter A (Lebah):
-  ```text
-  [When Green Flag Clicked]
-    say [Hai Kupu-kupu, maukah kamu mencari madu bersamaku?] for (3) seconds
-    wait (3) seconds
-    say [Hore! Ayo kita terbang ke kebun matahari!] for (2) seconds
-  ```
-  3. Script Karakter B (Kupu-kupu):
-  ```text
-  [When Green Flag Clicked]
-    wait (3) seconds
-    say [Tentu saja Beeby! Aku tahu ladang bunga terindah!] for (3) seconds
-  ```
-- **Common Bugs & Solusi**: Dialog muncul bersamaan dan bertumpuk di layar. Solusi: Pastikan waktu `wait` pada karakter kedua sama persis dengan durasi `say ... for (x) seconds` karakter pertama.
-
----
-
-### SESI 06: Studio Musik & AI Voice Generator (Text-to-Speech)
-- **Tujuan Pembelajaran**: Menambahkan ekstensi Text-to-Speech agar karakter bisa benar-benar berbicara mengeluarkan suara bahasa manusia.
-- **Konsep Kunci**: Ekstensi Tambahan Scratch, *Text-to-Speech AI*, Pengaturan Karakter Suara (*Alto, Tenor, Squeak*).
-- **Langkah Demi Langkah Instruktur**:
-  1. Klik tombol **Add Extension** (ikon balok biru di pojok kiri paling bawah Scratch).
-  2. Pilih ekstensi **Text to Speech**.
-  3. Ambil blok baru warna hijau toska:
-  ```text
-  [When this sprite clicked]
-    set voice to [squeak v]
-    set language to [Indonesian v]
-    speak [Halo teman-teman! Selamat datang di sarang koding!]
-  ```
-- **Tantangan Siswa**: Tambahkan karakter katak dengan suara `giant`, dan karakter anak kucing dengan suara `kitten`. Siswa merekam percakapan lucu antar-karakter.
+## 📌 LEVEL 5: ADVANCED SCRATCH EXTENSIONS & SENI DIGITAL (SESI 49 – 60)
+- **Sesi 49: Ekstensi Pena Koding (Pen Extension & Menggambar Garis)**
+  - *Konsep*: Mengontrol pena digital panggung: `pen down`, `set pen color`, `move steps`.
+- **Sesi 50: Menggambar Bangun Datar Geometri Otomatis**
+  - *Konsep*: Hubungan derajat putar bangun datar (Segitiga 120°, Persegi 90°, Lingkaran 1° loop 360 kali).
+- **Sesi 51: Pola Bunga Mandala & Fraktal Ajaib (Matematika Kreatif)**
+  - *Kode Blok*: Perulangan bersarang (*Nested Loop*) untuk membuat mandala pelangi simetris otomatis.
+- **Sesi 52: Menggambar Spidol Ajaib dengan Pelacak Kursor Mouse**
+  - *Konsep*: Aplikasi papan gambar digital mandiri (Paint App buatan sendiri dengan pilihan kuas warna).
+- **Sesi 53: Ekstensi Musik & Pemrograman Ritme Drum MIDI**
+  - *Konsep*: Ketukan birama (BPM), instrumen piano, drum snare, dan bassline digital.
+- **Sesi 54: Komposisi Lagu 'Twinkle Little Star' dengan Koding Blok**
+  - *Aktivitas*: Menyusun tangga nada musik klasik menggunakan blok `play note (60) for (0.5) beats`.
+- **Sesi 55: Ekstensi Video Sensing (Kamera Web Interaktif)**
+  - *Konsep*: Deteksi gerakan fisik tubuh nyata di depan kamera komputer (*Motion Detection*).
+- **Sesi 56: Game Menepuk Balon Udara di Depan Kamera**
+  - *Kode Blok*: `when video motion > 20 on sprite -> start sound [Pop] -> change score by 1 -> hide`.
+- **Sesi 57: Filter Wajah Digital AR Sederhana (Kacamata & Topi Bergerak)**
+  - *Konsep*: Efek Augmented Reality (AR) di mana sprite kacamata menempel pada pergerakan kepala anak.
+- **Sesi 58: Integrasi Seni, Musik, dan Gerakan Kamera**
+  - *Praktik*: Membuat instalasi seni digital interaktif yang merespons tepuk tangan dan tarian anak.
+- **Sesi 59: Gladi Bersih Proyek Seni Digital Interaktif**
+- **Sesi 60: CAPSTONE LEVEL 5: Digital Art & Interactive Music Expo**
+  - *Output*: Aplikasi galeri interaktif multi-ekstensi. Sertifikat *Digital Creative Artist*.
 
 ---
 
-### SESI 07: Merancang Karakter Hero Bersama AI (Kid-Safe Image Prompting)
-- **Tujuan Pembelajaran**: Memperkenalkan konsep dasar Generative AI pada anak secara aman; merancang karakter maskot impian melalui deskripsi kata-kata visual.
-- **Konsep Kunci**: Prompt Gambar, Deskripsi Visual (Warna, Pakaian, Bentuk, Emosi), Pahlawan Digital Ramah.
-- **Panduan Praktik Mentor (Menggunakan Canva Magic Media / DALL-E / Bing Creator ramah anak)**:
-  1. Mentor mendemokan di layar utama: *"Kita ingin membuat teman baru untuk Beeby Si Lebah. Yuk kita beri tahu AI seperti apa karakternya!"*
-  2. Formula Prompt Anak:
-     `[Karakter Binatang] + [Pakaian/Topi] + [Gaya Gambar Kartun 3D Lucu] + [Warna Favorit]`
-  3. Contoh Input Prompt Guru:
-     ```text
-     Cute friendly baby bee wearing a tiny blue astronaut helmet and red sneakers, 3D Pixar animated cartoon style, bright sunny flower meadow background, happy smile
-     ```
-  4. Unduh hasil gambar, gunakan tools hapus background instan, dan unggah (*Upload Sprite*) ke dalam Scratch siswa.
-- **Nilai Karakter**: Ajarkan anak bahwa AI adalah kuas lukis ajaib, tetapi ide dan imajinasinya 100% berasal dari kepala mereka sendiri.
+## 📌 LEVEL 6: ALGORITMA MATEMATIKA, LOGIKA LABIRIN & STRUKTUR DATA (SESI 61 – 72)
+- **Sesi 61: Operasi Aritmatika Cerdas (Penjumlahan, Pengurangan, & Perkalian)**
+  - *Konsep*: Operator hijau Scratch: `(+)`, `(-)`, `(*)`, dan perbandingan `(>)`, `(<)`, `(=)`.
+- **Sesi 62: Game Kuis Matematika Kilat Berwaktu (Math Challenge)**
+  - *Kode Blok*: Komputer membuat 2 angka acak, meminta input anak: `ask [Berapa 7 + 8?] and wait`.
+  - *Validasi*: `if <answer = (Angka1 + Angka2)> then [say [Benar!] -> change score by 10] else [say [Coba lagi!]]`.
+- **Sesi 63: Mengenal Struktur Data List (Daftar Belanja Karakter)**
+  - *Konsep*: Perbedaan variabel tunggal dengan List (bisa menampung banyak data nama dalam 1 wadah).
+- **Sesi 64: Game Tebak Kata & Kamus Mini Bahasa Inggris**
+  - *Konsep*: Memanggil data secara acak dari dalam daftar: `item (pick random 1 to (length of list)) of [Kamus v]`.
+- **Sesi 65: Algoritma Pencarian Linear (Linear Search Sederhana)**
+  - *Konsep*: Memeriksa satu per satu barang di dalam tas ransel apakah ada ramuan obat yang dicari.
+- **Sesi 66: Logika Labirin Otomatis (Algoritma Penelusur Tembok Kiri)**
+  - *Konsep*: Robot yang bisa mencari jalan keluar dari labirin rumit dengan aturan selalu menempel di tembok kiri.
+- **Sesi 67: Simulasi Ekosistem Akuarium Virtual (Ikan Besar Makan Ikan Kecil)**
+  - *Konsep*: Kecerdasan buatan perilaku hewan (*Artificial Life Simulation*). Sprite ikan mencari makan sendiri.
+- **Sesi 68: Sistem Ekonomi Mini: Jual Beli Madu di Toko Desa**
+  - *Konsep*: Logika transaksi: Kurangi stok madu, tambah tabungan koin emas, beli ramuan kecepatan.
+- **Sesi 69: Penyusunan Puzzle Logika Asah Otak (Bebras Challenge Kids)**
+  - *Latihan*: Memecahkan soal-soal komputasional berpikir kritis internasional standar SD awal.
+- **Sesi 70: Pengembangan Game Puzzle Asah Otak Mandiri**
+- **Sesi 71: Pengujian Kasus Ekstrem (Edge Cases & Debugging Lanjut)**
+- **Sesi 72: CAPSTONE LEVEL 6: 'Smart Bee Kingdom' & Sertifikasi Logika Komputasi**
+  - *Output*: Game simulasi kerajaan lebah dengan sistem kuis, inventory list, dan ekonomi koin.
 
 ---
 
-### SESI 08: Evaluasi Proyek Mini 1: Buku Cerita Interaktif (Storybook Showcase)
-- **Tujuan Pembelajaran**: Siswa menyatukan karakter buatan AI, dialog suara, dan pergerakan menjadi buku cerita digital 2 babak.
-- **Struktur Proyek**:
-  - Halaman 1: Perkenalan karakter di sekolah lebah.
-  - Halaman 2: Menemukan peta misterius menggunakan tombol panah lanjut (*Next Page Button*).
-- **Rubrik Penilaian Mentor**:
-  - [x] Memiliki minimal 2 karakter berbeda.
-  - [x] Karakter bergerak dan mengeluarkan dialog bergantian.
-  - [x] Ada tombol interaktif yang bisa diklik.
-  - [x] Siswa mampu menjelaskan cerita karyanya selama 60 detik di depan kelas.
+## 📌 LEVEL 7: ROBOTIK CERDAS & SIMULASI DUNIA NYATA (SESI 73 – 84)
+- **Sesi 73: Pengenalan Robot Otonom & Kendaraan Masa Depan**
+  - *Konsep*: Bagaimana mobil tanpa sopir (*Self-Driving Car*) tahu kapan harus berhenti di lampu merah.
+- **Sesi 74: Simulasi Robot Pengantar Makanan di Restoran (Line Follower Virtual)**
+  - *Konsep*: Robot berbelok mengikuti jalur garis hitam di lantai menggunakan 2 sensor mata warna.
+- **Sesi 75: Logika Palang Pintu Kereta Api Pintar Otomatis**
+  - *Konsep*: Deteksi jarak ultrasonik virtual. Jika kereta mendekat < 50 langkah, palang pintu turun dan lampu merah berkedip.
+- **Sesi 76: Lampu Taman Pintar Hemat Energi (Smart Home Lighting)**
+  - *Konsep*: Sensor cahaya ambient. Jika suasana panggung gelap malam hari, lampu taman menyala otomatis.
+- **Sesi 77: Robot Pembersih Debu Otomatis (Vacuum Robot Logic)**
+  - *Konsep*: Menjelajah ruangan secara acak, memantul saat menabrak meja, dan kembali ke pangkalan saat baterai lemah.
+- **Sesi 78: Simulator Sistem Lalu Lintas 4 Persimpangan Lampu Merah**
+  - *Konsep*: Pengaturan waktu siklus: Merah 5 detik, Kuning 2 detik, Hijau 5 detik agar mobil tidak tabrakan.
+- **Sesi 79: Robot Pengelompok Sampah Cerdas (Smart Recycling Sorter)**
+  - *Konsep*: Klasifikasi objek: botol plastik masuk tong biru, sisa apel masuk tong cokelat.
+- **Sesi 80: Rumah Kaca Pintar & Penyiram Tanaman Otomatis**
+  - *Konsep*: Sensor kelembaban tanah: jika tanah kering, pompa air menyala selama 3 detik.
+- **Sesi 81: Perancangan Miniatur Kota Pintar (Smart City Beeville)**
+  - *Proyek*: Menggabungkan mobil otonom, lampu pintar, dan palang otomatis ke dalam 1 panggung besar.
+- **Sesi 82: Uji Ketahanan Sistem Kota Pintar (Stress Test Sim)**
+- **Sesi 83: Pembuatan Video Dokumentasi Karya Robotik Anak**
+- **Sesi 84: CAPSTONE LEVEL 7: Pameran Kota Pintar 'Beeville Smart City'**
+  - *Output*: Simulasi kota cerdas interaktif karya siswa. Sertifikat *Junior Robotics & IoT Pioneer*.
 
 ---
 
-## MODUL 3: PEMBUATAN GAME INTERAKTIF PERDANA (SESI 9 – 12)
-
-### SESI 09: Labirin Sarang Lebah (Navigasi Tombol Panah & Sensing)
-- **Tujuan Pembelajaran**: Siswa mampu mengendalikan sprite dengan 4 tombol keyboard panah dan mendeteksi tabrakan tembok (*Color Sensing*).
-- **Konsep Kunci**: Sensor Warna (*Touching Color*), Kontrol Keyboard Panah, Posisi Awal (*Spawn Point*).
-- **Langkah Demi Langkah Instruktur**:
-  1. Gambar backdrop labirin sederhana (jalan putih, tembok warna biru tebal).
-  2. Atur ukuran sprite lebah menjadi kecil (`set size to 40%`).
-  3. Script Kontrol Panah:
-  ```text
-  [When Green Flag Clicked]
-    go to x: (-200) y: (140)
-    forever
-      if <key [up arrow v] pressed?> then
-        change y by (6)
-      end
-      if <key [down arrow v] pressed?> then
-        change y by (-6)
-      end
-      if <key [right arrow v] pressed?> then
-        change x by (6)
-      end
-      if <key [left arrow v] pressed?> then
-        change x by (-6)
-      end
-      if <touching color [#0000FF] ?> then
-        say [Aduh, menabrak tembok!] for (0.5) seconds
-        go to x: (-200) y: (140)
-      end
-    end
-  ```
-- **Common Bugs & Solusi**: Sprite lebah tersangkut di tembok labirin. Solusi: Pastikan garis labirin digambar cukup lebar dan ukuran sprite dikecilkan agar leluasa melintas.
+## 📌 LEVEL 8: PRE-CODE TRANSISI & PORTFOLIO GRAND FINALE (SESI 85 – 96)
+- **Sesi 85: Jembatan Menuju Koding Teks (Dari Blok Warna ke Bahasa Teks)**
+  - *Konsep*: Memperlihatkan bahwa blok Scratch sebenarnya adalah kalimat bahasa pemrograman sungguhan.
+- **Sesi 86: Menulis Perintah Teks Pertama: Turtle Graphics (Python Visual)**
+  - *Konsep*: Menulis sintaks sederhana: `forward(100)`, `right(90)` untuk menggambar rumah.
+- **Sesi 87: Mengenal Struktur Variabel Teks: Nama dan Nilai Angka**
+  - *Konsep*: Memahami penulisan variabel teks: `player_name = "Budi"` dan `score = 100`.
+- **Sesi 88: Logika Kondisional Teks (If-Else Teks Ramah Anak)**
+  - *Konsep*: Membaca kode percabangan: `if score > 50: print("Hebat!") else: print("Ayo coba lagi!")`.
+- **Sesi 89: Perancangan Proyek Portofolio Mahakarya 2 Tahun (Grand Capstone)**
+  - *Brainstorming*: Menentukan proyek pamungkas impian siswa menggabungkan seluruh keahlian 2 tahun.
+- **Sesi 90: Produksi Grand Capstone Bagian 1: Desain Dunia & Mekanika Inti**
+- **Sesi 91: Produksi Grand Capstone Bagian 2: Integrasi AI, Suara & Sistem Level**
+- **Sesi 92: Produksi Grand Capstone Bagian 3: Polishing Visual, Partikel & Cerita**
+- **Sesi 93: Uji Coba Kualitas (Playtesting) Bersama Seluruh Instruktur**
+- **Sesi 94: Penyusunan Profil Portofolio Digital Siswa di Web Beekoding**
+  - *Dokumentasi*: Membuat halaman web mini berisi foto anak, video demo game, dan sertifikat prestasi.
+- **Sesi 95: Gladi Bersih Wisuda Kelulusan 2 Tahun & Pitching Practice**
+- **Sesi 96: GRADUATION DAY & BEEKODING YOUTH EXPO (SESI 96)**
+  - *Puncak Acara*: Wisuda Akbar 2 Tahun Kelulusan Tahap 1.
+  - *Penganugerahan*: Sertifikat Resmi *Junior Explorer Master Graduate (96 Sesi)* & Tiket Emas Naik Kelas ke *Tahap 2: Intermediate Coder*.
 
 ---
 
-### SESI 10: Mengumpulkan Bunga & Menambah Skor (Variables)
-- **Tujuan Pembelajaran**: Siswa memahami fungsi variabel sebagai wadah penyimpanan angka yang dapat bertambah.
-- **Konsep Kunci**: Variabel (*Variable*), Skor (*Score*), Sembunyi (*Hide*), Tampil (*Show*).
-- **Analogi Ramah Anak**: 
-  > *"Variabel itu seperti keranjang tabungan madu. Di awal game keranjang kita kosong (Skor = 0). Setiap kali lebah berhasil menyentuh bunga, kita masukkan 1 botol madu ke dalam keranjang (Skor bertambah 1)!"*
-- **Langkah Demi Langkah Instruktur**:
-  1. Buka kategori warna oranye **Variables** $\rightarrow$ Klik **Make a Variable** $\rightarrow$ Beri nama `Madu Dikumpulkan`.
-  2. Script pada Sprite Lebah:
-  ```text
-  [When Green Flag Clicked]
-    set [Madu Dikumpulkan v] to (0)
-  ```
-  3. Script pada Sprite Bunga Madu:
-  ```text
-  [When Green Flag Clicked]
-    show
-    forever
-      if <touching [Bee v] ?> then
-        change [Madu Dikumpulkan v] by (1)
-        start sound [Chomp v]
-        hide
-        stop [this script v]
-      end
-    end
-  ```
-- **Tantangan Siswa**: Gandakan (*Duplicate*) bunga menjadi 5 buah dan sebar di berbagai sudut labirin.
+## 🛠️ LEMBAR EVALUASI KELULUSAN & RUBRIK ASESMEN SISWA
+| Aspek Kompetensi | Indikator Keberhasilan | Target Minimum Kelulusan |
+| :--- | :--- | :---: |
+| **Logika Sekuensial & Algoritma** | Mampu menyusun alur perintah berurutan tanpa langkah terbalik. | 85 / 100 |
+| **Pemahaman Variabel & State** | Mampu membuat dan mengupdate skor, nyawa, dan timer permainan. | 80 / 100 |
+| **Kemandirian Debugging** | Mampu menemukan blok yang salah saat karakter tidak bergerak sesuai rencana. | 75 / 100 |
+| **Kreativitas & Desain Aset** | Mampu memodifikasi warna, kostum, suara, dan memilih latar bertema. | 85 / 100 |
+| **Public Speaking & Presentasi** | Percaya diri menjelaskan karya sendiri di depan orang tua dan teman. | 80 / 100 |
 
----
-
-### SESI 11: Rintangan Laba-Laba Bergerak & Pesan Menang/Kalah
-- **Tujuan Pembelajaran**: Menambahkan musuh bergerak otomatis yang harus dihindari siswa dan layar akhir permainan (*Win/Lose Screen*).
-- **Konsep Kunci**: Animasi Patroli Musuh, Sinyal Siaran (*Broadcast Message*), Backdrop Kemenangan.
-- **Langkah Demi Langkah Instruktur**:
-  1. Tambahkan sprite musuh Laba-laba (*Spider*).
-  2. Buat laba-laba bergerak bolak-balik berpatroli:
-  ```text
-  [When Green Flag Clicked]
-    forever
-      glide (2) secs to x: (0) y: (50)
-      glide (2) secs to x: (0) y: (-50)
-    end
-  ```
-  3. Deteksi tabrakan antara Lebah dan Laba-laba:
-  ```text
-  [When Green Flag Clicked]
-    forever
-      if <touching [Spider v] ?> then
-        broadcast [Game Over v]
-        say [Oh tidak! Kena laba-laba!] for (1) seconds
-        stop [all v]
-      end
-    end
-  ```
-  4. Ketika madu terkumpul 5, siarkan `[You Win v]` dan ganti latar belakang pesta kembang api.
-
----
-
-### SESI 12: CAPSTONE JUNIOR: "BEE HONEY HARVEST" & MINI DEMO DAY
-- **Tujuan Pembelajaran**: Siswa merampungkan game ciptaan mereka secara mandiri, memberikan sentuhan dekorasi unik, dan mempresentasikan di hadapan mentor serta orang tua.
-- **Checklist Kesiapan Karya Siswa**:
-  1. Punya judul game buatan sendiri di pojok atas Scratch.
-  2. Karakter bergerak lincah dengan 4 tombol panah.
-  3. Ada minimal 3 madu yang bisa dikoleksi dengan efek suara riang.
-  4. Skor madu bertambah dengan benar di layar.
-  5. Ada tantangan musuh atau rintangan warna.
-- **Format Presentasi Siswa (Durasi 2 Menit per Anak)**:
-  - *"Halo semua, nama aku [Nama Anak]."*
-  - *"Hari ini aku membuat game bernama [Judul Game]."*
-  - *"Cara memainkannya: tekan tombol panah untuk menggerakkan lebah mengambil madu. Jangan sampai kena laba-laba!"*
-  - *"Bagian paling seru yang aku buat adalah [Suara/Warna/Gerakan]."*
-- **Apresiasi Mentor**: Berikan Sertifikat Kelulusan *Junior Code Explorer* dan lencana digital kebanggaan anak.
-
----
-
-## 🛠️ TIPS MENGATASI KENDALA TEKNIS SPESIFIK JUNIOR
-
-1. **Siswa Salah Meletakkan Script di Sprite yang Salah**:
-   - *Ciri-ciri*: Anak bingung kenapa lebah tidak bergerak, ternyata script diletakkan di backdrop atau sprite bunga.
-   - *Solusi Instruktur*: Ingatkan anak selalu melihat ikon kecil di pojok kanan atas area kode: *"Cek foto aktor di pojok kanan atas ya! Pastikan gambar Lebah yang sedang aktif bersinar biru!"*
-2. **Karakter Terlalu Besar Sampai Tidak Muat di Layar**:
-   - *Solusi*: Arahkan ke kolom `Size` di bawah panggung, ganti angka 100 menjadi 50 atau 40.
-3. **Koneksi Internet Lambat di Scratch Web**:
-   - *Solusi Backup*: Minta orang tua mengunduh aplikasi *Scratch Desktop (Offline Editor)* gratis sebelum kelas dimulai sebagai antisipasi jaringan terputus.
+*Dokumen panduan mengajar ini resmi diterbitkan oleh Tim Akademik Beekoding Academy untuk seluruh instruktur berlisensi.*

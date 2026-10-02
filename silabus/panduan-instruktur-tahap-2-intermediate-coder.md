@@ -1,362 +1,259 @@
-# 🐝 PANDUAN LENGKAP INSTRUKTUR: TAHAP 2 — INTERMEDIATE CODER
-### *Kurikulum & Rencana Pembelajaran Siap Ajar (Instruktur Teaching Handbook & Lesson Plans)*
+# 🚀 BUKU PANDUAN UTAMA INSTRUKTUR: TAHAP 2 — INTERMEDIATE CODER (SESI 1 – 96)
+### *Kurikulum Lengkap 2 Tahun Berkelanjutan (Pathway 96 Sesi Siap Ajar)*
+*Pedoman Pedagogi, MIT App Inventor, Web Frontend (HTML5/CSS3/JavaScript), Game Engine 2D, Python Text Coding & Persiapan Olimpiade*
 
-- **Kode Dokumen**: `BK-INSTR-STAGE-02`
+- **Kode Dokumen**: `BK-INSTR-STAGE-02-FULL96`
 - **Target Usia**: 10 – 12 Tahun (SD Kelas 4, 5, dan 6)
-- **Prasyarat Siswa**: Mengenal operasi matematika dasar (penjumlahan, pengurangan, perkalian, konsep angka negatif, koordinat sederhana)
-- **Format Pertemuan**: 12 Sesi Pembelajaran Terpadu @ 90 Menit
-- **Platform Utama**: *Scratch 3.0 (Lanjutan)*, *Google Teachable Machine (Webcam AI)*, *Python 3 IDLE / VS Code / Replit (Turtle & Scripting)*
-- **Rasio Mentor**: 1 Instruktur : Maksimal 5–6 Siswa (Online) / 8–10 Siswa (Offline Lab)
+- **Jenjang Program**: 
+  - **Tahun 1 (Level 1–4 / Sesi 1–48)**: App Inventor Mobile Apps, Logika Game 2D Kartesius, Dasar Web Frontend & Database Lokal TinyDB.
+  - **Tahun 2 (Level 5–8 / Sesi 49–96)**: JavaScript Modern DOM, Roblox Lua Game Dev, Python Dasar Teks, & Bimbingan Olimpiade Bebras / OSN Informatika.
+- **Prasyarat Siswa**: Sudah mengenal logika dasar percabangan dan koordinat angka positif/negatif.
+- **Rasio Pembimbing**: 1 Instruktur : Maksimal 5–6 Siswa (Online) / 8–10 Siswa (Offline Lab).
 
 ---
 
-## 🎯 PEDOMAN PEDAGOGIS & KARAKTERISTIK KOGNITIF USIA 10–12 TAHUN
-
-1. **Pemikiran Operasional Konkret Menuju Abstrak**: Siswa mulai mampu memahami logika bertingkat (*nested conditions*), konsep variabel tersembunyi, dan perhitungan koordinat matematis.
-2. **Minat Tinggi pada Game Kompleks & Kompetisi**: Anak usia ini tidak lagi puas dengan animasi sederhana; mereka ingin membuat game sungguhan seperti di Play Store/Roblox (ada skor tinggi, nyawa, gravitasi, bos musuh, efek partikel).
-3. **Mulai Kritis & Mandiri**: Berikan ruang untuk eksperimen nilai parameter (*"Coba kalau gravitasinya diganti -2 apa yang terjadi?"*). Dorong mereka mencari solusi mandiri sebelum mentor memberi tahu jawabannya.
-4. **Jembatan Mental dari Blok ke Teks**: Mengetik baris kode teks rentan typo (*Syntax Error*). Jelaskan bahwa tanda titik dua, kurung, dan spasi adalah gramatika bahasa komputer yang harus dihormati.
+## 🎯 PRINSIP PEDAGOGIS KHUSUS USIA 10–12 TAHUN (TWEEN DEVELOPERS)
+1. **Fase Transisi dari Blok ke Teks**: Siswa mulai bosan jika hanya animasi kartun sederhana; mereka ingin membuat aplikasi yang benar-benar bisa diinstal di ponsel pintar mereka sendiri atau game yang bisa dimainkan bersama teman.
+2. **Koneksi Dunia Nyata (Real-World Utility)**: Tunjukkan kegunaan praktis koding: kalkulator pintar, aplikasi catatan, pengatur alarm, atau game mobile berfitur skor tinggi.
+3. **Analisis Debugging Mandiri**: Ajarkan membaca pesan error di konsol (*Console Log*) dan membaca diagram alir logika (*Flowchart*).
+4. **Project-Based Ownership**: Berikan kebebasan memilih tema aplikasi dan palet warna desain agar siswa memiliki rasa kepemilikan tinggi (*sense of ownership*).
 
 ---
 
 ## 🧭 RUNDOWN STANDAR SETIAP SESI MENGAJAR (TOTAL 90 MENIT)
-
-| Durasi | Segmen Pembelajaran | Aktivitas Mentor |
+| Menit | Segmen Kelas | Panduan Instruktur |
 | :---: | :--- | :--- |
-| **00 – 10 Min** | **Problem Statement & Demo** | Tampilkan prototipe game yang sudah jadi. Tantang siswa: *"Bagaimana cara membuat karakter kita bisa melompat seperti Mario Bros?"* |
-| **10 – 30 Min** | **Konsep Matematika / Logika** | Bedah konsep logika menggunakan papan tulis virtual / diagram (rumus gravitasi, diagram pohon if-else, alur koordinat X-Y). |
-| **30 – 65 Min** | **Guided Coding & Implementation** | Siswa membangun arsitektur koding bersama mentor. Mentor memverifikasi logika variabel dan blok sensor. |
-| **65 – 80 Min** | **Custom Feature Challenge** | Siswa menambahkan mekanisme tambahan: efek suara spesial, musuh variasi baru, atau sistem combo skor. |
-| **80 – 90 Min** | **Code Review, Testing, & Logika Bug** | Mentor mengambil 1 sampel bug siswa, bahas bersama di layar: *"Kenapa karakter bisa tembus lantai?"* (Melatih analisis debugging). |
+| **00–10'** | **Sprint Review & Problem Framing** | Bedah masalah dunia nyata (misal: "Bagaimana aplikasi Gojek mendeteksi lokasi GPS kita?"). |
+| **10–25'** | **Architecture & Concept Breakdown** | Jelaskan struktur UI Designer dan blok algoritma di belakang layar. |
+| **25–60'** | **Code Implementation (Live Coding)** | Siswa mengimplementasikan kode pada perangkat masing-masing, uji coba via emulator / live test. |
+| **60–75'** | **Feature Expansion & Debugging Challenge**| Berikan tantangan penambahan fitur unik (validasi input, suara efek, animasi transisi). |
+| **75–85'** | **App Demo & Code Review** | Siswa mendemokan aplikasi di smartphone/layar browser dan membedah blok logika andalannya. |
+| **85–90'** | **Summary & Next Horizon Teaser** | Pembahasan arsitektur lanjutan untuk pertemuan berikutnya. |
 
 ---
 
-# 📚 RENCANA PELAKSANAAN PEMBELAJARAN (LESSON PLANS SESI 1 – 12)
+# 📅 RENCANA PEMBELAJARAN TAHUN KE-1 (SESI 01 – 48)
+
+## 📌 LEVEL 1: MOBILE APP CREATION DENGAN MIT APP INVENTOR (SESI 01 – 12)
+- **Sesi 01: Arsitektur Aplikasi Smartphone & MIT App Inventor Companion**
+  - *Konsep*: Perbedaan UI Designer (tampilan antarmuka) dan Blocks Editor (otak logika). Menghubungkan ponsel via AI Companion WiFi QR code.
+- **Sesi 02: Aplikasi Soundboard Interaktif & Button Events**
+  - *Komponen*: Layout horizontal, Image Button, Sound Component. Logika `when Button.Click do Sound.Play`.
+- **Sesi 03: Sensor Gerak Smartphone (Accelerometer) & Aplikasi Kocok Dadu**
+  - *Konsep*: Membaca sensor guncangan fisik ponsel: `when AccelerometerSensor.Shaking do set Image.Picture to (random dice)`.
+- **Sesi 04: Penerjemah Suara Cerdas (Text-to-Speech & Speech Recognizer)**
+  - *Konsep*: Pengenalan suara kecerdasan buatan. Siswa berbicara ke ponsel, ponsel menuliskan teks dan menerjemahkannya.
+- **Sesi 05: Desain UI Modern: Palet Warna Hex, Tipografi, & Padding Layout**
+  - *Konsep*: Estetika UI/UX profesional pada layar ponsel kecil. Penggunaan CardView dan border radius.
+- **Sesi 06: Aplikasi Kalkulator Konversi Nilai & Logika Variabel Matematika**
+  - *Komponen*: TextBox input angka, Label hasil, dan operasi matematika: `Hasil = (Input1 * Input2) / 100`.
+- **Sesi 07: Logika Percabangan Kompleks: Penentu Skor Nilai Ujian Siswa**
+  - *Konsep*: `if - else if - else`. Jika nilai >= 85 -> Grade A (Teks hijau). Jika < 60 -> Perlu remedial (Teks merah).
+- **Sesi 08: Database Lokal Ponsel (TinyDB: Menyimpan Data Permanen)**
+  - *Konsep*: Data tidak boleh hilang saat aplikasi ditutup: `TinyDB.StoreValue(tag: "username", value: Text)`.
+- **Sesi 09: Membaca & Menghapus Data Lokal TinyDB (Aplikasi To-Do List)**
+  - *Konsep*: Mengambil data: `TinyDB.GetValue(tag, valueIfTagNotThere)`. Menampilkan daftar agenda harian.
+- **Sesi 10: Animasi Canvas 2D & Game Sentuh Objek Bergerak (Whack-a-Mole)**
+  - *Komponen*: Canvas, ImageSprite, Clock Timer. Sprite berpindah posisi acak setiap 1000 milidetik.
+- **Sesi 11: Export Berkas APK Mandiri & Instalasi di Ponsel Pribadi Siswa**
+  - *Praktik*: Melakukan build `.apk`, menginstal aplikasi di ponsel Android anak dan orang tua.
+- **Sesi 12: CAPSTONE LEVEL 1: 'My First Android Utility App' & Showcase Kelas**
+  - *Output*: Aplikasi Android fungsional buatan siswa yang terpasang nyata di smartphone.
+  - *Apresiasi*: Sertifikat *Junior Mobile App Developer Level 1*.
 
 ---
 
-## MODUL 1: REKAYASA GAME 2D & LOGIKA MATEMATIKA (SESI 1 – 4)
-
-### SESI 01: Presisi Koordinat Kartesius 2D & Mekanika Bidikan
-- **Tujuan Pembelajaran**: Siswa menguasai sumbu X (-240 s.d. 240) dan sumbu Y (-180 s.d. 180), arah hadap (*Direction 0° s.d. 360°*), serta pelacakan pointer mouse (*Point Towards*).
-- **Konsep Kunci**: Koordinat Kartesius, Sudut Arah, Kecepatan Proyektil (*Bullet Speed*).
-- **Analogi Ramah Anak**: 
-  > *"Layar komputer kita adalah peta harta karun raksasa. Sumbu X adalah garis mendatar (kiri = minus, kanan = plus). Sumbu Y adalah tiang vertikal (bawah = minus, atas = plus). Titik tengah panggung adalah (0,0)!"*
-- **Langkah Demi Langkah Instruktur (Live Demo Script)**:
-  1. Pasang backdrop koordinat resmi Scratch (*X-Y Grid*).
-  2. Masukkan sprite Meriam Madu (*Honey Cannon*) di posisi `(0, -120)`.
-  3. Script Meriam Mengikuti Mouse:
-  ```text
-  [When Green Flag Clicked]
-    go to x: (0) y: (-120)
-    forever
-      point towards [mouse-pointer v]
-    end
-  ```
-  4. Buat sprite Peluru Madu (*Honey Bullet*) yang meluncur sesuai arah hadap meriam saat spasi ditekan:
-  ```text
-  [When [space v] key pressed]
-    create clone of [myself v]
-
-  [When I start as a clone]
-    go to [Honey Cannon v]
-    point in direction ([direction v] of [Honey Cannon v])
-    show
-    repeat until <touching [edge v] ?>
-      move (15) steps
-    end
-    delete this clone
-  ```
-- **Tantangan Siswa**: Batasi sudut tembak agar meriam tidak bisa menembak ke arah tanah (gunakan blok `if <direction > 0 and direction < 180>`).
+## 📌 LEVEL 2: WEB FRONTEND FUNDAMENTALS (HTML5 & CSS3) (SESI 13 – 24)
+- **Sesi 13: Anatomi Halaman Web Dunia: Cara Kerja Internet, Server & Browser**
+  - *Konsep*: URL, Client-Server, HTTP request, dan teks editor profesional (VS Code).
+- **Sesi 14: Struktur Tulang HTML5 Semantik (Header, Main, Section, Footer)**
+  - *Kode*: Tag pembuka dan penutup: `<h1>`, `<p>`, `<a>`, `<img>`, `<ul>`, `<li>`.
+- **Sesi 15: Merancang Halaman Profil Biodata Developer Cilik**
+  - *Karya*: Website portofolio pribadi berisi foto diri, hobi, dan daftar proyek coding.
+- **Sesi 16: Pengenalan CSS3: Memberi Warna, Font Google, & Gaya Visual**
+  - *Konsep*: Selector, Property, Value. Mengubah warna latar `background-color`, `color`, dan `font-family`.
+- **Sesi 17: Memahami CSS Box Model (Margin, Border, Padding, & Content)**
+  - *Analogi*: Kotak kado berbingkai. Jarak luar (*margin*) vs jarak ruang dalam (*padding*).
+- **Sesi 18: Tata Letak Modern dengan CSS Flexbox (Align & Justify Content)**
+  - *Konsep*: Mengatur susunan tombol dan gambar agar sejajar rapi secara horizontal dan vertikal.
+- **Sesi 19: Form Input Interaktif (Kotak Teks, Password, Dropdown & Tombol Submit)**
+  - *Kode*: Tag `<form>`, `<input type="text">`, `<select>`, `<button>`.
+- **Sesi 20: Desain Responsif & Media Queries (Tampilan Rapi di Laptop & HP)**
+  - *Kode*: `@media (max-width: 600px)` untuk mengatur layout 1 kolom saat dibuka di ponsel.
+- **Sesi 21: Efek Animasi Transisi Halus (Hover Effects & CSS Keyframes)**
+  - *Konsep*: Tombol yang membesar halus saat didekati kursor: `transition: all 0.3s ease`.
+- **Sesi 22: Penyusunan Layout Portofolio Karya Lengkap Siswa**
+  - *Praktik*: Menggabungkan seluruh komponen HTML/CSS menjadi 1 website multi-halaman.
+- **Sesi 23: Code Review & Pembersihan Struktur Kode (HTML/CSS Validator)**
+  - *Standar*: Kerapian indentasi spasi dan penamaan class yang bermakna.
+- **Sesi 24: CAPSTONE LEVEL 2: 'My Personal Digital Portfolio' & Demo Online**
+  - *Output*: Website profil interaktif responsif siap dipamerkan di internet.
+  - *Apresiasi*: Sertifikat *Junior Web Designer Level 2*.
 
 ---
 
-### SESI 02: Engine Fisika Platformer (Gravitasi, Velocity Y & Lompatan)
-- **Tujuan Pembelajaran**: Siswa mampu merancang mekanika fisika realistis tanpa bantuan ekstensi; membuat karakter melompat halus dan berhenti tepat di atas platform tanah.
-- **Konsep Kunci**: Kecepatan Vertikal (*Velocity Y*), Gaya Gravitasi (-1 per frame), Deteksi Lantai (*Ground Raycasting*).
-- **Formula Logika Mentor**:
-  $$\text{Posisi Y Baru} = \text{Posisi Y Lama} + \text{Velocity Y}$$
-  $$\text{Velocity Y Berikutnya} = \text{Velocity Y} - 1 \quad (\text{Efek Gravitasi})$$
-- **Langkah Demi Langkah Instruktur**:
-  1. Buat variabel baru: `velocityY` (*For this sprite only*).
-  2. Gambar backdrop dengan platform tanah berwarna hijau solid.
-  3. Script Fisika Karakter Utama:
-  ```text
-  [When Green Flag Clicked]
-    go to x: (-180) y: (50)
-    set [velocityY v] to (0)
-    forever
-      // Gravitasi terus menarik ke bawah
-      change [velocityY v] by (-1)
-      change y by (velocityY)
-
-      // Cek apakah menapak di atas platform tanah
-      if <touching color [#22C55E] ?> then
-        // Dorong kembali ke atas permukaan agar tidak amblas
-        repeat until <not <touching color [#22C55E] ?>>
-          change y by (1)
-        end
-        set [velocityY v] to (0)
-
-        // Lompat hanya bisa dilakukan saat menyentuh tanah
-        if <key [up arrow v] pressed?> then
-          set [velocityY v] to (14)
-          start sound [Jump v]
-        end
-      end
-    end
-  ```
-- **Common Bugs & Solusi**: Karakter melompat berkali-kali di udara (*Infinite Flying*). Solusi: Pastikan blok cek `key up arrow pressed` berada di **dalam** blok `if touching color tanah`.
+## 📌 LEVEL 3: INTERAKTIVITAS JAVASCRIPT & LOGIKA WEB DINAMIS (SESI 25 – 36)
+- **Sesi 25: Menghidupkan Web: Otak Logika JavaScript di Balik Browser**
+  - *Konsep*: Jika HTML adalah tulang dan CSS adalah pakaian, maka JS adalah otot dan saraf gerak.
+- **Sesi 26: Variabel Modern (`let`, `const`) & Tipe Data Primitif**
+  - *Kode*: `let skor = 0; const nama = "Budi"; console.log(nama);`.
+- **Sesi 27: Manipulasi DOM (Document Object Model): Membaca & Mengubah Teks**
+  - *Kode*: `document.getElementById("judul").innerText = "Selamat Datang!";`.
+- **Sesi 28: Menangkap Aksi Pengguna (Event Listeners: `click`, `mouseover`)**
+  - *Kode*: `tombol.addEventListener("click", function() { alert("Halo!"); });`.
+- **Sesi 29: Mengubah Warna & Gaya Tampilan Web Secara Dinamis via JS**
+  - *Kode*: Fitur toggle Night Mode / Dark Mode dengan memanipulasi `classList.toggle("dark")`.
+- **Sesi 30: Struktur Logika Pengkondisian JS & Operator Perbandingan**
+  - *Konsep*: `if (umur >= 12) { izinkan(); } else { tolak(); }`.
+- **Sesi 31: Logika Perulangan (`for` loop) & Pengenalan Array Daftar Data**
+  - *Kode*: `let buah = ["Apel", "Mangga", "Jeruk"]; for (let i = 0; i < buah.length; i++)`.
+- **Sesi 32: Merender Daftar Elemen Dinamis ke Layar Web (List Rendering)**
+  - *Kode*: Menambahkan elemen tag `<li>` otomatis dari array ke dalam halaman web.
+- **Sesi 33: Aplikasi Web To-Do List Interaktif (Tambah & Coret Tugas Selesai)**
+  - *Karya*: Pengguna mengetik tugas, klik tambah, tugas muncul di daftar dan bisa dicoret.
+- **Sesi 34: Penyimpanan Web Lokal (Browser LocalStorage)**
+  - *Kode*: `localStorage.setItem("tasks", JSON.stringify(daftarTugas))`. Data tidak hilang saat refresh.
+- **Sesi 35: Integrasi Audio & Efek Suara pada Tombol Web**
+- **Sesi 36: CAPSTONE LEVEL 3: Aplikasi Web Interaktif Mandiri & Sertifikasi Web Coder**
+  - *Output*: Web App interaktif JavaScript mandiri dengan penyimpanan LocalStorage.
+  - *Apresiasi*: Sertifikat *Junior JavaScript Developer Level 3*.
 
 ---
 
-### SESI 03: Multi-Variable: Health Point, Dynamic Scoring & Countdown Timer
-- **Tujuan Pembelajaran**: Siswa mampu mengelola banyak variabel sekaligus untuk menciptakan aturan permainan yang menantang dan seimbang (*game balance*).
-- **Konsep Kunci**: Variabel Global (*For all sprites*), Health Bar (Nyawa), Game Loop State, Broadcast Akhir Game.
-- **Langkah Demi Langkah Instruktur**:
-  1. Buat 3 Variabel: `Skor`, `Nyawa`, dan `Sisa Waktu`.
-  2. Script Manager Pengatur Waktu (di Backdrop):
-  ```text
-  [When Green Flag Clicked]
-    set [Skor v] to (0)
-    set [Nyawa v] to (3)
-    set [Sisa Waktu v] to (60)
-    forever
-      wait (1) seconds
-      change [Sisa Waktu v] by (-1)
-      if <(Sisa Waktu) = (0)> then
-        broadcast [Waktu Habis v]
-        stop [all v]
-      end
-    end
-  ```
-  3. Script Pengurangan Nyawa saat Terkena Bahaya:
-  ```text
-  [When I receive [Kena Racun v]]
-    change [Nyawa v] by (-1)
-    start sound [Ouch v]
-    // Efek karakter berkedip (Invulnerability Frames)
-    repeat (5)
-      set ghost effect to (50)
-      wait (0.1) seconds
-      set ghost effect to (0)
-      wait (0.1) seconds
-    end
-    if <(Nyawa) < (1)> then
-      broadcast [Game Over v]
-      stop [all v]
-    end
-  ```
-- **Tantangan Siswa**: Tambahkan item hati bonus (*Heart Item*) yang jika diambil menambah `Nyawa` +1 (maksimal 5).
+## 📌 LEVEL 4: GAME ENGINE 2D & FISIKA GAME JAVASCRIPT (SESI 37 – 48)
+- **Sesi 37: Pengenalan HTML5 Canvas & Game Loop Berkelanjutan**
+  - *Konsep*: Siklus game loop: `update() -> clear() -> draw() -> requestAnimationFrame()`.
+- **Sesi 38: Menggambar Karakter Geometri & Animasi Gerak Sumbu X-Y**
+  - *Kode*: Menggerakkan kotak pemain dengan keyboard panah kiri/kanan.
+- **Sesi 39: Sistem Gravitasi dan Deteksi Menapak Tanah (Ground Collision)**
+  - *Konsep*: Kecepatan vertikal bertambah ke bawah setiap frame kecuali menyentuh lantai.
+- **Sesi 40: Algoritma Deteksi Tabrakan Kotak (AABB Collision Detection)**
+  - *Rumus*: `if (rect1.x < rect2.x + rect2.w && rect1.x + rect1.w > rect2.x ...)`
+- **Sesi 41: Spawning Rintangan Rintangan Acak & Skor Berjalan**
+- **Sesi 42: Game Endless Runner 2D: 'Dino Bee Jump'**
+  - *Karya*: Karakter melompati rintangan kaktus yang bergerak menyamping semakin cepat.
+- **Sesi 43: Mengganti Kotak dengan Gambar Sprite Animasi (Sprite Sheet)**
+  - *Konsep*: Memotong bingkai gambar berjalan (*walking frames*) dari file gambar PNG.
+- **Sesi 44: Audio Manager Game (Musik Latar, Efek Lompat, & Suara Game Over)**
+- **Sesi 45: Menu Utama Game, Pause Screen, & Tombol Restart**
+- **Sesi 46: Playtesting Antarteman & Balancing Tingkat Kesulitan Permainan**
+- **Sesi 47: Deploy Game ke Hosting Gratis (GitHub Pages / Cloudflare Pages)**
+  - *Aktivitas*: Game buatan anak live di internet dengan URL web yang bisa dibagikan ke keluarga.
+- **Sesi 48: GRAND CAPSTONE TAHUN KE-1: '2D Browser Arcade Championship'**
+  - *Puncak Acara*: Turnamen pameran game browser karya siswa. Laporan Evaluasi Akademik Tahun 1.
+  - *Apresiasi*: Sertifikat Resmi *Intermediate Coder Annual Graduate (48 Sesi)*.
 
 ---
 
-### SESI 04: Algoritma Kloning & Spawner Musuh Acak
-- **Tujuan Pembelajaran**: Memahami pengelolaan memori komputasi menggunakan satu sprite master yang menghasilkan puluhan klon musuh dinamis secara acak.
-- **Konsep Kunci**: Kloning (*Cloning*), Generator Bilangan Acak (*Pick Random*), Penghapusan Klon (*Delete this clone*).
-- **Analogi Ramah Anak**: 
-  > *"Bayangkan mesin pencetak kue. Kita hanya butuh 1 cetakan master (Sprite asli). Dari cetakan itu, kita bisa memproduksi 100 kue kloningan dengan rasa dan warna berbeda-beda tanpa harus membuat 100 sprite baru di Scratch!"*
-- **Langkah Demi Langkah Instruktur**:
-  1. Buat sprite Musuh Kumbang Tanduk (*Beetle Enemy*). Sembunyikan sprite master asli (`hide`).
-  2. Script Spawner Master:
-  ```text
-  [When Green Flag Clicked]
-    hide
-    forever
-      wait (pick random (1) to (3)) seconds
-      create clone of [myself v]
-    end
-  ```
-  3. Script Perilaku Setiap Kloning:
-  ```text
-  [When I start as a clone]
-    // Spawn di sisi kanan layar secara acak di ketinggian Y tertentu
-    go to x: (240) y: (pick random (-100) to (120))
-    set size to (pick random (50) to (90)) %
-    show
-    repeat until <<touching [edge v] ?> or <touching [Honey Bullet v] ?>>
-      change x by (-6)
-    end
-    if <touching [Honey Bullet v] ?> then
-      change [Skor v] by (10)
-      start sound [Pop v]
-    end
-    delete this clone
-  ```
-- **Catatan Penting Instruktur**: Selalu ingatkan siswa untuk menambahkan `delete this clone`. Jika klon yang selesai tidak dihapus, Scratch akan mencapai limit 300 klon dan game akan macet total.
+# 📅 RENCANA PEMBELAJARAN TAHUN KE-2 (SESI 49 – 96)
+
+## 📌 LEVEL 5: ROBLOX LUA GAME ENGINEERING DASAR (SESI 49 – 60)
+- **Sesi 49: Pengenalan Roblox Studio, 3D Workspace, & Kamera Navigasi**
+  - *Konsep*: Sumbu 3D (X, Y, Z), Part geometri (Block, Sphere, Wedge), Material & Anchor.
+- **Sesi 50: Membangun Rintangan 3D Pertama (Obstacle Course / Obby Level 1)**
+  - *Desain*: Menyusun blok lompat lava yang menantang dan titik checkpoint (*SpawnLocation*).
+- **Sesi 51: Mengenal Bahasa Pemrograman Lua & Scripting Dasar di Roblox**
+  - *Konsep*: Menulis script Lua di dalam Part: `script.Parent.BrickColor = BrickColor.new("Bright red")`.
+- **Sesi 52: Event Sentuhan (`Touched`) & Blok Laser Pembunuh (Kill Brick)**
+  - *Kode Lua*: `part.Touched:Connect(function(hit) hit.Parent:FindFirstChild("Humanoid").Health = 0 end)`.
+- **Sesi 53: Variabel, Nilai Properti, & Operasi Aritmatika Lua**
+  - *Kode Lua*: Mengubah transparansi blok, kecepatan lari karakter (`WalkSpeed`), dan gravitasi.
+- **Sesi 54: Timer & Platform Penghilang Jejak (Disappearing Platforms)**
+  - *Kode Lua*: Saat diinjak, blok berkedip selama 2 detik lalu tembus pandang (*CanCollide = false*).
+- **Sesi 55: Papan Peringkat Roblox (Leaderstats: Koin & Level Checkpoint)**
+  - *Kode*: Menyimpan data skor koin dan level pemain di papan peringkat global server.
+- **Sesi 56: Benda Koleksi Koin Berputar & Animasi Efek Partikel 3D**
+  - *Konsep*: Koin emas berputar otomatis dengan rotasi CFrame dan mengeluarkan efek bintang saat diambil.
+- **Sesi 57: Pintu Toko Interaktif & Pembelian Power-Up Kecepatan**
+  - *Logika*: Jika Koin >= 10, kurangi 10 koin dan gandakan `WalkSpeed` pemain menjadi 32.
+- **Sesi 58: Playtesting Multiplayer Bersama Seluruh Siswa di Server yang Sama**
+- **Sesi 59: Menambahkan Efek Suara, Musik Ambient, & Lighting Pencahayaan 3D**
+- **Sesi 60: CAPSTONE LEVEL 5: Publikasi Game Obby 3D Mandiri di Platform Roblox**
+  - *Output*: Game 3D Roblox live yang bisa dimainkan bersama teman-teman secara online.
+  - *Apresiasi*: Sertifikat *Junior Roblox Game Developer Level 5*.
 
 ---
 
-## MODUL 2: KECERDASAN BUATAN & VISION SENSOR (SESI 5 – 8)
-
-### SESI 05: Anatomi Machine Learning: Data, Training & Inference
-- **Tujuan Pembelajaran**: Siswa memahami perbedaan fundamental antara *Traditional Programming* (manusia menulis aturan) dan *Machine Learning* (mesin mempelajari pola dari contoh data).
-- **Konsep Kunci**: Dataset Pelatihan, Model AI, *Inference* (Prediksi), Skor Probabilitas (*Confidence Score*), Masalah Bias Data.
-- **Perbandingan Konseptual untuk Siswa**:
-  - **Koding Tradisional**: `IF tombol spasi ditekan THEN tembak peluru`. (Aturan dibuat kaku oleh manusia).
-  - **Machine Learning**: Kita tunjukkan 100 foto tangan terkepal dan 100 foto telapak terbuka. Komputer mengenali perbedaannya sendiri.
-- **Aktivitas Interaktif**: Eksperimen *Quick, Draw!* dari Google — mengamati bagaimana jaringan saraf tiruan menebak gambar coretan siswa dalam 20 detik.
-
----
-
-### SESI 06: Melatih Model Computer Vision Pengenal Gestur Tangan
-- **Tujuan Pembelajaran**: Siswa mengumpulkan dataset gambar webcam sendiri dan melatih model klasifikasi multi-kelas menggunakan Google Teachable Machine.
-- **Tools**: `teachablemachine.withgoogle.com` (Image Model - Standard).
-- **Langkah Demi Langkah Instruktur**:
-  1. Arahkan siswa membuka Google Teachable Machine $\rightarrow$ Pilih **Image Project**.
-  2. Buat 3 Kelas (*Classes*):
-     - **Class 1**: `Tangan Kiri Terangkat` (Rekam 100 sampel kamera dengan berbagai sudut & pencahayaan).
-     - **Class 2**: `Tangan Kanan Terangkat` (Rekam 100 sampel kamera).
-     - **Class 3**: `Posisi Netral / Diam` (Rekam wajah santai tanpa tangan terangkat).
-  3. Klik **Train Model** (tunggu proses epoch training selesai).
-  4. Lakukan pengujian di panel Preview: perhatikan persentase akurasi *confidence bar* bergerak realtime.
-  5. Klik **Export Model** $\rightarrow$ Pilih tab **Tensorflow.js** $\rightarrow$ Klik **Upload (shareable link)** $\rightarrow$ Salin URL model cloud yang dihasilkan (`https://teachablemachine.withgoogle.com/models/xyz...`).
-
----
-
-### SESI 07: Menghubungkan Model Kamera AI dengan Game Scratch
-- **Tujuan Pembelajaran**: Mengintegrasikan URL model Teachable Machine ke dalam Scratch menggunakan platform ekstensi AI (seperti Adacraft / Stretch3 / TM2Scratch).
-- **Langkah Demi Langkah Instruktur**:
-  1. Buka Scratch modifikasi ekstensi Teachable Machine (`stretch3.github.io` atau platform pendukung Beekoding).
-  2. Masukkan blok: `Load model from URL [Paste Link Model Siswa]`.
-  3. Script Kontrol Game Berbasis Gestur:
-  ```text
-  [When Green Flag Clicked]
-    forever
-      if <model prediction is [Tangan Kanan Terangkat] with confidence > (0.8)> then
-        change x by (10)
-        say [Terbang ke Kanan! 👉]
-      end
-      if <model prediction is [Tangan Kiri Terangkat] with confidence > (0.8)> then
-        change x by (-10)
-        say [Terbang ke Kiri! 👈]
-      end
-    end
-  ```
-- **Tantangan Siswa**: Tambahkan gestur ke-4: `Mulut Membuka` untuk menembakkan laser madu!
+## 📌 LEVEL 6: TRANSISI KE BAHASA TEKS MURNI: PYTHON 3 (SESI 61 – 72)
+- **Sesi 61: Selamat Datang di Dunia Koding Profesional: Python 3 & VS Code**
+  - *Konsep*: Menulis sintaks teks asli. Fungsi output pertama: `print("Halo Dunia!")`.
+- **Sesi 62: Variabel Python, Input Dinamis dari Pengguna & Format String**
+  - *Kode*: `nama = input("Siapa nama kamu? "); print(f"Selamat datang, {nama}!")`.
+- **Sesi 63: Operasi Matematika & Tipe Data Python (Integer, Float, String, Boolean)**
+  - *Konsep*: Menghitung luas persegi panjang, konversi tipe data `int()` dan `float()`.
+- **Sesi 64: Logika Percabangan Teks (`if`, `elif`, `else`) & Indentasi Tab**
+  - *Aturan*: Python mewajibkan indentasi spasi/tab rapi sebagai penanda blok kode.
+- **Sesi 65: Game Tebak Angka Misterius 1–100 (Modul `random` Python)**
+  - *Kode*: Komputer memilih angka rahasia. Siswa menebak dengan petunjuk "Terlalu besar" atau "Terlalu kecil".
+- **Sesi 66: Perulangan `while` Loop & Penanganan Kesalahan Input Dasar**
+  - *Konsep*: Game loop berbasis teks yang terus berjalan sampai pemain mengetik "keluar".
+- **Sesi 67: Perulangan `for` Loop & Manipulasi Teks Karakter demi Karakter**
+  - *Kode*: Menghitung jumlah huruf vokal dalam sebuah kalimat secara otomatis.
+- **Sesi 68: Struktur Data List di Python (Menyimpan & Mengurutkan Data)**
+  - *Operasi*: `list.append()`, `list.remove()`, `list.sort()`, dan menghitung nilai tertinggi `max()`.
+- **Sesi 69: Membuat Fungsi Mandiri (`def`) & Parameter Argumen**
+  - *Konsep*: Modularitas kode: membungkus logika perhitungan ke dalam fungsi agar bisa dipakai berulang kali.
+- **Sesi 70: Proyek Aplikasi Konsol Teks: Sistem Kasir Mini & Manajemen Stok Barang**
+- **Sesi 71: Membaca & Menulis Berkas Catatan Teks (`file.txt` Read/Write)**
+  - *Kode*: `with open("catatan.txt", "w") as f: f.write("Data tersimpan aman!")`.
+- **Sesi 72: CAPSTONE LEVEL 6: Aplikasi Utilitas Python Mandiri & Sertifikasi Python Dasar**
+  - *Output*: Program utilitas Python berbasis teks terminal yang fungsional.
+  - *Apresiasi*: Sertifikat *Junior Python Programmer Level 6*.
 
 ---
 
-### SESI 08: Evaluasi Proyek Mini 2: AI Gesture-Controlled Game
-- **Tujuan Pembelajaran**: Merampungkan game interaktif utuh yang dikendalikan 100% tanpa menyentuh keyboard mouse, melainkan gerakan tangan di depan webcam.
-- **Rubrik Penilaian Mentor**:
-  - [x] Model AI memiliki akurasi di atas 80% pada pencahayaan normal.
-  - [x] Karakter bergerak mulus merespons gestur tubuh siswa.
-  - [x] Ada mekanisme game yang berfungsi (menangkap koin / menghindari rintangan).
-  - [x] Siswa mampu menjelaskan kepada teman sekelas bagaimana model AI dilatih.
+## 📌 LEVEL 7: OLIMPIADE KOMPUTASI & PROBLEM SOLVING BERPIKIR TINGKAT TINGGI (SESI 73 – 84)
+- **Sesi 73: Pengenalan Kompetisi Informatika: Bebras Challenge & Olimpiade Sains Nasional (OSN)**
+  - *Konsep*: 4 pilar Computational Thinking: Dekomposisi, Abstraksi, Pengenalan Pola, dan Algoritma.
+- **Sesi 74: Dekomposisi Masalah Rumit Menjadi Sub-Tugas Sederhana**
+  - *Latihan*: Analisis jadwal sibuk, optimasi rute perjalanan terpendek (Graph Sederhana).
+- **Sesi 75: Pengenalan Pola & Barisan Deret Aritmatika-Geometri**
+  - *Latihan*: Menemukan formula matematis pola bilangan dan menuliskannya dalam Python.
+- **Sesi 76: Logika Boolean Kompleks & Tabel Kebenaran (AND, OR, NOT, XOR)**
+  - *Latihan*: Memecahkan teka-teki logika ruang rahasia dengan saklar lampu logika.
+- **Sesi 77: Algoritma Pencarian Efisien: Binary Search vs Linear Search**
+  - *Analogi*: Menebak nomor halaman kamus dengan selalu membuka halaman tengah (Bagi Dua).
+- **Sesi 78: Algoritma Pengurutan Nilai: Bubble Sort & Visualisasi Gerak Data**
+  - *Konsep*: Menukar dua angka bersebelahan yang posisinya salah sampai seluruh daftar terurut.
+- **Sesi 79: Konsep Tumpukan (Stack: LIFO) dan Antrean (Queue: FIFO)**
+  - *Analogi*: Tumpukan piring cuci (terakhir ditaruh, pertama dicuci) vs antrean kasir tiket bioskop.
+- **Sesi 80: Simulasi Soal-Soal Ujian Bebras Kategori Benjamins (Usia 10-12 Tahun) Bagian 1**
+- **Sesi 81: Simulasi Soal-Soal Ujian Bebras Kategori Benjamins Bagian 2**
+- **Sesi 82: Pembahasan Trik Cepat & Strategi Manajemen Waktu Ujian Kompetisi**
+- **Sesi 83: Try Out Mandiri Olimpiade Informatika Tingkat Dasar**
+- **Sesi 84: CAPSTONE LEVEL 7: Evaluasi Kompetensi Algoritma & Medali Asah Otak**
+  - *Output*: Hasil evaluasi skor uji kompetensi logika dan portofolio solusi algoritma.
+  - *Apresiasi*: Sertifikat *Computational Thinking & Olympiad Ready*.
 
 ---
 
-## MODUL 3: JEMBATAN DARI BLOK KE BAHASA TEKS PYTHON (SESI 9 – 12)
-
-### SESI 09: Dari Blok ke Baris Kode: Geometri Python Turtle
-- **Tujuan Pembelajaran**: Siswa mengatasi ketakutan terhadap kode teks; memahami bahwa setiap perintah blok Scratch memiliki padanan baris sintaksis di Python.
-- **Konsep Kunci**: Modul Python (`import`), Fungsi Pemanggil, Parameter Argumen, Tanda Kurung dan Titik.
-- **Tabel Kesetaraan Logika Scratch vs Python**:
-  | Logika di Scratch | Baris Kode di Python Turtle |
-  | :--- | :--- |
-  | `move (100) steps` | `t.forward(100)` |
-  | `turn right (90) degrees` | `t.right(90)` |
-  | `set pen color to [#FF0000]` | `t.pencolor("red")` |
-  | `repeat (4)` | `for i in range(4):` |
-
-- **Contoh Script Python Pertama Siswa**:
-  ```python
-  import turtle
-
-  # Inisialisasi layar dan kura-kura pelukis
-  screen = turtle.Screen()
-  screen.bgcolor("#0F172A") # Background navy Beekoding
-
-  t = turtle.Turtle()
-  t.shape("turtle")
-  t.color("#F59E0B") # Kuning madu
-  t.speed(3)
-  t.pensize(3)
-
-  # Menggambar Segi Enam (Sarang Lebah Hexagon)
-  for i in range(6):
-      t.forward(80)
-      t.left(60)
-
-  turtle.done()
-  ```
-- **Tantangan Siswa**: Buat pola bunga sarang lebah dengan memutar hexagon 12 kali dalam perulangan bersarang (*Nested Loop*).
+## 📌 LEVEL 8: INTEGRASI PROYEK AKHIR 2 TAHUN & PORTOFOLIO MASA DEPAN (SESI 85 – 96)
+- **Sesi 85: Merancang Portofolio Mahakarya 2 Tahun (Grand Capstone Intermediate)**
+  - *Pilihan Kategori*: Web App Interaktif, Game 3D Roblox Kompleks, atau Utilitas Python Cerdas.
+- **Sesi 86: Arsitektur Proyek, Wireframing UI & Penyusunan Milestone Pengerjaan**
+- **Sesi 87: Sprint 1 Pengerjaan: Fondasi Struktur Kode & Database Penyimpanan**
+- **Sesi 88: Sprint 2 Pengerjaan: Logika Interaktivitas & Fitur Andalan Aplikasi**
+- **Sesi 89: Sprint 3 Pengerjaan: Pengujian Bug, Validasi Input & Keamanan Kode**
+- **Sesi 90: Sprint 4 Pengerjaan: Sentuhan Estetika UI/UX & Audio Visual**
+- **Sesi 91: Pengenalan Git Dasar & Upload Source Code ke Repositori GitHub**
+  - *Standar Industri*: Siswa memiliki akun GitHub pribadi dengan dokumentasi `README.md` rapi.
+- **Sesi 92: Deployment Aplikasi ke Cloud Hosting Publik (Domain Live Online)**
+- **Sesi 93: Pembuatan Video Demo & Pitch Deck Presentasi Proyek Siswa**
+- **Sesi 94: Gladi Bersih Presentasi di Hadapan Panel Instruktur Senior**
+- **Sesi 95: Rehearsal Wisuda Kelulusan & Diskusi Jalur Peminatan Teens Innovator**
+- **Sesi 96: GRADUATION DAY & BEEKODING INTERMEDIATE EXPO (SESI 96)**
+  - *Puncak Acara*: Wisuda Akbar Kelulusan Tahap 2 Intermediate Coder (96 Sesi).
+  - *Penganugerahan*: Sertifikat Kelulusan *Intermediate Master Graduate* & Tiket Masuk Tahap 3: Teens Innovator.
 
 ---
 
-### SESI 10: Variabel, Input Interaktif & Operasi Matematika di Python
-- **Tujuan Pembelajaran**: Siswa mampu mengambil input teks dan angka dari pengguna menggunakan terminal konsol Python dan melakukan kalkulasi dinamis.
-- **Konsep Kunci**: Tipe Data String (`str`), Integer (`int`), Fungsi `input()`, Konversi Tipe Data (*Typecasting*).
-- **Langkah Demi Langkah Instruktur**:
-  1. Buka Python IDE (Thonny / IDLE / VS Code).
-  2. Bahas mengapa `int(input())` dibutuhkan: *"Komputer menganggap semua yang diketik keyboard sebagai huruf/teks. Agar bisa dijumlahkan, teks harus disihir menjadi angka bulat (Integer)!"*
-  3. Contoh Script Program Kuis Matematika:
-  ```python
-  print("=" * 40)
-  print("🐝 BEEKODING: ASISTEN MATEMATIKA CERDAS")
-  print("=" * 40)
+## 🛠️ LEMBAR RUBRIK PENILAIAN KELULUSAN SISWA INTERMEDIATE
+| Aspek Kompetensi | Kriteria Evaluasi | Bobot |
+| :--- | :--- | :---: |
+| **Arsitektur & Logika Kode** | Struktur program rapi, modular dengan fungsi, minim bug fatal. | 25% |
+| **Kemandirian Problem Solving** | Mampu membaca pesan error dan mencari solusi debugging secara terarah. | 25% |
+| **Desain Antarmuka (UI/UX)** | Tata letak rapi, intuitif digunakan, konsisten secara visual. | 20% |
+| **Penyimpanan Data Permanen** | Berhasil mengimplementasikan TinyDB / LocalStorage / File IO. | 15% |
+| **Presentasi & Dokumentasi** | Mampu menjelaskan alur kerja kode dan mendemokan aplikasi dengan percaya diri. | 15% |
 
-  nama = input("Siapa nama pahlawan kodingmu? ")
-  print(f"Senang bertemu denganmu, {nama}! Mari kita hitung panen madu hari ini.\n")
-
-  kotak_madu = int(input("Berapa kotak sarang lebah yang dipanen? "))
-  botol_per_kotak = 12
-
-  total_botol = kotak_madu * botol_per_kotak
-  harga_per_botol = 75000
-  total_rupiah = total_botol * harga_per_botol
-
-  print("\n" + "-" * 30)
-  print(f"Total produksi: {total_botol} botol madu murni!")
-  print(f"Estimasi pendapatan: Rp {total_rupiah:,}")
-  print("-" * 30)
-  ```
-- **Common Bugs & Solusi**: Siswa lupa mengetik tanda kurung tutup ganda `))`, muncul `SyntaxError: unexpected EOF while parsing`. Solusi: Ajarkan rumus hitung kurung: *"Berapa kurung buka, harus ada kurung tutup yang sama banyaknya!"*
-
----
-
-### SESI 11: Struktur Percabangan `if - elif - else` & Game Tebak Angka
-- **Tujuan Pembelajaran**: Menerapkan logika keputusan bertingkat di Python dan perulangan bersyarat `while loop`.
-- **Konsep Kunci**: Kondisi Percabangan, Indentasi Spasi (Tab), Modul `random`.
-- **Contoh Script Game Python Lengkap**:
-  ```python
-  import random
-
-  print("🎮 GAME TEBAK KODE RAHASIA BEEKODING")
-  print("Komputer telah memilih angka misterius antara 1 sampai 50.")
-  print("Kamu memiliki 6 kesempatan untuk menebak!\n")
-
-  angka_rahasia = random.randint(1, 50)
-  kesempatan = 6
-  menang = False
-
-  while kesempatan > 0:
-      tebakan = int(input(f"Sisa kesempatan ({kesempatan}). Masukkan tebakanmu: "))
-
-      if tebakan == angka_rahasia:
-          print(f"🎉 LUAR BIASA! Kamu berhasil menebak angka {angka_rahasia} dengan tepat!")
-          menang = True
-          break
-      elif tebakan < angka_rahasia:
-          print("📈 Terlalu KECIL! Coba tebak angka yang lebih tinggi.")
-      else:
-          print("📉 Terlalu BESAR! Coba tebak angka yang lebih rendah.")
-
-      kesempatan -= 1
-      print()
-
-  if not menang:
-      print(f"💀 Game Over! Angka rahasia yang benar adalah {angka_rahasia}. Jangan menyerah, coba lagi!")
-  ```
-
----
-
-### SESI 12: CAPSTONE INTERMEDIATE: "PYTHON SMART ADVENTURE BOT" & DEMO DAY
-- **Tujuan Pembelajaran**: Siswa membangun proyek mandiri berbasis teks interaktif (Game RPG Naratif atau Bot Asisten) menggabungkan variabel, fungsi, percabangan, dan logika loop.
-- **Kriteria Kelulusan Proyek**:
-  1. Kode Python berjalan bersih tanpa crash sintaksis.
-  2. Memiliki minimal 3 percabangan skenario keputusan pemain.
-  3. Menggunakan modul standar Python (`random` atau `time`).
-  4. Mampu menjelaskan struktur baris kode kepada audiens selama 2–3 menit.
-- **Apresiasi Mentor**: Penyerahan Sertifikat Resmi *Intermediate AI Coder* dan rekomendasi jenjang berikutnya menuju *Teens Innovator*.
+*Dokumen panduan mengajar resmi diterbitkan oleh Divisi Kurikulum Beekoding Academy.*

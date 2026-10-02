@@ -1,412 +1,261 @@
-# 🐝 PANDUAN LENGKAP INSTRUKTUR: TAHAP 3 — TEENS INNOVATOR
-### *Kurikulum & Rencana Pembelajaran Siap Ajar (Instruktur Teaching Handbook & Lesson Plans)*
+# ⚡ BUKU PANDUAN UTAMA INSTRUKTUR: TAHAP 3 — TEENS INNOVATOR (SESI 1 – 96)
+### *Kurikulum Lengkap 2 Tahun Berkelanjutan (Pathway 96 Sesi Standar Industri)*
+*Pedoman Pedagogi, Python 3 Lanjut, Modern React 19 & TypeScript, AI Vision & Machine Learning, Cloud Backend, & Persiapan Portofolio Beasiswa/Kuliah*
 
-- **Kode Dokumen**: `BK-INSTR-STAGE-03`
-- **Target Usia**: 13 – 17 Tahun (SMP & SMA)
-- **Prasyarat Siswa**: Pemahaman aljabar dasar, logika matematika, familiar dengan sistem file komputer (folder, terminal/command prompt)
-- **Format Pertemuan**: 12 Sesi Pembelajaran Terpadu @ 90–120 Menit
-- **Platform Utama**: *Python 3.10+*, *VS Code*, *Pygame 2.x*, *OpenCV / MediaPipe (Computer Vision)*, *API AI / JSON REST*, *Git & GitHub*
-- **Rasio Mentor**: 1 Instruktur : Maksimal 6–8 Siswa (Online) / 10–12 Siswa (Offline Lab)
-
----
-
-## 🎯 PEDOMAN PEDAGOGIS & POLA PIKIR SISWA REMAJA (TEENS 13–17 TAHUN)
-
-1. **Perlakuan Seperti Junior Software Developer**: Siswa usia remaja tidak menyukai materi yang terasa seperti "anak kecil". Gunakan istilah industri nyata: *Clean Code*, *Refactoring*, *Debugging*, *Version Control*, *API Integration*, dan *Production-Ready*.
-2. **Kemandirian Problem-Solving (Read The Docs & Error Stacktrace)**: Saat terjadi error, jangan langsung berikan jawabannya. Latih mereka membaca pesan terminal:
-   > *"Lihat baris paling bawah error itu. Tulisannya 'KeyError: score'. Menurut dokumentasi dictionary kita, kenapa key itu tidak ditemukan?"*
-3. **Relevansi Masa Depan & Portofolio Nyata**: Tunjukkan bagaimana skill yang dipelajari hari ini berhubungan langsung dengan karir masa depan: Computer Science, AI Engineering, Game Development, dan Data Science.
-4. **Etika Rekayasa Software**: Tekankan pentingnya keamanan data, integritas kode, dan etika pemanfaatan AI generatif secara bertanggung jawab.
+- **Kode Dokumen**: `BK-INSTR-STAGE-03-FULL96`
+- **Target Usia**: 13 – 17 Tahun (SMP & SMA / SMK)
+- **Jenjang Program**: 
+  - **Tahun 1 (Level 1–4 / Sesi 1–48)**: Python Core & OOP, Modern Fullstack Web (React & Tailwind), Machine Learning & AI API Integration, Cloud Deployment.
+  - **Tahun 2 (Level 5–8 / Sesi 49–96)**: Computer Vision & MediaPipe, Backend RESTful API & Supabase, Data Science & Analytics, Grand Capstone Startup Incubator.
+- **Prasyarat Siswa**: Memiliki pemikiran logis dasar, kemampuan aljabar dasar, dan kenyamanan mengoperasikan sistem operasi komputer & keyboard.
+- **Rasio Pembimbing**: 1 Instruktur : Maksimal 6–8 Siswa (Online) / 10–12 Siswa (Offline Lab).
 
 ---
 
-## 🧭 RUNDOWN STANDAR SETIAP SESI MENGAJAR (TOTAL 90–120 MENIT)
+## 🎯 PRINSIP PEDAGOGIS KHUSUS REMAJA (TEEN INNOVATORS)
+1. **Perlakukan Sebagai Calon Junior Developer**: Hindari nada bicara anak-anak. Gunakan terminologi industri nyata (*version control, API contract, state management, asynchronous, authentication*).
+2. **Konteks Relevansi Karir & Pendidikan Tinggi**: Kaitkan setiap modul dengan kegunaannya: persiapan portofolio masuk PTN ternama, beasiswa luar negeri (misal: MIT, NUS, NTU), atau magang industri teknologi.
+3. **Standar Kode Produksi**: Biasakan menggunakan git branching, linter PEP 8 / ESLint, dokumentasi docstring, serta pengelolaan environment variable aman (`.env`).
+4. **Problem Solving Berbasis Riset Mandiri**: Latih siswa membaca dokumentasi resmi library (*Read the Docs*) dan mencari solusi error di Stack Overflow / GitHub Issues.
 
-| Durasi | Segmen Pembelajaran | Aktivitas Mentor |
+---
+
+## 🧭 RUNDOWN STANDAR SETIAP SESI MENGAJAR (TOTAL 90 – 120 MENIT)
+| Menit | Segmen Kelas | Panduan Instruktur |
 | :---: | :--- | :--- |
-| **00 – 15 Min** | **Architecture & Concept Breakdown** | Uraikan konsep rekayasa (diagram alur data, arsitektur modul, atau matematika algoritma) sebelum mulai menulis baris kode. |
-| **15 – 35 Min** | **Live Coding & Code Along** | Mentor menulis kode sambil menjelaskan filosofi desain (*why*, bukan hanya *how*). Siswa mengetik di editor masing-masing. |
-| **35 – 75 Min** | **Implementation & Feature Extension** | Siswa mengembangkan fitur modul secara mandiri dengan pendampingan mentor. |
-| **75 – 85 Min** | **Code Review & Refactoring** | Ulas 1 karya siswa di depan kelas: optimasi efisiensi loop, penamaan variabel sesuai PEP 8, dan penanganan edge-case. |
-| **85 – 90 Min** | **Git Commit & Next Challenge** | Siswa melakukan commit kode ke repositori lokal/GitHub dan menerima ringkasan misi lanjutan. |
+| **00–10'** | **Engineering Standup & System Architecture** | Pembahasan arsitektur modul hari ini dan studi kasus industri teknologi nyata. |
+| **10–30'** | **Deep Dive Tech Concept & Code Boilerplate** | Bedah sintaks, design pattern, dan demonstrasi implementasi live coding mentor. |
+| **30–75'** | **Hands-on Production Code & Feature Build** | Siswa membangun fitur di IDE VS Code, mengintegrasikan library pihak ketiga. |
+| **75–95'** | **Debugging Sprint & Edge Case Hardening** | Menangani unhandled promise, null pointer, syntax error, dan validasi input. |
+| **95–110'**| **Git Commit, Push & Peer Code Review** | Siswa melakukan push ke GitHub, saling memberikan feedback pull request. |
+| **110–120'**| **Tech Insight & Roadmap Mentoring** | Wawasan tren AI terbaru dan konsultasi portofolio akademik pribadi. |
 
 ---
 
-# 📚 RENCANA PELAKSANAAN PEMBELAJARAN (LESSON PLANS SESI 1 – 12)
+# 📅 RENCANA PEMBELAJARAN TAHUN KE-1 (SESI 01 – 48)
+
+## 📌 LEVEL 1: PYTHON CORE PROGRAMMING & OBJECT-ORIENTED PROGRAMMING (SESI 01 – 12)
+- **Sesi 01: Ekosistem Python 3 Modern, Terminal Shell & Standar PEP 8**
+  - *Konsep*: VS Code environment, virtual environment (`venv`), pip package manager, sintaks clean code PEP 8.
+- **Sesi 02: Tipe Data Kompleks: List Comprehensions, Dictionaries, Sets & Tuples**
+  - *Kode*: `data = [x**2 for x in range(10) if x % 2 == 0]`. Dictionary nested data structures.
+- **Sesi 03: Penanganan Kesalahan Eksepsi (Robust Exception Handling: Try-Except-Finally)**
+  - *Konsep*: Mencegah aplikasi crash: `try: res = int(val) except ValueError as err: logger.error(err)`.
+- **Sesi 04: Pemrograman Berorientasi Objek (OOP) Bagian 1: Class, Objects & `__init__`**
+  - *Kode*: `class Student: def __init__(self, name, xp): self.name = name; self.xp = xp`.
+- **Sesi 05: OOP Bagian 2: Enkapsulasi, Getter-Setter & Metode Spesial (`__repr__`, `__str__`)**
+  - *Konsep*: Melindungi variabel internal kelas dari manipulasi tidak sah.
+- **Sesi 06: OOP Bagian 3: Pewarisan (Inheritance) & Polimorfisme Antar Class**
+  - *Kode*: `class PremiumUser(User): def get_discount(self): return self.rate * 0.8`.
+- **Sesi 07: Sistem Manipulasi File Lanjut: JSON, CSV Parsing & Pathlib**
+  - *Konsep*: Membaca dataset format `.json` dan mengekspor laporan terstruktur ke format `.csv`.
+- **Sesi 08: Algoritma Pencarian & Pengurutan Lanjut (QuickSort & Lambda Functions)**
+  - *Kode*: `sorted_list = sorted(products, key=lambda p: p['price'], reverse=True)`.
+- **Sesi 09: Pengenalan Pygame 2D Engine: Game Loop, Display Surface & Event Handling**
+  - *Konsep*: Refresh rate 60 FPS, memproses event keyboard dan mouse tanpa jeda.
+- **Sesi 10: Pygame Sprite Groups, Rect Collision & Vektor Gerak 2D**
+  - *Kode*: Menembakkan laser peluru dan mendeteksi tabrakan dengan musuh alien.
+- **Sesi 11: Game Space Shooter Lengkap: Sistem Skor, Audio Synth & Particle Explosion**
+- **Sesi 12: CAPSTONE LEVEL 1: 'Python Space Defense Game' & Code Review Refactoring**
+  - *Output*: Game 2D modular berbasis OOP Python dengan arsitektur kode bersih.
+  - *Apresiasi*: Sertifikat *Junior Python Software Engineer Level 1*.
 
 ---
 
-## MODUL 1: REKAYASA PERANGKAT LUNAK PYTHON MODERN (SESI 1 – 4)
-
-### SESI 01: Ekosistem Python 3 Modern, Terminal CLI & Standar PEP 8
-- **Tujuan Pembelajaran**: Siswa menguasai lingkungan kerja profesional: Visual Studio Code, eksekusi script lewat terminal, tipe data primitif, dan konvensi kode bersih (*PEP 8*).
-- **Konsep Kunci**: Interpreter Python, Virtual Environment, Tipe Data Primitif (`int`, `float`, `str`, `bool`), f-string formatting, PEP 8 styling.
-- **Langkah Demi Langkah Instruktur**:
-  1. Pandu siswa membuka terminal di VS Code (`Ctrl + ~`).
-  2. Jelaskan struktur script Python yang baik: *Docstring*, deklarasi konstanta (huruf kapital), fungsi `main()`.
-- **Contoh Script Referensi Siap Ajar**:
-  ```python
-  """
-  Beekoding Teens Innovator - Sesi 01
-  Program: Smart Terminal Metric Calculator
-  Konvensi: PEP 8 Clean Code Standard
-  """
-
-  APP_NAME = "Beekoding System Core"
-  VERSION = "2026.1"
-
-  def main():
-      print(f"[{APP_NAME} v{VERSION}] Initializing System Diagnostic...\n")
-
-      developer_name = input("Enter Developer Name: ").strip().title()
-      experience_months = int(input("Enter Coding Experience (months): "))
-
-      is_ready_for_ai = experience_months >= 6
-      confidence_score = min(100.0, (experience_months * 8.5) + 20.0)
-
-      print("\n" + "=" * 45)
-      print(f"DEVELOPER PROFILE: {developer_name}")
-      print(f"Experience Level : {experience_months} months")
-      print(f"AI Readiness     : {'READY' if is_ready_for_ai else 'FOUNDATION PHASE'}")
-      print(f"Confidence Index : {confidence_score:.1f}%")
-      print("=" * 45)
-
-  if __name__ == "__main__":
-      main()
-  ```
-- **Tantangan Siswa**: Tambahkan validasi input menggunakan `while True` agar program tidak crash jika pengguna memasukkan huruf pada kolom angka.
+## 📌 LEVEL 2: MODERN FRONTEND WEB (REACT 19, VITE & TAILWIND CSS) (SESI 13 – 24)
+- **Sesi 13: Arsitektur Web Modern: Single Page Application (SPA) vs Multi Page**
+  - *Konsep*: Mengapa raksasa teknologi beralih ke React, Next.js, dan Vite bundler cepat.
+- **Sesi 14: Komponen React & Sintaks JSX Modern**
+  - *Kode*: Membuat komponen fungsi reusable: `function ProductCard({ title, price })`.
+- **Sesi 15: Styling Modern dengan Tailwind CSS Utility Classes**
+  - *Konsep*: Flexbox, grid, responsif breakpoint (`sm:`, `md:`, `lg:`), dan styling dark mode.
+- **Sesi 16: Manajemen State Komponen dengan Hook `useState`**
+  - *Kode*: Pengaturan state form input, counter angka dinamis, dan toggle menu.
+- **Sesi 17: Siklus Hidup Komponen & Efek Samping dengan Hook `useEffect`**
+  - *Konsep*: Mengambil data API saat komponen pertama kali dimuat (*fetch on mount*).
+- **Sesi 18: Penanganan Form Terkendali (Controlled Forms & Input Validation)**
+  - *Konsep*: Validasi nomor telepon dan format email secara realtime sebelum submit.
+- **Sesi 19: Rendering List Dinamis & Kunci Unik React (`key` prop)**
+  - *Kode*: `items.map(item => <ItemRow key={item.id} data={item} />)`.
+- **Sesi 20: Manajemen State Global dengan React Context API**
+  - *Konsep*: Mengalirkan state Theme (Dark/Light) dan Authentication ke seluruh halaman aplikasi.
+- **Sesi 21: Routing Halaman Multi-View dengan Client-Side Routing**
+  - *Konsep*: Navigasi antar halaman Home, Dashboard, dan Profil tanpa reload browser.
+- **Sesi 22: Desain Dashboard Portofolio Developer Profesional**
+  - *Praktik*: Membangun antarmuka dashboard dengan diagram visual grafik dan widget metrik.
+- **Sesi 23: Optimasi Kinerja Web: Code Splitting & Lazy Loading (`React.lazy`)**
+- **Sesi 24: CAPSTONE LEVEL 2: 'Modern Developer Showcase Web App' & Live Cloud Deploy**
+  - *Output*: Web App React modern yang terdeploy live di Cloudflare Pages / Vercel.
+  - *Apresiasi*: Sertifikat *Junior React Frontend Engineer Level 2*.
 
 ---
 
-### SESI 02: Struktur Data Koleksi (List, Dictionary) & Format JSON
-- **Tujuan Pembelajaran**: Siswa mampu mengorganisir data kompleks bersarang (*nested data structures*) dan memanipulasi data dictionary seperti database mini.
-- **Konsep Kunci**: List, List Comprehension, Dictionary (Key-Value), Modul `json`.
-- **Contoh Script Referensi Siap Ajar**:
-  ```python
-  import json
-
-  # Database siswa Beekoding berbasis List of Dictionaries
-  students_database = [
-      {"id": "BK-001", "name": "Alya Pratama", "role": "Junior Coder", "xp": 1450, "skills": ["Scratch", "Python"]},
-      {"id": "BK-002", "name": "Bima Sena", "role": "AI Explorer", "xp": 2800, "skills": ["Python", "Teachable Machine"]},
-      {"id": "BK-003", "name": "Citra Lestari", "role": "Game Dev", "xp": 3100, "skills": ["Pygame", "Design"]},
-  ]
-
-  def display_leaderboard(data):
-      print(f"{'ID':<8} {'NAMA SISWA':<18} {'LEVEL XP':<10} {'STATUS'}")
-      print("-" * 50)
-      # Sorting berdasarkan XP tertinggi menggunakan lambda function
-      sorted_data = sorted(data, key=lambda s: s["xp"], reverse=True)
-      for rank, student in enumerate(sorted_data, start=1):
-          tier = "Elite" if student["xp"] >= 2500 else "Rising Star"
-          print(f"{student['id']:<8} {student['name']:<18} {student['xp']:<10} {tier}")
-
-  # Simpan ke file JSON permanen
-  with open("students_data.json", "w", encoding="utf-8") as f:
-      json.dump(students_database, f, indent=4)
-
-  print("Data successfully serialized to students_data.json\n")
-  display_leaderboard(students_database)
-  ```
-- **Tantangan Siswa**: Buat fungsi `filter_by_skill(skill_name)` yang mencari semua siswa yang menguasai skill tertentu menggunakan List Comprehension.
+## 📌 LEVEL 3: MACHINE LEARNING & INTEGRASI GENERATIVE AI API (SESI 25 – 36)
+- **Sesi 25: Pengantar Kecerdasan Buatan Modern: Machine Learning vs Deep Learning**
+  - *Konsep*: Bagaimana AI dilatih menggunakan data (Dataset -> Training -> Model -> Inference).
+- **Sesi 26: Analisis Data Eksploratif Menggunakan Python Pandas & Numpy**
+  - *Kode*: Membaca file dataset CSV, membersihkan missing value, dan menghitung statistik rata-rata.
+- **Sesi 27: Visualisasi Data Interaktif dengan Matplotlib & Seaborn**
+  - *Karya*: Menampilkan grafik heatmap korelasi data dan diagram sebaran scatter plot.
+- **Sesi 28: Model Prediksi Machine Learning Pertama: Regresi Linear (Scikit-learn)**
+  - *Studi Kasus*: Memprediksi harga rumah atau nilai ujian berdasarkan jam belajar siswa.
+- **Sesi 29: Model Klasifikasi Data: Decision Tree & Random Forest**
+  - *Studi Kasus*: Mengklasifikasikan email spam vs bukan spam secara otomatis.
+- **Sesi 30: Evaluasi Akurasi Model AI: Precision, Recall, & Confusion Matrix**
+  - *Konsep*: Menghindari bias data dan mengukur keandalan model prediksi kecerdasan buatan.
+- **Sesi 31: Pengenalan Large Language Models (LLM) & Arsitektur Transformer**
+  - *Konsep*: Cara kerja tokenisasi, context window, embeddings, dan temperature pada model AI.
+- **Sesi 32: Integrasi REST API LLM Modern (Google Gemini API / OpenAI API)**
+  - *Kode*: Mengirim request HTTP POST dari Python untuk meminta generasi jawaban teks cerdas.
+- **Sesi 33: Prompt Engineering Tingkat Mahir: Few-Shot Prompting & Structured JSON Output**
+  - *Konsep*: Memaksa output LLM selalu berupa JSON schema valid agar mudah diproses program.
+- **Sesi 34: Membangun Aplikasi 'AI Smart Study Buddy' Berbasis Web**
+  - *Fitur*: Asisten belajar pintar yang mampu meringkas modul PDF dan membuat latihan kuis otomatis.
+- **Sesi 35: Etika AI, Keamanan Data Pribadi & Manajemen Rahasia API Key (`.env`)**
+  - *Aturan*: Tidak boleh mengunggah kunci API rahasia ke repositori publik GitHub.
+- **Sesi 36: CAPSTONE LEVEL 3: 'AI Powered Learning Assistant' & Pitching Presentasi**
+  - *Output*: Aplikasi web kecerdasan buatan terintegrasi API yang siap pakai.
+  - *Apresiasi*: Sertifikat *Junior AI & Machine Learning Specialist Level 3*.
 
 ---
 
-### SESI 03: Modularisasi Fungsi Kustom (`def`), Return & Error Handling
-- **Tujuan Pembelajaran**: Siswa memahami arsitektur kode modular (DRY - *Don't Repeat Yourself*), parameter default, dan penanganan crash program dengan blok `try - except`.
-- **Konsep Kunci**: Parameter, Return Value, Scope Variabel (Local vs Global), Exception Handling (`ValueError`, `FileNotFoundError`).
-- **Contoh Script Referensi Siap Ajar**:
-  ```python
-  def calculate_course_discount(base_price: float, voucher_code: str = "") -> tuple[float, float]:
-      """
-      Menghitung diskon kursus berdasarkan kode voucher.
-      Returns: (persentase_diskon, total_harga_akhir)
-      """
-      valid_vouchers = {
-          "BEEKODING2026": 0.20, # 20%
-          "EARLYBIRD": 0.15,     # 15%
-          "SIBLING": 0.10        # 10%
-      }
-
-      discount_rate = valid_vouchers.get(voucher_code.upper().strip(), 0.0)
-      final_price = base_price * (1.0 - discount_rate)
-      return discount_rate, final_price
-
-  def safe_input_price():
-      while True:
-          try:
-              raw = input("Masukkan biaya kursus reguler: Rp ")
-              val = float(raw)
-              if val <= 0:
-                  raise ValueError("Biaya harus lebih besar dari 0.")
-              return val
-          except ValueError as err:
-              print(f"⚠️ Input Tidak Valid: {err}. Silakan coba lagi.\n")
-
-  # Eksekusi
-  harga = safe_input_price()
-  voucher = input("Masukkan kode voucher (jika ada): ")
-  diskon, total = calculate_course_discount(harga, voucher)
-
-  print(f"\nDiskon Diterapkan : {diskon * 100:.0f}%")
-  print(f"Total Bayar Akhir : Rp {total:,.2f}")
-  ```
+## 📌 LEVEL 4: CLOUD BACKEND & DATABASE SUPABASE (SESI 37 – 48)
+- **Sesi 37: Arsitektur Backend Modern: Monolith vs Microservices & Serverless**
+  - *Konsep*: Memahami peran server cloud, database relasional SQL, dan API gateway.
+- **Sesi 38: Pengenalan Database Relasional PostgreSQL & Cloud Platform Supabase**
+  - *Konsep*: Tabel, baris, kolom, tipe data UUID, primary key, dan foreign key relasi.
+- **Sesi 39: Desain Skema Database Terstruktur (Entity Relationship Diagram - ERD)**
+  - *Desain*: Merancang skema tabel untuk sistem kursus: Users, Courses, Batches, dan Transactions.
+- **Sesi 40: Operasi Database CRUD Lengkap Menggunakan Supabase JS Client**
+  - *Kode*: `supabase.from('tasks').select('*')`, `.insert()`, `.update()`, dan `.delete()`.
+- **Sesi 41: Sistem Autentikasi Pengguna: Registrasi, Login & JWT Session Management**
+  - *Fitur*: Login email & password aman, reset password, dan proteksi sesi pengguna aktif.
+- **Sesi 42: Keamanan Data Tingkat Baris (Postgres Row Level Security - RLS)**
+  - *Aturan SQL*: Pengguna hanya boleh membaca dan mengubah data miliknya sendiri.
+- **Sesi 43: Cloud Storage: Upload Foto Profil & Dokumen ke Bucket Cloud**
+  - *Kode*: Mengunggah file avatar gambar ke Supabase Storage dan menyimpan URL publiknya.
+- **Sesi 44: Realtime Database Subscriptions (Live Data Sync)**
+  - *Konsep*: Data di layar otomatis terupdate tanpa reload saat ada pengguna lain mengubah data.
+- **Sesi 45: Integrasi Penuh Frontend React dengan Backend Cloud Supabase**
+- **Sesi 46: Penanganan Keamanan & Sanitasi Input (Mencegah SQL Injection & XSS)**
+- **Sesi 47: CI/CD Pipeline & Automated Cloud Deployment dengan GitHub Actions**
+- **Sesi 48: GRAND CAPSTONE TAHUN KE-1: 'Fullstack Cloud Web Application'**
+  - *Puncak Acara*: Presentasi aplikasi fullstack cloud mandiri di hadapan dewan penilai.
+  - *Apresiasi*: Sertifikat Resmi *Teens Innovator Annual Graduate (48 Sesi)*.
 
 ---
 
-### SESI 04: File I/O & Sistem Logging Transaksi Sederhana
-- **Tujuan Pembelajaran**: Mampu membaca dan menulis file data eksternal secara aman menggunakan context manager `with open()`.
-- **Konsep Kunci**: Mode File (`'r'`, `'w'`, `'a'`), Timestamp Logging (`datetime`), Error Logging.
-- **Contoh Script Referensi Siap Ajar**:
-  ```python
-  from datetime import datetime
+# 📅 RENCANA PEMBELAJARAN TAHUN KE-2 (SESI 49 – 96)
 
-  LOG_FILE = "system_activity.log"
-
-  def log_event(event_type: str, message: str):
-      timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-      log_entry = f"[{timestamp}] [{event_type.upper()}] {message}\n"
-      with open(LOG_FILE, "a", encoding="utf-8") as f:
-          f.write(log_entry)
-
-  # Simulasi aktivitas sistem
-  log_event("AUTH", "User 'febri_admin' logged in successfully.")
-  log_event("CURRICULUM", "Module MOD-03 Machine Learning viewed by student BK-002.")
-  log_event("WARNING", "Supabase sync fallback: Local cache utilized.")
-
-  print(f"Logs appended to {LOG_FILE}:")
-  with open(LOG_FILE, "r", encoding="utf-8") as f:
-      print(f.read())
-  ```
-
----
-
-## MODUL 2: PENGEMBANGAN GAME GRAFIS 2D DENGAN PYGAME (SESI 5 – 8)
-
-### SESI 05: Anatomi Game Loop & Grafis Kanvas Pygame
-- **Tujuan Pembelajaran**: Memahami arsitektur inti dari setiap video game komersial: Game Loop tak hingga, Clock Tick (Frame Per Second / FPS), Event Polling, dan Surface Rendering.
-- **Instalasi Modul Siswa**: `pip install pygame`
-- **Contoh Script Referensi Siap Ajar**:
-  ```python
-  import pygame
-  import sys
-
-  pygame.init()
-
-  # Pengaturan Layar
-  SCREEN_WIDTH = 800
-  SCREEN_HEIGHT = 600
-  screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-  pygame.display.set_caption("Beekoding Cyber Arena - 2D Engine")
-
-  clock = pygame.time.Clock()
-  FPS = 60
-
-  # Warna Palet Hex
-  NAVY_BG = (15, 23, 42)
-  HONEY_GOLD = (245, 158, 11)
-
-  # Posisi pemain awal
-  player_x = SCREEN_WIDTH // 2
-  player_y = SCREEN_HEIGHT // 2
-  player_speed = 6
-
-  running = True
-  while running:
-      # 1. Event Polling (Mendengarkan input)
-      for event in pygame.event.get():
-          if event.type == pygame.QUIT:
-              running = False
-
-      # 2. Key State Handling (Gerak Mulus)
-      keys = pygame.key.get_pressed()
-      if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-          player_x -= player_speed
-      if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-          player_x += player_speed
-      if keys[pygame.K_UP] or keys[pygame.K_w]:
-          player_y -= player_speed
-      if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-          player_y += player_speed
-
-      # 3. Boundary Clamping (Agar tidak keluar layar)
-      player_x = max(20, min(SCREEN_WIDTH - 20, player_x))
-      player_y = max(20, min(SCREEN_HEIGHT - 20, player_y))
-
-      # 4. Rendering Frame
-      screen.fill(NAVY_BG)
-      pygame.draw.circle(screen, HONEY_GOLD, (player_x, player_y), 24)
-      pygame.display.flip()
-
-      # 5. Lock FPS
-      clock.tick(FPS)
-
-  pygame.quit()
-  sys.exit()
-  ```
+## 📌 LEVEL 5: COMPUTER VISION & REALTIME AI GESTURE (SESI 49 – 60)
+- **Sesi 49: Pengantar Computer Vision & Library OpenCV Python**
+  - *Konsep*: Matriks piksel warna BGR, pemrosesan citra digital, dan akses webcam realtime.
+- **Sesi 50: Operasi Pengolahan Citra: Grayscale, Gaussian Blur & Edge Detection Canny**
+  - *Kode*: `cv2.cvtColor()`, `cv2.GaussianBlur()`, `cv2.Canny()` untuk deteksi garis tepi objek.
+- **Sesi 51: Pelacakan Fitur Wajah & Deteksi Landmark dengan MediaPipe Face Mesh**
+  - *Konsep*: 468 titik koordinat landmark wajah 3D untuk deteksi ekspresi mata dan senyuman.
+- **Sesi 52: Deteksi Gestur Tangan (Hand Tracking Landmark 21 Titik)**
+  - *Konsep*: Membaca koordinat ujung jari telunjuk (Landmark 8) dan ibu jari (Landmark 4).
+- **Sesi 53: Aplikasi 'Air Canvas': Melukis di Udara Menggunakan Ujung Jari Tangan**
+  - *Karya*: Menggerakkan jari di depan kamera untuk menggambar garis warna tanpa menyentuh layar.
+- **Sesi 54: Pengenalan Gerakan Cubit (Pinch Gesture) untuk Seleksi Objek Virtual**
+  - *Rumus*: Menghitung jarak euclidean antara ibu jari dan telunjuk: jika < 30px -> Mode Klik.
+- **Sesi 55: Game Pengendali Tanpa Sentuh (Touchless Game Controller)**
+  - *Integrasi*: Menggunakan gerakan tangan di kamera untuk mengendalikan mobil balap virtual.
+- **Sesi 56: Deteksi Postur Tubuh (MediaPipe Pose Tracking 33 Landmark)**
+  - *Studi Kasus*: Aplikasi Fitness AI penghitung otomatis push-up dan squat olahraga.
+- **Sesi 57: Klasifikasi Gestur Kustom Menggunakan Model Machine Learning K-NN**
+- **Sesi 58: Optimasi Kecepatan Frame Rate (FPS) & Threading Webcam Python**
+- **Sesi 59: Gladi Bersih Proyek Computer Vision Interaktif**
+- **Sesi 60: CAPSTONE LEVEL 5: 'Touchless AI Vision Application' & Pameran Interaktif**
+  - *Output*: Aplikasi Computer Vision mandiri interaktif responsif.
+  - *Apresiasi*: Sertifikat *Junior Computer Vision Engineer Level 5*.
 
 ---
 
-### SESI 06: Object-Oriented Programming (OOP): Sprite Class & Collision Hitbox
-- **Tujuan Pembelajaran**: Siswa mempelajari konsep Class OOP (`class Player(pygame.sprite.Sprite)`) untuk mengelola puluhan peluru dan musuh dengan deteksi tabrakan presisi menggunakan `pygame.sprite.collide_rect`.
-- **Konsep Kunci**: OOP Inheritance, `self`, `super().__init__()`, Sprite Groups, Bounding Box Collision.
-- **Langkah Demi Langkah Instruktur**:
-  1. Pisahkan kode menjadi class `Player`, class `Laser`, dan class `Enemy`.
-  2. Gunakan `pygame.sprite.Group()` untuk mengelola render dan update otomatis seluruh objek.
-- **Potongan Kode Penting**:
-  ```python
-  class Laser(pygame.sprite.Sprite):
-      def __init__(self, x, y):
-          super().__init__()
-          self.image = pygame.Surface((6, 16))
-          self.image.fill((56, 189, 248)) # Cyan Laser
-          self.rect = self.image.get_rect(center=(x, y))
-
-      def update(self):
-          self.rect.y -= 12
-          if self.rect.bottom < 0:
-              self.kill() # Menghapus sprite dari memori secara otomatis saat keluar layar
-  ```
-
----
-
-### SESI 07: Audio Mixer, State Management & Particle Effects
-- **Tujuan Pembelajaran**: Menambahkan efek suara interaktif (`pygame.mixer`), sistem partikel ledakan grafis, serta pergantian layar (Menu $\rightarrow$ Playing $\rightarrow$ Game Over).
-- **Konsep Kunci**: Enum Game State (`MENU`, `PLAYING`, `GAMEOVER`), Partikel RGB, Sound Channels.
-
----
-
-### SESI 08: Mini Proyek 1: "Cyber Bee: Space Defense" 2D Arcade Game
-- **Tujuan Pembelajaran**: Siswa menyelesaikan game arcade utuh siap main, menata kode ke dalam file terpisah (`main.py`, `settings.py`, `sprites.py`).
-- **Fitur Wajib Proyek Siswa**:
-  1. Gerak kapal pemain lincah dengan tembakan laser beruntun.
-  2. Musuh jatuh dari atas dengan kecepatan acak.
-  3. Sistem skor dan pencatatan rekor tertinggi (*High Score*) tersimpan di file lokal.
-  4. Audio latar belakang dan sound effect ledakan.
+## 📌 LEVEL 6: BACKEND API RESTFUL DENGAN PYTHON FASTAPI / NODE.JS (SESI 61 – 72)
+- **Sesi 61: Arsitektur RESTful API & Standar HTTP Protocols (GET, POST, PUT, DELETE)**
+  - *Konsep*: Endpoint URL, status code (200 OK, 201 Created, 400 Bad Request, 404 Not Found, 500 Error).
+- **Sesi 62: Pengenalan Framework FastAPI Python & Asynchronous Programming (`async`/`await`)**
+  - *Kode*: `@app.get("/api/v1/users") async def get_users(): return {"status": "success"}`.
+- **Sesi 63: Validasi Skema Data Otomatis Menggunakan Pydantic Models**
+  - *Konsep*: Memastikan data request JSON sesuai format tipe data yang ditentukan sebelum diproses.
+- **Sesi 64: Dokumentasi API Otomatis dengan Swagger UI (Interactive API Docs)**
+  - *Keunggulan*: Dokumentasi endpoint terstandar industri otomatis dapat diuji via browser di `/docs`.
+- **Sesi 65: Koneksi Database Relasional Menggunakan ORM (Object Relational Mapping)**
+  - *Konsep*: Berinteraksi dengan database menggunakan objek Python tanpa menulis query SQL manual.
+- **Sesi 66: Sistem Autentikasi Modern: Hash Password bcrypt & OAuth2 JWT Bearer Tokens**
+  - *Keamanan*: Password tidak pernah disimpan dalam bentuk teks biasa, melainkan hash kriptografi.
+- **Sesi 67: Mekanisme Middleware: CORS (Cross-Origin Resource Sharing) & Rate Limiting**
+  - *Konsep*: Mengizinkan frontend React mengakses API dan membatasi request spam agar server tidak tumbang.
+- **Sesi 68: Background Task & Pemrosesan Tugas Asinkron (Asynchronous Worker)**
+  - *Studi Kasus*: Mengirim email notifikasi di latar belakang tanpa membuat pengguna menunggu lama.
+- **Sesi 69: Pengujian API Otomatis (Automated Unit Testing dengan Pytest)**
+  - *Standar*: Menguji bahwa setiap endpoint menghasilkan response yang benar secara otomatis sebelum deploy.
+- **Sesi 70: Containerization: Membuat Image Docker Pertama untuk Aplikasi Backend**
+  - *Kode*: Menulis `Dockerfile` untuk membungkus environment aplikasi agar bisa dijalankan di server mana saja.
+- **Sesi 71: Deploy Backend ke Cloud Serverless (Render / Railway / AWS)**
+- **Sesi 72: CAPSTONE LEVEL 6: Produksi RESTful API Microservice Mandiri**
+  - *Output*: Backend API live di cloud dengan otentikasi token JWT dan dokumentasi Swagger resmi.
+  - *Apresiasi*: Sertifikat *Junior Backend API Specialist Level 6*.
 
 ---
 
-## MODUL 3: COMPUTER VISION & ARTIFICIAL INTELLIGENCE (SESI 9 – 12)
-
-### SESI 09: Pengantar Computer Vision: Streaming Webcam & MediaPipe Hands
-- **Tujuan Pembelajaran**: Siswa memahami cara kerja computer vision modern; membaca aliran frame webcam secara realtime dan mendeteksi 21 koordinat 3D sendi tangan manusia menggunakan pustaka Google MediaPipe.
-- **Instalasi Modul Siswa**: `pip install opencv-python mediapipe`
-- **Konsep Kunci**: Frame RGB vs BGR, Matriks Piksel, Normalisasi Koordinat (0.0 s.d. 1.0), 21 Landmark Tangan.
-- **Contoh Script Referensi Siap Ajar**:
-  ```python
-  import cv2
-  import mediapipe as mp
-
-  # Inisialisasi MediaPipe Hands
-  mp_hands = mp.solutions.hands
-  mp_drawing = mp.solutions.drawing_utils
-  hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7)
-
-  cap = cv2.VideoCapture(0)
-
-  print("Press 'q' in webcam window to quit...")
-
-  while cap.isOpened():
-      success, frame = cap.read()
-      if not success:
-          break
-
-      # Flip frame secara horizontal agar seperti cermin
-      frame = cv2.flip(frame, 1)
-      h, w, _ = frame.shape
-
-      # Konversi BGR OpenCV ke RGB MediaPipe
-      rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-      results = hands.process(rgb_frame)
-
-      if results.multi_hand_landmarks:
-          for hand_landmarks in results.multi_hand_landmarks:
-              # Gambar rangka sendi tangan
-              mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-
-              # Dapatkan koordinat ujung jari telunjuk (Landmark 8)
-              index_tip = hand_landmarks.landmark[8]
-              cx, cy = int(index_tip.x * w), int(index_tip.y * h)
-
-              # Gambar lingkaran target di ujung telunjuk
-              cv2.circle(frame, (cx, cy), 15, (0, 255, 0), cv2.FILLED)
-              cv2.putText(frame, f"Telunjuk: ({cx}, {cy})", (cx + 20, cy),
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-
-      cv2.imshow("Beekoding AI Vision Lab", frame)
-      if cv2.waitKey(1) & 0xFF == ord('q'):
-          break
-
-  cap.release()
-  cv2.destroyAllWindows()
-  ```
+## 📌 LEVEL 7: DATA SCIENCE, BIG DATA ANALYTICS & PREDICTIVE MODELING (SESI 73 – 84)
+- **Sesi 73: Siklus Hidup Proyek Data Science: Dari Data Mentah Menjadi Wawasan Bisnis**
+  - *Konsep*: CRISP-DM Framework (Business Understanding, Data Prep, Modeling, Evaluation, Deployment).
+- **Sesi 74: Web Scraping Beretika: Mengambil Data Publik dari Internet (`BeautifulSoup4`)**
+  - *Kode*: Mengumpulkan harga barang pasar atau ulasan pengguna secara otomatis dari halaman web.
+- **Sesi 75: Data Wrangling & Feature Engineering Tingkat Lanjut**
+  - *Konsep*: Normalisasi skala data, one-hot encoding variabel kategori, dan ekstraksi fitur tanggal.
+- **Sesi 76: Analisis Deret Waktu (Time Series Forecasting Dasar)**
+  - *Studi Kasus*: Memprediksi tren penjualan masa depan berdasarkan data historis tahun sebelumnya.
+- **Sesi 77: Pemrosesan Bahasa Alami (Natural Language Processing - NLP) & Sentiment Analysis**
+  - *Studi Kasus*: Mengklasifikasikan komentar media sosial apakah bernada positif, netral, atau negatif.
+- **Sesi 78: Unsupervised Learning: Pengelompokan Data (Clustering K-Means)**
+  - *Studi Kasus*: Segmentasi profil pelanggan untuk rekomendasi produk yang dipersonalisasi.
+- **Sesi 79: Pembangunan Dashboard Visualisasi Bisnis Interaktif dengan Streamlit**
+  - *Karya*: Mengubah skrip analisis Python menjadi dashboard web visual interaktif dalam 50 baris kode.
+- **Sesi 80: Integrasi Model Prediksi ke Dalam Dashboard Web Streamlit**
+- **Sesi 81: Uji Validitas Statistik & Pengujian Hipotesis (A/B Testing Fundamentals)**
+- **Sesi 82: Pembuatan Laporan Eksekutif Data Science untuk Pengambilan Keputusan**
+- **Sesi 83: Deploy Dashboard Data Analytics ke Streamlit Cloud Publik**
+- **Sesi 84: CAPSTONE LEVEL 7: 'Big Data Predictive Analytics Dashboard'**
+  - *Output*: Dashboard analitik data live yang menyajikan prediksi cerdas dan visualisasi interaktif.
+  - *Apresiasi*: Sertifikat *Junior Data Scientist & Analytics Specialist*.
 
 ---
 
-### SESI 10: Membangun Antarmuka Gestur Virtual: Air-Canvas Drawing
-- **Tujuan Pembelajaran**: Menghubungkan pelacakan koordinat ujung jari untuk menggambar garis warna-warni di udara secara realtime (*Touchless Air-Painting*).
-- **Konsep Kunci**: Perhitungan Jarak Euclidean antar-ujung jari (deteksi apakah telunjuk dan jempol sedang menjepit / *pinching*).
-- **Logika Interaksi**:
-  - Jika jari telunjuk terangkat saja $\rightarrow$ Mode Menggambar (*Drawing Mode*).
-  - Jika telunjuk dan jempol menjepit (*pinch*) $\rightarrow$ Angkat Pena / Ganti Warna (*Selection Mode*).
+## 📌 LEVEL 8: GRAND CAPSTONE STARTUP INCUBATOR & PORTFOLIO BEASISWA (SESI 85 – 96)
+- **Sesi 85: Inkubasi Ide Startup Teknologi: Identifikasi Problem Pasar & Solusi Nyata**
+  - *Metodologi*: Design Thinking & Lean Canvas. Menentukan Value Proposition dan Target Pengguna.
+- **Sesi 86: Arsitektur Sistem Terpadu Skala Besar (Fullstack + Backend API + AI Engine)**
+  - *Desain*: Merancang arsitektur monorepo / multi-service menggabungkan seluruh keahlian 2 tahun.
+- **Sesi 87: Sprint 1 Pengembangan: Setup Repositori GitHub Organisasi & Database Cloud**
+- **Sesi 88: Sprint 2 Pengembangan: Pembangunan Core Engine & Logika Bisnis Aplikasi**
+- **Sesi 89: Sprint 3 Pengembangan: Integrasi Layanan AI Cerdas & Pemrosesan Data**
+- **Sesi 90: Sprint 4 Pengembangan: Desain Antarmuka Pengguna Responsif & Aksesibilitas**
+- **Sesi 91: Security Audit & Performance Profiling (Lighthouse 95+, Enkripsi Data, RLS)**
+- **Sesi 92: Deployment Multi-Cloud (Frontend Cloudflare, Backend Railway, Database Supabase)**
+  - *Standar*: Konfigurasi domain kustom HTTPS SSL, CI/CD automated test pass.
+- **Sesi 93: Penyusunan Dokumen Portofolio Akademik & GitHub Profile README Profesional**
+  - *Bimbingan*: Menulis portofolio standar kurikulum internasional untuk modal beasiswa / CV kampus.
+- **Sesi 94: Pitch Deck Standar Investor Silicon Valley & Teknik Presentasi Demo Day**
+  - *Pelatihan*: Struktur pitch 5 menit: Problem -> Solution -> Demo -> Tech Stack -> Roadmap.
+- **Sesi 95: Rehearsal Akbar & Evaluasi Panel Dewan Juri Praktisi Industri**
+- **Sesi 96: GRAND DEMO DAY & BEEKODING TEENS GRADUATION (SESI 96)**
+  - *Puncak Acara*: Wisuda Akbar Kelulusan 2 Tahun Tahap 3 Teens Innovator.
+  - *Penganugerahan*: Sertifikat Kelulusan *Teens Innovator Master Graduate (96 Sesi)*, Rekomendasi Akademik Instruktur Resmi, dan Gelar Kehormatan *Beekoding Junior Tech Leader*.
 
 ---
 
-### SESI 11: Integrasi API AI Generatif: Personal Coding Assistant di Terminal
-- **Tujuan Pembelajaran**: Siswa mempelajari konsep API Key, HTTP Request JSON, pemanggilan model AI mutakhir (Claude / Gemini / OpenAI), dan perancangan *System Prompt* spesifik untuk membuat bot coding asisten pribadi.
-- **Konsep Kunci**: API Authentication, System Persona Prompt, JSON Payload, Streaming Response.
-- **Contoh Script Referensi Siap Ajar (Menggunakan Python Requests / SDK)**:
-  ```python
-  import os
-  import json
-  import urllib.request
+## 🛠️ RUBRIK ASESMEN KELULUSAN MAHASISWA & REMAJA (TEENS INNOVATOR)
+| Dimensi Penilaian | Kriteria Pengujian Standar Industri | Bobot |
+| :--- | :--- | :---: |
+| **Arsitektur Sistem & Kode** | Kerapian modular, penanganan error, kepatuhan konvensi PEP 8 / Clean Code. | 25% |
+| **Integrasi Teknologi & Fungsionalitas** | Keterhubungan sukses antara Frontend, Backend API, Cloud DB, dan Model AI. | 25% |
+| **Keamanan & Standar Cloud** | Pengelolaan `.env`, otentikasi token, kepatuhan RLS, performa Lighthouse. | 20% |
+| **Inovasi & Dampak Masalah** | Solusi orisinal yang memecahkan masalah nyata dengan pendekatan teknologi tepat. | 15% |
+| **Pitching & Dokumentasi Publik** | Repositori GitHub terawat, dokumentasi `README.md`, dan presentasi persuasif. | 15% |
 
-  # Simulasi integrasi REST endpoint AI Assistant Beekoding
-  def ask_ai_tutor(user_question: str) -> str:
-      system_prompt = (
-          "Kamu adalah Beeby, asisten AI mentor coding ramah dari Beekoding. "
-          "Jawablah pertanyaan koding anak remaja dengan bahasa Indonesia yang jelas, "
-          "berikan contoh kode Python singkat, dan sertakan kata-kata penyemangat!"
-      )
-
-      print("\n🐝 Beeby sedang berpikir meracik jawaban...")
-      # Di kelas nyata, ganti dengan API call SDK resmi (Google Gemini / Anthropic API)
-      simulated_response = (
-          f"[Response untuk: '{user_question}']\n\n"
-          f"Halo calon innovator! Untuk menyelesaikan masalah tersebut di Python, "
-          f"kamu bisa menggunakan fungsi bawaan 'enumerate()' agar bisa melacak indeks "
-          f"sekaligus nilainya. Semangat kodingnya ya! ✨"
-      )
-      return simulated_response
-
-  def main():
-      print("=" * 50)
-      print("🐝 BEEKODING AI TERMINAL ASSISTANT")
-      print("=" * 50)
-      while True:
-          query = input("\nTanya Beeby (atau ketik 'exit'): ").strip()
-          if query.lower() in ["exit", "quit"]:
-              print("Sampai jumpa di sesi berikutnya! Teruslah berkarya!")
-              break
-          if query:
-              jawaban = ask_ai_tutor(query)
-              print(jawaban)
-
-  if __name__ == "__main__":
-      main()
-  ```
-
----
-
-### SESI 12: CAPSTONE TEENS: PORTFOLIO SHOWCASE & PITCH DECK DEMO DAY
-- **Tujuan Pembelajaran**: Siswa menyusun dokumentasi proyek akhir, mempublikasikan kode ke GitHub publik, serta mempresentasikan demo karya di hadapan audiens orang tua dan industri.
-- **Komponen Wajib Proyek Capstone**:
-  1. Repositori GitHub terstruktur dengan `README.md` berformat Markdown yang rapi (Deskripsi, Instalasi, Demo GIF, dan Penjelasan Fitur).
-  2. Implementasi minimal 2 pilar teknologi (misal: Pygame Game + MediaPipe Vision Control, atau Web App + AI Integration).
-  3. Slide Presentasi Pitch Deck 5 Lembar:
-     - Slide 1: Masalah Dunia Nyata yang Ingin Diselesaikan
-     - Slide 2: Solusi Aplikasi yang Dibangun
-     - Slide 3: Arsitektur Teknologi & Algoritma Utama
-     - Slide 4: Demo Langsung Aplikasi
-     - Slide 5: Refleksi Pembelajaran & Rencana Pengembangan Masa Depan
-- **Apresiasi Mentor**: Penyerahan Plakat & Sertifikat Resmi *Junior AI Expert & Innovator*, rekomendasi portofolio beasiswa, dan pendampingan publikasi karya.
+*Dokumen panduan mengajar resmi diterbitkan oleh Dewan Akademik & Kurikulum Beekoding Academy.*

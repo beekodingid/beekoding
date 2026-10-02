@@ -337,14 +337,14 @@ export const Programs: React.FC<ProgramsProps> = ({
               <Layers className="w-3.5 h-3.5 text-amber-500" />
               <span>Multi-Tier Learning Pathway</span>
             </div>
-            <h3
-              className={`text-2xl sm:text-4xl font-extrabold font-['Space_Grotesk'] tracking-tight mb-4 ${
+            <h2
+              className={`text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight font-['Space_Grotesk'] ${
                 isDark ? 'text-white' : 'text-slate-900'
               }`}
             >
               Pilihan Skema Durasi Belajar &{' '}
               <span className="text-gradient-honey">Jenjang Berkelanjutan</span>
-            </h3>
+            </h2>
             <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               Apakah 12 sesi cukup? 12 sesi adalah <strong>1 Modul Tingkat (Level 1)</strong> untuk fondasi awal.
               Orang tua dapat memilih paket semester (24 sesi), tahunan (48 sesi), atau jalur komprehensif 2 tahun.
