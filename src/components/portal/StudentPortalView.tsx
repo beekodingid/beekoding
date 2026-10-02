@@ -41,6 +41,7 @@ import {
   Gift,
   Users,
   RefreshCw,
+  Compass,
 } from 'lucide-react';
 import {
   getSubmissions,
@@ -85,11 +86,13 @@ import {
   type StudentCertificate,
   type StudentAcademicReport,
   type TransactionRecord,
+  type CurriculumTier,
 } from '../../services/adminStorage';
 import { QRCodeView } from '../common/QRCodeView';
 import { ArrowLeft } from 'lucide-react';
 import { siteConfig } from '../../data/content';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
+import { PATHWAY_DATA } from '../admin/AdminPathwayTab';
 
 // Lazy-loaded heavy modal modules for maximum Student Portal rendering performance
 const AdminCertificateModal = React.lazy(() =>
@@ -139,6 +142,7 @@ const _DEMO_STUDENTS = [
 
 type PortalTab =
   | 'overview'
+  | 'pathway'
   | 'announcements'
   | 'quizzes'
   | 'referrals'
@@ -158,6 +162,8 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
   // Search State
   const [searchInput, setSearchInput] = useState('');
   const [activeTab, setActiveTab] = useState<PortalTab>('overview');
+  const [selectedPathwayTier, setSelectedPathwayTier] = useState<CurriculumTier>('junior');
+  const [selectedPathwayLevel, setSelectedPathwayLevel] = useState<number | 'all'>('all');
   const [selectedStudentPhone, setSelectedStudentPhone] = useState<string | null>(null);
   const [selectedStudentName, setSelectedStudentName] = useState<string | null>(null);
   const [isValidatingSearch, setIsValidatingSearch] = useState<boolean>(false);
@@ -863,6 +869,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
       matchedEvents,
       availableEvents,
       counselingSessions: matchedCounseling,
+      studentTier: (studentTier.includes('teen') ? 'teens' : studentTier.includes('middle') ? 'middle' : 'junior') as CurriculumTier,
     };
   }, [
     selectedStudentPhone,
@@ -879,6 +886,13 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
     eventsList,
     counselingList,
   ]);
+
+  // Sync default pathway tier with active student's tier
+  useEffect(() => {
+    if (studentData?.studentTier) {
+      setSelectedPathwayTier(studentData.studentTier);
+    }
+  }, [studentData?.studentTier]);
 
   // Announcements filtering for the active student
   const relevantAnnouncements = useMemo(() => {
@@ -1837,6 +1851,7 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
             >
               {[
                 { id: 'overview' as PortalTab, label: 'Ringkasan', icon: Sparkles },
+                { id: 'pathway' as PortalTab, label: 'Roadmap & Level', icon: Compass, badge: '8 Level' },
                 {
                   id: 'announcements' as PortalTab,
                   label: 'Pengumuman',
@@ -1965,6 +1980,81 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                               {studentData.reports[0]?.instructorName || 'Sarah Amalia, S.T.'}
                             </span>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Target Level & Pathway Milestone Highlight */}
+                  <div
+                    className={`p-6 rounded-3xl border transition-all ${
+                      isDark
+                        ? 'bg-gradient-to-r from-amber-500/10 via-[#141826] to-[#121624] border-amber-500/30'
+                        : 'bg-gradient-to-r from-amber-50 via-white to-amber-50/60 border-amber-300 shadow-xs'
+                    }`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-black">
+                          <Compass className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>Target Pencapaian Level Berikutnya</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 uppercase">
+                              Roadmap 96 Sesi
+                            </span>
+                          </h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            Jenjang: <strong>{PATHWAY_DATA[studentData.studentTier].stageTitle.split('(')[0]}</strong> (8 Level Progresif)
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('pathway')}
+                        className="px-3.5 py-2 rounded-xl text-xs font-black bg-amber-500 hover:bg-amber-600 text-slate-950 flex items-center gap-1.5 transition-all self-start sm:self-auto cursor-pointer shadow-xs"
+                      >
+                        <span>Lihat Seluruh 8 Level</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      <div
+                        className={`p-3.5 rounded-2xl border ${
+                          isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-amber-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="text-slate-400 font-semibold">Level Saat Ini:</span>
+                          <span className="font-bold text-amber-500">Level 1 (Sesi 01–12)</span>
+                        </div>
+                        <div className="text-xs font-extrabold text-slate-900 dark:text-white truncate">
+                          {PATHWAY_DATA[studentData.studentTier].levels[0]?.title || 'Foundation & Core Logic'}
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                          <span className="truncate">{PATHWAY_DATA[studentData.studentTier].levels[0]?.theme}</span>
+                        </div>
+                      </div>
+
+                      <div
+                        className={`p-3.5 rounded-2xl border ${
+                          isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-amber-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="text-slate-400 font-semibold">Target Level Selanjutnya:</span>
+                          <span className="font-bold text-blue-500">Level 2 (Sesi 13–24)</span>
+                        </div>
+                        <div className="text-xs font-extrabold text-slate-900 dark:text-white truncate">
+                          {PATHWAY_DATA[studentData.studentTier].levels[1]?.title || 'Mastery & Applied Coding'}
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                          <Rocket className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                          <span className="truncate">{PATHWAY_DATA[studentData.studentTier].levels[1]?.theme}</span>
                         </div>
                       </div>
                     </div>
@@ -2108,6 +2198,315 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                     </a>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* ========================================== */}
+            {/* TAB CONTENT: ROADMAP & CURRICULUM PATHWAY  */}
+            {/* ========================================== */}
+            {activeTab === 'pathway' && (
+              <div className="space-y-6">
+                {(() => {
+                  const currentData = PATHWAY_DATA[selectedPathwayTier];
+                  const isCurrentEnrolledTier = selectedPathwayTier === studentData.studentTier;
+
+                  const filteredLevels =
+                    selectedPathwayLevel === 'all'
+                      ? currentData.levels
+                      : currentData.levels.filter((lvl) => lvl.levelNumber === selectedPathwayLevel);
+
+                  return (
+                    <>
+                      {/* Header Banner */}
+                      <div
+                        className={`p-6 sm:p-8 rounded-3xl border transition-all ${
+                          isDark
+                            ? 'bg-gradient-to-r from-amber-500/10 via-[#151928] to-[#111420] border-amber-500/30'
+                            : 'bg-gradient-to-r from-amber-50 via-white to-amber-50/50 border-amber-300 shadow-sm'
+                        }`}
+                      >
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                          <div className="space-y-1.5">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-500 uppercase tracking-wider">
+                              <Compass className="w-3.5 h-3.5" />
+                              <span>Roadmap Pembelajaran Komprehensif (96 Sesi / 8 Level)</span>
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-['Space_Grotesk']">
+                              {currentData.stageTitle}
+                            </h3>
+                            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                              Sasaran: <strong>{currentData.ageRange}</strong> • Terbagi ke dalam 8 Level progresif (masing-masing 12 sesi) untuk membangun kemandirian logika anak.
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            <a
+                              href={currentData.pdfDownloadUrl}
+                              download={currentData.pdfFileName}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 flex items-center gap-2 shadow-md shadow-amber-500/20 hover:brightness-110 transition-all shrink-0 cursor-pointer"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>Unduh Silabus Resmi (PDF 96 Sesi)</span>
+                            </a>
+
+                            <a
+                              href={`https://wa.me/${siteConfig.phoneRaw}?text=${encodeURIComponent(
+                                `Halo Tim Akademik Beekoding, saya orang tua dari ananda *${studentData.studentName}*.\nSaya sedang melihat roadmap pembelajaran jenjang *${currentData.stageTitle}* di Portal Siswa.\n\nSaya ingin konsultasi mengenai capaian dan kenaikan level ananda ya Kak. Terima kasih!`
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                                isDark
+                                  ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              <Phone className="w-3.5 h-3.5 text-amber-500" />
+                              <span>Tanya Akademik via WA</span>
+                            </a>
+                          </div>
+                        </div>
+
+                        {/* Student Position Indicator */}
+                        {isCurrentEnrolledTier && (
+                          <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                              <span className="text-slate-600 dark:text-slate-300 font-medium">
+                                Posisi Kelas Ananda: <strong>Level 1 (Sesi 01–12: Foundation)</strong>
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                              <span>Target Selanjutnya: <strong className="text-amber-500">Level 2 (Sesi 13–24)</strong></span>
+                              <span>•</span>
+                              <span>Target Wisuda 2 Tahun: <strong className="text-purple-500">Level 8 Capstone</strong></span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Jenjang Switcher Tabs */}
+                      <div
+                        className={`p-1.5 rounded-2xl border flex flex-wrap gap-1.5 ${
+                          isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-100 border-slate-200'
+                        }`}
+                      >
+                        {(
+                          [
+                            { key: 'junior' as CurriculumTier, label: 'Tahap 1: Junior Explorer (6–9 thn)', icon: '🐱', desc: 'Scratch 3.0 & Logic' },
+                            { key: 'middle' as CurriculumTier, label: 'Tahap 2: Intermediate Coder (10–12 thn)', icon: '🐍', desc: 'App & Roblox Lua' },
+                            { key: 'teens' as CurriculumTier, label: 'Tahap 3: Teens Innovator (13–17 thn)', icon: '⚡', desc: 'Python, Web & AI' },
+                          ] as const
+                        ).map((tier) => {
+                          const isSelected = selectedPathwayTier === tier.key;
+                          const isEnrolled = studentData.studentTier === tier.key;
+                          return (
+                            <button
+                              key={tier.key}
+                              type="button"
+                              onClick={() => {
+                                setSelectedPathwayTier(tier.key);
+                                setSelectedPathwayLevel('all');
+                              }}
+                              className={`flex-1 min-w-[220px] py-2.5 px-3.5 rounded-xl text-left transition-all flex items-center justify-between cursor-pointer ${
+                                isSelected
+                                  ? 'bg-amber-500 text-slate-950 font-black shadow-md'
+                                  : isDark
+                                  ? 'text-slate-300 hover:bg-slate-800 font-semibold'
+                                  : 'text-slate-700 hover:bg-white font-semibold'
+                              }`}
+                            >
+                              <div className="flex items-center space-x-2">
+                                <span className="text-base">{tier.icon}</span>
+                                <div>
+                                  <div className="text-xs font-bold leading-tight">{tier.label}</div>
+                                  <div
+                                    className={`text-[10px] ${
+                                      isSelected ? 'text-slate-900 font-semibold' : 'text-slate-400'
+                                    }`}
+                                  >
+                                    {tier.desc}
+                                  </div>
+                                </div>
+                              </div>
+                              {isEnrolled && (
+                                <span
+                                  className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
+                                    isSelected
+                                      ? 'bg-black/15 text-slate-950'
+                                      : 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
+                                  }`}
+                                >
+                                  Kelas Ananda
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Level Filter Pills (All + Level 1 to 8) */}
+                      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                        <span className="text-xs font-bold uppercase text-slate-400 shrink-0">Filter Level:</span>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPathwayLevel('all')}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                            selectedPathwayLevel === 'all'
+                              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                              : isDark
+                              ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          Semua 8 Level (Sesi 01–96)
+                        </button>
+
+                        {currentData.levels.map((lvl) => {
+                          const isLevelSelected = selectedPathwayLevel === lvl.levelNumber;
+                          const isStudentCurrent = isCurrentEnrolledTier && lvl.levelNumber === 1;
+                          const isStudentNext = isCurrentEnrolledTier && lvl.levelNumber === 2;
+
+                          return (
+                            <button
+                              key={lvl.levelNumber}
+                              type="button"
+                              onClick={() => setSelectedPathwayLevel(lvl.levelNumber)}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center space-x-1.5 cursor-pointer ${
+                                isLevelSelected
+                                  ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                                  : isDark
+                                  ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                              }`}
+                            >
+                              <span>Level {lvl.levelNumber}</span>
+                              {isStudentCurrent && <span className="text-[10px] text-emerald-500 font-black">● Aktif</span>}
+                              {isStudentNext && <span className="text-[10px] text-blue-500 font-black">★ Target</span>}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Level Cards & 12 Sessions Tables */}
+                      <div className="space-y-6">
+                        {filteredLevels.map((lvl) => {
+                          const isStudentCurrent = isCurrentEnrolledTier && lvl.levelNumber === 1;
+                          const isStudentNext = isCurrentEnrolledTier && lvl.levelNumber === 2;
+
+                          return (
+                            <div
+                              key={lvl.levelNumber}
+                              className={`rounded-3xl border overflow-hidden transition-all shadow-sm ${
+                                isStudentCurrent
+                                  ? isDark
+                                    ? 'bg-[#151928] border-amber-400/50 ring-1 ring-amber-400/20'
+                                    : 'bg-white border-amber-400 ring-1 ring-amber-400/20 shadow-amber-900/5'
+                                  : isDark
+                                  ? 'bg-[#121624] border-slate-800'
+                                  : 'bg-white border-slate-200'
+                              }`}
+                            >
+                              {/* Level Header Bar */}
+                              <div
+                                className={`p-5 sm:p-6 border-b flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                                  isStudentCurrent
+                                    ? isDark
+                                      ? 'bg-amber-500/10 border-amber-500/20'
+                                      : 'bg-amber-50/70 border-amber-200'
+                                    : isDark
+                                    ? 'bg-slate-900/40 border-slate-800'
+                                    : 'bg-slate-50/70 border-slate-100'
+                                }`}
+                              >
+                                <div className="flex items-start sm:items-center space-x-3.5">
+                                  <div
+                                    className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-base shrink-0 ${
+                                      isStudentCurrent
+                                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                                        : 'bg-slate-800 text-slate-300'
+                                    }`}
+                                  >
+                                    L{lvl.levelNumber}
+                                  </div>
+
+                                  <div>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">
+                                        {lvl.title}
+                                      </h4>
+                                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                                        {lvl.sessionRange}
+                                      </span>
+                                      {isStudentCurrent && (
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500 text-slate-950">
+                                          Tingkat Sedang Berjalan
+                                        </span>
+                                      )}
+                                      {isStudentNext && (
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-500 text-white">
+                                          Target Naik Level Selanjutnya
+                                        </span>
+                                      )}
+                                    </div>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                      {lvl.theme} &bull; {lvl.description}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0">
+                                  <Calendar className="w-3.5 h-3.5 text-amber-500" />
+                                  <span>12 Sesi (@ 90 Menit)</span>
+                                </div>
+                              </div>
+
+                              {/* 12 Sessions Table */}
+                              <div className="p-4 sm:p-5 overflow-x-auto">
+                                <table className="w-full text-left text-xs border-collapse">
+                                  <thead>
+                                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px] font-black tracking-wider">
+                                      <th className="py-2.5 px-3 w-16">Sesi</th>
+                                      <th className="py-2.5 px-3">Topik Pembelajaran</th>
+                                      <th className="py-2.5 px-3">Konsep Kunci & Logika</th>
+                                      <th className="py-2.5 px-3">Output Target Karya Siswa</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                    {lvl.topics.map((t) => (
+                                      <tr
+                                        key={t.session}
+                                        className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
+                                      >
+                                        <td className="py-2.5 px-3 font-black text-amber-600 dark:text-amber-400">
+                                          #{t.session < 10 ? `0${t.session}` : t.session}
+                                        </td>
+                                        <td className="py-2.5 px-3 font-bold text-slate-800 dark:text-slate-200">
+                                          {t.title}
+                                        </td>
+                                        <td className="py-2.5 px-3 text-slate-600 dark:text-slate-300">
+                                          <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-medium">
+                                            {t.concept}
+                                          </span>
+                                        </td>
+                                        <td className="py-2.5 px-3 text-emerald-700 dark:text-emerald-400 font-semibold flex items-center space-x-1.5">
+                                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                                          <span>{t.project}</span>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             )}
 
