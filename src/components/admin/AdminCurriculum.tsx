@@ -19,6 +19,7 @@ import {
   Printer,
   Clock,
   X,
+  Compass,
 } from 'lucide-react';
 import {
   type LessonSession,
@@ -33,6 +34,7 @@ import {
   calculateCurriculumStats,
 } from '../../services/adminStorage';
 import { AdminCurriculumModal } from './AdminCurriculumModal';
+import { AdminPathwayTab } from './AdminPathwayTab';
 
 interface AdminCurriculumProps {
   isDark?: boolean;
@@ -41,6 +43,8 @@ interface AdminCurriculumProps {
 export const AdminCurriculum: React.FC<AdminCurriculumProps> = ({ isDark = false }) => {
   const [sessions, setSessions] = useState<LessonSession[]>(() => getCurriculumSessions());
   const [selectedTier, setSelectedTier] = useState<CurriculumTier>('junior');
+  const [activeView, setActiveView] = useState<'sessions' | 'pathway'>('pathway');
+  const [selectedPathwayLevel, setSelectedPathwayLevel] = useState<number | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [isSyllabusModalOpen, setIsSyllabusModalOpen] = useState(false);
@@ -477,8 +481,59 @@ export const AdminCurriculum: React.FC<AdminCurriculumProps> = ({ isDark = false
         </button>
       </div>
 
-      {/* Search & Filter Bar */}
-      <div
+      {/* View Switcher: Pathway 96 Sesi vs Manajemen Sesi Mandiri */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3 pt-1">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setActiveView('pathway')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center space-x-2 ${
+              activeView === 'pathway'
+                ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                : isDark
+                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Compass className="w-4 h-4" />
+            <span>Curriculum Pathway (96 Sesi / 8 Level)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveView('sessions')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center space-x-2 ${
+              activeView === 'sessions'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md'
+                : isDark
+                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Manajemen Sesi Mandiri (Kustom CRUD)</span>
+          </button>
+        </div>
+
+        <div className="text-xs text-slate-400">
+          {activeView === 'pathway' ? (
+            <span>Menampilkan 8 Level Terstruktur (Sesi 01–96)</span>
+          ) : (
+            <span>{filteredSessions.length} sesi kustom siap diedit</span>
+          )}
+        </div>
+      </div>
+
+      {/* Content View Switching */}
+      {activeView === 'pathway' ? (
+        <AdminPathwayTab
+          selectedTier={selectedTier}
+          selectedLevel={selectedPathwayLevel}
+          onSelectLevel={setSelectedPathwayLevel}
+          isDark={isDark}
+        />
+      ) : (
+        <>
+          {/* Search & Filter Bar */}
+          <div
         className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-3 ${
           isDark ? 'bg-slate-800/40 border-slate-700' : 'bg-white border-slate-200 shadow-sm'
         }`}
@@ -727,6 +782,8 @@ export const AdminCurriculum: React.FC<AdminCurriculumProps> = ({ isDark = false
           ))
         )}
       </div>
+    </>
+  )}
 
       {/* Add / Edit Session Modal */}
       {isFormModalOpen && (
