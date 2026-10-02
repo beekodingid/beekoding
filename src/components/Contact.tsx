@@ -20,6 +20,13 @@ interface ContactProps {
   selectedProgram?: string;
 }
 
+const DURATION_TRACK_ITEMS = [
+  { value: '12', label: '12 Sesi', period: '~3 Bulan', desc: 'Level 1 Foundation', badge: 'Starter' },
+  { value: '24', label: '24 Sesi', period: '~6 Bulan', desc: '1 Semester Mastery', badge: 'Semester' },
+  { value: '48', label: '48 Sesi', period: '1 Tahun', desc: 'Annual Academic Track', badge: 'Terpopuler', popular: true },
+  { value: '96', label: '96 Sesi', period: '2 Tahun', desc: 'Pathway 8 Level', badge: 'Career/College' },
+];
+
 export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
   const { isDark } = useTheme();
 
@@ -28,16 +35,26 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
     email: '',
     phone: '',
     role: 'Orang Tua',
-    program: selectedProgram || 'Summer AI & Coding Bootcamp 2026',
+    program: selectedProgram || 'Tahap 1: Junior Explorer (Usia 6-9 Thn)',
     message: '',
   });
 
+  const [selectedDurationTrack, setSelectedDurationTrack] = useState<string>('48');
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   React.useEffect(() => {
     if (selectedProgram) {
       setFormData((prev) => ({ ...prev, program: selectedProgram }));
+      if (selectedProgram.includes('12 Sesi')) {
+        setSelectedDurationTrack('12');
+      } else if (selectedProgram.includes('24 Sesi')) {
+        setSelectedDurationTrack('24');
+      } else if (selectedProgram.includes('48 Sesi')) {
+        setSelectedDurationTrack('48');
+      } else if (selectedProgram.includes('96 Sesi')) {
+        setSelectedDurationTrack('96');
+      }
     }
   }, [selectedProgram]);
 
@@ -45,13 +62,19 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const chosenTrack = DURATION_TRACK_ITEMS.find((t) => t.value === selectedDurationTrack);
+    const trackLabel = chosenTrack ? `${chosenTrack.label} (${chosenTrack.period})` : `${selectedDurationTrack} Sesi`;
+    const finalProgram = formData.program.includes('Sesi')
+      ? formData.program
+      : `${formData.program} - ${trackLabel}`;
+
     try {
       saveInquiry({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         role: formData.role,
-        program: formData.program,
+        program: finalProgram,
         message: formData.message,
         type: formData.program.toLowerCase().includes('bootcamp') ? 'pendaftaran' : 'konsultasi',
       });
@@ -254,7 +277,9 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
                   <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a
                       href={`https://wa.me/${siteConfig.phoneRaw}?text=${encodeURIComponent(
-                        `Halo Kak Admin Beekoding, saya ${formData.name} (${formData.role}).\nSaya baru saja mengisi formulir konsultasi untuk program *${formData.program}* via website beekoding.id.\n\nMohon informasi ketersediaan kuota dan panduannya ya Kak. Terima kasih!`
+                        `Halo Kak Admin Beekoding, saya ${formData.name} (${formData.role}).\nSaya baru saja mengisi formulir pendaftaran/konsultasi untuk:\n• Program: *${formData.program}*\n• Pilihan Durasi: *${
+                          DURATION_TRACK_ITEMS.find((t) => t.value === selectedDurationTrack)?.label || `${selectedDurationTrack} Sesi`
+                        }*\n\nMohon info ketersediaan jadwal batch terdekat ya Kak. Terima kasih!`
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -419,6 +444,45 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
                       <option value="Teachers' AI & Tech Training">Teachers' AI & Tech Training (Pelatihan Guru)</option>
                       <option value="School Tech Transformation Partner">School Tech Transformation Partner (Kemitraan Sekolah)</option>
                     </select>
+                  </div>
+
+                  {/* Pilihan Durasi Paket Belajar */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className={`block text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                        Pilihan Komitmen Durasi Belajar <span className="text-amber-500">*</span>
+                      </label>
+                      <span className="text-[10px] text-amber-500 font-semibold">Bisa upgrade level kapan saja</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {DURATION_TRACK_ITEMS.map((item) => {
+                        const isSelected = selectedDurationTrack === item.value;
+                        return (
+                          <button
+                            key={item.value}
+                            type="button"
+                            onClick={() => setSelectedDurationTrack(item.value)}
+                            className={`p-2.5 rounded-xl border text-left transition-all relative cursor-pointer ${
+                              isSelected
+                                ? 'bg-amber-500/15 border-amber-500 text-amber-500 shadow-sm font-bold'
+                                : isDark
+                                ? 'bg-[#0c0f16] border-slate-800 text-slate-300 hover:border-slate-700'
+                                : 'bg-amber-50/30 border-amber-200 text-slate-700 hover:border-amber-300'
+                            }`}
+                          >
+                            {item.popular && (
+                              <span className="absolute -top-2 right-2 px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 text-[9px] font-black uppercase">
+                                Populer
+                              </span>
+                            )}
+                            <div className="text-xs font-black">{item.label}</div>
+                            <div className="text-[10px] text-amber-400/90 font-semibold">{item.period}</div>
+                            <div className="text-[10px] text-slate-400 mt-0.5 truncate">{item.desc}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* Message */}

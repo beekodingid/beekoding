@@ -201,7 +201,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             Kode Validasi: <strong className="font-mono text-slate-700">{certificate.verificationCode}</strong>
           </span>
-          <span>PT Beekoding Edukasi Nusantara</span>
+          <span>PT Sarang Edukasi Digital</span>
         </div>
       </div>
     );
@@ -368,7 +368,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
             Validation: <strong className="font-mono text-cyan-200">{certificate.verificationCode}</strong>
           </span>
-          <span>PT Beekoding Edukasi Nusantara</span>
+          <span>PT Sarang Edukasi Digital</span>
         </div>
       </div>
     );
@@ -520,7 +520,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
             Verification: {certificate.verificationCode}
           </span>
-          <span>PT Beekoding Edukasi Nusantara</span>
+          <span>PT Sarang Edukasi Digital</span>
         </div>
       </div>
     );

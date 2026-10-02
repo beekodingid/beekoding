@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { flagshipPrograms, getWhatsAppInquiryUrl } from '../data/content';
 
 
@@ -14,7 +14,227 @@ import {
   FileText,
   Download,
   Layers,
+  MessageCircle,
 } from 'lucide-react';
+
+const STAGES_PATHWAY_DATA = {
+  junior: {
+    id: 'junior' as const,
+    name: 'Tahap 1: Junior Explorer',
+    ageRange: 'Usia 6–9 Tahun (TK B & SD Kelas 1–3)',
+    icon: '🐱',
+    tagline: 'Scratch 3.0, Animasi Visual, Logika Blok, Game Labirin & AI Speech',
+    pdfUrl: '/curriculum/panduan-instruktur-junior-explorer.pdf',
+    pdfName: 'Panduan-Instruktur-Junior-Explorer-Sesi-01-96.pdf',
+    tracks: [
+      {
+        sessions: 12,
+        period: '~3 Bulan',
+        badge: 'Level 1 Foundation',
+        levelRange: 'Sesi 01 – 12',
+        tag: 'Starter Minat',
+        description: 'Membangun fondasi logika komputasional & verifikasi minat awal buah hati terhadap dunia coding.',
+        focus: 'Scratch 3.0, Motion, Events, Loops & Text-to-Speech AI',
+        deliverables: [
+          '1 Game Arcade Bee Honey Harvest mandiri',
+          'Animasi cerita interaktif bersuara dengan AI',
+          'E-Sertifikat Kelulusan Level 1 & Evaluasi Logika',
+        ],
+        inquiryTitle: 'Tahap 1: Junior Explorer (Usia 6-9 Thn) - Paket Starter 12 Sesi',
+      },
+      {
+        sessions: 24,
+        period: '~6 Bulan',
+        badge: 'Level 1–2 Mastery',
+        levelRange: 'Sesi 01 – 24 (1 Semester)',
+        tag: 'Semester Track',
+        description: 'Memperdalam logika percabangan, interaksi sensor kamera webcam & pembuatan game fisika 2D mandiri.',
+        focus: 'Video Sensing Webcam, Broadcast System & Game Fisika',
+        deliverables: [
+          '3 Game Interaktif Utuh buatan sendiri',
+          'Game kontrol sensor gerakan tangan via webcam',
+          'Sertifikat Kompetensi Semester & Bebas Biaya Registrasi',
+        ],
+        inquiryTitle: 'Tahap 1: Junior Explorer (Usia 6-9 Thn) - Paket 1 Semester 24 Sesi',
+      },
+      {
+        sessions: 48,
+        period: '1 Tahun Penuh',
+        badge: 'Level 1–4 Annual Track',
+        levelRange: 'Sesi 01 – 48 (Tahun ke-1)',
+        tag: 'Paling Diminati',
+        isPopular: true,
+        description: 'Kurikulum tahunan komprehensif. Menguasai game arcade tingkat lanjut, matematika visual & robotika simulasi.',
+        focus: 'Game Arcade Multi-Level, Pen Extension & Robotika Scratch',
+        deliverables: [
+          '6+ Portofolio Game Siap Dipublikasikan',
+          'Bimbingan Lomba & Olimpiade Coding Anak',
+          'Gratis Welcome Kit & Kaos Resmi Beekoding',
+        ],
+        inquiryTitle: 'Tahap 1: Junior Explorer (Usia 6-9 Thn) - Paket 1 Tahun (48 Sesi)',
+      },
+      {
+        sessions: 96,
+        period: '2 Tahun Penuh',
+        badge: 'Level 1–8 Full Pathway',
+        levelRange: 'Sesi 01 – 96 (Pathway Lengkap)',
+        tag: 'Pathway Lengkap',
+        description: 'Jalur tuntas 2 tahun: dari balok Scratch hingga transisi lancar ke teks Python Kids dan AI mandiri.',
+        focus: 'Transisi Python Kids, AI Logic, Portofolio Web & Wisuda',
+        deliverables: [
+          'Portofolio Digital Lengkap Siap Dipamerkan',
+          'Transisi Mulus Menuju Intermediate Coder',
+          'Wisuda Akbar 2 Tahun & Trophy Prestasi',
+        ],
+        inquiryTitle: 'Tahap 1: Junior Explorer (Usia 6-9 Thn) - Paket 2 Tahun (96 Sesi)',
+      },
+    ],
+  },
+  intermediate: {
+    id: 'intermediate' as const,
+    name: 'Tahap 2: Intermediate Coder',
+    ageRange: 'Usia 10–12 Tahun (SD Kelas 4–6 / SMP Kelas 7)',
+    icon: '🐍',
+    tagline: 'App Inventor Mobile APK, Roblox Studio Lua 3D & Python Logic',
+    pdfUrl: '/curriculum/panduan-instruktur-intermediate-coder.pdf',
+    pdfName: 'Panduan-Instruktur-Intermediate-Coder-Sesi-01-96.pdf',
+    tracks: [
+      {
+        sessions: 12,
+        period: '~3 Bulan',
+        badge: 'Level 1 Mobile Dev',
+        levelRange: 'Sesi 01 – 12',
+        tag: 'Starter Mobile',
+        description: 'Membangun aplikasi ponsel Android nyata, sensor getar accelerometer & kompilasi file APK langsung.',
+        focus: 'MIT App Inventor, Sensor Accelerometer & Build APK',
+        deliverables: [
+          'Aplikasi Soundboard & Dadu Goyang Fisik',
+          'Aplikasi terinstall di smartphone Android sendiri',
+          'E-Sertifikat Kelulusan Level 1 Mobile Creator',
+        ],
+        inquiryTitle: 'Tahap 2: Intermediate Coder (Usia 10-12 Thn) - Paket Starter 12 Sesi',
+      },
+      {
+        sessions: 24,
+        period: '~6 Bulan',
+        badge: 'Level 1–2 Mastery',
+        levelRange: 'Sesi 01 – 24 (1 Semester)',
+        tag: 'Semester Track',
+        description: 'Pembuatan game 3D multiplayer di Roblox Studio menggunakan kode skrip bahasa Lua nyata.',
+        focus: 'Roblox Studio 3D, Pemrograman Skrip Lua & Obby Parkour',
+        deliverables: [
+          'Game 3D Obby Parkour Multiplayer Roblox',
+          'Sistem Koin & Leaderstats Pemain Aktif',
+          'Sertifikat Kompetensi Pemrograman Semester',
+        ],
+        inquiryTitle: 'Tahap 2: Intermediate Coder (Usia 10-12 Thn) - Paket 1 Semester 24 Sesi',
+      },
+      {
+        sessions: 48,
+        period: '1 Tahun Penuh',
+        badge: 'Level 1–4 Annual Track',
+        levelRange: 'Sesi 01 – 48 (Tahun ke-1)',
+        tag: 'Paling Diminati',
+        isPopular: true,
+        description: 'Transisi mantap ke coding teks murni Python dan pembuatan game arcade 2D mandiri dengan Pygame.',
+        focus: 'Python Data Logic, Fungsi, Algoritma OOP & Pygame Arcade',
+        deliverables: [
+          'Game Space Shooter Pygame Berpapan Skor',
+          'Portofolio Proyek Python Mandiri',
+          'Gratis Welcome Kit & Bimbingan Kompetisi Siswa',
+        ],
+        inquiryTitle: 'Tahap 2: Intermediate Coder (Usia 10-12 Thn) - Paket 1 Tahun (48 Sesi)',
+      },
+      {
+        sessions: 96,
+        period: '2 Tahun Penuh',
+        badge: 'Level 1–8 Full Pathway',
+        levelRange: 'Sesi 01 – 96 (Pathway Lengkap)',
+        tag: 'Pathway Lengkap',
+        description: 'Spesialisasi penuh 2 tahun mencakup Web Development, Cloud Database Firebase & AI Vision.',
+        focus: 'Fullstack Web Dasar, Cloud Database, Computer Vision & Grand Demo Day',
+        deliverables: [
+          'Web App Pribadi Terpublikasi di Internet',
+          'Surat Rekomendasi Instruktur untuk Portofolio Siswa',
+          'Wisuda Akbar 2 Tahun & Trophy Master Intermediate',
+        ],
+        inquiryTitle: 'Tahap 2: Intermediate Coder (Usia 10-12 Thn) - Paket 2 Tahun (96 Sesi)',
+      },
+    ],
+  },
+  teens: {
+    id: 'teens' as const,
+    name: 'Tahap 3: Teens Innovator',
+    ageRange: 'Usia 13–17 Tahun (SMP & SMA / SMK)',
+    icon: '⚡',
+    tagline: 'Python Pro, Modern Fullstack Web, Applied AI & Tech Entrepreneurship',
+    pdfUrl: '/curriculum/panduan-instruktur-teens-innovator.pdf',
+    pdfName: 'Panduan-Instruktur-Teens-Innovator-Sesi-01-96.pdf',
+    tracks: [
+      {
+        sessions: 12,
+        period: '~3 Bulan',
+        badge: 'Level 1 Python Pro',
+        levelRange: 'Sesi 01 – 12',
+        tag: 'Fondasi Teks',
+        description: 'Penguasaan dasar Python profesional, algoritma struktur data terapan, dan otomasi CLI.',
+        focus: 'Python Data Structure, File I/O, OOP Class & CLI Automation',
+        deliverables: [
+          'Sistem Otomasi CLI & Manajemen Data File',
+          'Portofolio Logika Algoritma Berstandar Industri',
+          'E-Sertifikat Kelulusan Level 1 Python Developer',
+        ],
+        inquiryTitle: 'Tahap 3: Teens Innovator (Usia 13-17 Thn) - Paket Starter 12 Sesi',
+      },
+      {
+        sessions: 24,
+        period: '~6 Bulan',
+        badge: 'Level 1–2 Mastery',
+        levelRange: 'Sesi 01 – 24 (1 Semester)',
+        tag: 'Semester Track',
+        description: 'Membangun antarmuka web modern dengan HTML5, Tailwind CSS, JavaScript & integrasi REST API.',
+        focus: 'Modern Web Engineering, UI/UX Responsive, REST API & Git',
+        deliverables: [
+          'Website Interaktif Terhubung API Data Publik',
+          'Repositori Proyek GitHub Aktif',
+          'Sertifikat Kompetensi Semester Standar Industri',
+        ],
+        inquiryTitle: 'Tahap 3: Teens Innovator (Usia 13-17 Thn) - Paket 1 Semester 24 Sesi',
+      },
+      {
+        sessions: 48,
+        period: '1 Tahun Penuh',
+        badge: 'Level 1–4 Annual Track',
+        levelRange: 'Sesi 01 – 48 (Tahun ke-1)',
+        tag: 'Paling Diminati',
+        isPopular: true,
+        description: 'Kecerdasan Buatan Terapan, Machine Learning, Prompt Engineering & Computer Vision OpenCV.',
+        focus: 'Applied AI, Machine Learning Scikit-Learn, OpenCV & Chatbot Model',
+        deliverables: [
+          'Model Bot AI Cerdas Mandiri & Deteksi Visual',
+          'Portofolio Proyek Machine Learning Teruji',
+          'Gratis Welcome Kit & Mentoring Hackathon Remaja',
+        ],
+        inquiryTitle: 'Tahap 3: Teens Innovator (Usia 13-17 Thn) - Paket 1 Tahun (48 Sesi)',
+      },
+      {
+        sessions: 96,
+        period: '2 Tahun Penuh',
+        badge: 'Level 1–8 Full Pathway',
+        levelRange: 'Sesi 01 – 96 (Pathway Lengkap)',
+        tag: 'Pathway Lengkap',
+        description: 'Inkubasi produk teknologi utuh: Fullstack SaaS, Live Multi-Cloud Deploy, Pitch Deck & Beasiswa Kuliah.',
+        focus: 'Fullstack SaaS, Cloud Deployment CI/CD, Pitch Deck Silicon Valley & Grand Demo Day',
+        deliverables: [
+          'Produk Web Live dengan Domain & CI/CD Produksi',
+          'Portofolio Beasiswa Kuliah & Profil GitHub Unggulan',
+          'Wisuda Akbar 2 Tahun & Surat Rekomendasi Industri',
+        ],
+        inquiryTitle: 'Tahap 3: Teens Innovator (Usia 13-17 Thn) - Paket 2 Tahun (96 Sesi)',
+      },
+    ],
+  },
+};
 
 interface ProgramsProps {
   onOpenBootcampModal: () => void;
@@ -26,6 +246,7 @@ export const Programs: React.FC<ProgramsProps> = ({
   onSelectProgramForInquiry,
 }) => {
   const { isDark } = useTheme();
+  const [selectedStage, setSelectedStage] = useState<'junior' | 'intermediate' | 'teens'>('junior');
 
   return (
     <section
@@ -326,7 +547,7 @@ export const Programs: React.FC<ProgramsProps> = ({
 
         {/* Multi-Tier Pathway Options Section (12, 24, 48 Sesi / 1-2 Tahun) */}
         <div className="mt-20 pt-16 border-t border-amber-500/20">
-          <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-10">
             <div
               className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-3 ${
                 isDark
@@ -346,249 +567,193 @@ export const Programs: React.FC<ProgramsProps> = ({
               <span className="text-gradient-honey">Jenjang Berkelanjutan</span>
             </h2>
             <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-              Apakah 12 sesi cukup? 12 sesi adalah <strong>1 Modul Tingkat (Level 1)</strong> untuk fondasi awal.
-              Orang tua dapat memilih paket semester (24 sesi), tahunan (48 sesi), atau jalur komprehensif 2 tahun.
+              Apakah 12 sesi cukup? 12 sesi adalah <strong>Level 1 Foundation (Fondasi Awal)</strong>.
+              Orang tua dapat memilih paket semester (24 sesi), tahunan (48 sesi), atau jalur 2 tahun (96 sesi) sesuai target perkembangan buah hati.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Paket 1: 12 Sesi */}
-            <div
-              className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
-                isDark
-                  ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
-                  : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
-              }`}
-            >
-              <div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">
-                  Level 1 Foundation
-                </span>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    12 Sesi
-                  </h4>
-                  <span className="text-xs text-amber-500 font-bold">~3 Bulan</span>
-                </div>
-                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Membangun fondasi logika berpikir & verifikasi minat awal buah hati terhadap dunia teknologi.
-                </p>
-
-                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      1 Mini Game / Web Profile mandiri
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      E-Sertifikat Kelulusan Level 1
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      Laporan Evaluasi Logika Kognitif
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-800/60">
-                <a
-                  href="#contact"
-                  onClick={() => onSelectProgramForInquiry('Paket Starter 3 Bulan (12 Sesi - Foundation)')}
-                  className={`w-full py-2.5 rounded-xl text-center text-xs font-bold block transition-all ${
-                    isDark
-                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+          {/* Interactive Stage Selector (Junior, Intermediate, Teens) */}
+          <div
+            className={`p-1.5 rounded-2xl border max-w-3xl mx-auto flex flex-col sm:flex-row gap-1.5 mb-8 shadow-sm ${
+              isDark ? 'bg-[#121622] border-slate-800' : 'bg-slate-100 border-slate-200'
+            }`}
+          >
+            {(['junior', 'intermediate', 'teens'] as const).map((stageKey) => {
+              const stage = STAGES_PATHWAY_DATA[stageKey];
+              const isSelected = selectedStage === stageKey;
+              return (
+                <button
+                  key={stage.id}
+                  onClick={() => setSelectedStage(stageKey)}
+                  className={`flex-1 py-3 px-4 rounded-xl text-left transition-all flex items-center justify-between ${
+                    isSelected
+                      ? 'bg-amber-500 text-slate-950 font-black shadow-md scale-[1.01]'
+                      : isDark
+                      ? 'text-slate-300 hover:bg-slate-800/70 font-semibold'
+                      : 'text-slate-700 hover:bg-white font-semibold'
                   }`}
                 >
-                  Pilih Paket 12 Sesi
-                </a>
-              </div>
-            </div>
-
-            {/* Paket 2: 24 Sesi */}
-            <div
-              className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
-                isDark
-                  ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
-                  : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
-              }`}
-            >
-              <div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400">
-                  1 Semester (Core Mastery)
-                </span>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    24 Sesi
-                  </h4>
-                  <span className="text-xs text-amber-500 font-bold">~6 Bulan</span>
-                </div>
-                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Memperdalam logika terapan. Anak sudah mampu menganalisis bug dan membuat algoritma secara mandiri.
-                </p>
-
-                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      3 Proyek Aplikasi / Game Interaktif
-                    </span>
+                  <div className="flex items-center space-x-2.5">
+                    <span className="text-lg">{stage.icon}</span>
+                    <div>
+                      <div className="text-xs font-bold leading-tight">{stage.name}</div>
+                      <div
+                        className={`text-[10px] ${
+                          isSelected ? 'text-slate-900 font-semibold' : 'text-slate-400'
+                        }`}
+                      >
+                        {stage.ageRange.split('(')[0]}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      Sertifikat Kompetensi Semester Resmi
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      Diskon Lanjutan & Bebas Biaya Registrasi
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-800/60">
-                <a
-                  href="#contact"
-                  onClick={() => onSelectProgramForInquiry('Paket 1 Semester (24 Sesi - Core Mastery)')}
-                  className={`w-full py-2.5 rounded-xl text-center text-xs font-bold block transition-all ${
-                    isDark
-                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
-                  }`}
-                >
-                  Pilih Paket 24 Sesi
-                </a>
-              </div>
-            </div>
-
-            {/* Paket 3: 48 Sesi (Paling Populer) */}
-            <div
-              className={`p-6 rounded-3xl border-2 flex flex-col justify-between transition-all relative shadow-xl ${
-                isDark
-                  ? 'bg-gradient-to-b from-[#1a2032] to-[#121622] border-amber-400/60 shadow-amber-500/10'
-                  : 'bg-gradient-to-b from-white to-amber-50/50 border-amber-400 shadow-amber-900/10'
-              }`}
-            >
-              <div className="absolute -top-3.5 right-5 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 text-[10px] font-black uppercase shadow">
-                <Star className="w-3 h-3 fill-current" />
-                <span>Rekomendasi Terbaik</span>
-              </div>
-
-              <div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400">
-                  Annual Academic Track
-                </span>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    48 Sesi
-                  </h4>
-                  <span className="text-xs text-amber-500 font-bold">1 Tahun Penuh</span>
-                </div>
-                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                  Perjalanan koding tahunan komprehensif. Menguasai 4 level modul, siap kompetisi nasional & olimpiade.
-                </p>
-
-                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>
-                      6+ Portofolio Proyek Terpublikasi
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>
-                      Bimbingan Lomba / Hackathon Anak
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>
-                      Gratis Welcome Kit & Kaos Resmi Beekoding
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-800/60">
-                <a
-                  href="#contact"
-                  onClick={() => onSelectProgramForInquiry('Paket 1 Tahun (48 Sesi - Annual Track)')}
-                  className="w-full py-2.5 rounded-xl text-center text-xs font-black block bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 transition-all"
-                >
-                  Pilih Paket 1 Tahun (48 Sesi)
-                </a>
-              </div>
-            </div>
-
-            {/* Paket 4: 96 Sesi (2 Tahun) */}
-            <div
-              className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
-                isDark
-                  ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
-                  : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
-              }`}
-            >
-              <div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400">
-                  Career & College Pathway
-                </span>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    96 Sesi
-                  </h4>
-                  <span className="text-xs text-amber-500 font-bold">2 Tahun</span>
-                </div>
-                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Spesialisasi penuh dari pemula hingga mahir (Python, AI & Fullstack). Bekal beasiswa & portofolio kampus.
-                </p>
-
-                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      Portofolio GitHub & Domain Pribadi Live
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      Surat Rekomendasi Akademik Instruktur
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      Mentoring Inkubasi Ide & Startup Remaja
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-800/60">
-                <a
-                  href="#contact"
-                  onClick={() => onSelectProgramForInquiry('Paket 2 Tahun (96 Sesi - Career Pathway)')}
-                  className={`w-full py-2.5 rounded-xl text-center text-xs font-bold block transition-all ${
-                    isDark
-                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
-                  }`}
-                >
-                  Pilih Jalur 2 Tahun
-                </a>
-              </div>
-            </div>
+                  {isSelected && (
+                    <span className="w-2 h-2 rounded-full bg-slate-950 shrink-0" />
+                  )}
+                </button>
+              );
+            })}
           </div>
+
+          {/* Stage Info Header & Official PDF Download */}
+          {(() => {
+            const currentStage = STAGES_PATHWAY_DATA[selectedStage];
+            return (
+              <>
+                <div
+                  className={`p-4 sm:p-5 rounded-2xl border max-w-4xl mx-auto mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${
+                    isDark
+                      ? 'bg-[#151928]/80 border-amber-500/20'
+                      : 'bg-white border-amber-200 shadow-sm'
+                  }`}
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{currentStage.icon}</span>
+                      <h3 className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        {currentStage.name} ({currentStage.ageRange})
+                      </h3>
+                    </div>
+                    <p className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                      {currentStage.tagline}
+                    </p>
+                  </div>
+
+                  <a
+                    href={currentStage.pdfUrl}
+                    download={currentStage.pdfName}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 transition-all shrink-0"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Unduh Silabus Lengkap (PDF 96 Sesi)</span>
+                  </a>
+                </div>
+
+                {/* 4 Cards based on selected stage */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {currentStage.tracks.map((track) => (
+                    <div
+                      key={track.sessions}
+                      className={`p-6 rounded-3xl border flex flex-col justify-between transition-all relative ${
+                        track.isPopular
+                          ? isDark
+                            ? 'bg-gradient-to-b from-[#1a2032] to-[#121622] border-2 border-amber-400/60 shadow-xl shadow-amber-500/10'
+                            : 'bg-gradient-to-b from-white to-amber-50/50 border-2 border-amber-400 shadow-xl shadow-amber-900/10'
+                          : isDark
+                          ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
+                          : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
+                      }`}
+                    >
+                      {track.isPopular && (
+                        <div className="absolute -top-3.5 right-5 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 text-[10px] font-black uppercase shadow">
+                          <Star className="w-3 h-3 fill-current" />
+                          <span>Paling Direkomendasikan</span>
+                        </div>
+                      )}
+
+                      <div>
+                        <div className="flex items-center justify-between gap-1 mb-2">
+                          <span
+                            className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
+                              track.isPopular
+                                ? 'bg-amber-500/20 text-amber-400'
+                                : 'bg-slate-800 text-slate-300'
+                            }`}
+                          >
+                            {track.badge}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-semibold">
+                            {track.levelRange}
+                          </span>
+                        </div>
+
+                        <div className="mt-2 flex items-baseline gap-2">
+                          <h4
+                            className={`text-2xl font-black font-['Space_Grotesk'] ${
+                              isDark ? 'text-white' : 'text-slate-900'
+                            }`}
+                          >
+                            {track.sessions} Sesi
+                          </h4>
+                          <span className="text-xs text-amber-500 font-bold">{track.period}</span>
+                        </div>
+
+                        <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                          {track.description}
+                        </p>
+
+                        <div className="mt-3 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] font-semibold text-amber-400">
+                          <span className="text-amber-500 block text-[10px] uppercase font-bold">Fokus Materi:</span>
+                          {track.focus}
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
+                          {track.deliverables.map((del, dIdx) => (
+                            <div key={dIdx} className="flex items-start gap-2">
+                              <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                              <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                                {del}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mt-6 pt-4 border-t border-slate-800/60 space-y-2">
+                        <a
+                          href="#contact"
+                          onClick={() => onSelectProgramForInquiry(track.inquiryTitle)}
+                          className={`w-full py-2.5 rounded-xl text-center text-xs font-black block transition-all ${
+                            track.isPopular
+                              ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110'
+                              : isDark
+                              ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                              : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                          }`}
+                        >
+                          Pilih Paket {track.sessions} Sesi
+                        </a>
+
+                        <a
+                          href={getWhatsAppInquiryUrl(
+                            track.inquiryTitle,
+                            `Saya tertarik konsultasi paket ${track.sessions} Sesi (${track.period}) untuk jenjang ${currentStage.name}.`
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full text-center text-[11px] text-amber-500 hover:text-amber-400 font-bold flex items-center justify-center gap-1.5 pt-1"
+                        >
+                          <MessageCircle className="w-3 h-3" />
+                          <span>Tanya via WhatsApp →</span>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
     </section>
