@@ -404,8 +404,14 @@ export const Contact: React.FC<ContactProps> = ({ selectedProgram = '' }) => {
                           : 'bg-amber-50/40 border-amber-300 text-slate-900'
                       }`}
                     >
-                      <option value="Summer AI & Coding Bootcamp 2026">Summer AI & Coding Bootcamp 2026 (Grade 4–10)</option>
-                      <option value="Beekoding AI & Tech Academy">Beekoding AI & Tech Academy (Reguler / Semester)</option>
+                      <option value="Tahap 1: Junior Explorer (Usia 6-9 Thn)">Tahap 1: Junior Explorer (Usia 6-9 Thn) - Scratch & Logika</option>
+                      <option value="Tahap 2: Intermediate Coder (Usia 10-12 Thn)">Tahap 2: Intermediate Coder (Usia 10-12 Thn) - App & Web</option>
+                      <option value="Tahap 3: Teens Innovator (Usia 13-17 Thn)">Tahap 3: Teens Innovator (Usia 13-17 Thn) - Python & AI</option>
+                      <option value="Summer AI & Coding Bootcamp 2026">Summer AI & Coding Bootcamp 2026 (Intensif 24 Sesi)</option>
+                      <option value="Paket 1 Tahun (48 Sesi - Annual Track)">Paket 1 Tahun Penuh (48 Sesi - Annual Track Populer)</option>
+                      <option value="Paket 1 Semester (24 Sesi - Core Mastery)">Paket 1 Semester (24 Sesi - Core Mastery)</option>
+                      <option value="Paket Starter 3 Bulan (12 Sesi - Foundation)">Paket Starter 3 Bulan (12 Sesi - Level 1 Foundation)</option>
+                      <option value="Paket 2 Tahun (96 Sesi - Career Pathway)">Paket 2 Tahun (96 Sesi - Career & College Pathway)</option>
                       <option value="Mobile Planetarium & Space Tech Drive">Mobile Planetarium & Space Tech Drive (Kunjungan Sekolah)</option>
                       <option value="21st Century Skills & Creative Lab">21st Century Skills & Creative Lab</option>
                       <option value="Robotics & IoT Day">Robotics & IoT Day (Workshop 1 Hari)</option>

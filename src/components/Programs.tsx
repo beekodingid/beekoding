@@ -13,6 +13,7 @@ import {
   Star,
   FileText,
   Download,
+  Layers,
 } from 'lucide-react';
 
 interface ProgramsProps {
@@ -321,6 +322,273 @@ export const Programs: React.FC<ProgramsProps> = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Multi-Tier Pathway Options Section (12, 24, 48 Sesi / 1-2 Tahun) */}
+        <div className="mt-20 pt-16 border-t border-amber-500/20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div
+              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-3 ${
+                isDark
+                  ? 'bg-amber-500/15 border border-amber-500/30 text-amber-300'
+                  : 'bg-amber-100 border border-amber-300 text-amber-900'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-amber-500" />
+              <span>Multi-Tier Learning Pathway</span>
+            </div>
+            <h3
+              className={`text-2xl sm:text-4xl font-extrabold font-['Space_Grotesk'] tracking-tight mb-4 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}
+            >
+              Pilihan Skema Durasi Belajar &{' '}
+              <span className="text-gradient-honey">Jenjang Berkelanjutan</span>
+            </h3>
+            <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+              Apakah 12 sesi cukup? 12 sesi adalah <strong>1 Modul Tingkat (Level 1)</strong> untuk fondasi awal.
+              Orang tua dapat memilih paket semester (24 sesi), tahunan (48 sesi), atau jalur komprehensif 2 tahun.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Paket 1: 12 Sesi */}
+            <div
+              className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+                isDark
+                  ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
+                  : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
+              }`}
+            >
+              <div>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">
+                  Level 1 Foundation
+                </span>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    12 Sesi
+                  </h4>
+                  <span className="text-xs text-amber-500 font-bold">~3 Bulan</span>
+                </div>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Membangun fondasi logika berpikir & verifikasi minat awal buah hati terhadap dunia teknologi.
+                </p>
+
+                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      1 Mini Game / Web Profile mandiri
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      E-Sertifikat Kelulusan Level 1
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      Laporan Evaluasi Logika Kognitif
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-800/60">
+                <a
+                  href="#contact"
+                  onClick={() => onSelectProgramForInquiry('Paket Starter 3 Bulan (12 Sesi - Foundation)')}
+                  className={`w-full py-2.5 rounded-xl text-center text-xs font-bold block transition-all ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                  }`}
+                >
+                  Pilih Paket 12 Sesi
+                </a>
+              </div>
+            </div>
+
+            {/* Paket 2: 24 Sesi */}
+            <div
+              className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+                isDark
+                  ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
+                  : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
+              }`}
+            >
+              <div>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400">
+                  1 Semester (Core Mastery)
+                </span>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    24 Sesi
+                  </h4>
+                  <span className="text-xs text-amber-500 font-bold">~6 Bulan</span>
+                </div>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Memperdalam logika terapan. Anak sudah mampu menganalisis bug dan membuat algoritma secara mandiri.
+                </p>
+
+                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      3 Proyek Aplikasi / Game Interaktif
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      Sertifikat Kompetensi Semester Resmi
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      Diskon Lanjutan & Bebas Biaya Registrasi
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-800/60">
+                <a
+                  href="#contact"
+                  onClick={() => onSelectProgramForInquiry('Paket 1 Semester (24 Sesi - Core Mastery)')}
+                  className={`w-full py-2.5 rounded-xl text-center text-xs font-bold block transition-all ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                  }`}
+                >
+                  Pilih Paket 24 Sesi
+                </a>
+              </div>
+            </div>
+
+            {/* Paket 3: 48 Sesi (Paling Populer) */}
+            <div
+              className={`p-6 rounded-3xl border-2 flex flex-col justify-between transition-all relative shadow-xl ${
+                isDark
+                  ? 'bg-gradient-to-b from-[#1a2032] to-[#121622] border-amber-400/60 shadow-amber-500/10'
+                  : 'bg-gradient-to-b from-white to-amber-50/50 border-amber-400 shadow-amber-900/10'
+              }`}
+            >
+              <div className="absolute -top-3.5 right-5 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 text-[10px] font-black uppercase shadow">
+                <Star className="w-3 h-3 fill-current" />
+                <span>Rekomendasi Terbaik</span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400">
+                  Annual Academic Track
+                </span>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    48 Sesi
+                  </h4>
+                  <span className="text-xs text-amber-500 font-bold">1 Tahun Penuh</span>
+                </div>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Perjalanan koding tahunan komprehensif. Menguasai 4 level modul, siap kompetisi nasional & olimpiade.
+                </p>
+
+                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>
+                      6+ Portofolio Proyek Terpublikasi
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>
+                      Bimbingan Lomba / Hackathon Anak
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>
+                      Gratis Welcome Kit & Kaos Resmi Beekoding
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-800/60">
+                <a
+                  href="#contact"
+                  onClick={() => onSelectProgramForInquiry('Paket 1 Tahun (48 Sesi - Annual Track)')}
+                  className="w-full py-2.5 rounded-xl text-center text-xs font-black block bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 transition-all"
+                >
+                  Pilih Paket 1 Tahun (48 Sesi)
+                </a>
+              </div>
+            </div>
+
+            {/* Paket 4: 96 Sesi (2 Tahun) */}
+            <div
+              className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+                isDark
+                  ? 'bg-[#121622]/90 border-slate-800 hover:border-amber-400/40'
+                  : 'bg-white border-slate-200 hover:border-amber-400 shadow-md'
+              }`}
+            >
+              <div>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400">
+                  Career & College Pathway
+                </span>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <h4 className={`text-2xl font-black font-['Space_Grotesk'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    96 Sesi
+                  </h4>
+                  <span className="text-xs text-amber-500 font-bold">2 Tahun</span>
+                </div>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Spesialisasi penuh dari pemula hingga mahir (Python, AI & Fullstack). Bekal beasiswa & portofolio kampus.
+                </p>
+
+                <div className="mt-4 pt-4 border-t border-slate-800/60 space-y-2 text-xs">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      Portofolio GitHub & Domain Pribadi Live
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      Surat Rekomendasi Akademik Instruktur
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      Mentoring Inkubasi Ide & Startup Remaja
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-800/60">
+                <a
+                  href="#contact"
+                  onClick={() => onSelectProgramForInquiry('Paket 2 Tahun (96 Sesi - Career Pathway)')}
+                  className={`w-full py-2.5 rounded-xl text-center text-xs font-bold block transition-all ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                  }`}
+                >
+                  Pilih Jalur 2 Tahun
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

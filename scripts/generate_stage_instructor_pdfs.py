@@ -234,6 +234,22 @@ def build_junior_pdf(filepath):
     rd_t = Table(rundown_data, colWidths=[34.8*mm]*5)
     rd_t.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), COLOR_LIGHT_AMBER), ('GRID', (0,0), (-1,-1), 0.5, COLOR_PRIMARY_AMBER), ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4)]))
     story.append(rd_t)
+    # Pathway 48 Sesi (1 Tahun Penuh)
+    story.append(Paragraph("🗺️ Peta Jenjang 48 Sesi (1 Tahun Penuh): 4 Modul Tingkat", styles['SectionHeading']))
+    pathway_junior = [
+        [Paragraph("<b>Level 1 (Sesi 1–12)</b><br/><b>Starter Foundation:</b> ScratchJr, Algoritma Dasar, Cerita Digital, & Game Arcade Pertama.", styles['TableCell']),
+         Paragraph("<b>Level 2 (Sesi 13–24)</b><br/><b>Game Mechanics:</b> Gravitasi X/Y, Multi-Level Maze, Variabel Skor, & AI Text-to-Speech.", styles['TableCell']),
+         Paragraph("<b>Level 3 (Sesi 25–36)</b><br/><b>Hardware & Sensory:</b> Koding Micro:bit / Makey Makey, Sensor Gerak & Musik Interaktif.", styles['TableCell']),
+         Paragraph("<b>Level 4 (Sesi 37–48)</b><br/><b>Junior Game Jam:</b> Kolaborasi Tim, Animasi Kompleks, Pameran Karya & Persiapan Lomba.", styles['TableCell'])]
+    ]
+    pw_j = Table(pathway_junior, colWidths=[43.5*mm]*4)
+    pw_j.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), COLOR_EMERALD_BG),
+        ('GRID', (0,0), (-1,-1), 0.5, COLOR_EMERALD),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ]))
+    story.append(pw_j)
     story.append(Spacer(1, 6))
 
     # Lesson plans 12 sessions
@@ -345,7 +361,22 @@ def build_intermediate_pdf(filepath):
         ('TOPPADDING', (0,0), (-1,-1), 4),
         ('BOTTOMPADDING', (0,0), (-1,-1), 4),
     ]))
-    story.append(meta_t)
+    # Pathway 48 Sesi (1 Tahun Penuh)
+    story.append(Paragraph("🗺️ Peta Jenjang 48 Sesi (1 Tahun Penuh): 4 Modul Tingkat", styles['SectionHeading']))
+    pathway_inter = [
+        [Paragraph("<b>Level 1 (Sesi 1–12)</b><br/><b>App & Game Logic:</b> MIT App Inventor, Mobile Sensors, & Game Platformer 2D Fisika.", styles['TableCell']),
+         Paragraph("<b>Level 2 (Sesi 13–24)</b><br/><b>Web Frontend:</b> HTML5 Semantik, Desain CSS3 Modern, & JavaScript DOM Interaktif.", styles['TableCell']),
+         Paragraph("<b>Level 3 (Sesi 25–36)</b><br/><b>Data & Game Engine:</b> TinyDB / LocalStorage, Game 2D JavaScript, & Roblox Lua Dasar.", styles['TableCell']),
+         Paragraph("<b>Level 4 (Sesi 37–48)</b><br/><b>Python Transition:</b> Logika Sintaks Teks, Algoritma Struktur Data, & Persiapan Lomba Bebras.", styles['TableCell'])]
+    ]
+    pw_i = Table(pathway_inter, colWidths=[43.5*mm]*4)
+    pw_i.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), COLOR_EMERALD_BG),
+        ('GRID', (0,0), (-1,-1), 0.5, COLOR_EMERALD),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ]))
+    story.append(pw_i)
     story.append(Spacer(1, 6))
 
     sessions = [
@@ -456,7 +487,22 @@ def build_teens_pdf(filepath):
         ('TOPPADDING', (0,0), (-1,-1), 4),
         ('BOTTOMPADDING', (0,0), (-1,-1), 4),
     ]))
-    story.append(meta_t)
+    # Pathway 48 Sesi (1 Tahun Penuh)
+    story.append(Paragraph("🗺️ Peta Jenjang 48 Sesi (1 Tahun Penuh): 4 Modul Tingkat", styles['SectionHeading']))
+    pathway_teens = [
+        [Paragraph("<b>Level 1 (Sesi 1–12)</b><br/><b>Python Foundation & Games:</b> Python 3, CLI Scripting, Pygame 2D, & OOP Dasar.", styles['TableCell']),
+         Paragraph("<b>Level 2 (Sesi 13–24)</b><br/><b>Modern Web Fullstack:</b> React 19, TypeScript, Tailwind CSS, & Cloud API.", styles['TableCell']),
+         Paragraph("<b>Level 3 (Sesi 25–36)</b><br/><b>AI Vision & Machine Learning:</b> MediaPipe, OpenCV, Scikit-learn, & LLM Prompt Engineering.", styles['TableCell']),
+         Paragraph("<b>Level 4 (Sesi 37–48)</b><br/><b>Capstone & Startup Launch:</b> Git Collaboration, CI/CD Cloud Deploy, Portofolio Beasiswa / Kampus.", styles['TableCell'])]
+    ]
+    pw_t = Table(pathway_teens, colWidths=[43.5*mm]*4)
+    pw_t.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), COLOR_EMERALD_BG),
+        ('GRID', (0,0), (-1,-1), 0.5, COLOR_EMERALD),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ]))
+    story.append(pw_t)
     story.append(Spacer(1, 6))
 
     sessions = [

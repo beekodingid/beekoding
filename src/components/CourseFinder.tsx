@@ -112,6 +112,42 @@ const SCHEDULE_OPTIONS = [
   },
 ];
 
+const DURATION_TRACK_OPTIONS = [
+  {
+    id: 'track-12',
+    sessions: '12 Sesi',
+    period: '3 Bulan (Level 1 Foundation)',
+    badge: 'Starter',
+    desc: 'Verifikasi minat & fondasi awal logika pemrograman.',
+    discount: null,
+  },
+  {
+    id: 'track-24',
+    sessions: '24 Sesi',
+    period: '6 Bulan (1 Semester)',
+    badge: 'Core Mastery',
+    desc: 'Penguasaan logika terapan & mandiri bikin aplikasi.',
+    discount: 'Hemat 10%',
+  },
+  {
+    id: 'track-48',
+    sessions: '48 Sesi',
+    period: '1 Tahun Penuh (Annual Track)',
+    badge: 'Paling Populer',
+    desc: 'Kurikulum tahunan komprehensif, multi-proyek, & persiapan lomba.',
+    discount: 'Hemat 25% + Kit Fisik',
+    popular: true,
+  },
+  {
+    id: 'track-96',
+    sessions: '96 Sesi',
+    period: '2 Tahun Berkelanjutan (Pathway)',
+    badge: 'Future Tech Career',
+    desc: 'Spesialisasi penuh dari visual ke Python/AI & portofolio profesional.',
+    discount: 'Paket Beasiswa Prestasi',
+  },
+];
+
 export const CourseFinder: React.FC<{
   onOpenTalentAssessment?: () => void;
   onOpenTrialEventsModal?: () => void;
@@ -121,6 +157,7 @@ export const CourseFinder: React.FC<{
   const [selectedAge, setSelectedAge] = useState<string>('age-junior');
   const [selectedInterest, setSelectedInterest] = useState<string>('game');
   const [selectedSchedule, setSelectedSchedule] = useState<string>('weekend-am');
+  const [selectedTrack, setSelectedTrack] = useState<string>('track-48');
 
   const recommendation: CourseRecommendation = useMemo(() => {
     // 6-8 Tahun
@@ -288,14 +325,17 @@ export const CourseFinder: React.FC<{
   const interestLabel = INTEREST_OPTIONS.find((i) => i.id === selectedInterest)?.label || '';
   const scheduleObj = SCHEDULE_OPTIONS.find((s) => s.id === selectedSchedule);
   const scheduleLabel = scheduleObj ? `${scheduleObj.label} (${scheduleObj.time})` : '';
+  const trackObj = DURATION_TRACK_OPTIONS.find((t) => t.id === selectedTrack);
+  const trackLabel = trackObj ? `${trackObj.sessions} / ${trackObj.period}` : '48 Sesi / 1 Tahun';
 
   const waInquiryText = encodeURIComponent(
     `Halo Tim Beekoding, saya telah mencoba Rekomendasi Program di website:\n\n` +
       `👤 *Jenjang Usia Anak:* ${ageLabel}\n` +
       `🎯 *Minat Utama:* ${interestLabel}\n` +
+      `📅 *Paket Durasi:* ${trackLabel}\n` +
       `⏰ *Pilihan Jadwal:* ${scheduleLabel}\n` +
       `💡 *Rekomendasi Program:* ${recommendation.title}\n\n` +
-      `Mohon info ketersediaan slot batch terdekat, promo pendaftaran, atau jadwal Free Trial Class untuk ananda. Terima kasih!`
+      `Mohon info ketersediaan slot batch terdekat, rincian biaya / promo pendaftaran, atau jadwal Free Trial Class untuk ananda. Terima kasih!`
   );
 
   const whatsappUrl = `https://wa.me/${siteConfig.phoneRaw}?text=${waInquiryText}`;
@@ -520,6 +560,93 @@ export const CourseFinder: React.FC<{
                 })}
               </div>
             </div>
+
+            {/* Step 4: Pilihan Durasi & Jenjang Program */}
+            <div
+              className={`p-5 sm:p-6 rounded-3xl border transition-all ${
+                isDark ? 'bg-[#151928] border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center">
+                  4
+                </span>
+                <div>
+                  <h3
+                    className={`text-sm sm:text-base font-bold ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}
+                  >
+                    Pilihan Paket Durasi Belajar
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Mulai dari coba 1 level (3 bulan) hingga pathway lengkap 1–2 tahun.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-2.5">
+                {DURATION_TRACK_OPTIONS.map((track) => {
+                  const isSelected = selectedTrack === track.id;
+                  return (
+                    <button
+                      key={track.id}
+                      type="button"
+                      onClick={() => setSelectedTrack(track.id)}
+                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer relative ${
+                        isSelected
+                          ? 'bg-amber-500/15 border-amber-500 text-amber-500 shadow-md shadow-amber-500/10'
+                          : isDark
+                          ? 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                          : 'bg-slate-50 border-slate-200 hover:border-amber-300'
+                      }`}
+                    >
+                      {track.discount && (
+                        <span className="absolute -top-2 right-3 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 text-[10px] font-black uppercase shadow">
+                          {track.discount}
+                        </span>
+                      )}
+                      <div>
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span
+                            className={`text-xs sm:text-sm font-black ${
+                              isSelected
+                                ? 'text-amber-500'
+                                : isDark
+                                ? 'text-white'
+                                : 'text-slate-900'
+                            }`}
+                          >
+                            {track.sessions}
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
+                            {track.badge}
+                          </span>
+                        </div>
+                        <div className="text-[11px] font-bold text-amber-400/90 mb-1">
+                          {track.period}
+                        </div>
+                        <div className="text-[10px] text-slate-400 leading-snug">
+                          {track.desc}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 pt-2 border-t border-slate-800/40 flex items-center justify-end">
+                        <div
+                          className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                            isSelected
+                              ? 'border-amber-500 bg-amber-500 text-slate-950'
+                              : 'border-slate-600'
+                          }`}
+                        >
+                          {isSelected && <CheckCircle2 className="w-3 h-3" />}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           {/* Right Column: Dynamic Realtime Recommendation Card */}
@@ -558,7 +685,7 @@ export const CourseFinder: React.FC<{
                 <span>•</span>
                 <span className="flex items-center gap-1 text-amber-500">
                   <Clock className="w-3.5 h-3.5" />
-                  {recommendation.duration}
+                  {trackLabel}
                 </span>
               </div>
 
@@ -618,19 +745,27 @@ export const CourseFinder: React.FC<{
                 </ul>
               </div>
 
-              {/* Selected Schedule Summary Box */}
+              {/* Selected Schedule & Track Summary Box */}
               <div
-                className={`p-3.5 rounded-xl border mb-6 flex items-center justify-between text-xs ${
+                className={`p-3.5 rounded-xl border mb-6 space-y-2 text-xs ${
                   isDark
                     ? 'bg-slate-900/60 border-slate-800 text-slate-300'
                     : 'bg-slate-100/70 border-slate-200 text-slate-700'
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-amber-500" />
-                  <span>
-                    Jadwal Terpilih: <strong>{scheduleLabel}</strong>
-                  </span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                    <span>Paket Durasi:</span>
+                  </div>
+                  <strong className="text-amber-400">{trackLabel}</strong>
+                </div>
+                <div className="flex items-center justify-between pt-1 border-t border-slate-800/40">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                    <span>Jadwal:</span>
+                  </div>
+                  <strong>{scheduleLabel}</strong>
                 </div>
               </div>
 
