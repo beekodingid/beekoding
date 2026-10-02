@@ -12,6 +12,7 @@ import {
   GraduationCap,
   Star,
   FileText,
+  Download,
 } from 'lucide-react';
 
 interface ProgramsProps {
@@ -237,13 +238,31 @@ export const Programs: React.FC<ProgramsProps> = ({
                             Untuk memastikan setiap anak mendapat perhatian penuh dari mentor dan berhasil menyelesaikan proyek AI mandiri.
                           </div>
 
-                          <button
-                            onClick={onOpenBootcampModal}
-                            className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 hover:brightness-110 transition-all duration-200"
-                          >
-                            <FileText className="w-4 h-4" />
-                            <span>Buka Silabus 24 Sesi</span>
-                          </button>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={onOpenBootcampModal}
+                              className="inline-flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 hover:brightness-110 transition-all duration-200"
+                            >
+                              <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span>Lihat Silabus</span>
+                            </button>
+
+                            <a
+                              href="/curriculum/silabus-summer-bootcamp-2026.pdf"
+                              download="Silabus-Summer-Bootcamp-Beekoding-2026.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`inline-flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl font-bold text-xs border transition-all ${
+                                isDark
+                                  ? 'bg-[#1b2234] hover:bg-amber-500/15 text-amber-300 border-amber-500/30'
+                                  : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300'
+                              }`}
+                              title="Unduh silabus resmi PDF"
+                            >
+                              <Download className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                              <span>Unduh PDF</span>
+                            </a>
+                          </div>
 
                           <a
                             href="#contact"

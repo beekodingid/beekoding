@@ -13,6 +13,7 @@ import {
   CheckCircle,
   ArrowRight,
   MessageCircle,
+  Download,
 } from 'lucide-react';
 
 
@@ -197,6 +198,59 @@ export const ModularPrograms: React.FC<ModularProgramsProps> = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Banner Unduh Grand Prospectus Kurikulum */}
+        <div
+          className={`mt-14 p-6 sm:p-8 rounded-3xl border flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xl ${
+            isDark
+              ? 'bg-gradient-to-r from-amber-500/10 via-[#161a26] to-[#121520] border-amber-500/30'
+              : 'bg-white border-amber-300 shadow-amber-900/5'
+          }`}
+        >
+          <div className="space-y-1.5 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-500 uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Dokumentasi Resmi Silabus & Kurikulum 2026</span>
+            </div>
+            <h4
+              className={`text-lg sm:text-xl font-bold font-['Space_Grotesk'] ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}
+            >
+              Butuh Dokumen Silabus untuk Diskusi dengan Pasangan atau Sekolah?
+            </h4>
+            <p className={`text-xs sm:text-sm max-w-2xl ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+              Unduh booklet silabus resmi berformat PDF berisikan rincian 24 sesi bootcamp, 8 pilar kecerdasan kognitif, modul project, dan rubrik kelulusan.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 flex-shrink-0">
+            <a
+              href="/curriculum/silabus-summer-bootcamp-2026.pdf"
+              download="Silabus-Summer-Bootcamp-Beekoding-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/30 hover:brightness-110 hover:-translate-y-0.5 transition-all"
+            >
+              <Download className="w-4 h-4" />
+              <span>Unduh Silabus Bootcamp (PDF)</span>
+            </a>
+            <a
+              href="/curriculum/kurikulum-lengkap-beekoding-2026.pdf"
+              download="Grand-Prospectus-Kurikulum-Beekoding-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-xs sm:text-sm border transition-all ${
+                isDark
+                  ? 'border-amber-500/40 text-amber-300 hover:bg-amber-500/10'
+                  : 'border-amber-400 text-amber-900 bg-amber-50 hover:bg-amber-100'
+              }`}
+            >
+              <Download className="w-4 h-4 text-amber-500" />
+              <span>Prospectus Master (PDF)</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>

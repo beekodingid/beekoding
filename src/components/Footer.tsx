@@ -282,6 +282,28 @@ export const Footer: React.FC<FooterProps> = ({
                   Pelatihan Guru Era AI
                 </a>
               </li>
+              <li className="pt-1.5 border-t border-amber-300/30 dark:border-slate-800">
+                <a
+                  href="/curriculum/silabus-summer-bootcamp-2026.pdf"
+                  download="Silabus-Summer-Bootcamp-Beekoding-2026.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold flex items-center gap-1.5 text-amber-500 hover:text-amber-400 transition-colors"
+                >
+                  <span>📄 Unduh Silabus PDF</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/curriculum/kurikulum-lengkap-beekoding-2026.pdf"
+                  download="Grand-Prospectus-Kurikulum-Beekoding-2026.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold flex items-center gap-1.5 text-amber-500 hover:text-amber-400 transition-colors"
+                >
+                  <span>📚 Grand Prospectus PDF</span>
+                </a>
+              </li>
             </ul>
           </div>
 

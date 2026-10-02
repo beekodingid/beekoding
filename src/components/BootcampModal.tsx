@@ -11,6 +11,7 @@ import {
   Layers,
   FileCheck,
   Send,
+  Download,
 } from 'lucide-react';
 
 interface BootcampModalProps {
@@ -137,18 +138,32 @@ export const BootcampModal: React.FC<BootcampModalProps> = ({
 
         {/* Content Body */}
         <div className="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1">
-          <div className="space-y-1">
-            <h3
-              className={`text-lg font-bold font-['Space_Grotesk'] flex items-center gap-2 ${
-                isDark ? 'text-white' : 'text-slate-900'
-              }`}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <h3
+                className={`text-lg font-bold font-['Space_Grotesk'] flex items-center gap-2 ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                <Layers className="w-5 h-5 text-amber-500" />
+                <span>Roadmap Kurikulum Lengkap 5 Fase</span>
+              </h3>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                Disusun berjenjang dari pengenalan AI kreatif, logika coding visual, Python, machine learning, hingga peluncuran aplikasi mandiri.
+              </p>
+            </div>
+
+            <a
+              href="/curriculum/silabus-summer-bootcamp-2026.pdf"
+              download="Silabus-Summer-Bootcamp-Beekoding-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md transition-all hover:scale-105 flex-shrink-0"
+              title="Unduh silabus lengkap versi PDF"
             >
-              <Layers className="w-5 h-5 text-amber-500" />
-              <span>Roadmap Kurikulum Lengkap 5 Fase</span>
-            </h3>
-            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Disusun berjenjang dari pengenalan AI kreatif, logika coding visual, Python, machine learning, hingga peluncuran aplikasi mandiri.
-            </p>
+              <Download className="w-3.5 h-3.5" />
+              <span>Unduh Silabus Resmi (PDF)</span>
+            </a>
           </div>
 
           <div className="space-y-4">
@@ -236,16 +251,33 @@ export const BootcampModal: React.FC<BootcampModalProps> = ({
               </p>
             </div>
 
-            <button
-              onClick={() => {
-                onClose();
-                onEnrollClick();
-              }}
-              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/30 hover:brightness-110 transition-all"
-            >
-              <Send className="w-4 h-4" />
-              <span>Daftar Batch 2026</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2.5 flex-shrink-0">
+              <a
+                href="/curriculum/silabus-summer-bootcamp-2026.pdf"
+                download="Silabus-Summer-Bootcamp-Beekoding-2026.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-1.5 px-4 py-3 rounded-full font-bold text-xs border transition-all ${
+                  isDark
+                    ? 'border-amber-500/40 text-amber-300 hover:bg-amber-500/10'
+                    : 'border-amber-400 text-amber-900 bg-white hover:bg-amber-50 shadow-sm'
+                }`}
+              >
+                <Download className="w-3.5 h-3.5 text-amber-500" />
+                <span>Unduh PDF</span>
+              </a>
+
+              <button
+                onClick={() => {
+                  onClose();
+                  onEnrollClick();
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/30 hover:brightness-110 transition-all"
+              >
+                <Send className="w-4 h-4" />
+                <span>Daftar Batch 2026</span>
+              </button>
+            </div>
           </div>
         </div>
 
