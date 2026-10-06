@@ -82,13 +82,16 @@ export function App() {
   const [blogSlug, setBlogSlug] = useState<string | undefined>(undefined);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
-  // Deteksi hash URL #talent, #admin, #portal, atau #blog untuk direct link
+  // Deteksi URL (baik clean path /blog maupun hash #blog, #talent, #admin, #portal)
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash || '';
+      const pathname = window.location.pathname || '';
       const search = window.location.search || '';
+
       if (
         hash.startsWith('#admin') ||
+        pathname.startsWith('/admin') ||
         hash.includes('type=recovery') ||
         search.includes('type=recovery')
       ) {
@@ -96,13 +99,14 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
-      } else if (hash === '#talent') {
+      } else if (hash === '#talent' || pathname === '/talent') {
         setShowTalentAssessment(true);
         setShowAdmin(false);
         setShowStudentPortal(false);
         setShowBlog(false);
       } else if (
         hash.startsWith('#portal') ||
+        pathname.startsWith('/portal') ||
         search.includes('cert=') ||
         search.includes('report=')
       ) {
@@ -110,12 +114,17 @@ export function App() {
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowBlog(false);
-      } else if (hash.startsWith('#blog')) {
+      } else if (hash.startsWith('#blog') || pathname.startsWith('/blog')) {
         setShowBlog(true);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
-        const slug = hash.replace('#blog/', '').replace('#blog', '').trim();
+        let slug = '';
+        if (hash.startsWith('#blog/')) {
+          slug = hash.replace('#blog/', '').trim();
+        } else if (pathname.startsWith('/blog/')) {
+          slug = pathname.replace('/blog/', '').trim();
+        }
         setBlogSlug(slug ? slug : undefined);
       } else {
         setShowAdmin(false);
@@ -126,7 +135,11 @@ export function App() {
     };
     handleHashCheck();
     window.addEventListener('hashchange', handleHashCheck);
-    return () => window.removeEventListener('hashchange', handleHashCheck);
+    window.addEventListener('popstate', handleHashCheck);
+    return () => {
+      window.removeEventListener('hashchange', handleHashCheck);
+      window.removeEventListener('popstate', handleHashCheck);
+    };
   }, []);
 
   const handleOpenBootcampModal = () => {

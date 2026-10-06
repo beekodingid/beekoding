@@ -74,17 +74,26 @@ export const BlogView: React.FC<BlogViewProps> = ({
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash || '';
+      const pathname = window.location.pathname || '';
       if (hash.startsWith('#blog/')) {
         const slug = hash.replace('#blog/', '');
         setSelectedSlug(slug);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (hash === '#blog') {
+      } else if (pathname.startsWith('/blog/')) {
+        const slug = pathname.replace('/blog/', '');
+        setSelectedSlug(slug);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === '#blog' || pathname === '/blog') {
         setSelectedSlug(null);
       }
     };
     handleHash();
     window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
   }, []);
 
   // Filtered articles
