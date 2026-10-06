@@ -2,10 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeToggle } from '../ThemeToggle';
 import {
-  blogArticles,
   BLOG_CATEGORIES,
   type BlogArticle,
 } from '../../data/blogArticles';
+import {
+  getBlogArticles,
+  fetchBlogArticlesFromCloud,
+} from '../../services/blogStorage';
+import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
 import {
   ArrowLeft,
@@ -39,10 +43,30 @@ export const BlogView: React.FC<BlogViewProps> = ({
   onOpenTrialEvents,
 }) => {
   const { isDark } = useTheme();
+  const [articles, setArticles] = useState<BlogArticle[]>(() => getBlogArticles());
   const [selectedSlug, setSelectedSlug] = useState<string | null>(initialSlug || null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Sync articles dynamically on storage events & background cloud fetch
+  useEffect(() => {
+    // 1. Fetch latest from Supabase if connected
+    fetchBlogArticlesFromCloud().then((cloudArticles) => {
+      if (cloudArticles && cloudArticles.length > 0) {
+        setArticles(cloudArticles);
+      }
+    });
+
+    // 2. Listen to local/tab storage changes
+    const unsubscribe = onStorageUpdate((type) => {
+      if (type === 'blog' || type === 'all') {
+        setArticles(getBlogArticles());
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Sync state if hash changes
   useEffect(() => {
@@ -63,7 +87,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
   // Filtered articles
   const filteredArticles = useMemo(() => {
-    return blogArticles.filter((article) => {
+    return articles.filter((article) => {
       const matchCategory =
         selectedCategory === 'Semua' || article.category === selectedCategory;
       const q = searchQuery.toLowerCase();
@@ -74,13 +98,13 @@ export const BlogView: React.FC<BlogViewProps> = ({
         article.tags.some((t) => t.toLowerCase().includes(q));
       return matchCategory && matchSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [articles, selectedCategory, searchQuery]);
 
   // Active article
   const currentArticle = useMemo(() => {
     if (!selectedSlug) return null;
-    return blogArticles.find((a) => a.slug === selectedSlug) || null;
-  }, [selectedSlug]);
+    return articles.find((a) => a.slug === selectedSlug) || null;
+  }, [articles, selectedSlug]);
 
   const handleSelectArticle = (slug: string) => {
     setSelectedSlug(slug);
@@ -428,7 +452,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 Artikel Edukasi Terkait
               </h3>
               <div className="grid sm:grid-cols-2 gap-6">
-                {blogArticles
+                {articles
                   .filter((a) => a.slug !== currentArticle.slug)
                   .slice(0, 2)
                   .map((article) => (

@@ -246,7 +246,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
                     Syllabus & Curriculum Learning Roadmap
                   </p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 print:text-slate-600">
-                    PT Beekoding Edukasi Nusantara • www.beekoding.id • info@beekoding.id
+                    PT Sarang Edukasi Digital • www.beekoding.id • info@beekoding.id
                   </p>
                 </div>
               </div>
@@ -425,7 +425,7 @@ export const AdminCurriculumModal: React.FC<AdminCurriculumModalProps> = ({
                 </div>
                 <div className="text-[11px] text-slate-500">Founder & Chief Learning Officer</div>
                 <div className="text-[10px] text-amber-600 font-semibold mt-0.5">
-                  PT Beekoding Edukasi Nusantara
+                  PT Sarang Edukasi Digital
                 </div>
               </div>
 

@@ -47,6 +47,7 @@ const AdminQuizzes = lazy(() => import('./AdminQuizzes').then((m) => ({ default:
 const AdminReferrals = lazy(() => import('./AdminReferrals').then((m) => ({ default: m.AdminReferrals })));
 const AdminUsers = lazy(() => import('./AdminUsers').then((m) => ({ default: m.AdminUsers })));
 const AdminWhatsAppGateway = lazy(() => import('./AdminWhatsAppGateway').then((m) => ({ default: m.AdminWhatsAppGateway })));
+const AdminBlog = lazy(() => import('./AdminBlog').then((m) => ({ default: m.AdminBlog })));
 
 function AdminTabFallback() {
   return (
@@ -363,6 +364,15 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
             <AdminUsers
               isDark={isDark}
               onRoleSwitched={() => setProfileKey((k) => k + 1)}
+            />
+          )}
+
+          {currentTab === 'blog' && (
+            <AdminBlog
+              isDark={isDark}
+              onOpenArticleInWeb={(slug) => {
+                window.location.hash = `#blog/${slug}`;
+              }}
             />
           )}
 

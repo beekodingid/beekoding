@@ -89,8 +89,8 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
       ``,
       `*METODE PEMBAYARAN:*`,
       `Transfer Bank ${transaction.paymentMethod.toUpperCase()}`,
-      `• *BCA*: 772-019-8821 a/n Beekoding Edukasi Nusantara`,
-      `• *Mandiri*: 132-00-1928374-1 a/n Beekoding Edukasi Nusantara`,
+      `• *BCA*: 772-019-8821 a/n Sarang Edukasi Digital`,
+      `• *Mandiri*: 132-00-1928374-1 a/n Sarang Edukasi Digital`,
       ``,
       `Terima kasih telah mempercayakan pendidikan logika & teknologi ananda bersama Beekoding! 🚀`,
       `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
@@ -286,7 +286,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                   Next Gen Coding & AI Academy
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  PT Beekoding Edukasi Nusantara • www.beekoding.id
+                  PT Sarang Edukasi Digital • www.beekoding.id
                 </p>
               </div>
             </div>
@@ -454,12 +454,12 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                 <div>
                   <span className="font-bold text-slate-900 block">Bank Central Asia (BCA)</span>
                   <span className="font-mono text-slate-800 font-bold">772-019-8821</span>
-                  <span className="block text-slate-500">a/n PT Beekoding Edukasi Nusantara</span>
+                  <span className="block text-slate-500">a/n PT Sarang Edukasi Digital</span>
                 </div>
                 <div className="pt-1 border-t border-amber-200/40">
                   <span className="font-bold text-slate-900 block">Bank Mandiri</span>
                   <span className="font-mono text-slate-800 font-bold">132-00-1928374-1</span>
-                  <span className="block text-slate-500">a/n PT Beekoding Edukasi Nusantara</span>
+                  <span className="block text-slate-500">a/n PT Sarang Edukasi Digital</span>
                 </div>
               </div>
               {transaction.notes && (
@@ -475,7 +475,7 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
                 Bandung, {formatDateIndo(transaction.createdAt)}
               </span>
               <p className="text-xs font-bold text-slate-900">
-                PT Beekoding Edukasi Nusantara
+                PT Sarang Edukasi Digital
               </p>
 
               {/* Stempel & Signature Visual */}

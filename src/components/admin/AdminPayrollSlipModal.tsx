@@ -130,7 +130,7 @@ export const AdminPayrollSlipModal: React.FC<AdminPayrollSlipModalProps> = ({
                   </span>
                 </h1>
                 <p className="text-xs text-slate-500 font-medium">
-                  PT Beekoding Edukasi Nusantara • Learning Innovation Hub
+                  PT Sarang Edukasi Digital • Learning Innovation Hub
                 </p>
                 <p className="text-[11px] text-slate-400">
                   Jl. Telekomunikasi No. 01, Terusan Buahbatu, Bandung • finance@beekoding.id

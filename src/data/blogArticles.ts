@@ -5,6 +5,7 @@ export interface BlogAuthor {
 }
 
 export interface BlogArticle {
+  id?: string;
   slug: string;
   title: string;
   excerpt: string;
@@ -15,6 +16,10 @@ export interface BlogArticle {
   author: BlogAuthor;
   tags: string[];
   content: string;
+  status?: 'published' | 'draft';
+  viewsCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const BLOG_CATEGORIES = [

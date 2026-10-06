@@ -286,6 +286,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           icon: Share2,
           description: 'Kode referral & komisi duta',
         },
+        {
+          id: 'blog' as AdminTab,
+          label: 'Blog & Artikel Edukasi',
+          icon: BookOpen,
+          description: 'Kelola artikel SEO, CMS & AdSense',
+        },
       ],
     },
     {

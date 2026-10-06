@@ -146,6 +146,7 @@ export type AdminTab =
   | 'quizzes'
   | 'users'
   | 'gateway'
+  | 'blog'
   | 'settings';
 
 export type UserRole = 'administrator' | 'instructor' | 'counselor' | 'academic_lead' | 'custom';
@@ -656,6 +657,7 @@ export type StorageUpdateType =
   | 'system_users'
   | 'certificates'
   | 'reports'
+  | 'blog'
   | 'all';
 
 export function emitStorageUpdate(type: StorageUpdateType = 'all'): void {

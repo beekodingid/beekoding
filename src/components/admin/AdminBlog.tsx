@@ -1,0 +1,1088 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import {
+  getBlogArticles,
+  saveBlogArticle,
+  deleteBlogArticle,
+  resetBlogArticlesToDefault,
+  fetchBlogArticlesFromCloud,
+  pushBlogArticleToSupabase,
+  type BlogArticle,
+} from '../../services/blogStorage';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
+import { onStorageUpdate } from '../../services/adminStorage';
+import { readFileAsDataUrl, uploadToSupabaseStorage } from '../../services/supabaseStorage';
+import { BLOG_CATEGORIES } from '../../data/blogArticles';
+import {
+  BookOpen,
+  Plus,
+  Search,
+  Edit3,
+  Trash2,
+  Cloud,
+  RefreshCw,
+  Database,
+  Check,
+  Copy,
+  Upload,
+  Eye,
+  X,
+  Sparkles,
+  Code,
+  List,
+  Quote,
+} from 'lucide-react';
+
+interface AdminBlogProps {
+  isDark?: boolean;
+  onOpenArticleInWeb?: (slug: string) => void;
+}
+
+export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpenArticleInWeb }) => {
+  const { isDark: themeIsDark } = useTheme();
+  const isDark = propIsDark ?? themeIsDark;
+  const [articles, setArticles] = useState<BlogArticle[]>(() => getBlogArticles());
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('Semua');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
+
+  // Modal State
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingArticle, setEditingArticle] = useState<BlogArticle | null>(null);
+  const [sqlModalOpen, setSqlModalOpen] = useState(false);
+  const [copiedSql, setCopiedSql] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatusMsg, setSyncStatusMsg] = useState('');
+
+  // Form State
+  const [formTitle, setFormTitle] = useState('');
+  const [formSlug, setFormSlug] = useState('');
+  const [formExcerpt, setFormExcerpt] = useState('');
+  const [formCategory, setFormCategory] = useState<'Coding Anak' | 'Artificial Intelligence' | 'Parenting Digital' | 'Game Dev'>('Coding Anak');
+  const [formCoverImage, setFormCoverImage] = useState('');
+  const [formContent, setFormContent] = useState('');
+  const [formAuthorName, setFormAuthorName] = useState('Tim Akademik Beekoding');
+  const [formAuthorRole, setFormAuthorRole] = useState('Curriculum & Pedagogy Lead');
+  const [formAuthorAvatar, setFormAuthorAvatar] = useState('/bee-mascot.png');
+  const [formTagsString, setFormTagsString] = useState('Coding Anak, Logika');
+  const [formReadTime, setFormReadTime] = useState(5);
+  const [formStatus, setFormStatus] = useState<'published' | 'draft'>('published');
+  const [editorTab, setEditorTab] = useState<'write' | 'preview'>('write');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  // Sync listener
+  useEffect(() => {
+    const unsub = onStorageUpdate((type) => {
+      if (type === 'blog' || type === 'all') {
+        setArticles(getBlogArticles());
+      }
+    });
+    return unsub;
+  }, []);
+
+  const refreshList = () => {
+    setArticles(getBlogArticles());
+  };
+
+  // Filtered list
+  const filteredArticles = useMemo(() => {
+    return articles.filter((art) => {
+      const matchCat = categoryFilter === 'Semua' || art.category === categoryFilter;
+      const matchStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'published' && art.status !== 'draft') ||
+        (statusFilter === 'draft' && art.status === 'draft');
+      const q = searchQuery.toLowerCase();
+      const matchSearch =
+        !q ||
+        art.title.toLowerCase().includes(q) ||
+        art.slug.toLowerCase().includes(q) ||
+        art.excerpt.toLowerCase().includes(q) ||
+        art.tags?.some((t) => t.toLowerCase().includes(q));
+
+      return matchCat && matchStatus && matchSearch;
+    });
+  }, [articles, categoryFilter, statusFilter, searchQuery]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const total = articles.length;
+    const published = articles.filter((a) => a.status !== 'draft').length;
+    const draft = total - published;
+    const categoriesCount = new Set(articles.map((a) => a.category)).size;
+    return { total, published, draft, categoriesCount };
+  }, [articles]);
+
+  const handleOpenNewModal = () => {
+    setEditingArticle(null);
+    setFormTitle('');
+    setFormSlug('');
+    setFormExcerpt('');
+    setFormCategory('Coding Anak');
+    setFormCoverImage('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80');
+    setFormContent(`## Pendahuluan\n\nTulis isi artikel edukasi di sini...\n\n### Sub-topik Utama\n\nPenjelasan detail dan contoh praktis.`);
+    setFormAuthorName('Tim Akademik Beekoding');
+    setFormAuthorRole('Curriculum & Pedagogy Lead');
+    setFormAuthorAvatar('/bee-mascot.png');
+    setFormTagsString('Coding Anak, Pemula, Logika');
+    setFormReadTime(5);
+    setFormStatus('published');
+    setEditorTab('write');
+    setModalOpen(true);
+  };
+
+  const handleOpenEditModal = (article: BlogArticle) => {
+    setEditingArticle(article);
+    setFormTitle(article.title);
+    setFormSlug(article.slug);
+    setFormExcerpt(article.excerpt);
+    setFormCategory(article.category);
+    setFormCoverImage(article.coverImage);
+    setFormContent(article.content);
+    setFormAuthorName(article.author.name);
+    setFormAuthorRole(article.author.role);
+    setFormAuthorAvatar(article.author.avatar);
+    setFormTagsString(article.tags?.join(', ') || '');
+    setFormReadTime(article.readTimeMinutes || 5);
+    setFormStatus(article.status === 'draft' ? 'draft' : 'published');
+    setEditorTab('write');
+    setModalOpen(true);
+  };
+
+  const handleTitleChange = (val: string) => {
+    setFormTitle(val);
+    if (!editingArticle) {
+      // Auto-generate slug
+      const slugCandidate = val
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-');
+      setFormSlug(slugCandidate);
+    }
+  };
+
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingImage(true);
+    try {
+      if (isSupabaseConfigured()) {
+        const res = await uploadToSupabaseStorage('showcase', file, 'blog-covers');
+        if (res.success && res.url) {
+          setFormCoverImage(res.url);
+          setIsUploadingImage(false);
+          return;
+        }
+      }
+      const dataUrl = await readFileAsDataUrl(file);
+      setFormCoverImage(dataUrl);
+    } catch (err) {
+      console.warn('Gagal upload gambar cover:', err);
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleSaveForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formTitle.trim()) {
+      alert('Judul artikel wajib diisi!');
+      return;
+    }
+    if (!formSlug.trim()) {
+      alert('Slug URL artikel wajib diisi!');
+      return;
+    }
+
+    const tagsArray = formTagsString
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    const payload: Partial<BlogArticle> = {
+      id: editingArticle?.id || `blog-${formSlug}`,
+      slug: formSlug.trim().toLowerCase(),
+      title: formTitle.trim(),
+      excerpt: formExcerpt.trim(),
+      category: formCategory,
+      coverImage: formCoverImage.trim(),
+      content: formContent.trim(),
+      author: {
+        name: formAuthorName.trim() || 'Tim Akademik Beekoding',
+        role: formAuthorRole.trim() || 'Curriculum & Pedagogy Lead',
+        avatar: formAuthorAvatar.trim() || '/bee-mascot.png',
+      },
+      tags: tagsArray.length > 0 ? tagsArray : ['Edukasi'],
+      readTimeMinutes: Number(formReadTime) || 5,
+      status: formStatus,
+      publishedAt: editingArticle?.publishedAt || new Date().toISOString().split('T')[0],
+    };
+
+    await saveBlogArticle(payload);
+    refreshList();
+    setModalOpen(false);
+  };
+
+  const handleDelete = async (article: BlogArticle) => {
+    const ok = window.confirm(`Apakah Anda yakin ingin menghapus artikel: "${article.title}"?`);
+    if (!ok) return;
+
+    await deleteBlogArticle(article.slug);
+    refreshList();
+  };
+
+  const handleResetDefaults = () => {
+    const ok = window.confirm(
+      'Apakah Anda yakin ingin mengembalikan seluruh artikel ke data bawaan awal (6 artikel panduan)? Artikel kustom akan terhapus.'
+    );
+    if (!ok) return;
+
+    resetBlogArticlesToDefault();
+    refreshList();
+  };
+
+  const handleSyncCloud = async () => {
+    if (!isSupabaseConfigured()) {
+      alert('Koneksi Supabase belum terkonfigurasi di Pengaturan sistem!');
+      return;
+    }
+
+    setIsSyncing(true);
+    setSyncStatusMsg('Menyinkronkan artikel dengan Supabase Cloud...');
+    try {
+      // 1. Push local articles to Supabase
+      const currentList = getBlogArticles();
+      for (const art of currentList) {
+        await pushBlogArticleToSupabase(art);
+      }
+
+      // 2. Fetch latest from Supabase
+      const cloudArticles = await fetchBlogArticlesFromCloud();
+      if (cloudArticles) {
+        setArticles(cloudArticles);
+      } else {
+        refreshList();
+      }
+
+      setSyncStatusMsg('Sinkronisasi artikel dengan Cloud Supabase berhasil!');
+      setTimeout(() => setSyncStatusMsg(''), 4000);
+    } catch (err: any) {
+      setSyncStatusMsg(`Gagal sinkronisasi: ${err?.message || 'Error koneksi'}`);
+      setTimeout(() => setSyncStatusMsg(''), 5000);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // SQL Script
+  const sqlDdl = `-- =============================================================================
+-- BEEKODING BLOG ARTICLES TABLE - SUPABASE & POSTGRESQL MIGRATION
+-- Jalankan skrip ini di Supabase SQL Editor untuk membuat tabel blog
+-- =============================================================================
+
+CREATE TABLE IF NOT EXISTS blog_articles (
+    id VARCHAR(100) PRIMARY KEY,
+    slug VARCHAR(200) NOT NULL UNIQUE,
+    title VARCHAR(300) NOT NULL,
+    excerpt TEXT NOT NULL,
+    category VARCHAR(50) NOT NULL DEFAULT 'Coding Anak',
+    cover_image TEXT NOT NULL,
+    published_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    read_time_minutes INT NOT NULL DEFAULT 5,
+    author_name VARCHAR(150) NOT NULL DEFAULT 'Tim Akademik Beekoding',
+    author_role VARCHAR(150) DEFAULT 'Curriculum & Pedagogy Lead',
+    author_avatar TEXT DEFAULT '/bee-mascot.png',
+    tags_json TEXT, -- JSON Array string: ["Coding Anak", "Scratch"]
+    content TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'published', -- 'published', 'draft', 'archived'
+    views_count INT DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_blog_articles_slug ON blog_articles(slug);
+CREATE INDEX IF NOT EXISTS idx_blog_articles_category ON blog_articles(category);
+CREATE INDEX IF NOT EXISTS idx_blog_articles_status ON blog_articles(status);
+
+ALTER TABLE blog_articles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public Read Published Articles" ON blog_articles;
+CREATE POLICY "Public Read Published Articles" ON blog_articles
+    FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admin Full Access Articles" ON blog_articles;
+CREATE POLICY "Admin Full Access Articles" ON blog_articles
+    FOR ALL USING (true);
+`;
+
+  const handleCopySql = () => {
+    navigator.clipboard.writeText(sqlDdl);
+    setCopiedSql(true);
+    setTimeout(() => setCopiedSql(false), 2500);
+  };
+
+  const insertMarkdown = (prefix: string, suffix: string = '') => {
+    const textarea = document.getElementById('blog-content-input') as HTMLTextAreaElement | null;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const current = textarea.value;
+    const selected = current.substring(start, end);
+
+    const replacement = `${prefix}${selected || 'teks'}${suffix}`;
+    const nextVal = current.substring(0, start) + replacement + current.substring(end);
+    setFormContent(nextVal);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selected || 'teks').length);
+    }, 50);
+  };
+
+  return (
+    <div className="space-y-6 pb-12 animate-fadeIn">
+      {/* Top Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-500 mb-2">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Content Management System (CMS)</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
+            Manajemen Blog & Artikel Edukasi
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Publikasikan artikel SEO, panduan coding ramah anak, dan optimalkan monetisasi Google AdSense.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={handleOpenNewModal}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 hover:brightness-110 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Tulis Artikel Baru</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSyncCloud}
+            disabled={isSyncing}
+            className={`inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+              isDark
+                ? 'bg-slate-800 text-slate-200 border-slate-700 hover:border-amber-500/50'
+                : 'bg-white text-slate-700 border-amber-200 hover:border-amber-400'
+            }`}
+            title="Sinkronkan seluruh artikel ke Cloud Supabase PostgreSQL"
+          >
+            <Cloud className={`w-3.5 h-3.5 text-sky-500 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkron Supabase'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setSqlModalOpen(true)}
+            className={`inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+              isDark
+                ? 'bg-purple-500/15 text-purple-300 border-purple-500/30 hover:bg-purple-500/25'
+                : 'bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100'
+            }`}
+            title="Lihat skrip SQL DDL untuk tabel blog_articles di Supabase"
+          >
+            <Database className="w-3.5 h-3.5 text-purple-400" />
+            <span>Skrip SQL</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleResetDefaults}
+            className={`p-2.5 rounded-xl border text-xs text-slate-400 hover:text-amber-500 transition-colors cursor-pointer ${
+              isDark ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-200 hover:bg-slate-100'
+            }`}
+            title="Reset ke artikel bawaan sistem"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {syncStatusMsg && (
+        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-500 flex items-center gap-2 animate-fadeIn">
+          <Sparkles className="w-4 h-4 flex-shrink-0" />
+          <span>{syncStatusMsg}</span>
+        </div>
+      )}
+
+      {/* Metric Stat Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div
+          className={`p-4 rounded-2xl border transition-colors ${
+            isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+          }`}
+        >
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Artikel</div>
+          <div className="text-2xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white mt-1">
+            {stats.total}
+          </div>
+        </div>
+
+        <div
+          className={`p-4 rounded-2xl border transition-colors ${
+            isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+          }`}
+        >
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Tayang (Published)</div>
+          <div className="text-2xl font-black font-['Space_Grotesk'] text-emerald-500 mt-1">
+            {stats.published}
+          </div>
+        </div>
+
+        <div
+          className={`p-4 rounded-2xl border transition-colors ${
+            isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+          }`}
+        >
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Draf (Draft)</div>
+          <div className="text-2xl font-black font-['Space_Grotesk'] text-amber-500 mt-1">
+            {stats.draft}
+          </div>
+        </div>
+
+        <div
+          className={`p-4 rounded-2xl border transition-colors ${
+            isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+          }`}
+        >
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Kategori Aktif</div>
+          <div className="text-2xl font-black font-['Space_Grotesk'] text-sky-500 mt-1">
+            {stats.categoriesCount}
+          </div>
+        </div>
+      </div>
+
+      {/* Search and Filters Bar */}
+      <div
+        className={`p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 ${
+          isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+        }`}
+      >
+        <div className="relative w-full md:w-80">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari judul, slug, kata kunci..."
+            className={`w-full pl-10 pr-3 py-2 rounded-xl text-xs border outline-none ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-700 text-white focus:border-amber-400'
+                : 'bg-white border-slate-200 text-slate-900 focus:border-amber-500'
+            }`}
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className={`px-3 py-2 rounded-xl text-xs border outline-none font-medium ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-700 text-white'
+                : 'bg-white border-slate-200 text-slate-800'
+            }`}
+          >
+            {BLOG_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                Kategori: {cat}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as any)}
+            className={`px-3 py-2 rounded-xl text-xs border outline-none font-medium ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-700 text-white'
+                : 'bg-white border-slate-200 text-slate-800'
+            }`}
+          >
+            <option value="all">Status: Semua</option>
+            <option value="published">Status: Published</option>
+            <option value="draft">Status: Draft</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Articles Table & Cards */}
+      <div
+        className={`rounded-2xl border overflow-hidden ${
+          isDark ? 'bg-[#121622] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+        }`}
+      >
+        {filteredArticles.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr
+                  className={`border-b font-bold uppercase tracking-wider text-[11px] ${
+                    isDark
+                      ? 'bg-slate-900/70 border-slate-800 text-slate-400'
+                      : 'bg-amber-50/60 border-amber-200 text-slate-600'
+                  }`}
+                >
+                  <th className="py-3 px-4">Artikel</th>
+                  <th className="py-3 px-4">Kategori</th>
+                  <th className="py-3 px-4">Penulis</th>
+                  <th className="py-3 px-4">Tanggal</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-amber-500/10 dark:divide-slate-800">
+                {filteredArticles.map((art) => (
+                  <tr
+                    key={art.slug}
+                    className={`transition-colors ${
+                      isDark ? 'hover:bg-slate-800/40' : 'hover:bg-amber-50/40'
+                    }`}
+                  >
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-3 max-w-md">
+                        <img
+                          src={art.coverImage}
+                          alt={art.title}
+                          className="w-14 h-10 rounded-lg object-cover border border-amber-400/40 flex-shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="font-bold text-slate-900 dark:text-white truncate">
+                            {art.title}
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-mono truncate">
+                            #{art.slug}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                        {art.category}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={art.author?.avatar || '/bee-mascot.png'}
+                          alt={art.author?.name}
+                          className="w-5 h-5 rounded-full object-cover"
+                        />
+                        <span className="font-medium text-slate-700 dark:text-slate-300">
+                          {art.author?.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400">
+                      <div>{art.publishedAt}</div>
+                      <div className="text-[10px]">{art.readTimeMinutes} menit baca</div>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                          art.status === 'draft'
+                            ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
+                            : 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
+                        }`}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${art.status === 'draft' ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                        <span>{art.status === 'draft' ? 'Draf' : 'Tayang'}</span>
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (onOpenArticleInWeb) onOpenArticleInWeb(art.slug);
+                            else window.open(`/#blog/${art.slug}`, '_blank');
+                          }}
+                          className="p-1.5 rounded-lg border border-transparent hover:border-amber-400 text-slate-500 hover:text-amber-500 transition-colors"
+                          title="Lihat Pratinjau di Blog Web"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditModal(art)}
+                          className="p-1.5 rounded-lg border border-transparent hover:border-sky-400 text-slate-500 hover:text-sky-400 transition-colors"
+                          title="Edit Artikel"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(art)}
+                          className="p-1.5 rounded-lg border border-transparent hover:border-rose-400 text-slate-500 hover:text-rose-400 transition-colors"
+                          title="Hapus Artikel"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="py-16 text-center space-y-3">
+            <BookOpen className="w-10 h-10 text-slate-400 mx-auto opacity-50" />
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+              Tidak ada artikel yang cocok dengan pencarian Anda.
+            </p>
+            <button
+              type="button"
+              onClick={handleOpenNewModal}
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950"
+            >
+              Tulis Artikel Pertama
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* =========================================================================
+         MODAL FORM TULIS / EDIT ARTIKEL
+         ========================================================================= */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+          <div
+            className={`w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden transition-all ${
+              isDark ? 'bg-[#111520] border-amber-500/30' : 'bg-white border-amber-300'
+            }`}
+          >
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-amber-500/20 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-500">
+                  <Edit3 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
+                    {editingArticle ? 'Edit Artikel Edukasi' : 'Tulis Artikel Edukasi Baru'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Format penulisan mendukung Markdown (Heading, Kode, List, Gambar)
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Form Body */}
+            <form onSubmit={handleSaveForm} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+              {/* Judul & Slug */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Judul Artikel <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formTitle}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                    placeholder="Contoh: 5 Alasan Anak Perlu Belajar Coding Sejak Dini"
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none font-semibold ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-amber-400'
+                        : 'bg-white border-slate-300 text-slate-900 focus:border-amber-500'
+                    }`}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Slug URL (SEO Friendly) <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formSlug}
+                    onChange={(e) => setFormSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
+                    placeholder="5-alasan-anak-belajar-coding"
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none font-mono ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-amber-300 focus:border-amber-400'
+                        : 'bg-white border-slate-300 text-amber-700 focus:border-amber-500'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Kategori, Status & Waktu Baca */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Kategori</label>
+                  <select
+                    value={formCategory}
+                    onChange={(e) => setFormCategory(e.target.value as any)}
+                    className={`w-full px-3 py-2.5 rounded-xl text-xs border outline-none font-semibold ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  >
+                    <option value="Coding Anak">Coding Anak</option>
+                    <option value="Artificial Intelligence">Artificial Intelligence</option>
+                    <option value="Parenting Digital">Parenting Digital</option>
+                    <option value="Game Dev">Game Dev</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Status</label>
+                  <select
+                    value={formStatus}
+                    onChange={(e) => setFormStatus(e.target.value as any)}
+                    className={`w-full px-3 py-2.5 rounded-xl text-xs border outline-none font-semibold ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  >
+                    <option value="published">Tayang (Published)</option>
+                    <option value="draft">Draf (Draft / Belum Tayang)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Estimasi Baca (Menit)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={formReadTime}
+                    onChange={(e) => setFormReadTime(parseInt(e.target.value) || 5)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none font-semibold ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Ringkasan / Excerpt */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Ringkasan / Excerpt Singkat (Ditampilkan pada Kartu Artikel & Meta Description)
+                </label>
+                <textarea
+                  rows={2}
+                  value={formExcerpt}
+                  onChange={(e) => setFormExcerpt(e.target.value)}
+                  placeholder="Ringkasan 1-2 kalimat pengantar artikel..."
+                  className={`w-full px-3.5 py-2 rounded-xl text-xs border outline-none ${
+                    isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                  }`}
+                />
+              </div>
+
+              {/* Cover Image URL & File Upload */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Foto Sampul (Cover Image)</label>
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <input
+                    type="text"
+                    value={formCoverImage}
+                    onChange={(e) => setFormCoverImage(e.target.value)}
+                    placeholder="https://images.unsplash.com/... atau /bee-mascot.webp"
+                    className={`flex-1 w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none font-mono ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                  <label className="flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold border border-amber-400 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 transition-colors cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{isUploadingImage ? 'Mengunggah...' : 'Unggah Foto'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileUpload}
+                      className="hidden"
+                      disabled={isUploadingImage}
+                    />
+                  </label>
+                </div>
+                {formCoverImage && (
+                  <div className="w-32 h-20 rounded-lg overflow-hidden border border-amber-500/30 mt-2">
+                    <img src={formCoverImage} alt="Preview Cover" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
+
+              {/* Author & Tags */}
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Nama Penulis</label>
+                  <input
+                    type="text"
+                    value={formAuthorName}
+                    onChange={(e) => setFormAuthorName(e.target.value)}
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs border outline-none ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Jabatan Penulis</label>
+                  <input
+                    type="text"
+                    value={formAuthorRole}
+                    onChange={(e) => setFormAuthorRole(e.target.value)}
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs border outline-none ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Tags (Pisahkan koma)</label>
+                  <input
+                    type="text"
+                    value={formTagsString}
+                    onChange={(e) => setFormTagsString(e.target.value)}
+                    placeholder="Scratch, Python, AI"
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs border outline-none ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Editor Konten Markdown with Toolbar & Preview Tab */}
+              <div className="space-y-2 pt-2 border-t border-amber-500/10">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Isi Konten Artikel (Markdown Format)
+                  </label>
+                  <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-800/40 border border-slate-700 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setEditorTab('write')}
+                      className={`px-3 py-1 rounded-md font-bold transition-colors ${
+                        editorTab === 'write' ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Editor Tulis
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditorTab('preview')}
+                      className={`px-3 py-1 rounded-md font-bold transition-colors ${
+                        editorTab === 'preview' ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Pratinjau Live
+                    </button>
+                  </div>
+                </div>
+
+                {editorTab === 'write' ? (
+                  <div className="space-y-2">
+                    {/* Markdown Quick Toolbar */}
+                    <div className="flex flex-wrap items-center gap-1 p-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('## ')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 font-bold"
+                        title="Heading 2"
+                      >
+                        H2
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('### ')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 font-bold"
+                        title="Heading 3"
+                      >
+                        H3
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('**', '**')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 font-bold"
+                        title="Tebal (Bold)"
+                      >
+                        B
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('*', '*')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 italic"
+                        title="Miring (Italic)"
+                      >
+                        I
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('> ')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300"
+                        title="Kutipan (Blockquote)"
+                      >
+                        <Quote className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('```\n', '\n```')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300"
+                        title="Blok Kode"
+                      >
+                        <Code className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => insertMarkdown('- ')}
+                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300"
+                        title="Daftar Poin"
+                      >
+                        <List className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <textarea
+                      id="blog-content-input"
+                      required
+                      rows={12}
+                      value={formContent}
+                      onChange={(e) => setFormContent(e.target.value)}
+                      className={`w-full p-4 rounded-2xl text-xs sm:text-sm font-mono border outline-none leading-relaxed ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-700 text-slate-100 focus:border-amber-400'
+                          : 'bg-white border-slate-300 text-slate-900 focus:border-amber-500'
+                      }`}
+                      placeholder="Ketik konten artikel di sini menggunakan Markdown..."
+                    />
+                  </div>
+                ) : (
+                  /* Live Preview */
+                  <div className="p-4 sm:p-6 rounded-2xl border border-amber-500/20 bg-slate-900/30 max-h-[350px] overflow-y-auto space-y-4 text-xs sm:text-sm leading-relaxed text-slate-200">
+                    {formContent.split('\n\n').map((para, idx) => {
+                      const trimmed = para.trim();
+                      if (trimmed.startsWith('## ')) {
+                        return <h2 key={idx} className="text-lg font-black text-amber-400 pt-2">{trimmed.replace('## ', '')}</h2>;
+                      }
+                      if (trimmed.startsWith('### ')) {
+                        return <h3 key={idx} className="text-base font-bold text-white pt-1">{trimmed.replace('### ', '')}</h3>;
+                      }
+                      if (trimmed.startsWith('> ')) {
+                        return <blockquote key={idx} className="p-3 bg-amber-500/10 border-l-2 border-amber-500 italic">{trimmed.replace('> ', '')}</blockquote>;
+                      }
+                      if (trimmed.startsWith('```')) {
+                        return (
+                          <pre key={idx} className="p-3 bg-slate-950 rounded-lg text-amber-300 font-mono text-xs overflow-x-auto">
+                            <code>{trimmed.replace(/```[a-z]*\n?/g, '')}</code>
+                          </pre>
+                        );
+                      }
+                      return <p key={idx}>{trimmed}</p>;
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Buttons */}
+              <div className="pt-4 border-t border-amber-500/20 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 hover:brightness-110 shadow-md transition-all font-['Space_Grotesk']"
+                >
+                  {editingArticle ? 'Perbarui Artikel' : 'Publikasikan Artikel'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+         MODAL SKRIP SQL SUPABASE
+         ========================================================================= */}
+      {sqlModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div
+            className={`w-full max-w-2xl rounded-3xl border shadow-2xl overflow-hidden transition-all ${
+              isDark ? 'bg-[#111520] border-amber-500/30' : 'bg-white border-amber-300'
+            }`}
+          >
+            <div className="p-4 sm:p-5 border-b border-amber-500/20 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <Database className="w-5 h-5 text-purple-400" />
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  Skrip SQL Migrasi Tabel `blog_articles` Supabase
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSqlModalOpen(false)}
+                className="p-1 rounded-full text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Salin skrip SQL di bawah ini, lalu buka <strong>Supabase Dashboard ➔ SQL Editor</strong> pada proyek Anda, paste kode ini, lalu klik <strong>Run</strong> untuk membuat tabel database artikel.
+              </p>
+
+              <div className="relative">
+                <pre className="p-4 rounded-xl bg-slate-950 text-amber-300 font-mono text-[11px] overflow-x-auto max-h-[300px] border border-amber-500/30">
+                  <code>{sqlDdl}</code>
+                </pre>
+                <button
+                  type="button"
+                  onClick={handleCopySql}
+                  className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors flex items-center gap-1.5 shadow-sm"
+                >
+                  {copiedSql ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-950" />
+                      <span>Tersalin!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Salin SQL</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSqlModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-200"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

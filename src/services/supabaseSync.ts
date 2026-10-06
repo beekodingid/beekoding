@@ -57,6 +57,20 @@ import {
   type WhatsAppGatewayConfig,
   type QueuedWhatsAppMessage,
 } from './adminStorage';
+import {
+  getBlogArticles,
+  fetchBlogArticlesFromCloud,
+  pushBlogArticleToSupabase,
+  deleteBlogArticleFromSupabase,
+  type BlogArticle,
+} from './blogStorage';
+
+export {
+  fetchBlogArticlesFromCloud,
+  pushBlogArticleToSupabase,
+  deleteBlogArticleFromSupabase,
+  type BlogArticle,
+};
 
 export interface SyncResult {
   success: boolean;
@@ -773,6 +787,27 @@ export async function syncAllLocalDataToSupabase(): Promise<SyncResult> {
     }));
     await syncTable('whatsapp_queued_messages', queueRows);
 
+    // 28. blog_articles
+    const blogRows = getBlogArticles().map((art) => ({
+      id: art.id || `blog-${art.slug}`,
+      slug: art.slug,
+      title: art.title,
+      excerpt: art.excerpt,
+      category: art.category,
+      cover_image: art.coverImage,
+      published_at: art.publishedAt,
+      read_time_minutes: art.readTimeMinutes,
+      author_name: art.author?.name || 'Tim Akademik Beekoding',
+      author_role: art.author?.role || 'Curriculum & Pedagogy Lead',
+      author_avatar: art.author?.avatar || '/bee-mascot.png',
+      tags_json: JSON.stringify(art.tags || []),
+      content: art.content,
+      status: art.status || 'published',
+      views_count: art.viewsCount || 0,
+      updated_at: new Date().toISOString(),
+    }));
+    await syncTable('blog_articles', blogRows);
+
   } catch (globalErr: any) {
     console.error('Error saat eksekusi sinkronisasi:', globalErr);
   }
@@ -1439,7 +1474,7 @@ export async function fetchAcademicReportsFromCloud(): Promise<StudentAcademicRe
 
 export async function hydratePriorityModulesFromCloud(): Promise<{ success: boolean; tables: string[] }> {
   if (!isSupabaseConfigured()) return { success: false, tables: [] };
-  const [subs, inqs, batches, txs, att, usrs, certs, reps] = await Promise.allSettled([
+  const [subs, inqs, batches, txs, att, usrs, certs, reps, blogs] = await Promise.allSettled([
     fetchSubmissionsFromCloud(),
     fetchInquiriesFromCloud(),
     fetchBatchesFromCloud(),
@@ -1448,6 +1483,7 @@ export async function hydratePriorityModulesFromCloud(): Promise<{ success: bool
     fetchSystemUsersFromCloud(),
     fetchCertificatesFromCloud(),
     fetchAcademicReportsFromCloud(),
+    fetchBlogArticlesFromCloud(),
   ]);
   const tables: string[] = [];
   if (subs.status === 'fulfilled' && subs.value) tables.push('students_submissions');
@@ -1458,6 +1494,7 @@ export async function hydratePriorityModulesFromCloud(): Promise<{ success: bool
   if (usrs.status === 'fulfilled' && usrs.value) tables.push('system_users');
   if (certs.status === 'fulfilled' && certs.value) tables.push('student_certificates');
   if (reps.status === 'fulfilled' && reps.value) tables.push('academic_reports');
+  if (blogs.status === 'fulfilled' && blogs.value) tables.push('blog_articles');
   return { success: tables.length > 0, tables };
 }
 
@@ -1492,6 +1529,10 @@ export function initPriorityRealtimeSync(onUpdate?: (table: string) => void): ()
     .on('postgres_changes', { event: '*', schema: 'public', table: 'system_users' }, async () => {
       await fetchSystemUsersFromCloud();
       onUpdate?.('system_users');
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_articles' }, async () => {
+      await fetchBlogArticlesFromCloud();
+      onUpdate?.('blog_articles');
     })
     .subscribe();
 

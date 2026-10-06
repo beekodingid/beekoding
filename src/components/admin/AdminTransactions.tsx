@@ -496,8 +496,8 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
       tx.remainingAmount > 0 ? `• *Sisa Tagihan*: *${formatRupiah(tx.remainingAmount)}*` : '',
       ``,
       `Rekening Resmi Beekoding:`,
-      `• BCA: *772-019-8821* a/n PT Beekoding Edukasi Nusantara`,
-      `• Mandiri: *132-00-1928374-1* a/n PT Beekoding Edukasi Nusantara`,
+      `• BCA: *772-019-8821* a/n PT Sarang Edukasi Digital`,
+      `• Mandiri: *132-00-1928374-1* a/n PT Sarang Edukasi Digital`,
       ``,
       `Mohon kirimkan bukti transfer ke nomor WhatsApp ini bila telah melakukan pembayaran. Terima kasih! 🙏`,
     ]
