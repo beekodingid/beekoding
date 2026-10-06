@@ -60,6 +60,13 @@ export function getBlogArticles(): BlogArticle[] {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        const existingSlugs = new Set(parsed.map((a: any) => a.slug));
+        const newSeeds = defaultSeedArticles.filter((s) => !existingSlugs.has(s.slug));
+        if (newSeeds.length > 0) {
+          const combined = [...parsed, ...newSeeds].map((a, i) => normalizeArticle(a, i));
+          saveBlogArticlesLocally(combined);
+          return combined;
+        }
         return parsed.map((a, i) => normalizeArticle(a, i));
       }
     }
