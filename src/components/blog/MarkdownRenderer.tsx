@@ -85,6 +85,14 @@ function renderInlineFormatting(text: string): React.ReactNode {
   });
 }
 
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 /**
  * Komponen MarkdownRenderer untuk artikel blog dan preview live editor
  */
@@ -202,42 +210,51 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
 
     // 4. Headings (#, ##, ###, ####)
     if (trimmed.startsWith('# ')) {
+      const headingRaw = trimmed.substring(2).trim();
+      const headingId = slugifyHeading(headingRaw);
       flushParagraph(`h1-${i}`);
       flushList(`h1-${i}`);
       elements.push(
         <h1
           key={`h1-${i}`}
-          className="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-slate-950 dark:text-white pt-4 pb-2 border-b border-amber-500/20"
+          id={headingId}
+          className="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-slate-950 dark:text-white pt-4 pb-2 border-b border-amber-500/20 scroll-mt-24"
         >
-          {renderInlineFormatting(trimmed.substring(2))}
+          {renderInlineFormatting(headingRaw)}
         </h1>
       );
       continue;
     }
 
     if (trimmed.startsWith('## ')) {
+      const headingRaw = trimmed.substring(3).trim();
+      const headingId = slugifyHeading(headingRaw);
       flushParagraph(`h2-${i}`);
       flushList(`h2-${i}`);
       elements.push(
         <h2
           key={`h2-${i}`}
-          className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-amber-400 pt-5 pb-1"
+          id={headingId}
+          className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-amber-400 pt-6 pb-1 scroll-mt-24 border-t border-amber-500/10"
         >
-          {renderInlineFormatting(trimmed.substring(3))}
+          {renderInlineFormatting(headingRaw)}
         </h2>
       );
       continue;
     }
 
     if (trimmed.startsWith('### ')) {
+      const headingRaw = trimmed.substring(4).trim();
+      const headingId = slugifyHeading(headingRaw);
       flushParagraph(`h3-${i}`);
       flushList(`h3-${i}`);
       elements.push(
         <h3
           key={`h3-${i}`}
-          className="text-lg sm:text-xl font-bold font-['Space_Grotesk'] text-amber-600 dark:text-amber-300 pt-3"
+          id={headingId}
+          className="text-lg sm:text-xl font-bold font-['Space_Grotesk'] text-amber-600 dark:text-amber-300 pt-4 pb-1 scroll-mt-24"
         >
-          {renderInlineFormatting(trimmed.substring(4))}
+          {renderInlineFormatting(headingRaw)}
         </h3>
       );
       continue;
