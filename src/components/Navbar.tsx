@@ -2,13 +2,14 @@ import React, { useState, useEffect, startTransition } from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
-import { Menu, X, Phone, ArrowRight, Sparkles, Brain, GraduationCap, Calendar } from 'lucide-react';
+import { Menu, X, Phone, ArrowRight, Sparkles, Brain, GraduationCap, Calendar, BookOpen } from 'lucide-react';
 
 interface NavbarProps {
   onOpenBootcampModal: () => void;
   onOpenTalentAssessment?: () => void;
   onOpenStudentPortal?: () => void;
   onOpenTrialEvents?: () => void;
+  onOpenBlog?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -16,6 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenTalentAssessment,
   onOpenStudentPortal,
   onOpenTrialEvents,
+  onOpenBlog,
 }) => {
   const { isDark } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -127,6 +129,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { name: 'Karya Siswa', href: '#showcase' },
     { name: 'Visi', href: '#founder' },
     { name: 'Kegiatan', href: '#gallery' },
+    { name: 'Blog', href: '#blog' },
     { name: 'FAQ', href: '#faq' },
     { name: 'Kontak', href: '#contact' },
   ];
@@ -254,7 +257,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => setActiveLink(link.href)}
+                  onClick={(e) => {
+                    if (link.href === '#blog' && onOpenBlog) {
+                      e.preventDefault();
+                      onOpenBlog();
+                    } else {
+                      setActiveLink(link.href);
+                    }
+                  }}
                   className={`whitespace-nowrap px-1.5 xl:px-2 2xl:px-2.5 py-1 text-[11px] xl:text-xs 2xl:text-[13px] rounded-full transition-all duration-200 ${
                     isActive
                       ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-bold shadow-sm shadow-amber-500/30'
@@ -377,9 +387,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => {
-                    setActiveLink(link.href);
-                    setMobileMenuOpen(false);
+                  onClick={(e) => {
+                    if (link.href === '#blog' && onOpenBlog) {
+                      e.preventDefault();
+                      setMobileMenuOpen(false);
+                      onOpenBlog();
+                    } else {
+                      setActiveLink(link.href);
+                      setMobileMenuOpen(false);
+                    }
                   }}
                   className={`text-sm sm:text-base font-medium py-2.5 px-3.5 rounded-xl transition-all flex items-center justify-between ${
                     isActive
@@ -397,6 +413,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               );
             })}
             <div className="pt-4 flex flex-col gap-3">
+              {/* Blog & Artikel Edukasi */}
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onOpenBlog) onOpenBlog();
+                  else window.location.hash = '#blog';
+                }}
+                className={`w-full text-center py-3 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 ${
+                  isDark
+                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                    : 'bg-amber-50 text-amber-900 border-amber-200'
+                }`}
+              >
+                <BookOpen className="w-4 h-4 text-amber-500" />
+                <span>Blog & Panduan Edukasi</span>
+              </button>
+
               {/* Tes Bakat Anak */}
               <button
                 onClick={() => {

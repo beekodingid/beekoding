@@ -1,13 +1,14 @@
 import React from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
-import { Mail, Phone, Globe, ArrowUp, Shield, GraduationCap } from 'lucide-react';
+import { Mail, Phone, Globe, ArrowUp, Shield, GraduationCap, BookOpen } from 'lucide-react';
 
 interface FooterProps {
   onOpenBootcampModal: () => void;
   onOpenTalentAssessment?: () => void;
   onOpenAdmin?: () => void;
   onOpenStudentPortal?: () => void;
+  onOpenBlog?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -15,6 +16,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenTalentAssessment,
   onOpenAdmin,
   onOpenStudentPortal,
+  onOpenBlog,
 }) => {
   const { isDark } = useTheme();
 
@@ -126,6 +128,17 @@ export const Footer: React.FC<FooterProps> = ({
                   }`}
                 >
                   <span>🎯 Tes Bakat Anak (Gratis)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={onOpenBlog || (() => (window.location.hash = '#blog'))}
+                  className={`flex items-center gap-1.5 font-bold transition-colors cursor-pointer ${
+                    isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-700 hover:text-amber-900'
+                  }`}
+                >
+                  <span>📰 Blog & Artikel Edukasi</span>
                 </button>
               </li>
               <li>
@@ -349,6 +362,17 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-5">
+            <button
+              type="button"
+              onClick={onOpenBlog || (() => (window.location.hash = '#blog'))}
+              className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
+                isDark ? 'text-slate-400 hover:text-amber-400' : 'text-slate-600 hover:text-amber-600'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 text-amber-500" />
+              <span>Blog Edukasi</span>
+            </button>
+
             <button
               type="button"
               onClick={onOpenStudentPortal || (() => (window.location.hash = '#portal'))}

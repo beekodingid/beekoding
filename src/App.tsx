@@ -43,6 +43,9 @@ const AdminView = lazy(() =>
 const StudentPortalView = lazy(() =>
   import('./components/portal/StudentPortalView').then((m) => ({ default: m.StudentPortalView }))
 );
+const BlogView = lazy(() =>
+  import('./components/blog/BlogView').then((m) => ({ default: m.BlogView }))
+);
 const BootcampModal = lazy(() =>
   import('./components/BootcampModal').then((m) => ({ default: m.BootcampModal }))
 );
@@ -75,9 +78,11 @@ export function App() {
   const [showTalentAssessment, setShowTalentAssessment] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showStudentPortal, setShowStudentPortal] = useState(false);
+  const [showBlog, setShowBlog] = useState(false);
+  const [blogSlug, setBlogSlug] = useState<string | undefined>(undefined);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
-  // Deteksi hash URL #talent, #admin, atau #portal untuk direct link
+  // Deteksi hash URL #talent, #admin, #portal, atau #blog untuk direct link
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash || '';
@@ -90,10 +95,12 @@ export function App() {
         setShowAdmin(true);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
+        setShowBlog(false);
       } else if (hash === '#talent') {
         setShowTalentAssessment(true);
         setShowAdmin(false);
         setShowStudentPortal(false);
+        setShowBlog(false);
       } else if (
         hash.startsWith('#portal') ||
         search.includes('cert=') ||
@@ -102,10 +109,19 @@ export function App() {
         setShowStudentPortal(true);
         setShowAdmin(false);
         setShowTalentAssessment(false);
+        setShowBlog(false);
+      } else if (hash.startsWith('#blog')) {
+        setShowBlog(true);
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        const slug = hash.replace('#blog/', '').replace('#blog', '').trim();
+        setBlogSlug(slug ? slug : undefined);
       } else {
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
+        setShowBlog(false);
       }
     };
     handleHashCheck();
@@ -204,6 +220,42 @@ export function App() {
     }
   };
 
+  const handleOpenBlog = (slug?: string) => {
+    window.location.hash = slug ? `#blog/${slug}` : '#blog';
+    startTransition(() => {
+      setShowBlog(true);
+      setBlogSlug(slug);
+      setShowAdmin(false);
+      setShowTalentAssessment(false);
+      setShowStudentPortal(false);
+    });
+  };
+
+  const handleCloseBlog = () => {
+    startTransition(() => {
+      setShowBlog(false);
+      setBlogSlug(undefined);
+    });
+    if (window.location.hash.startsWith('#blog')) {
+      window.history.pushState(null, '', window.location.pathname);
+    }
+  };
+
+  // Jika Blog Edukasi sedang aktif
+  if (showBlog) {
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Membuka Artikel & Blog Edukasi Beekoding..." />}>
+        <BlogView
+          initialSlug={blogSlug}
+          onBackToHome={handleCloseBlog}
+          onOpenBootcampModal={handleOpenBootcampModal}
+          onOpenTalentAssessment={handleOpenTalentAssessment}
+          onOpenTrialEvents={handleOpenTrialEvents}
+        />
+      </Suspense>
+    );
+  }
+
   // Jika Portal Administrator sedang aktif
   if (showAdmin) {
     return (
@@ -243,6 +295,7 @@ export function App() {
         onOpenTalentAssessment={handleOpenTalentAssessment}
         onOpenStudentPortal={handleOpenStudentPortal}
         onOpenTrialEvents={handleOpenTrialEvents}
+        onOpenBlog={handleOpenBlog}
       />
 
       {/* Main Content Sections */}
@@ -292,6 +345,7 @@ export function App() {
         onOpenTalentAssessment={handleOpenTalentAssessment}
         onOpenAdmin={handleOpenAdmin}
         onOpenStudentPortal={handleOpenStudentPortal}
+        onOpenBlog={handleOpenBlog}
       />
 
       {/* Floating WhatsApp chat widget */}
