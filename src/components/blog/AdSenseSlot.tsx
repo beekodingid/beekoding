@@ -23,7 +23,7 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
 }) => {
   const { isDark } = useTheme();
   const adRef = useRef<HTMLDivElement>(null);
-  const adsenseClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID || '';
+  const adsenseClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-6361492236129824';
   const isLiveAdSense = Boolean(adsenseClientId && adsenseClientId.startsWith('ca-pub-'));
 
   useEffect(() => {
