@@ -57,6 +57,39 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   'Game Dev': '🎮',
 };
 
+/**
+ * Format tanggal dari 'YYYY-MM-DD' menjadi 'DD-MMM-YYYY' (contoh: 25-Jan-2026)
+ */
+export function formatBlogDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const parts = dateStr.trim().split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    const year = parts[0];
+    const monthNum = parseInt(parts[1], 10);
+    const day = parts[2].padStart(2, '0');
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+    ];
+    const monthName = monthNames[monthNum - 1] || parts[1];
+    return `${day}-${monthName}-${year}`;
+  }
+
+  const parsed = new Date(dateStr);
+  if (!isNaN(parsed.getTime())) {
+    const day = String(parsed.getDate()).padStart(2, '0');
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+    ];
+    const monthName = monthNames[parsed.getMonth()];
+    const year = parsed.getFullYear();
+    return `${day}-${monthName}-${year}`;
+  }
+
+  return dateStr;
+}
+
 const LIKES_STORAGE_KEY = 'beekoding_blog_likes_count_v1';
 const USER_LIKED_STORAGE_KEY = 'beekoding_user_liked_articles_v1';
 
@@ -547,7 +580,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-amber-500" />
-                    {currentArticle.publishedAt}
+                    {formatBlogDate(currentArticle.publishedAt)}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-amber-500" />
@@ -973,7 +1006,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                               <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-3.5 h-3.5 text-amber-500" />
-                                  {hero.publishedAt}
+                                  {formatBlogDate(hero.publishedAt)}
                                 </span>
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
@@ -1085,7 +1118,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3 text-amber-500" />
-                              {article.publishedAt}
+                              {formatBlogDate(article.publishedAt)}
                             </span>
                             <span>•</span>
                             <span className="flex items-center gap-1">

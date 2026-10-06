@@ -14,6 +14,7 @@ import { onStorageUpdate } from '../../services/adminStorage';
 import { readFileAsDataUrl, uploadToSupabaseStorage } from '../../services/supabaseStorage';
 import { BLOG_CATEGORIES } from '../../data/blogArticles';
 import { MarkdownRenderer } from '../blog/MarkdownRenderer';
+import { formatBlogDate } from '../blog/BlogView';
 import {
   BookOpen,
   Plus,
@@ -628,7 +629,7 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                       </div>
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400">
-                      <div>{art.publishedAt}</div>
+                      <div>{formatBlogDate(art.publishedAt)}</div>
                       <div className="text-[10px]">{art.readTimeMinutes} menit baca</div>
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap">
