@@ -284,7 +284,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
             </div>
 
             {/* Top In-Article AdSense Banner (Compliant & Fixed Min-Height) */}
-            <AdSenseSlot slotId="3829104820" format="horizontal" label="Rekomendasi Mitra Edukasi" />
+            <AdSenseSlot slotId="5878990472" format="horizontal" label="Rekomendasi Mitra Edukasi" />
 
             {/* Article Body Content */}
             <div className="prose prose-slate dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 leading-relaxed space-y-6 text-base sm:text-lg">
@@ -346,7 +346,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
             </div>
 
             {/* Bottom In-Article AdSense Banner */}
-            <AdSenseSlot slotId="8492019384" format="auto" label="Sponsor / Google AdSense" />
+            <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor / Google AdSense" />
 
             {/* Interactive Call to Action Card: Free Trial Class */}
             <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-sky-500/15 border-2 border-amber-400/60 shadow-xl space-y-4">
@@ -523,7 +523,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
             {/* Top In-Feed AdSense Placement */}
             <div className="max-w-4xl mx-auto">
-              <AdSenseSlot slotId="1029384756" format="horizontal" label="Iklan Sponsor Edukasi" />
+              <AdSenseSlot slotId="5878990472" format="horizontal" label="Iklan Sponsor Edukasi" />
             </div>
 
             {/* Articles Grid */}
@@ -618,7 +618,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
             {/* Bottom In-Feed AdSense Placement */}
             <div className="max-w-4xl mx-auto pt-6">
-              <AdSenseSlot slotId="9584736201" format="auto" label="Sponsor Pilihan" />
+              <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor Pilihan" />
             </div>
           </div>
         )}

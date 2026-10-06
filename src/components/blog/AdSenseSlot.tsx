@@ -16,7 +16,7 @@ declare global {
 }
 
 export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
-  slotId = '1234567890',
+  slotId = '5878990472',
   format = 'auto',
   className = '',
   label = 'Sponsor & Iklan Edukasi',
