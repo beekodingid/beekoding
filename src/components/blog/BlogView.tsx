@@ -33,6 +33,7 @@ import {
   ChevronUp,
   Zap,
   Type,
+  ArrowUp,
 } from 'lucide-react';
 
 interface BlogViewProps {
@@ -134,6 +135,9 @@ export const BlogView: React.FC<BlogViewProps> = ({
   const [fontSizeStep, setFontSizeStep] = useState<'normal' | 'large' | 'xlarge'>('normal');
   const [isTocOpen, setIsTocOpen] = useState(true);
 
+  // Phase 3: Floating Action Bar state
+  const [showFloatingBar, setShowFloatingBar] = useState(false);
+
   // Phase 2: Interactivity & Discovery states
   const [quickSort, setQuickSort] = useState<'all' | 'latest' | 'quick'>('all');
   const [likesMap, setLikesMap] = useState<Record<string, number>>(getStoredLikesMap);
@@ -216,14 +220,16 @@ export const BlogView: React.FC<BlogViewProps> = ({
     return articles.find((a) => a.slug === selectedSlug) || null;
   }, [articles, selectedSlug]);
 
-  // Reading progress scroll listener
+  // Reading progress and floating action bar scroll listener
   useEffect(() => {
     if (!currentArticle) {
       setReadingProgress(0);
+      setShowFloatingBar(false);
       return;
     }
 
     const handleScroll = () => {
+      setShowFloatingBar(window.scrollY > 350);
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (docHeight <= 0) {
         setReadingProgress(0);
@@ -237,6 +243,10 @@ export const BlogView: React.FC<BlogViewProps> = ({
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentArticle]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Table of Contents generator from article content
   const tocItems = useMemo<TocItem[]>(() => {
@@ -1208,6 +1218,103 @@ export const BlogView: React.FC<BlogViewProps> = ({
           </div>
         )}
       </main>
+
+      {/* =========================================================================
+         PHASE 3: FLOATING ACTION BAR (SCROLL TO TOP & QUICK SHARE)
+         Appears automatically when reader scrolls down through the article
+         ========================================================================= */}
+      {currentArticle && (
+        <aside
+          aria-label="Aksi Cepat Artikel"
+          className={`fixed bottom-6 right-4 sm:right-6 z-40 transition-all duration-300 ${
+            showFloatingBar
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 translate-y-8 pointer-events-none'
+          }`}
+        >
+          <div
+            className={`p-1.5 sm:p-2 rounded-2xl sm:rounded-full flex flex-col items-center gap-2 backdrop-blur-xl border shadow-2xl transition-all ${
+              isDark
+                ? 'bg-[#121622]/90 border-amber-500/30 shadow-black/70'
+                : 'bg-white/95 border-amber-200/90 shadow-amber-950/15'
+            }`}
+          >
+            {/* Quick Like Reaction Button */}
+            <button
+              type="button"
+              onClick={() => handleToggleLike(currentArticle.slug)}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer relative group ${
+                userLikedSet.has(currentArticle.slug)
+                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/30 scale-105'
+                  : isDark
+                  ? 'bg-slate-800 text-slate-300 hover:text-rose-500 hover:bg-slate-700'
+                  : 'bg-slate-100 text-slate-600 hover:text-rose-500 hover:bg-rose-50'
+              }`}
+              title={userLikedSet.has(currentArticle.slug) ? 'Batalkan suka' : 'Artikel ini Bermanfaat / Suka'}
+            >
+              <Heart
+                className={`w-4 h-4 ${
+                  userLikedSet.has(currentArticle.slug) ? 'fill-white text-white' : ''
+                }`}
+              />
+              <span className="sr-only">Suka Artikel</span>
+              <span className="hidden sm:group-hover:block absolute right-12 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg whitespace-nowrap">
+                {userLikedSet.has(currentArticle.slug) ? 'Disukai' : 'Bermanfaat'} ({getArticleLikes(currentArticle)})
+              </span>
+            </button>
+
+            {/* Quick WhatsApp Share Button */}
+            <button
+              type="button"
+              onClick={() => handleShareWhatsApp(currentArticle)}
+              className="w-10 h-10 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center transition-all shadow-md shadow-emerald-500/25 cursor-pointer relative group"
+              title="Bagikan via WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span className="sr-only">WhatsApp</span>
+              <span className="hidden sm:group-hover:block absolute right-12 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg whitespace-nowrap">
+                Bagikan ke WhatsApp
+              </span>
+            </button>
+
+            {/* Quick Copy Link Button */}
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer relative group ${
+                copiedLink
+                  ? 'bg-emerald-500 text-white'
+                  : isDark
+                  ? 'bg-slate-800 text-slate-300 hover:text-amber-400 hover:bg-slate-700'
+                  : 'bg-slate-100 text-slate-600 hover:text-amber-600 hover:bg-amber-50'
+              }`}
+              title="Salin Link Artikel"
+            >
+              {copiedLink ? <Check className="w-4 h-4 text-white" /> : <Share2 className="w-4 h-4" />}
+              <span className="sr-only">Salin Link</span>
+              <span className="hidden sm:group-hover:block absolute right-12 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg whitespace-nowrap">
+                {copiedLink ? 'Tersalin!' : 'Salin Link'}
+              </span>
+            </button>
+
+            <div className="w-6 h-[1px] bg-slate-300 dark:bg-slate-700 my-0.5" />
+
+            {/* Scroll to Top Button */}
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-500 hover:brightness-110 text-slate-950 flex items-center justify-center transition-all shadow-md shadow-amber-500/30 cursor-pointer relative group"
+              title="Kembali ke Bagian Atas"
+            >
+              <ArrowUp className="w-4 h-4 stroke-[2.5]" />
+              <span className="sr-only">Scroll ke Atas</span>
+              <span className="hidden sm:group-hover:block absolute right-12 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg whitespace-nowrap">
+                Kembali ke Atas ⬆️
+              </span>
+            </button>
+          </div>
+        </aside>
+      )}
     </div>
   );
 };
