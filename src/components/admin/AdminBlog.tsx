@@ -37,6 +37,7 @@ import {
   Italic,
   Link2,
   Minus,
+  Share2,
 } from 'lucide-react';
 
 interface AdminBlogProps {
@@ -73,7 +74,7 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
   const [formTagsString, setFormTagsString] = useState('Coding Anak, Logika');
   const [formReadTime, setFormReadTime] = useState(5);
   const [formStatus, setFormStatus] = useState<'published' | 'draft'>('published');
-  const [editorTab, setEditorTab] = useState<'write' | 'preview'>('write');
+  const [editorTab, setEditorTab] = useState<'write' | 'preview' | 'social'>('write');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Sync listener
@@ -945,6 +946,16 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                     >
                       Pratinjau Live
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditorTab('social')}
+                      className={`px-3 py-1 rounded-md font-bold transition-colors flex items-center gap-1.5 ${
+                        editorTab === 'social' ? 'bg-sky-500 text-white' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Share2 className="w-3 h-3" />
+                      <span>Medsos & SEO</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1105,7 +1116,7 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                       placeholder="Ketik konten artikel di sini menggunakan Markdown (# untuk H1, ## untuk H2, **teks** untuk bold, dll)..."
                     />
                   </div>
-                ) : (
+                ) : editorTab === 'preview' ? (
                   /* Live Preview */
                   <div className="p-4 sm:p-6 rounded-2xl border border-amber-500/20 bg-slate-950/40 max-h-[380px] overflow-y-auto">
                     {formContent.trim() ? (
@@ -1113,6 +1124,87 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                     ) : (
                       <p className="text-xs text-slate-500 italic">Belum ada konten artikel untuk dipratinjau.</p>
                     )}
+                  </div>
+                ) : (
+                  /* Social & SEO Preview */
+                  <div className="space-y-6 p-4 sm:p-6 rounded-2xl border border-sky-500/30 bg-slate-950/50 max-h-[420px] overflow-y-auto">
+                    {/* Header info */}
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                      <div>
+                        <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider">
+                          Pratinjau Tampilan Berbagi Media Sosial (OpenGraph) & Google SERP
+                        </h4>
+                        <p className="text-[11px] text-slate-400">
+                          Berikut tampilan tautan artikel Anda ketika dibagikan di WhatsApp, Facebook, LinkedIn, dan hasil pencarian Google.
+                        </p>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                        SEO Ready
+                      </span>
+                    </div>
+
+                    {/* 1. WhatsApp / Facebook OpenGraph Card Preview */}
+                    <div className="space-y-2">
+                      <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                        <span>📱 Pratinjau Tampilan Link di WhatsApp & Facebook</span>
+                      </span>
+
+                      <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-slate-700 bg-[#1e2433] shadow-xl text-left">
+                        {/* Cover Preview */}
+                        <div className="relative aspect-[16/9] w-full bg-slate-900 overflow-hidden">
+                          {formCoverImage ? (
+                            <img
+                              src={formCoverImage}
+                              alt="Cover Preview"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs italic">
+                              Gambar cover belum diisi
+                            </div>
+                          )}
+                          <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-950/80 text-amber-300 backdrop-blur-xs">
+                            beekoding.id
+                          </div>
+                        </div>
+
+                        {/* Text Metadata */}
+                        <div className="p-3.5 space-y-1 bg-[#1a1f2c]">
+                          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">
+                            BEEKODING.ID
+                          </div>
+                          <div className="text-xs sm:text-sm font-bold text-white line-clamp-2 leading-snug">
+                            {formTitle || 'Judul Artikel Edukasi'}
+                          </div>
+                          <div className="text-[11px] text-slate-300 line-clamp-2 leading-relaxed">
+                            {formExcerpt || 'Ringkasan singkat artikel yang menjelaskan manfaat dan isi tulisan...'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 2. Google Search Result Snippet Preview */}
+                    <div className="space-y-2 pt-2 border-t border-slate-800">
+                      <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                        <span>🔍 Pratinjau Tampilan di Hasil Pencarian Google</span>
+                      </span>
+
+                      <div className="p-4 rounded-xl border border-slate-800 bg-[#121622] space-y-1.5">
+                        <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                          <div className="w-4 h-4 rounded-full bg-amber-400 flex items-center justify-center text-[10px] font-black text-slate-950">
+                            B
+                          </div>
+                          <span className="truncate">https://beekoding.id &rsaquo; blog &rsaquo; {formSlug || 'slug-artikel'}</span>
+                        </div>
+                        <h5 className="text-sm sm:text-base font-semibold text-sky-400 hover:underline cursor-pointer line-clamp-1">
+                          {formTitle || 'Judul Artikel Edukasi'} | Blog Beekoding
+                        </h5>
+                        <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                          <span className="text-slate-400 font-medium">{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} — </span>
+                          {formExcerpt || 'Ringkasan artikel edukasi seputar coding anak, kecerdasan buatan, dan tips digital parenting...'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

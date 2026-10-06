@@ -12,6 +12,7 @@ import {
 import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { updateArticleSocialMeta, resetSocialMetaToDefault } from '../../utils/socialMeta';
 import {
   ArrowLeft,
   Search,
@@ -107,6 +108,19 @@ export const BlogView: React.FC<BlogViewProps> = ({
     return articles.find((a) => a.slug === selectedSlug) || null;
   }, [articles, selectedSlug]);
 
+  // Dynamically update Social Meta Tags (OpenGraph, Twitter Card, JSON-LD schema)
+  useEffect(() => {
+    if (currentArticle) {
+      updateArticleSocialMeta(currentArticle);
+    } else {
+      resetSocialMetaToDefault();
+    }
+
+    return () => {
+      resetSocialMetaToDefault();
+    };
+  }, [currentArticle]);
+
   const handleSelectArticle = (slug: string) => {
     setSelectedSlug(slug);
     window.location.hash = `#blog/${slug}`;
@@ -128,7 +142,9 @@ export const BlogView: React.FC<BlogViewProps> = ({
   };
 
   const handleShareWhatsApp = (article: BlogArticle) => {
-    const text = `Baca artikel menarik dari Beekoding: *${article.title}*\n${window.location.origin}/#blog/${article.slug}`;
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://beekoding.id';
+    const articleUrl = `${origin}/#blog/${article.slug}`;
+    const text = `*${article.title}*\n\n${article.excerpt}\n\n👉 Baca selengkapnya di Blog Edukasi Beekoding:\n${articleUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -184,12 +200,18 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 </div>
               </div>
               <div>
-                <span className="text-lg font-black tracking-tight font-['Space_Grotesk']">
-                  Bee<span className="text-amber-500">koding</span>
-                </span>
-                <span className="block text-[10px] uppercase font-bold tracking-widest text-amber-500 -mt-1">
-                  Edukasi & Riset
-                </span>
+                <div className="flex items-center gap-1.5">
+                <span
+                className={`text-lg sm:text-xl font-black tracking-tight flex items-center font-['Space_Grotesk'] ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                Bee<span className="text-amber-500">koding</span>
+              </span>
+                <span className="text-[10px] font-extrabold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                      Blog
+                    </span>
+              </div>
               </div>
             </a>
           </div>

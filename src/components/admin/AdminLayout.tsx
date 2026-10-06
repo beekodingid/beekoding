@@ -825,7 +825,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
               </div>
             </div>
             <span className="text-base font-black tracking-tight flex items-center">
-              bee<span className="text-amber-500">koding</span>
+              Bee<span className="text-amber-500">koding</span>
               <span className="text-[9px] font-extrabold text-amber-500 ml-1 px-1.5 py-0.2 rounded-full bg-amber-500/10 border border-amber-500/25 uppercase">
                 Admin
               </span>
