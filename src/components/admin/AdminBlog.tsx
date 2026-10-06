@@ -13,6 +13,7 @@ import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { onStorageUpdate } from '../../services/adminStorage';
 import { readFileAsDataUrl, uploadToSupabaseStorage } from '../../services/supabaseStorage';
 import { BLOG_CATEGORIES } from '../../data/blogArticles';
+import { MarkdownRenderer } from '../blog/MarkdownRenderer';
 import {
   BookOpen,
   Plus,
@@ -30,7 +31,12 @@ import {
   Sparkles,
   Code,
   List,
+  ListOrdered,
   Quote,
+  Bold,
+  Italic,
+  Link2,
+  Minus,
 } from 'lucide-react';
 
 interface AdminBlogProps {
@@ -323,23 +329,40 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
     setTimeout(() => setCopiedSql(false), 2500);
   };
 
-  const insertMarkdown = (prefix: string, suffix: string = '') => {
+  const insertMarkdown = (prefix: string, suffix: string = '', defaultPlaceholder: string = 'teks') => {
     const textarea = document.getElementById('blog-content-input') as HTMLTextAreaElement | null;
     if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
+    const start = textarea.selectionStart ?? 0;
+    const end = textarea.selectionEnd ?? 0;
     const current = textarea.value;
     const selected = current.substring(start, end);
 
-    const replacement = `${prefix}${selected || 'teks'}${suffix}`;
+    // Jika blok elemen (seperti heading, kutipan, list) dan tidak berada di awal baris, tambahkan baris baru
+    let realPrefix = prefix;
+    const isBlockPrefix =
+      prefix.startsWith('#') ||
+      prefix.startsWith('> ') ||
+      prefix.startsWith('- ') ||
+      prefix.startsWith('1. ') ||
+      prefix.startsWith('```');
+
+    if (isBlockPrefix && start > 0 && current[start - 1] !== '\n') {
+      realPrefix = '\n' + prefix;
+    }
+
+    const contentToInsert = selected || defaultPlaceholder;
+    const replacement = `${realPrefix}${contentToInsert}${suffix}`;
     const nextVal = current.substring(0, start) + replacement + current.substring(end);
     setFormContent(nextVal);
 
+    // Kembalikan fokus dan highlight konten yang baru diapit/disisipkan
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selected || 'teks').length);
-    }, 50);
+      const newStart = start + realPrefix.length;
+      const newEnd = newStart + contentToInsert.length;
+      textarea.setSelectionRange(newStart, newEnd);
+    }, 15);
   };
 
   return (
@@ -895,62 +918,143 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                 {editorTab === 'write' ? (
                   <div className="space-y-2">
                     {/* Markdown Quick Toolbar */}
-                    <div className="flex flex-wrap items-center gap-1 p-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                    <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-xs shadow-inner">
+                      {/* H1 Heading */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('## ')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 font-bold"
-                        title="Heading 2"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('# ', '', 'Judul Utama')}
+                        className="px-2 py-1 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 font-black transition-colors"
+                        title="Judul Utama (H1) - # teks"
                       >
-                        H2
+                        # H1
                       </button>
+
+                      {/* H2 Heading */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('### ')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 font-bold"
-                        title="Heading 3"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('## ', '', 'Sub-Judul H2')}
+                        className="px-2 py-1 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-300 font-bold transition-colors"
+                        title="Sub-Judul (H2) - ## teks"
                       >
-                        H3
+                        ## H2
                       </button>
+
+                      {/* H3 Heading */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('**', '**')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 font-bold"
-                        title="Tebal (Bold)"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('### ', '', 'Bagian H3')}
+                        className="px-2 py-1 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 font-bold transition-colors"
+                        title="Bagian (H3) - ### teks"
                       >
-                        B
+                        ### H3
                       </button>
+
+                      <div className="h-4 w-[1px] bg-slate-700 mx-0.5" />
+
+                      {/* Bold */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('*', '*')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300 italic"
-                        title="Miring (Italic)"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('**', '**', 'teks tebal')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 font-black transition-colors flex items-center justify-center"
+                        title="Tebal (Bold) - **teks**"
                       >
-                        I
+                        <Bold className="w-3.5 h-3.5" />
                       </button>
+
+                      {/* Italic */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('> ')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300"
-                        title="Kutipan (Blockquote)"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('*', '*', 'teks miring')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 italic transition-colors flex items-center justify-center"
+                        title="Miring (Italic) - *teks*"
+                      >
+                        <Italic className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* Quote */}
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('> ', '', 'Kutipan penting...')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition-colors flex items-center justify-center"
+                        title="Kutipan (Blockquote) - > teks"
                       >
                         <Quote className="w-3.5 h-3.5" />
                       </button>
+
+                      <div className="h-4 w-[1px] bg-slate-700 mx-0.5" />
+
+                      {/* Code Block */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('```\n', '\n```')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300"
-                        title="Blok Kode"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('```\n', '\n```', '// Kode program di sini')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-300 transition-colors flex items-center justify-center"
+                        title="Blok Kode - ```kode```"
                       >
                         <Code className="w-3.5 h-3.5" />
                       </button>
+
+                      {/* Inline Code */}
                       <button
                         type="button"
-                        onClick={() => insertMarkdown('- ')}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-300"
-                        title="Daftar Poin"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('`', '`', 'kode')}
+                        className="px-1.5 py-1 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-300 font-mono text-[10px] font-bold transition-colors"
+                        title="Kode Segaris - `kode`"
+                      >
+                        `code`
+                      </button>
+
+                      {/* Unordered List */}
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('- ', '', 'Poin daftar')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition-colors flex items-center justify-center"
+                        title="Daftar Poin Bullet - - item"
                       >
                         <List className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* Ordered List */}
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('1. ', '', 'Langkah pertama')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition-colors flex items-center justify-center"
+                        title="Daftar Nomor - 1. item"
+                      >
+                        <ListOrdered className="w-3.5 h-3.5" />
+                      </button>
+
+                      <div className="h-4 w-[1px] bg-slate-700 mx-0.5" />
+
+                      {/* Link */}
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('[', '](https://)', 'Teks tautan')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition-colors flex items-center justify-center"
+                        title="Tautan Link - [teks](url)"
+                      >
+                        <Link2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* Divider */}
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => insertMarkdown('\n---\n', '', '')}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition-colors flex items-center justify-center"
+                        title="Garis Pembatas Horizontal - ---"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
@@ -960,37 +1064,22 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                       rows={12}
                       value={formContent}
                       onChange={(e) => setFormContent(e.target.value)}
-                      className={`w-full p-4 rounded-2xl text-xs sm:text-sm font-mono border outline-none leading-relaxed ${
+                      className={`w-full p-4 rounded-2xl text-xs sm:text-sm font-mono border outline-none leading-relaxed transition-colors ${
                         isDark
-                          ? 'bg-slate-900 border-slate-700 text-slate-100 focus:border-amber-400'
-                          : 'bg-white border-slate-300 text-slate-900 focus:border-amber-500'
+                          ? 'bg-slate-900 border-slate-700 text-slate-100 focus:border-amber-400 focus:ring-1 focus:ring-amber-400'
+                          : 'bg-white border-slate-300 text-slate-900 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
                       }`}
-                      placeholder="Ketik konten artikel di sini menggunakan Markdown..."
+                      placeholder="Ketik konten artikel di sini menggunakan Markdown (# untuk H1, ## untuk H2, **teks** untuk bold, dll)..."
                     />
                   </div>
                 ) : (
                   /* Live Preview */
-                  <div className="p-4 sm:p-6 rounded-2xl border border-amber-500/20 bg-slate-900/30 max-h-[350px] overflow-y-auto space-y-4 text-xs sm:text-sm leading-relaxed text-slate-200">
-                    {formContent.split('\n\n').map((para, idx) => {
-                      const trimmed = para.trim();
-                      if (trimmed.startsWith('## ')) {
-                        return <h2 key={idx} className="text-lg font-black text-amber-400 pt-2">{trimmed.replace('## ', '')}</h2>;
-                      }
-                      if (trimmed.startsWith('### ')) {
-                        return <h3 key={idx} className="text-base font-bold text-white pt-1">{trimmed.replace('### ', '')}</h3>;
-                      }
-                      if (trimmed.startsWith('> ')) {
-                        return <blockquote key={idx} className="p-3 bg-amber-500/10 border-l-2 border-amber-500 italic">{trimmed.replace('> ', '')}</blockquote>;
-                      }
-                      if (trimmed.startsWith('```')) {
-                        return (
-                          <pre key={idx} className="p-3 bg-slate-950 rounded-lg text-amber-300 font-mono text-xs overflow-x-auto">
-                            <code>{trimmed.replace(/```[a-z]*\n?/g, '')}</code>
-                          </pre>
-                        );
-                      }
-                      return <p key={idx}>{trimmed}</p>;
-                    })}
+                  <div className="p-4 sm:p-6 rounded-2xl border border-amber-500/20 bg-slate-950/40 max-h-[380px] overflow-y-auto">
+                    {formContent.trim() ? (
+                      <MarkdownRenderer content={formContent} isDark={isDark} />
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">Belum ada konten artikel untuk dipratinjau.</p>
+                    )}
                   </div>
                 )}
               </div>

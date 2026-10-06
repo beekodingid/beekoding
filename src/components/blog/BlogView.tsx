@@ -11,6 +11,7 @@ import {
 } from '../../services/blogStorage';
 import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
+import { MarkdownRenderer } from './MarkdownRenderer';
 import {
   ArrowLeft,
   Search,
@@ -311,62 +312,8 @@ export const BlogView: React.FC<BlogViewProps> = ({
             <AdSenseSlot slotId="5878990472" format="horizontal" label="Rekomendasi Mitra Edukasi" />
 
             {/* Article Body Content */}
-            <div className="prose prose-slate dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 leading-relaxed space-y-6 text-base sm:text-lg">
-              {currentArticle.content.split('\n\n').map((paragraph, idx) => {
-                const trimmed = paragraph.trim();
-                if (!trimmed) return null;
-
-                if (trimmed.startsWith('## ')) {
-                  return (
-                    <h2
-                      key={idx}
-                      className="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white pt-6 border-t border-amber-500/10"
-                    >
-                      {trimmed.replace('## ', '')}
-                    </h2>
-                  );
-                }
-
-                if (trimmed.startsWith('### ')) {
-                  return (
-                    <h3
-                      key={idx}
-                      className="text-xl sm:text-2xl font-bold font-['Space_Grotesk'] text-amber-600 dark:text-amber-400 pt-3"
-                    >
-                      {trimmed.replace('### ', '')}
-                    </h3>
-                  );
-                }
-
-                if (trimmed.startsWith('> ')) {
-                  return (
-                    <blockquote
-                      key={idx}
-                      className="p-5 rounded-2xl bg-amber-500/10 border-l-4 border-amber-500 text-sm sm:text-base italic text-slate-700 dark:text-slate-300"
-                    >
-                      {trimmed.replace('> ', '')}
-                    </blockquote>
-                  );
-                }
-
-                if (trimmed.startsWith('```')) {
-                  const code = trimmed.replace(/```[a-z]*\n?/g, '').trim();
-                  return (
-                    <pre
-                      key={idx}
-                      className="p-4 rounded-xl bg-slate-900 text-amber-300 font-mono text-xs sm:text-sm overflow-x-auto border border-amber-500/30"
-                    >
-                      <code>{code}</code>
-                    </pre>
-                  );
-                }
-
-                return (
-                  <p key={idx} className="leading-relaxed">
-                    {trimmed}
-                  </p>
-                );
-              })}
+            <div className="max-w-none leading-relaxed text-base sm:text-lg">
+              <MarkdownRenderer content={currentArticle.content} isDark={isDark} />
             </div>
 
             {/* Bottom In-Article AdSense Banner */}
