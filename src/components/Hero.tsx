@@ -19,7 +19,7 @@ export const Hero: React.FC<HeroProps> = ({
   return (
     <section
       id="home"
-      className="relative min-h-[96vh] flex flex-col justify-center pt-32 pb-20 overflow-hidden bg-honeycomb-pattern bg-radial-honey transition-colors duration-300"
+      className="relative min-h-[90vh] lg:min-h-[96vh] flex flex-col justify-start lg:justify-center pt-28 pb-16 sm:pt-32 sm:pb-20 overflow-hidden bg-honeycomb-pattern bg-radial-honey transition-colors duration-300"
     >
       {/* Background ambient lighting effects in honey gold and wing cyan */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[550px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none animate-honey-pulse" />
@@ -27,7 +27,7 @@ export const Hero: React.FC<HeroProps> = ({
       <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-start lg:items-center">
           {/* Left Column: Headline & Action Buttons */}
           <div className="lg:col-span-7 text-center lg:text-left space-y-6">
             {/* Glowing Honey Badge */}
@@ -48,7 +48,7 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Main Title */}
             <h1
-              className={`text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight leading-[1.14] font-['Space_Grotesk'] transition-colors ${
+              className={`text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight leading-[1.14] font-display font-['Space_Grotesk'] transition-colors ${
                 isDark ? 'text-white' : 'text-slate-900'
               }`}
             >
@@ -105,39 +105,39 @@ export const Hero: React.FC<HeroProps> = ({
               </a>
             </div>
 
-            {/* Trust Pill */}
+            {/* Trust Pill (Stabilized layout to prevent CLS shift) */}
             <div
-              className={`flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4 text-xs font-medium ${
+              className={`flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-4 text-xs font-medium min-h-[42px] transition-colors ${
                 isDark ? 'text-slate-400' : 'text-slate-600'
               }`}
             >
               <button
                 type="button"
                 onClick={onOpenTrialEvents}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border transition-all hover:scale-105 cursor-pointer font-bold ${
+                className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border transition-all hover:scale-105 cursor-pointer font-bold ${
                   isDark
                     ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 hover:bg-amber-500/25 shadow-xs'
                     : 'bg-amber-100/90 border-amber-300 text-amber-900 hover:bg-amber-200 shadow-xs'
                 }`}
               >
-                <Calendar className="w-3.5 h-3.5 text-amber-500" />
+                <Calendar className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
                 <span>Jadwal Trial Class & Workshop Gratis</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
               </button>
               <div
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors ${
+                className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors ${
                   isDark ? 'bg-[#171a25] border-amber-500/20' : 'bg-white border-amber-200 shadow-sm'
                 }`}
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
                 <span>Pendaftaran Batch Baru Dibuka</span>
               </div>
               <div
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors ${
+                className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors ${
                   isDark ? 'bg-[#171a25] border-amber-500/20' : 'bg-white border-amber-200 shadow-sm'
                 }`}
               >
-                <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" />
+                <Heart className="w-3.5 h-3.5 text-rose-500 fill-current flex-shrink-0" />
                 <span>Ramah & Menyenangkan untuk Pemula</span>
               </div>
             </div>
@@ -150,7 +150,7 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/30 via-yellow-400/20 to-sky-400/20 rounded-full blur-3xl" />
 
               {/* Speech bubble above mascot */}
-              <div className="absolute -top-6 right-2 sm:right-6 z-20 animate-bounce duration-1000">
+              <div className="absolute -top-6 right-2 sm:right-6 z-20 animate-bounce">
                 <div
                   className={`border-2 border-amber-400 px-4 py-2.5 rounded-2xl rounded-bl-none shadow-2xl text-xs font-bold flex items-center gap-2 ${
                     isDark ? 'bg-[#1c2130] text-slate-100' : 'bg-white text-slate-900 shadow-amber-900/10'
@@ -167,8 +167,8 @@ export const Hero: React.FC<HeroProps> = ({
                   {/* Decorative golden honey pedestal circle */}
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-12 bg-amber-500/20 rounded-[100%] blur-md" />
 
-                  {/* The Bee Mascot Image (LCP Optimized) */}
-                  <picture>
+                  {/* The Bee Mascot Image (LCP & CLS Optimized with Explicit Aspect Ratio) */}
+                  <picture className="block aspect-[440/600] w-64 sm:w-80">
                     <source srcSet="/bee-mascot.webp" type="image/webp" />
                     <img
                       src="/bee-mascot.png"
@@ -178,7 +178,7 @@ export const Hero: React.FC<HeroProps> = ({
                       fetchPriority="high"
                       loading="eager"
                       decoding="async"
-                      className="w-64 sm:w-80 h-auto object-contain drop-shadow-[0_20px_35px_rgba(245,158,11,0.35)] hover:scale-105 transition-transform duration-300 will-change-transform"
+                      className="w-full h-full object-contain drop-shadow-[0_20px_35px_rgba(245,158,11,0.35)] hover:scale-105 transition-transform duration-300 will-change-transform"
                     />
                   </picture>
                 </div>
