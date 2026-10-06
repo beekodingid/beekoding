@@ -32,7 +32,13 @@ function normalizeArticle(article: Partial<BlogArticle>, index: number = 0): Blo
       role: article.author?.role || 'Curriculum & Pedagogy Lead',
       avatar: article.author?.avatar || '/bee-mascot.png',
     },
-    tags: Array.isArray(article.tags) ? article.tags : ['Edukasi', 'Coding'],
+    tags: (() => {
+      if (Array.isArray(article.tags)) {
+        const cleaned = article.tags.map((t) => String(t).trim()).filter(Boolean);
+        if (cleaned.length > 0) return cleaned;
+      }
+      return [article.category || 'Coding Anak', 'Edukasi'];
+    })(),
     content: article.content || '',
     status: article.status || 'published',
     viewsCount: Number(article.viewsCount) || 0,
@@ -223,13 +229,30 @@ export async function fetchBlogArticlesFromCloud(): Promise<BlogArticle[] | null
 
     if (data && Array.isArray(data) && data.length > 0) {
       const parsedArticles: BlogArticle[] = data.map((row: any, idx: number) => {
-        let tags: string[] = ['Edukasi', 'Coding'];
+        let tags: string[] = [];
         try {
-          if (row.tags_json) {
-            tags = JSON.parse(row.tags_json);
+          const rawTags = row.tags_json ?? row.tags;
+          if (rawTags) {
+            if (Array.isArray(rawTags)) {
+              tags = rawTags.map((t) => String(t).trim()).filter(Boolean);
+            } else if (typeof rawTags === 'string') {
+              const trimmed = rawTags.trim();
+              if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+                const parsedJson = JSON.parse(trimmed);
+                if (Array.isArray(parsedJson)) {
+                  tags = parsedJson.map((t) => String(t).trim()).filter(Boolean);
+                }
+              } else {
+                tags = trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+              }
+            }
           }
         } catch {
-          // Fallback
+          tags = [];
+        }
+
+        if (tags.length === 0) {
+          tags = [row.category || 'Coding Anak', 'Edukasi'];
         }
 
         return normalizeArticle({

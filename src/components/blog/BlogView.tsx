@@ -254,9 +254,19 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
             {/* Article Header */}
             <header className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-500">
-                <Tag className="w-3 h-3" />
-                <span>{currentArticle.category}</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-500">
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>{currentArticle.category}</span>
+                </span>
+                {currentArticle.tags && currentArticle.tags.length > 0 && currentArticle.tags.map((t, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300/80 dark:border-slate-700 transition-colors"
+                  >
+                    #{t}
+                  </span>
+                ))}
               </div>
 
               <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.2] font-['Space_Grotesk'] text-slate-900 dark:text-white">
@@ -315,6 +325,30 @@ export const BlogView: React.FC<BlogViewProps> = ({
             <div className="max-w-none leading-relaxed text-base sm:text-lg">
               <MarkdownRenderer content={currentArticle.content} isDark={isDark} />
             </div>
+
+            {/* Tag Pills Footer */}
+            {currentArticle.tags && currentArticle.tags.length > 0 && (
+              <div className="pt-6 pb-2 flex flex-wrap items-center gap-2 border-t border-amber-500/15">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mr-1">
+                  <Tag className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Topik Artikel:</span>
+                </span>
+                {currentArticle.tags.map((tag, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery(tag);
+                      handleBackToList();
+                    }}
+                    className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 hover:bg-amber-500 hover:text-slate-950 text-amber-600 dark:text-amber-300 border border-amber-500/25 transition-all cursor-pointer shadow-xs"
+                    title={`Cari artikel bertopik #${tag}`}
+                  >
+                    #{tag}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Bottom In-Article AdSense Banner */}
             <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor / Google AdSense" />
@@ -545,6 +579,25 @@ export const BlogView: React.FC<BlogViewProps> = ({
                         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
                           {article.excerpt}
                         </p>
+
+                        {/* Article Tags */}
+                        {article.tags && article.tags.length > 0 && (
+                          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                            {article.tags.slice(0, 3).map((tag, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                            {article.tags.length > 3 && (
+                              <span className="text-[10px] text-slate-400 font-medium">
+                                +{article.tags.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {/* Footer: Author & Read Arrow */}
