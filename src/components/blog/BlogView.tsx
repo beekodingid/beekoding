@@ -15,6 +15,13 @@ import { AdSenseStickyFooter } from './AdSenseStickyFooter';
 import { BlogLeadMagnet } from './BlogLeadMagnet';
 import { BlogCommentsSection } from './BlogCommentsSection';
 import { MarkdownRenderer, slugifyHeading } from './MarkdownRenderer';
+import {
+  InlineTableOfContents,
+  StickySidebarTableOfContents,
+  MobileTocModal,
+  useScrollSpy,
+  type TocItem,
+} from './TableOfContents';
 import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
 import { getArticleReadTime } from '../../utils/readTime';
 import {
@@ -33,8 +40,6 @@ import {
   MessageCircle,
   Heart,
   ListOrdered,
-  ChevronDown,
-  ChevronUp,
   Zap,
   Type,
   ArrowUp,
@@ -47,12 +52,6 @@ interface BlogViewProps {
   onOpenBootcampModal: () => void;
   onOpenTalentAssessment?: () => void;
   onOpenTrialEvents?: () => void;
-}
-
-interface TocItem {
-  id: string;
-  title: string;
-  level: 2 | 3;
 }
 
 const CATEGORY_EMOJIS: Record<string, string> = {
@@ -139,6 +138,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
   const [readingProgress, setReadingProgress] = useState(0);
   const [fontSizeStep, setFontSizeStep] = useState<'normal' | 'large' | 'xlarge'>('normal');
   const [isTocOpen, setIsTocOpen] = useState(true);
+  const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
 
   // Phase 3: Floating Action Bar state
   const [showFloatingBar, setShowFloatingBar] = useState(false);
@@ -316,6 +316,9 @@ export const BlogView: React.FC<BlogViewProps> = ({
     }
     return items;
   }, [currentArticle]);
+
+  const headingIds = useMemo(() => tocItems.map((item) => item.id), [tocItems]);
+  const activeHeadingId = useScrollSpy(headingIds);
 
   // Get like count with stable initial fallback
   const getArticleLikes = (article: BlogArticle): number => {
@@ -571,7 +574,8 @@ export const BlogView: React.FC<BlogViewProps> = ({
           /* =========================================================================
              ARTICLE DETAIL VIEW
              ========================================================================= */
-          <article className="max-w-4xl mx-auto space-y-8 animate-fadeIn">
+          <div className="xl:flex xl:gap-10 xl:items-start max-w-7xl mx-auto">
+            <article className="flex-1 min-w-0 max-w-4xl mx-auto space-y-8 animate-fadeIn">
             {/* Breadcrumb Navigation */}
             <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <button
@@ -684,65 +688,15 @@ export const BlogView: React.FC<BlogViewProps> = ({
             <AdSenseSlot slotId="5878990472" format="horizontal" label="Rekomendasi Mitra Edukasi" />
 
             {/* Phase 1: Interactive Table of Contents (Daftar Isi Otomatis) */}
-            {tocItems.length > 1 && (
-              <div
-                className={`rounded-2xl border transition-all overflow-hidden ${
-                  isDark
-                    ? 'bg-[#121622]/90 border-amber-500/25 shadow-md shadow-black/20'
-                    : 'bg-gradient-to-br from-amber-500/5 via-yellow-500/5 to-white border-amber-200/90 shadow-sm'
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsTocOpen(!isTocOpen)}
-                  className="w-full px-5 py-3.5 flex items-center justify-between gap-3 text-left cursor-pointer hover:bg-amber-500/5 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-500">
-                      <ListOrdered className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
-                        Daftar Isi Artikel
-                      </span>
-                      <span className="ml-2 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                        ({tocItems.length} poin penting)
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-slate-500 dark:text-slate-400 flex items-center gap-1 text-xs font-semibold">
-                    <span>{isTocOpen ? 'Tutup' : 'Buka'}</span>
-                    {isTocOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </div>
-                </button>
-
-                {isTocOpen && (
-                  <div className="px-5 pb-4 pt-1 border-t border-amber-500/15">
-                    <nav className="space-y-1.5 text-xs sm:text-sm">
-                      {tocItems.map((item, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => scrollToHeading(item.id)}
-                          className={`w-full text-left py-1 px-2 rounded-lg transition-colors flex items-start gap-2 group cursor-pointer ${
-                            item.level === 3
-                              ? 'pl-6 text-slate-600 dark:text-slate-400'
-                              : 'font-bold text-slate-800 dark:text-slate-200'
-                          } hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400`}
-                        >
-                          <span className="text-amber-500 text-xs mt-0.5 font-mono">
-                            {item.level === 2 ? '•' : '–'}
-                          </span>
-                          <span className="group-hover:translate-x-0.5 transition-transform line-clamp-1">
-                            {item.title}
-                          </span>
-                        </button>
-                      ))}
-                    </nav>
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="xl:hidden">
+              <InlineTableOfContents
+                items={tocItems}
+                activeId={activeHeadingId}
+                onItemClick={scrollToHeading}
+                isOpen={isTocOpen}
+                onToggleOpen={() => setIsTocOpen(!isTocOpen)}
+              />
+            </div>
 
             {/* Article Body Content with Dynamic Font Size & Mid-Article AdSense */}
             <div
@@ -897,6 +851,15 @@ export const BlogView: React.FC<BlogViewProps> = ({
               </div>
             </section>
           </article>
+
+          {/* Desktop Sticky Sidebar Table of Contents */}
+          <StickySidebarTableOfContents
+            items={tocItems}
+            activeId={activeHeadingId}
+            onItemClick={scrollToHeading}
+            readingProgress={readingProgress}
+          />
+        </div>
         ) : (
           /* =========================================================================
              BLOG LIST VIEW (INDEX OF ARTICLES)
@@ -1329,6 +1292,26 @@ export const BlogView: React.FC<BlogViewProps> = ({
               </span>
             </button>
 
+            {/* Quick TOC Button for Mobile & Scrolling Readers */}
+            {tocItems.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setIsMobileTocOpen(true)}
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer relative group ${
+                  isDark
+                    ? 'bg-slate-800 text-amber-400 hover:bg-slate-700'
+                    : 'bg-white text-amber-600 hover:bg-amber-50 shadow-sm border border-amber-200'
+                }`}
+                title="Buka Daftar Isi Artikel"
+              >
+                <ListOrdered className="w-4 h-4" />
+                <span className="sr-only">Daftar Isi</span>
+                <span className="hidden sm:group-hover:block absolute right-12 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg whitespace-nowrap">
+                  Daftar Isi 📖
+                </span>
+              </button>
+            )}
+
             <div className="w-6 h-[1px] bg-slate-300 dark:bg-slate-700 my-0.5" />
 
             {/* Scroll to Top Button */}
@@ -1410,6 +1393,15 @@ export const BlogView: React.FC<BlogViewProps> = ({
         isOpen={legalModalOpen}
         onClose={() => setLegalModalOpen(false)}
         initialTab={legalTab}
+      />
+
+      {/* Mobile Table of Contents Modal */}
+      <MobileTocModal
+        items={tocItems}
+        activeId={activeHeadingId}
+        onItemClick={scrollToHeading}
+        isOpen={isMobileTocOpen}
+        onClose={() => setIsMobileTocOpen(false)}
       />
     </div>
   );
