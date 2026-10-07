@@ -5,7 +5,7 @@
     <link>https://beekoding.pages.dev/blog</link>
     <description>Panduan dan wawasan koding anak, Artificial Intelligence, dan parenting digital masa depan.</description>
     <language>id-ID</language>
-    <lastBuildDate>Wed, 07 Oct 2026 04:06:14 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 06:54:40 GMT</lastBuildDate>
     <atom:link href="https://beekoding.pages.dev/rss.xml" rel="self" type="application/rss+xml"/>
 
     <item>
@@ -95,6 +95,22 @@
       <pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate>
       <description>Memahami Dekomposisi, Pengenalan Pola, Abstraksi, dan Perancangan Algoritma. Cara melatih cara berpikir terstruktur anak sejak usia dini.</description>
       <category>Coding Anak</category>
+    </item>
+    <item>
+      <title>Apa itu coding untuk anak?</title>
+      <link>https://beekoding.pages.dev/blog/apa-itu-coding-untuk-anak</link>
+      <guid>https://beekoding.pages.dev/blog/apa-itu-coding-untuk-anak</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Coding untuk anak adalah cara belajar berpikir logis, kreatif, dan sistematis melalui aktivitas pemrograman yang disesuaikan dengan usia. Kenali manfaat, cara belajar, contoh aktivitas, serta platform coding yang cocok untuk anak.</description>
+      <category>Coding Anak</category>
+    </item>
+    <item>
+      <title>Apa itu Artificial Intelligence (AI)?</title>
+      <link>https://beekoding.pages.dev/blog/apa-itu-artificial-intelligence-ai</link>
+      <guid>https://beekoding.pages.dev/blog/apa-itu-artificial-intelligence-ai</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Artificial Intelligence atau AI adalah teknologi yang memungkinkan komputer melakukan tugas yang biasanya membutuhkan kemampuan manusia. Kenali pengertian AI, cara kerjanya, contoh penggunaannya, manfaat, risiko, dan bagaimana anak dapat mulai belajar AI.</description>
+      <category>Artificial Intelligence</category>
     </item>
   </channel>
 </rss>

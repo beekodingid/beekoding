@@ -147,4 +147,26 @@
       <image:caption>Memahami Dekomposisi, Pengenalan Pola, Abstraksi, dan Perancangan Algoritma. Cara melatih cara berpikir terstruktur anak sejak usia dini.</image:caption>
     </image:image>
   </url>
+  <url>
+    <loc>https://beekoding.pages.dev/blog/apa-itu-coding-untuk-anak</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://nmsfffkwpikiokycfdml.supabase.co/storage/v1/object/public/showcase/blog-covers/coding_anak_1791257662010_m64kx.jpg</image:loc>
+      <image:title>Apa itu coding untuk anak?</image:title>
+      <image:caption>Coding untuk anak adalah cara belajar berpikir logis, kreatif, dan sistematis melalui aktivitas pemrograman yang disesuaikan dengan usia. Kenali manfaat, cara belajar, contoh aktivitas, serta platform coding yang cocok untuk anak.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://beekoding.pages.dev/blog/apa-itu-artificial-intelligence-ai</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://nmsfffkwpikiokycfdml.supabase.co/storage/v1/object/public/showcase/blog-covers/ai_untuk_anak_1791259664495_ubilm.webp</image:loc>
+      <image:title>Apa itu Artificial Intelligence (AI)?</image:title>
+      <image:caption>Artificial Intelligence atau AI adalah teknologi yang memungkinkan komputer melakukan tugas yang biasanya membutuhkan kemampuan manusia. Kenali pengertian AI, cara kerjanya, contoh penggunaannya, manfaat, risiko, dan bagaimana anak dapat mulai belajar AI.</image:caption>
+    </image:image>
+  </url>
 </urlset>
