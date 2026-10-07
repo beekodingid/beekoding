@@ -10,6 +10,7 @@ interface NavbarProps {
   onOpenStudentPortal?: () => void;
   onOpenTrialEvents?: () => void;
   onOpenBlog?: () => void;
+  onOpenGlossary?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -18,6 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenStudentPortal,
   onOpenTrialEvents,
   onOpenBlog,
+  onOpenGlossary,
 }) => {
   const { isDark } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -130,6 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { name: 'Visi', href: '#founder' },
     { name: 'Kegiatan', href: '#gallery' },
     { name: 'Blog', href: '#blog' },
+    { name: 'Glosarium', href: '#glosarium' },
     { name: 'FAQ', href: '#faq' },
     { name: 'Kontak', href: '#contact' },
   ];
@@ -261,6 +264,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     if (link.href === '#blog' && onOpenBlog) {
                       e.preventDefault();
                       onOpenBlog();
+                    } else if (link.href === '#glosarium' && onOpenGlossary) {
+                      e.preventDefault();
+                      onOpenGlossary();
                     } else {
                       setActiveLink(link.href);
                     }

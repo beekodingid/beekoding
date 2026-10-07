@@ -11,6 +11,7 @@ interface FooterProps {
   onOpenStudentPortal?: () => void;
   onOpenBlog?: () => void;
   onOpenAgeLanding?: (tier: 'sd' | 'teens') => void;
+  onOpenGlossary?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -20,6 +21,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenStudentPortal,
   onOpenBlog,
   onOpenAgeLanding,
+  onOpenGlossary,
 }) => {
   const { isDark } = useTheme();
   const [legalModalOpen, setLegalModalOpen] = useState(false);
@@ -149,6 +151,17 @@ export const Footer: React.FC<FooterProps> = ({
                   }`}
                 >
                   <span>📰 Blog & Artikel Edukasi</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={onOpenGlossary || (() => (window.location.hash = '#glosarium'))}
+                  className={`flex items-center gap-1.5 font-bold transition-colors cursor-pointer ${
+                    isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-700 hover:text-amber-900'
+                  }`}
+                >
+                  <span>📖 Kamus & Glosarium Koding</span>
                 </button>
               </li>
               <li>

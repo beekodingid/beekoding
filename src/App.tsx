@@ -55,6 +55,9 @@ const TrialEventsModal = lazy(() =>
 const AgeTierLandingPage = lazy(() =>
   import('./components/landing/AgeTierLandingPage').then((m) => ({ default: m.AgeTierLandingPage }))
 );
+const GlossaryView = lazy(() =>
+  import('./components/glossary/GlossaryView').then((m) => ({ default: m.GlossaryView }))
+);
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
   return (
@@ -83,10 +86,12 @@ export function App() {
   const [showStudentPortal, setShowStudentPortal] = useState(false);
   const [showBlog, setShowBlog] = useState(false);
   const [blogSlug, setBlogSlug] = useState<string | undefined>(undefined);
+  const [showGlossary, setShowGlossary] = useState(false);
+  const [glossarySlug, setGlossarySlug] = useState<string | undefined>(undefined);
   const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
-  // Deteksi URL (clean path /kursus-*, /blog, /admin, /portal, /talent maupun hash #...)
+  // Deteksi URL (clean path /kursus-*, /glosarium, /blog, /admin, /portal, /talent maupun hash #...)
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash || '';
@@ -102,6 +107,7 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setShowGlossary(false);
       } else if (
         hash.startsWith('#kursus-python-remaja-smp-sma') ||
         pathname.startsWith('/kursus-python-remaja-smp-sma')
@@ -111,6 +117,24 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setShowGlossary(false);
+      } else if (
+        hash.startsWith('#glosarium') ||
+        pathname.startsWith('/glosarium')
+      ) {
+        setShowGlossary(true);
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setAgeLandingTier(null);
+        let slug = '';
+        if (hash.startsWith('#glosarium/')) {
+          slug = hash.replace('#glosarium/', '').trim();
+        } else if (pathname.startsWith('/glosarium/')) {
+          slug = pathname.replace('/glosarium/', '').trim();
+        }
+        setGlossarySlug(slug || undefined);
       } else if (
         hash.startsWith('#admin') ||
         pathname.startsWith('/admin') ||
@@ -121,12 +145,14 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setShowGlossary(false);
         setAgeLandingTier(null);
       } else if (hash === '#talent' || pathname === '/talent') {
         setShowTalentAssessment(true);
         setShowAdmin(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setShowGlossary(false);
         setAgeLandingTier(null);
       } else if (
         hash.startsWith('#portal') ||
@@ -138,12 +164,14 @@ export function App() {
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowBlog(false);
+        setShowGlossary(false);
         setAgeLandingTier(null);
       } else if (hash.startsWith('#blog') || pathname.startsWith('/blog')) {
         setShowBlog(true);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
+        setShowGlossary(false);
         setAgeLandingTier(null);
         let slug = '';
         if (hash.startsWith('#blog/')) {
@@ -157,6 +185,7 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setShowGlossary(false);
         setAgeLandingTier(null);
       }
     };
@@ -306,6 +335,47 @@ export function App() {
     }
   };
 
+  const handleOpenGlossary = (slug?: string) => {
+    const targetUrl = slug ? `/glosarium/${slug}` : '/glosarium';
+    window.history.pushState(null, '', targetUrl);
+    startTransition(() => {
+      setShowGlossary(true);
+      setGlossarySlug(slug);
+      setShowBlog(false);
+      setShowAdmin(false);
+      setShowTalentAssessment(false);
+      setShowStudentPortal(false);
+      setAgeLandingTier(null);
+    });
+  };
+
+  const handleCloseGlossary = () => {
+    startTransition(() => {
+      setShowGlossary(false);
+      setGlossarySlug(undefined);
+    });
+    if (
+      window.location.hash.startsWith('#glosarium') ||
+      window.location.pathname.startsWith('/glosarium')
+    ) {
+      window.history.pushState(null, '', '/');
+    }
+  };
+
+  // Jika Glosarium / Kamus Koding sedang aktif
+  if (showGlossary) {
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Membuka Kamus & Glosarium Koding Anak..." />}>
+        <GlossaryView
+          initialSlug={glossarySlug}
+          onBackToHome={handleCloseGlossary}
+          onOpenTalentAssessment={handleOpenTalentAssessment}
+          onOpenTrialEvents={handleOpenTrialEvents}
+        />
+      </Suspense>
+    );
+  }
+
   // Jika Landing Page Khusus Jenjang Usia sedang aktif
   if (ageLandingTier) {
     return (
@@ -376,6 +446,7 @@ export function App() {
         onOpenStudentPortal={handleOpenStudentPortal}
         onOpenTrialEvents={handleOpenTrialEvents}
         onOpenBlog={handleOpenBlog}
+        onOpenGlossary={handleOpenGlossary}
       />
 
       {/* Main Content Sections */}
@@ -427,6 +498,7 @@ export function App() {
         onOpenStudentPortal={handleOpenStudentPortal}
         onOpenBlog={handleOpenBlog}
         onOpenAgeLanding={handleOpenAgeLanding}
+        onOpenGlossary={handleOpenGlossary}
       />
 
       {/* Floating WhatsApp chat widget */}

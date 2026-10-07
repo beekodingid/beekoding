@@ -50,6 +50,17 @@
       <image:title>Kursus Python &amp; AI Remaja SMP-SMA (Usia 11-17 Thn) Beekoding</image:title>
       <image:caption>Belajar Python, Roblox Lua, AI Machine Learning, dan portofolio teknologi remaja.</image:caption>
     </image:image>
+  <!-- Programmatic SEO: Kamus & Glosarium Koding Anak -->
+  <url>
+    <loc>https://beekoding.pages.dev/glosarium</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://beekoding.pages.dev/og-image.jpg</image:loc>
+      <image:title>Kamus Istilah Koding &amp; AI Anak Beekoding</image:title>
+      <image:caption>Kamus istilah coding dan artificial intelligence ramah anak terlengkap di Indonesia.</image:caption>
+    </image:image>
   </url>
 
   <url>

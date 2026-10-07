@@ -204,6 +204,97 @@ async function main() {
 
   console.log(`[prerender-blog] Successfully prerendered ${seoLandingPages.length} Programmatic SEO landing pages!`);
 
+  // =========================================================================
+  // 3c. PRERENDER GLOSARIUM / KAMUS KODING & AI
+  // =========================================================================
+  const glossaryDir = path.join(distDir, 'glosarium');
+  if (!fs.existsSync(glossaryDir)) {
+    fs.mkdirSync(glossaryDir, { recursive: true });
+  }
+
+  const glossaryTitle = 'Kamus Istilah Koding & AI untuk Anak & Pemula | Glosarium Beekoding';
+  const glossaryDesc = 'Kamus istilah coding & AI ramah anak terlengkap di Indonesia. Pahami apa itu algoritma, loop, variabel, machine learning, dan prompt engineering dengan analogi seru dunia nyata.';
+  const glossaryKeywords = 'kamus koding anak, glosarium coding, apa itu algoritma, apa itu loop koding, apa itu machine learning, kamus istilah ai, coding untuk pemula indonesia';
+  const glossaryUrl = 'https://beekoding.pages.dev/glosarium';
+
+  const glossaryDefinedTermSetJsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    name: 'Kamus Istilah Koding & AI Anak Beekoding',
+    description: glossaryDesc,
+    url: glossaryUrl,
+    hasDefinedTerm: [
+      {
+        '@type': 'DefinedTerm',
+        name: 'Algoritma',
+        description: 'Urutan instruksi langkah demi langkah yang teratur dan logis untuk menyelesaikan suatu masalah atau mencapai tujuan tertentu.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Loop (Perulangan)',
+        description: 'Perintah dalam koding untuk mengulang suatu tindakan berkali-kali secara otomatis tanpa perlu menulis ulang kodenya.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Variabel',
+        description: 'Kotak penyimpanan khusus di dalam memori komputer yang diberi nama untuk menyimpan dan mengubah suatu nilai atau data.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Debugging',
+        description: 'Proses menyelidiki, menemukan, dan memperbaiki kesalahan (bug) pada baris kode program agar aplikasi berjalan normal kembali.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Machine Learning',
+        description: 'Cabang dari AI di mana komputer belajar sendiri mengenali pola dari ribuan contoh data tanpa perlu diprogram manual.',
+      },
+      {
+        '@type': 'DefinedTerm',
+        name: 'Prompt Engineering',
+        description: 'Keterampilan menyusun kalimat instruksi (prompt) yang jelas dan terstruktur agar AI menghasilkan jawaban yang paling tepat.',
+      },
+    ],
+  });
+
+  const glossaryBreadcrumbJsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: 'https://beekoding.pages.dev',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Kamus Istilah Koding & AI',
+        item: glossaryUrl,
+      },
+    ],
+  });
+
+  const glossarySchemasTag = `\n    <!-- Glosarium Structured Data for Google Featured Snippets -->\n    <script type="application/ld+json">\n    ${glossaryDefinedTermSetJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${glossaryBreadcrumbJsonLd}\n    </script>\n  </head>`;
+
+  let glossaryHtml = baseHtml
+    .replace(/<title>.*?<\/title>/, `<title>${glossaryTitle}</title>`)
+    .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${glossaryUrl}" />`)
+    .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${glossaryDesc}" />`)
+    .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${glossaryKeywords}" />`)
+    .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${glossaryTitle}" />`)
+    .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${glossaryDesc}" />`)
+    .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${glossaryUrl}" />`)
+    .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${glossaryTitle}" />`)
+    .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${glossaryDesc}" />`)
+    .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${glossaryUrl}" />`)
+    .replace('</head>', glossarySchemasTag);
+
+  fs.writeFileSync(path.join(glossaryDir, 'index.html'), glossaryHtml, 'utf-8');
+  fs.writeFileSync(path.join(distDir, 'glosarium.html'), glossaryHtml, 'utf-8');
+  console.log(`[prerender-blog] Successfully prerendered Glosarium SEO page!`);
+
   // 4. Prerender each article static directory and index.html
   for (const article of articles) {
     const articleDir = path.join(blogDir, article.slug);
@@ -379,6 +470,17 @@ async function main() {
       <image:loc>${domain}/og-image.jpg</image:loc>
       <image:title>Kursus Python &amp; AI Remaja SMP-SMA (Usia 11-17 Thn) Beekoding</image:title>
       <image:caption>Belajar Python, Roblox Lua, AI Machine Learning, dan portofolio teknologi remaja.</image:caption>
+    </image:image>
+  <!-- Programmatic SEO: Kamus & Glosarium Koding Anak -->
+  <url>
+    <loc>${domain}/glosarium</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Kamus Istilah Koding &amp; AI Anak Beekoding</image:title>
+      <image:caption>Kamus istilah coding dan artificial intelligence ramah anak terlengkap di Indonesia.</image:caption>
     </image:image>
   </url>
 `;
