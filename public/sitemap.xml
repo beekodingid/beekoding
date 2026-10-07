@@ -4,7 +4,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://beekoding.pages.dev/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -13,7 +13,7 @@
       <image:caption>Platform edukasi Koding dan Artificial Intelligence interaktif untuk anak dan remaja.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://beekoding.pages.dev/bee-mascot.png</image:loc>
+      <image:loc>https://beekoding.pages.dev/bee-mascot.webp</image:loc>
       <image:title>Beekoding Mascot</image:title>
     </image:image>
   </url>
@@ -21,101 +21,130 @@
   <!-- Blog Index -->
   <url>
     <loc>https://beekoding.pages.dev/blog</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Educational Blog Articles -->
   <url>
     <loc>https://beekoding.pages.dev/blog/5-alasan-anak-belajar-coding-ai-sejak-dini</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>5 Alasan Mengapa Anak Perlu Belajar Coding &amp; AI Sejak Dini di Era Digital</image:title>
+      <image:caption>Belajar koding bukan sekadar mencetak programmer masa depan, melainkan melatih computational thinking, daya nalar kritis, dan problem solving sejak usia emas.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/panduan-scratch-coding-anak-usia-6-9-tahun</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Panduan Lengkap Scratch Coding untuk Anak Usia 6-9 Tahun: Dari Nol Sampai Bikin Game Pertama</image:title>
+      <image:caption>Cara paling efektif mengenalkan logika pemrograman pada anak usia dini tanpa pusing menghafal kode teks rumit, lengkap dengan contoh proyek seru.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/python-vs-scratch-kapan-anak-siap-koding-teks</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-03-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Python vs Scratch: Kapan Waktu Tepat Anak Beralih ke Bahasa Pemrograman Tekstual?</image:title>
+      <image:caption>Perbandingan komprehensif antara visual block coding dan bahasa Python profesional. Kenali tanda-tanda kesiapan anak agar tidak frustrasi.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/mengenalkan-ai-dan-machine-learning-ramah-anak</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Mengenalkan Artificial Intelligence &amp; Machine Learning Secara Seru dan Aman untuk Anak</image:title>
+      <image:caption>Bagaimana mengajarkan cara kerja kecerdasan buatan, computer vision, dan neural network pada anak tanpa rumus kalkulus yang rumit.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/tips-digital-parenting-ubah-konsumen-jadi-kreator</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tips Digital Parenting: Mengubah Anak dari &quot;Konsumen Gadget&quot; Menjadi &quot;Kreator Digital&quot;</image:title>
+      <image:caption>Strategi praktis bagi orang tua masa kini untuk mengatasi kecanduan screen time anak dan mengalihkannya menjadi karya produktif yang membanggakan.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/roblox-studio-belajar-koding-dan-game-design</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Roblox Studio untuk Belajar Koding: Melatih Kreativitas 3D dan Logika Scripting Lua</image:title>
+      <image:caption>Mengapa Roblox Studio adalah media pembelajaran terbaik untuk mengajarkan konsep fisika 3D, koordinat ruang, dan bahasa pemrograman Lua.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/apakah-ai-menggantikan-programmer-masa-depan</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Apakah AI Akan Menggantikan Programmer? Fakta &amp; Prospek Karier Anak di Era Kecerdasan Buatan</image:title>
+      <image:caption>Kekhawatiran apakah belajar koding masih relevan di era ChatGPT dan Copilot. Analisis peran manusia yang tak tergantikan dan keterampilan yang justru paling dicari.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/panduan-scratch-vs-roblox-pemula</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Scratch vs Roblox Studio: Mana yang Lebih Cocok untuk Langkah Awal Anak Belajar Koding?</image:title>
+      <image:caption>Panduan komprehensif bagi orang tua dalam memilih antara visual block Scratch 3.0 dan game engine 3D Roblox Studio sesuai usia dan kesiapan anak.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/tips-mengatasi-kecanduan-game-anak</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>10 Tips Praktis Mengatasi Kecanduan Game Anak: Ubah Obsesi Bermain Menjadi Prestasi Bikin Game</image:title>
+      <image:caption>Metode psikologi edukatif untuk mengalihkan waktu bermain game anak yang berlebihan menjadi aktivitas produktif menciptakan game sendiri yang membanggakan.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/mengapa-python-bahasa-terbaik-remaja</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Mengapa Python Adalah Bahasa Pemrograman Terbaik untuk Anak Remaja Usia 10-17 Tahun?</image:title>
+      <image:caption>Sintaksis mirip bahasa manusia, ekosistem AI terluas di dunia, dan kemudahan transisi dari visual blocks membuat Python menjadi standar emas koding sekolah menengah.</image:caption>
+    </image:image>
   </url>
-
   <url>
     <loc>https://beekoding.pages.dev/blog/computational-thinking-keterampilan-abad-21</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Core Modules -->
-  <url>
-    <loc>https://beekoding.pages.dev/talent</loc>
-    <lastmod>2026-10-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://beekoding.pages.dev/portal</loc>
-    <lastmod>2026-10-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Mengenal 4 Pilar Computational Thinking: Fondasi Pola Pikir Kritis Abad 21 untuk Anak</image:title>
+      <image:caption>Memahami Dekomposisi, Pengenalan Pola, Abstraksi, dan Perancangan Algoritma. Cara melatih cara berpikir terstruktur anak sejak usia dini.</image:caption>
+    </image:image>
   </url>
 </urlset>

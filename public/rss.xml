@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Beekoding Blog Edukasi Coding &amp; AI</title>
+    <link>https://beekoding.pages.dev/blog</link>
+    <description>Panduan dan wawasan koding anak, Artificial Intelligence, dan parenting digital masa depan.</description>
+    <language>id-ID</language>
+    <lastBuildDate>Wed, 07 Oct 2026 02:47:58 GMT</lastBuildDate>
+    <atom:link href="https://beekoding.pages.dev/rss.xml" rel="self" type="application/rss+xml"/>
+
+    <item>
+      <title>5 Alasan Mengapa Anak Perlu Belajar Coding &amp; AI Sejak Dini di Era Digital</title>
+      <link>https://beekoding.pages.dev/blog/5-alasan-anak-belajar-coding-ai-sejak-dini</link>
+      <guid>https://beekoding.pages.dev/blog/5-alasan-anak-belajar-coding-ai-sejak-dini</guid>
+      <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Belajar koding bukan sekadar mencetak programmer masa depan, melainkan melatih computational thinking, daya nalar kritis, dan problem solving sejak usia emas.</description>
+      <category>Coding Anak</category>
+    </item>
+    <item>
+      <title>Panduan Lengkap Scratch Coding untuk Anak Usia 6-9 Tahun: Dari Nol Sampai Bikin Game Pertama</title>
+      <link>https://beekoding.pages.dev/blog/panduan-scratch-coding-anak-usia-6-9-tahun</link>
+      <guid>https://beekoding.pages.dev/blog/panduan-scratch-coding-anak-usia-6-9-tahun</guid>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Cara paling efektif mengenalkan logika pemrograman pada anak usia dini tanpa pusing menghafal kode teks rumit, lengkap dengan contoh proyek seru.</description>
+      <category>Coding Anak</category>
+    </item>
+    <item>
+      <title>Python vs Scratch: Kapan Waktu Tepat Anak Beralih ke Bahasa Pemrograman Tekstual?</title>
+      <link>https://beekoding.pages.dev/blog/python-vs-scratch-kapan-anak-siap-koding-teks</link>
+      <guid>https://beekoding.pages.dev/blog/python-vs-scratch-kapan-anak-siap-koding-teks</guid>
+      <pubDate>Sat, 28 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Perbandingan komprehensif antara visual block coding dan bahasa Python profesional. Kenali tanda-tanda kesiapan anak agar tidak frustrasi.</description>
+      <category>Coding Anak</category>
+    </item>
+    <item>
+      <title>Mengenalkan Artificial Intelligence &amp; Machine Learning Secara Seru dan Aman untuk Anak</title>
+      <link>https://beekoding.pages.dev/blog/mengenalkan-ai-dan-machine-learning-ramah-anak</link>
+      <guid>https://beekoding.pages.dev/blog/mengenalkan-ai-dan-machine-learning-ramah-anak</guid>
+      <pubDate>Wed, 01 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Bagaimana mengajarkan cara kerja kecerdasan buatan, computer vision, dan neural network pada anak tanpa rumus kalkulus yang rumit.</description>
+      <category>Artificial Intelligence</category>
+    </item>
+    <item>
+      <title>Tips Digital Parenting: Mengubah Anak dari &quot;Konsumen Gadget&quot; Menjadi &quot;Kreator Digital&quot;</title>
+      <link>https://beekoding.pages.dev/blog/tips-digital-parenting-ubah-konsumen-jadi-kreator</link>
+      <guid>https://beekoding.pages.dev/blog/tips-digital-parenting-ubah-konsumen-jadi-kreator</guid>
+      <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Strategi praktis bagi orang tua masa kini untuk mengatasi kecanduan screen time anak dan mengalihkannya menjadi karya produktif yang membanggakan.</description>
+      <category>Parenting Digital</category>
+    </item>
+    <item>
+      <title>Roblox Studio untuk Belajar Koding: Melatih Kreativitas 3D dan Logika Scripting Lua</title>
+      <link>https://beekoding.pages.dev/blog/roblox-studio-belajar-koding-dan-game-design</link>
+      <guid>https://beekoding.pages.dev/blog/roblox-studio-belajar-koding-dan-game-design</guid>
+      <pubDate>Sun, 05 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Mengapa Roblox Studio adalah media pembelajaran terbaik untuk mengajarkan konsep fisika 3D, koordinat ruang, dan bahasa pemrograman Lua.</description>
+      <category>Game Dev</category>
+    </item>
+    <item>
+      <title>Apakah AI Akan Menggantikan Programmer? Fakta &amp; Prospek Karier Anak di Era Kecerdasan Buatan</title>
+      <link>https://beekoding.pages.dev/blog/apakah-ai-menggantikan-programmer-masa-depan</link>
+      <guid>https://beekoding.pages.dev/blog/apakah-ai-menggantikan-programmer-masa-depan</guid>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Kekhawatiran apakah belajar koding masih relevan di era ChatGPT dan Copilot. Analisis peran manusia yang tak tergantikan dan keterampilan yang justru paling dicari.</description>
+      <category>Artificial Intelligence</category>
+    </item>
+    <item>
+      <title>Scratch vs Roblox Studio: Mana yang Lebih Cocok untuk Langkah Awal Anak Belajar Koding?</title>
+      <link>https://beekoding.pages.dev/blog/panduan-scratch-vs-roblox-pemula</link>
+      <guid>https://beekoding.pages.dev/blog/panduan-scratch-vs-roblox-pemula</guid>
+      <pubDate>Wed, 08 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Panduan komprehensif bagi orang tua dalam memilih antara visual block Scratch 3.0 dan game engine 3D Roblox Studio sesuai usia dan kesiapan anak.</description>
+      <category>Game Dev</category>
+    </item>
+    <item>
+      <title>10 Tips Praktis Mengatasi Kecanduan Game Anak: Ubah Obsesi Bermain Menjadi Prestasi Bikin Game</title>
+      <link>https://beekoding.pages.dev/blog/tips-mengatasi-kecanduan-game-anak</link>
+      <guid>https://beekoding.pages.dev/blog/tips-mengatasi-kecanduan-game-anak</guid>
+      <pubDate>Fri, 10 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Metode psikologi edukatif untuk mengalihkan waktu bermain game anak yang berlebihan menjadi aktivitas produktif menciptakan game sendiri yang membanggakan.</description>
+      <category>Parenting Digital</category>
+    </item>
+    <item>
+      <title>Mengapa Python Adalah Bahasa Pemrograman Terbaik untuk Anak Remaja Usia 10-17 Tahun?</title>
+      <link>https://beekoding.pages.dev/blog/mengapa-python-bahasa-terbaik-remaja</link>
+      <guid>https://beekoding.pages.dev/blog/mengapa-python-bahasa-terbaik-remaja</guid>
+      <pubDate>Sun, 12 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Sintaksis mirip bahasa manusia, ekosistem AI terluas di dunia, dan kemudahan transisi dari visual blocks membuat Python menjadi standar emas koding sekolah menengah.</description>
+      <category>Coding Anak</category>
+    </item>
+    <item>
+      <title>Mengenal 4 Pilar Computational Thinking: Fondasi Pola Pikir Kritis Abad 21 untuk Anak</title>
+      <link>https://beekoding.pages.dev/blog/computational-thinking-keterampilan-abad-21</link>
+      <guid>https://beekoding.pages.dev/blog/computational-thinking-keterampilan-abad-21</guid>
+      <pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Memahami Dekomposisi, Pengenalan Pola, Abstraksi, dan Perancangan Algoritma. Cara melatih cara berpikir terstruktur anak sejak usia dini.</description>
+      <category>Coding Anak</category>
+    </item>
+  </channel>
+</rss>

@@ -42,6 +42,7 @@ import {
   Share2,
   Clock,
   Zap,
+  Globe,
 } from 'lucide-react';
 
 interface AdminBlogProps {
@@ -426,6 +427,21 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
             <Database className="w-3.5 h-3.5 text-purple-400" />
             <span>Skrip SQL</span>
           </button>
+
+          <a
+            href="/sitemap.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+              isDark
+                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25'
+                : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+            }`}
+            title="Lihat sitemap.xml otomatis (Live real-time via Cloudflare Edge & Supabase)"
+          >
+            <Globe className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Sitemap Otomatis</span>
+          </a>
 
           <button
             type="button"

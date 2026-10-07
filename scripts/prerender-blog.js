@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
+const publicDir = path.join(rootDir, 'public');
 const indexPath = path.join(distDir, 'index.html');
 const blogArticlesPath = path.join(rootDir, 'src', 'data', 'blogArticles.ts');
 
@@ -31,8 +32,18 @@ for (let i = 1; i < blocks.length; i++) {
   const title = b.match(/title:\s*'([^']+)'/)?.[1];
   const excerpt = b.match(/excerpt:\s*'([^']+)'/)?.[1];
   const coverImage = b.match(/coverImage:\s*'([^']+)'/)?.[1];
+  const publishedAt = b.match(/publishedAt:\s*'([^']+)'/)?.[1] || new Date().toISOString().split('T')[0];
+  const category = b.match(/category:\s*'([^']+)'/)?.[1] || 'Coding Anak';
+
   if (slug && title && coverImage) {
-    articles.push({ slug, title, excerpt: excerpt || '', coverImage });
+    articles.push({
+      slug,
+      title,
+      excerpt: excerpt || '',
+      coverImage,
+      publishedAt,
+      category,
+    });
   }
 }
 
@@ -85,3 +96,117 @@ for (const article of articles) {
 }
 
 console.log(`[prerender-blog] Successfully prerendered ${articles.length} blog articles with OpenGraph metadata!`);
+
+// =========================================================================
+// 3. AUTOMATIC SITEMAP.XML & RSS.XML GENERATOR
+// =========================================================================
+
+function escapeXml(unsafe) {
+  return String(unsafe || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function generateSitemapXml(articlesList) {
+  const today = new Date().toISOString().split('T')[0];
+  const domain = 'https://beekoding.pages.dev';
+
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Homepage -->
+  <url>
+    <loc>${domain}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Beekoding - Coding and AI Learning for Future-Ready Minds</image:title>
+      <image:caption>Platform edukasi Koding dan Artificial Intelligence interaktif untuk anak dan remaja.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>${domain}/bee-mascot.webp</image:loc>
+      <image:title>Beekoding Mascot</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog Index -->
+  <url>
+    <loc>${domain}/blog</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+`;
+
+  for (const article of articlesList) {
+    const lastmod = article.publishedAt || today;
+    const coverLoc = article.coverImage.startsWith('http')
+      ? article.coverImage
+      : `${domain}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`;
+
+    xml += `
+  <url>
+    <loc>${domain}/blog/${article.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>${escapeXml(coverLoc)}</image:loc>
+      <image:title>${escapeXml(article.title)}</image:title>
+      <image:caption>${escapeXml(article.excerpt || article.title)}</image:caption>
+    </image:image>
+  </url>`;
+  }
+
+  xml += `\n</urlset>\n`;
+  return xml;
+}
+
+function generateRssXml(articlesList) {
+  const nowRfc822 = new Date().toUTCString();
+  const domain = 'https://beekoding.pages.dev';
+
+  let rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Beekoding Blog Edukasi Coding &amp; AI</title>
+    <link>${domain}/blog</link>
+    <description>Panduan dan wawasan koding anak, Artificial Intelligence, dan parenting digital masa depan.</description>
+    <language>id-ID</language>
+    <lastBuildDate>${nowRfc822}</lastBuildDate>
+    <atom:link href="${domain}/rss.xml" rel="self" type="application/rss+xml"/>
+`;
+
+  for (const article of articlesList) {
+    const pubDate = new Date(article.publishedAt || Date.now()).toUTCString();
+    rss += `
+    <item>
+      <title>${escapeXml(article.title)}</title>
+      <link>${domain}/blog/${article.slug}</link>
+      <guid>${domain}/blog/${article.slug}</guid>
+      <pubDate>${pubDate}</pubDate>
+      <description>${escapeXml(article.excerpt || '')}</description>
+      <category>${escapeXml(article.category || 'Coding Anak')}</category>
+    </item>`;
+  }
+
+  rss += `
+  </channel>
+</rss>\n`;
+  return rss;
+}
+
+const sitemapContent = generateSitemapXml(articles);
+fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapContent, 'utf-8');
+fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapContent, 'utf-8');
+console.log(`[prerender-blog] Successfully auto-generated sitemap.xml with ${articles.length} articles!`);
+
+const rssContent = generateRssXml(articles);
+fs.writeFileSync(path.join(publicDir, 'rss.xml'), rssContent, 'utf-8');
+fs.writeFileSync(path.join(distDir, 'rss.xml'), rssContent, 'utf-8');
+console.log(`[prerender-blog] Successfully auto-generated rss.xml RSS 2.0 Feed!`);
