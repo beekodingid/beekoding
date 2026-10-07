@@ -22,7 +22,7 @@ export const Hero: React.FC<HeroProps> = ({
       className="relative min-h-[90vh] lg:min-h-[96vh] flex flex-col justify-start lg:justify-center pt-28 pb-16 sm:pt-32 sm:pb-20 overflow-hidden bg-honeycomb-pattern bg-radial-honey transition-colors duration-300"
     >
       {/* Background ambient lighting effects in honey gold and wing cyan */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[550px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none animate-honey-pulse" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[550px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none animate-honey-pulse will-change-[opacity]" />
       <div className="absolute top-1/3 right-10 w-[450px] h-[450px] bg-sky-400/10 rounded-full blur-[110px] pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none" />
 
@@ -168,19 +168,18 @@ export const Hero: React.FC<HeroProps> = ({
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-12 bg-amber-500/20 rounded-[100%] blur-md" />
 
                   {/* The Bee Mascot Image (LCP & CLS Optimized with Explicit Aspect Ratio) */}
-                  <picture className="block aspect-[440/600] w-64 sm:w-80">
-                    <source srcSet="/bee-mascot.webp" type="image/webp" />
+                  <div className="block aspect-[440/600] w-64 sm:w-80">
                     <img
-                      src="/bee-mascot.png"
+                      src="/bee-mascot.webp"
                       alt="Beekoding Mascot"
                       width={440}
                       height={600}
                       fetchPriority="high"
                       loading="eager"
-                      decoding="async"
-                      className="w-full h-full object-contain drop-shadow-[0_20px_35px_rgba(245,158,11,0.35)] hover:scale-105 transition-transform duration-300 will-change-transform"
+                      decoding="sync"
+                      className="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(245,158,11,0.25)] hover:scale-105 transition-transform duration-300 will-change-transform"
                     />
-                  </picture>
+                  </div>
                 </div>
 
                 {/* Floating Interactive Badge Pills */}

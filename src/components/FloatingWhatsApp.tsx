@@ -255,7 +255,7 @@ export const FloatingWhatsApp: React.FC = () => {
           }}
           aria-expanded={isOpen}
           aria-label={isOpen ? 'Tutup menu WhatsApp' : 'Buka menu pertanyaan cepat WhatsApp'}
-          className="relative group focus:outline-none focus:ring-4 focus:ring-amber-400/40 rounded-full"
+          className="relative group focus:outline-none focus:ring-4 focus:ring-amber-400/40 rounded-full touch-manipulation cursor-pointer"
         >
           {/* Cute Mascot sitting on top of the button */}
           <div
@@ -289,7 +289,11 @@ export const FloatingWhatsApp: React.FC = () => {
                 <img
                   src="/whatsapp.png"
                   alt="WhatsApp Button"
-                  className="w-10 h-10 object-contain hover:scale-105 transition-transform duration-300"
+                  width={40}
+                  height={40}
+                  loading="eager"
+                  decoding="async"
+                  className="w-10 h-10 object-contain pointer-events-none hover:scale-105 transition-transform duration-300"
                 />
               </>
             )}

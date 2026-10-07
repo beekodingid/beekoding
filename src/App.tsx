@@ -58,7 +58,7 @@ function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string 
     <div className="min-h-screen bg-[#0d0f15] text-slate-100 flex flex-col items-center justify-center p-6 select-none">
       <div className="relative w-16 h-16 mb-4 flex items-center justify-center">
         <div className="absolute inset-0 rounded-full border-4 border-amber-500/20 border-t-amber-400 animate-spin" />
-        <span className="text-2xl animate-bounce"><img src="/bee-mascot.webp" alt="Mascot" width={60} height={60} className="w-15 h-15 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" /></span>
+        <span className="text-2xl"><img src="/bee-mascot.webp" alt="Mascot" width={60} height={60} decoding="sync" className="w-15 h-15 object-contain" /></span>
       </div>
       <span
                 className={`text-2xl font-black tracking-tight font-['Space_Grotesk']`}
