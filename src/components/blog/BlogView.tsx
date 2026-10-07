@@ -36,6 +36,7 @@ import {
   Type,
   ArrowUp,
 } from 'lucide-react';
+import { LegalModal, type LegalTabType } from '../common/LegalModal';
 
 interface BlogViewProps {
   initialSlug?: string;
@@ -143,6 +144,15 @@ export const BlogView: React.FC<BlogViewProps> = ({
   const [quickSort, setQuickSort] = useState<'all' | 'latest' | 'quick'>('all');
   const [likesMap, setLikesMap] = useState<Record<string, number>>(getStoredLikesMap);
   const [userLikedSet, setUserLikedSet] = useState<Set<string>>(getStoredUserLikedSet);
+
+  // Legal Modal (Privacy Policy & AdSense compliance)
+  const [legalModalOpen, setLegalModalOpen] = useState(false);
+  const [legalTab, setLegalTab] = useState<LegalTabType>('privacy');
+
+  const handleOpenLegal = (tab: LegalTabType) => {
+    setLegalTab(tab);
+    setLegalModalOpen(true);
+  };
 
   // Sync articles dynamically on storage events & background cloud fetch
   useEffect(() => {
@@ -1333,6 +1343,62 @@ export const BlogView: React.FC<BlogViewProps> = ({
           </div>
         </aside>
       )}
+
+      {/* Blog Footer with Legal Policies & Compliance */}
+      <footer
+        className={`mt-16 py-8 border-t transition-colors text-xs ${
+          isDark
+            ? 'bg-[#0d0f17] border-amber-500/15 text-slate-500'
+            : 'bg-[#faf6ee] border-amber-200 text-slate-600'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div>
+            © 2026 Beekoding Edukasi Teknologi. Seluruh Hak Cipta Dilindungi.
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-[11px]">
+            <button
+              type="button"
+              onClick={() => handleOpenLegal('privacy')}
+              className="hover:text-amber-500 transition-colors underline cursor-pointer"
+            >
+              Kebijakan Privasi
+            </button>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={() => handleOpenLegal('terms')}
+              className="hover:text-amber-500 transition-colors underline cursor-pointer"
+            >
+              Syarat Layanan
+            </button>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={() => handleOpenLegal('disclaimer')}
+              className="hover:text-amber-500 transition-colors underline cursor-pointer"
+            >
+              Penafian
+            </button>
+            <span>•</span>
+            <a
+              href="/ads.txt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-amber-500 transition-colors font-mono"
+            >
+              ads.txt
+            </a>
+          </div>
+        </div>
+      </footer>
+
+      {/* Legal Modal (Privacy Policy & AdSense compliance) */}
+      <LegalModal
+        isOpen={legalModalOpen}
+        onClose={() => setLegalModalOpen(false)}
+        initialTab={legalTab}
+      />
     </div>
   );
 };

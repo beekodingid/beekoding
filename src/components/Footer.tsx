@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
 import { Mail, Phone, Globe, ArrowUp, Shield, GraduationCap, BookOpen } from 'lucide-react';
+import { LegalModal, type LegalTabType } from './common/LegalModal';
 
 interface FooterProps {
   onOpenBootcampModal: () => void;
@@ -19,6 +20,13 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenBlog,
 }) => {
   const { isDark } = useTheme();
+  const [legalModalOpen, setLegalModalOpen] = useState(false);
+  const [legalTab, setLegalTab] = useState<LegalTabType>('privacy');
+
+  const handleOpenLegal = (tab: LegalTabType) => {
+    setLegalTab(tab);
+    setLegalModalOpen(true);
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -353,12 +361,37 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Bottom Bar */}
         <div
-          className={`pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${
+          className={`pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs ${
             isDark ? 'text-slate-500' : 'text-slate-600'
           }`}
         >
-          <div>
-            © 2026 Beekoding. Seluruh Hak Cipta Dilindungi. Coding & AI for Future-Ready Minds.
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
+            <span>© 2026 Beekoding. Seluruh Hak Cipta Dilindungi.</span>
+            <div className="flex items-center gap-3 text-[11px]">
+              <button
+                type="button"
+                onClick={() => handleOpenLegal('privacy')}
+                className="hover:text-amber-500 transition-colors underline cursor-pointer"
+              >
+                Kebijakan Privasi
+              </button>
+              <span>•</span>
+              <button
+                type="button"
+                onClick={() => handleOpenLegal('terms')}
+                className="hover:text-amber-500 transition-colors underline cursor-pointer"
+              >
+                Syarat Layanan
+              </button>
+              <span>•</span>
+              <button
+                type="button"
+                onClick={() => handleOpenLegal('disclaimer')}
+                className="hover:text-amber-500 transition-colors underline cursor-pointer"
+              >
+                Penafian
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-5">
@@ -406,6 +439,13 @@ export const Footer: React.FC<FooterProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Legal Policies Modal (AdSense & Compliance) */}
+        <LegalModal
+          isOpen={legalModalOpen}
+          onClose={() => setLegalModalOpen(false)}
+          initialTab={legalTab}
+        />
       </div>
     </footer>
   );

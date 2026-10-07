@@ -1,6 +1,13 @@
 # https://www.robotstxt.org/robotstxt.html
+# Google AdSense Media Crawler
+User-agent: Mediapartners-Google
+Allow: /
+
+# General Search Engine Crawlers
 User-agent: *
 Allow: /
+Allow: /blog
+Allow: /blog/*
 Allow: /#programs
 Allow: /#modular
 Allow: /#events
@@ -12,6 +19,8 @@ Allow: /#talent
 Allow: /#portal
 
 # Disallow private administrative and recovery endpoints
+Disallow: /admin
+Disallow: /admin/*
 Disallow: /#admin*
 Disallow: /*?type=recovery*
 
