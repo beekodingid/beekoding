@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import {
   GLOSSARY_TERMS,
@@ -37,6 +37,14 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedSlug, setExpandedSlug] = useState<string | null>(initialSlug || null);
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Prefetch TalentAssessmentView chunk during idle time
+    const prefetchTimer = setTimeout(() => {
+      import('../talent/TalentAssessmentView').catch(() => {});
+    }, 1200);
+    return () => clearTimeout(prefetchTimer);
+  }, []);
 
   // Filtered terms
   const filteredTerms = useMemo(() => {
@@ -147,6 +155,8 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({
               <button
                 type="button"
                 onClick={onOpenTalentAssessment}
+                onMouseEnter={() => import('../talent/TalentAssessmentView')}
+                onTouchStart={() => import('../talent/TalentAssessmentView')}
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md transition-all cursor-pointer"
               >
                 <Brain className="w-3.5 h-3.5" />

@@ -98,7 +98,39 @@ export function App() {
       const pathname = window.location.pathname || '';
       const search = window.location.search || '';
 
-      if (
+      // 1. Prioritaskan route hash spesifik (#talent, #admin, #portal) agar instan aktif dari halaman mana pun
+      if (hash === '#talent' || pathname === '/talent') {
+        setShowTalentAssessment(true);
+        setShowAdmin(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
+      } else if (
+        hash.startsWith('#admin') ||
+        pathname.startsWith('/admin') ||
+        hash.includes('type=recovery') ||
+        search.includes('type=recovery')
+      ) {
+        setShowAdmin(true);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
+      } else if (
+        hash.startsWith('#portal') ||
+        pathname.startsWith('/portal') ||
+        search.includes('cert=') ||
+        search.includes('report=')
+      ) {
+        setShowStudentPortal(true);
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
+      } else if (
         hash.startsWith('#kursus-coding-anak-sd') ||
         pathname.startsWith('/kursus-coding-anak-sd')
       ) {
@@ -135,37 +167,6 @@ export function App() {
           slug = pathname.replace('/glosarium/', '').trim();
         }
         setGlossarySlug(slug || undefined);
-      } else if (
-        hash.startsWith('#admin') ||
-        pathname.startsWith('/admin') ||
-        hash.includes('type=recovery') ||
-        search.includes('type=recovery')
-      ) {
-        setShowAdmin(true);
-        setShowTalentAssessment(false);
-        setShowStudentPortal(false);
-        setShowBlog(false);
-        setShowGlossary(false);
-        setAgeLandingTier(null);
-      } else if (hash === '#talent' || pathname === '/talent') {
-        setShowTalentAssessment(true);
-        setShowAdmin(false);
-        setShowStudentPortal(false);
-        setShowBlog(false);
-        setShowGlossary(false);
-        setAgeLandingTier(null);
-      } else if (
-        hash.startsWith('#portal') ||
-        pathname.startsWith('/portal') ||
-        search.includes('cert=') ||
-        search.includes('report=')
-      ) {
-        setShowStudentPortal(true);
-        setShowAdmin(false);
-        setShowTalentAssessment(false);
-        setShowBlog(false);
-        setShowGlossary(false);
-        setAgeLandingTier(null);
       } else if (hash.startsWith('#blog') || pathname.startsWith('/blog')) {
         setShowBlog(true);
         setShowAdmin(false);
@@ -229,15 +230,29 @@ export function App() {
     startTransition(() => {
       setShowTalentAssessment(true);
       setShowAdmin(false);
+      setAgeLandingTier(null);
+      setShowBlog(false);
+      setShowGlossary(false);
+      setShowStudentPortal(false);
     });
   };
 
   const handleCloseTalentAssessment = () => {
     startTransition(() => {
       setShowTalentAssessment(false);
+      const pathname = window.location.pathname || '';
+      if (pathname.startsWith('/kursus-coding-anak-sd')) {
+        setAgeLandingTier('sd');
+      } else if (pathname.startsWith('/kursus-python-remaja-smp-sma')) {
+        setAgeLandingTier('teens');
+      } else if (pathname.startsWith('/glosarium')) {
+        setShowGlossary(true);
+      } else if (pathname.startsWith('/blog')) {
+        setShowBlog(true);
+      }
     });
     if (window.location.hash === '#talent') {
-      window.history.pushState(null, '', window.location.pathname);
+      window.history.pushState(null, '', window.location.pathname || '/');
     }
   };
 
@@ -362,6 +377,15 @@ export function App() {
     }
   };
 
+  // 1. Jika Talent Assessment sedang aktif, utamakan langsung tampil
+  if (showTalentAssessment) {
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Asesmen Minat & Bakat..." />}>
+        <TalentAssessmentView onClose={handleCloseTalentAssessment} />
+      </Suspense>
+    );
+  }
+
   // Jika Glosarium / Kamus Koding sedang aktif
   if (showGlossary) {
     return (
@@ -411,15 +435,6 @@ export function App() {
     return (
       <Suspense fallback={<AppLoadingFallback message="Memuat Portal Administrasi Beekoding..." />}>
         <AdminView onBackToHome={handleCloseAdmin} />
-      </Suspense>
-    );
-  }
-
-  // Jika Talent Assessment sedang aktif, tampilkan Talent Assessment View
-  if (showTalentAssessment) {
-    return (
-      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Asesmen Minat & Bakat..." />}>
-        <TalentAssessmentView onClose={handleCloseTalentAssessment} />
       </Suspense>
     );
   }

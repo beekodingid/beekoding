@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { getWhatsAppInquiryUrl } from '../../data/content';
 import {
@@ -452,6 +452,14 @@ export const AgeTierLandingPage: React.FC<AgeTierLandingPageProps> = ({
   const { isDark } = useTheme();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    // Prefetch TalentAssessmentView chunk during idle time
+    const prefetchTimer = setTimeout(() => {
+      import('../talent/TalentAssessmentView').catch(() => {});
+    }, 1200);
+    return () => clearTimeout(prefetchTimer);
+  }, []);
+
   const data = TIER_DATA[tier];
 
   const handleWhatsAppConsultation = (customMsg?: string) => {
@@ -527,6 +535,8 @@ export const AgeTierLandingPage: React.FC<AgeTierLandingPageProps> = ({
               <button
                 type="button"
                 onClick={onOpenTalentAssessment}
+                onMouseEnter={() => import('../talent/TalentAssessmentView')}
+                onTouchStart={() => import('../talent/TalentAssessmentView')}
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md transition-all cursor-pointer"
               >
                 <Brain className="w-3.5 h-3.5" />
