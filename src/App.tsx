@@ -52,6 +52,9 @@ const BootcampModal = lazy(() =>
 const TrialEventsModal = lazy(() =>
   import('./components/TrialEventsModal').then((m) => ({ default: m.TrialEventsModal }))
 );
+const AgeTierLandingPage = lazy(() =>
+  import('./components/landing/AgeTierLandingPage').then((m) => ({ default: m.AgeTierLandingPage }))
+);
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
   return (
@@ -80,9 +83,10 @@ export function App() {
   const [showStudentPortal, setShowStudentPortal] = useState(false);
   const [showBlog, setShowBlog] = useState(false);
   const [blogSlug, setBlogSlug] = useState<string | undefined>(undefined);
+  const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
-  // Deteksi URL (baik clean path /blog maupun hash #blog, #talent, #admin, #portal)
+  // Deteksi URL (clean path /kursus-*, /blog, /admin, /portal, /talent maupun hash #...)
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash || '';
@@ -90,6 +94,24 @@ export function App() {
       const search = window.location.search || '';
 
       if (
+        hash.startsWith('#kursus-coding-anak-sd') ||
+        pathname.startsWith('/kursus-coding-anak-sd')
+      ) {
+        setAgeLandingTier('sd');
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+      } else if (
+        hash.startsWith('#kursus-python-remaja-smp-sma') ||
+        pathname.startsWith('/kursus-python-remaja-smp-sma')
+      ) {
+        setAgeLandingTier('teens');
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+      } else if (
         hash.startsWith('#admin') ||
         pathname.startsWith('/admin') ||
         hash.includes('type=recovery') ||
@@ -99,11 +121,13 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setAgeLandingTier(null);
       } else if (hash === '#talent' || pathname === '/talent') {
         setShowTalentAssessment(true);
         setShowAdmin(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setAgeLandingTier(null);
       } else if (
         hash.startsWith('#portal') ||
         pathname.startsWith('/portal') ||
@@ -114,11 +138,13 @@ export function App() {
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowBlog(false);
+        setAgeLandingTier(null);
       } else if (hash.startsWith('#blog') || pathname.startsWith('/blog')) {
         setShowBlog(true);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
+        setAgeLandingTier(null);
         let slug = '';
         if (hash.startsWith('#blog/')) {
           slug = hash.replace('#blog/', '').trim();
@@ -131,6 +157,7 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setAgeLandingTier(null);
       }
     };
     handleHashCheck();
@@ -255,6 +282,45 @@ export function App() {
     }
   };
 
+  const handleOpenAgeLanding = (tier: 'sd' | 'teens') => {
+    const slug = tier === 'sd' ? 'kursus-coding-anak-sd' : 'kursus-python-remaja-smp-sma';
+    window.history.pushState(null, '', `/${slug}`);
+    startTransition(() => {
+      setAgeLandingTier(tier);
+      setShowBlog(false);
+      setShowAdmin(false);
+      setShowTalentAssessment(false);
+      setShowStudentPortal(false);
+    });
+  };
+
+  const handleCloseAgeLanding = () => {
+    startTransition(() => {
+      setAgeLandingTier(null);
+    });
+    if (
+      window.location.hash.includes('kursus-') ||
+      window.location.pathname.includes('kursus-')
+    ) {
+      window.history.pushState(null, '', '/');
+    }
+  };
+
+  // Jika Landing Page Khusus Jenjang Usia sedang aktif
+  if (ageLandingTier) {
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Kurikulum & Program Belajar..." />}>
+        <AgeTierLandingPage
+          tier={ageLandingTier}
+          onBackToHome={handleCloseAgeLanding}
+          onOpenTalentAssessment={handleOpenTalentAssessment}
+          onOpenTrialEvents={handleOpenTrialEvents}
+          onOpenBootcampModal={handleOpenBootcampModal}
+        />
+      </Suspense>
+    );
+  }
+
   // Jika Blog Edukasi sedang aktif
   if (showBlog) {
     return (
@@ -360,6 +426,7 @@ export function App() {
         onOpenAdmin={handleOpenAdmin}
         onOpenStudentPortal={handleOpenStudentPortal}
         onOpenBlog={handleOpenBlog}
+        onOpenAgeLanding={handleOpenAgeLanding}
       />
 
       {/* Floating WhatsApp chat widget */}

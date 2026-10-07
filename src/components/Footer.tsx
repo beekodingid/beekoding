@@ -10,6 +10,7 @@ interface FooterProps {
   onOpenAdmin?: () => void;
   onOpenStudentPortal?: () => void;
   onOpenBlog?: () => void;
+  onOpenAgeLanding?: (tier: 'sd' | 'teens') => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -18,6 +19,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenAdmin,
   onOpenStudentPortal,
   onOpenBlog,
+  onOpenAgeLanding,
 }) => {
   const { isDark } = useTheme();
   const [legalModalOpen, setLegalModalOpen] = useState(false);
@@ -252,6 +254,40 @@ export const Footer: React.FC<FooterProps> = ({
               Program Pilihan
             </h4>
             <ul className="space-y-2 text-xs">
+              <li>
+                <a
+                  href="/kursus-coding-anak-sd"
+                  onClick={(e) => {
+                    if (onOpenAgeLanding) {
+                      e.preventDefault();
+                      onOpenAgeLanding('sd');
+                    }
+                  }}
+                  className={`text-left flex items-center gap-1.5 font-bold transition-colors ${
+                    isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-700 hover:text-amber-900'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  Coding Anak SD (Usia 6–10 Thn)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/kursus-python-remaja-smp-sma"
+                  onClick={(e) => {
+                    if (onOpenAgeLanding) {
+                      e.preventDefault();
+                      onOpenAgeLanding('teens');
+                    }
+                  }}
+                  className={`text-left flex items-center gap-1.5 font-bold transition-colors ${
+                    isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-700 hover:text-amber-900'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  Python & AI Remaja SMP-SMA
+                </a>
+              </li>
               <li>
                 <button
                   onClick={onOpenBootcampModal}

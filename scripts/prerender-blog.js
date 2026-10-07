@@ -113,6 +113,97 @@ async function main() {
     .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.pages.dev/blog"');
   fs.writeFileSync(path.join(blogDir, 'index.html'), blogListHtml, 'utf-8');
 
+  // =========================================================================
+  // 3b. PRERENDER PROGRAMMATIC SEO LANDING PAGES PER JENJANG USIA
+  // =========================================================================
+  const seoLandingPages = [
+    {
+      slug: 'kursus-coding-anak-sd',
+      title: 'Kursus Coding Anak SD (Usia 6-10 Thn) | Belajar Scratch & AI Seru Beekoding',
+      description: 'Les coding anak SD terbaik di Indonesia. Metode belajar visual Scratch 3.0, game dev interaktif, & logika AI ramah anak bersama mentor sabar. Coba Free Trial Class sekarang!',
+      keywords: 'kursus coding anak sd, les coding anak sd, belajar scratch anak pemula, kursus logika anak 6 7 8 9 10 tahun, les koding terdekat, biaya les coding anak sd',
+      url: 'https://beekoding.pages.dev/kursus-coding-anak-sd',
+      courseName: 'Kursus Coding Anak SD (Usia 6-10 Thn) - Scratch & AI Logic Beekoding',
+      courseDesc: 'Program belajar coding visual Scratch 3.0, animasi cerita, dan logika game interaktif untuk anak SD usia 6-10 tahun.',
+    },
+    {
+      slug: 'kursus-python-remaja-smp-sma',
+      title: 'Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) | Portofolio & Olimpiade Beekoding',
+      description: 'Kursus coding Python, AI Machine Learning, Roblox Lua & Web Dev untuk remaja SMP & SMA. Bangun portofolio nyata, persiapan olimpiade informatika (OSN), & beasiswa!',
+      keywords: 'kursus python remaja, les coding smp sma, belajar ai untuk anak remaja, kursus roblox lua, les programming anak smp, persiapan olimpiade informatika, kurikulum python pemula',
+      url: 'https://beekoding.pages.dev/kursus-python-remaja-smp-sma',
+      courseName: 'Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) - Beekoding',
+      courseDesc: 'Kursus coding Python profesional, game 3D Roblox Studio, Artificial Intelligence, dan web fullstack untuk remaja SMP & SMA.',
+    },
+  ];
+
+  for (const landing of seoLandingPages) {
+    const landingDir = path.join(distDir, landing.slug);
+    if (!fs.existsSync(landingDir)) {
+      fs.mkdirSync(landingDir, { recursive: true });
+    }
+
+    const courseJsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Course',
+      name: landing.courseName,
+      description: landing.courseDesc,
+      provider: {
+        '@type': 'EducationalOrganization',
+        name: 'Beekoding',
+        url: 'https://beekoding.id',
+        sameAs: 'https://beekoding.id',
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.9',
+        bestRating: '5',
+        worstRating: '1',
+        ratingCount: '384',
+        reviewCount: '384',
+      },
+    });
+
+    const breadcrumbJsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Beranda',
+          item: 'https://beekoding.pages.dev',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: landing.title,
+          item: landing.url,
+        },
+      ],
+    });
+
+    const landingSchemasTag = `\n    <!-- Programmatic SEO Landing Structured Data -->\n    <script type="application/ld+json">\n    ${courseJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${breadcrumbJsonLd}\n    </script>\n  </head>`;
+
+    let landingHtml = baseHtml
+      .replace(/<title>.*?<\/title>/, `<title>${landing.title}</title>`)
+      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${landing.url}" />`)
+      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${landing.description}" />`)
+      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${landing.keywords}" />`)
+      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${landing.title}" />`)
+      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${landing.description}" />`)
+      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${landing.url}" />`)
+      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${landing.title}" />`)
+      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${landing.description}" />`)
+      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${landing.url}" />`)
+      .replace('</head>', landingSchemasTag);
+
+    fs.writeFileSync(path.join(landingDir, 'index.html'), landingHtml, 'utf-8');
+    fs.writeFileSync(path.join(distDir, `${landing.slug}.html`), landingHtml, 'utf-8');
+  }
+
+  console.log(`[prerender-blog] Successfully prerendered ${seoLandingPages.length} Programmatic SEO landing pages!`);
+
   // 4. Prerender each article static directory and index.html
   for (const article of articles) {
     const articleDir = path.join(blogDir, article.slug);
@@ -263,6 +354,32 @@ async function main() {
     <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <!-- Programmatic SEO Landing: Kursus Coding Anak SD (Usia 6-10 Thn) -->
+  <url>
+    <loc>${domain}/kursus-coding-anak-sd</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Kursus Coding Anak SD (Usia 6-10 Thn) Beekoding</image:title>
+      <image:caption>Belajar Scratch 3.0, game visual, dan logika komputasi seru untuk anak SD.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Programmatic SEO Landing: Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) -->
+  <url>
+    <loc>${domain}/kursus-python-remaja-smp-sma</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Kursus Python &amp; AI Remaja SMP-SMA (Usia 11-17 Thn) Beekoding</image:title>
+      <image:caption>Belajar Python, Roblox Lua, AI Machine Learning, dan portofolio teknologi remaja.</image:caption>
+    </image:image>
   </url>
 `;
 

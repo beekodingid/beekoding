@@ -26,6 +26,32 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- Programmatic SEO Landing: Kursus Coding Anak SD (Usia 6-10 Thn) -->
+  <url>
+    <loc>https://beekoding.pages.dev/kursus-coding-anak-sd</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://beekoding.pages.dev/og-image.jpg</image:loc>
+      <image:title>Kursus Coding Anak SD (Usia 6-10 Thn) Beekoding</image:title>
+      <image:caption>Belajar Scratch 3.0, game visual, dan logika komputasi seru untuk anak SD.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Programmatic SEO Landing: Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) -->
+  <url>
+    <loc>https://beekoding.pages.dev/kursus-python-remaja-smp-sma</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://beekoding.pages.dev/og-image.jpg</image:loc>
+      <image:title>Kursus Python &amp; AI Remaja SMP-SMA (Usia 11-17 Thn) Beekoding</image:title>
+      <image:caption>Belajar Python, Roblox Lua, AI Machine Learning, dan portofolio teknologi remaja.</image:caption>
+    </image:image>
+  </url>
+
   <url>
     <loc>https://beekoding.pages.dev/blog/5-alasan-anak-belajar-coding-ai-sejak-dini</loc>
     <lastmod>2026-03-15</lastmod>
