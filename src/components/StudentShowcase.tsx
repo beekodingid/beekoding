@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import {
   type StudentProject,
@@ -7,6 +7,7 @@ import {
   getStudentProjects,
   getParentTestimonials,
 } from '../services/adminStorage';
+import { WriteReviewModal } from './testimonials/WriteReviewModal';
 import {
   Rocket,
   Star,
@@ -16,11 +17,13 @@ import {
   Calendar,
   Sparkles,
   Quote,
-  CheckCircle,
   Play,
   X,
   User,
   ArrowRight,
+  Search,
+  ShieldCheck,
+  PenSquare,
 } from 'lucide-react';
 
 interface StudentShowcaseProps {
@@ -94,6 +97,24 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
+  const [selectedRatingFilter, setSelectedRatingFilter] = useState<number | 'all'>('all');
+  const [testiSearchQuery, setTestiSearchQuery] = useState('');
+
+  // Auto-switch to Testimoni & open review modal if hash is #review or #testimoni
+  useEffect(() => {
+    const handleHashReview = () => {
+      const hash = window.location.hash || '';
+      if (hash === '#review' || hash === '#testimoni') {
+        setActiveTab('testimonials');
+        setIsWriteReviewModalOpen(true);
+      }
+    };
+    handleHashReview();
+    window.addEventListener('hashchange', handleHashReview);
+    return () => window.removeEventListener('hashchange', handleHashReview);
+  }, []);
+
   // Filter projects: featured only on public website (or all if none featured)
   const featuredProjects = allProjects.filter((p) => p.isFeatured);
   const displayProjects = featuredProjects.length > 0 ? featuredProjects : allProjects;
@@ -108,14 +129,41 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
   const displayTestimonials =
     featuredTestimonials.length > 0 ? featuredTestimonials : allTestimonials;
 
+  // Review Breakdown Metrics
+  const totalTestiCount = displayTestimonials.length;
+  const count5 = displayTestimonials.filter((t) => t.rating === 5).length;
+  const count4 = displayTestimonials.filter((t) => t.rating === 4).length;
+  const count3 = displayTestimonials.filter((t) => t.rating === 3).length;
+
+  const pct5 = totalTestiCount > 0 ? Math.round((count5 / totalTestiCount) * 100) : 100;
+  const pct4 = totalTestiCount > 0 ? Math.round((count4 / totalTestiCount) * 100) : 0;
+  const pct3 = totalTestiCount > 0 ? Math.round((count3 / totalTestiCount) * 100) : 0;
+
   // Average Rating
   const avgRating =
-    displayTestimonials.length > 0
+    totalTestiCount > 0
       ? (
           displayTestimonials.reduce((acc, curr) => acc + curr.rating, 0) /
-          displayTestimonials.length
+          totalTestiCount
         ).toFixed(1)
       : '5.0';
+
+  // Testimonials Filtered by rating & search query
+  const filteredTestimonials = useMemo(() => {
+    return displayTestimonials.filter((t) => {
+      const matchRating =
+        selectedRatingFilter === 'all' || t.rating === selectedRatingFilter;
+      const q = testiSearchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        t.parentName.toLowerCase().includes(q) ||
+        t.childName.toLowerCase().includes(q) ||
+        t.review.toLowerCase().includes(q) ||
+        t.programTaken.toLowerCase().includes(q) ||
+        (t.roleOrProfession && t.roleOrProfession.toLowerCase().includes(q));
+      return matchRating && matchSearch;
+    });
+  }, [displayTestimonials, selectedRatingFilter, testiSearchQuery]);
 
   return (
     <section
@@ -387,81 +435,277 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
         {/* TAB 2: TESTIMONI & REVIEW WALI MURID                     */}
         {/* ======================================================== */}
         {activeTab === 'testimonials' && (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayTestimonials.map((testimonial) => (
-                <div
-                  key={testimonial.id}
-                  className={`rounded-2xl border p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group ${
-                    isDark
-                      ? 'bg-[#111420]/90 border-amber-500/20 hover:border-amber-400/50'
-                      : 'bg-white border-amber-200/80 hover:border-amber-400 shadow-md shadow-amber-900/5'
-                  }`}
-                >
-                  <div>
-                    {/* Stars & Quote Icon */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-1 text-amber-500">
+          <div className="space-y-8">
+            {/* 1. Header Rating Score & Review Action Banner */}
+            <div
+              className={`p-6 sm:p-8 rounded-3xl border transition-all ${
+                isDark
+                  ? 'bg-gradient-to-br from-[#121624] via-[#0f131d] to-[#151926] border-amber-500/25 shadow-xl shadow-black/40'
+                  : 'bg-gradient-to-br from-amber-50/90 via-white to-amber-100/50 border-amber-300 shadow-lg shadow-amber-900/5'
+              }`}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                {/* Big Score Box */}
+                <div className="md:col-span-4 text-center md:text-left space-y-2 border-b md:border-b-0 md:border-r pb-6 md:pb-0 md:pr-6 border-slate-700/20 dark:border-slate-800">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                    Skor Kepuasan Orang Tua
+                  </span>
+                  <div className="flex items-center justify-center md:justify-start gap-3">
+                    <span className="text-4xl sm:text-5xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
+                      {avgRating}
+                    </span>
+                    <div>
+                      <div className="flex text-amber-400">
                         {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < testimonial.rating
-                                ? 'fill-amber-400 text-amber-400'
-                                : 'text-slate-300 dark:text-slate-600'
-                            }`}
-                          />
+                          <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                         ))}
-                        <span className="ml-1 text-xs font-bold text-slate-500 dark:text-slate-400">
-                          {testimonial.rating}.0
-                        </span>
                       </div>
-                      <Quote className="w-6 h-6 text-amber-500/30" />
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+                        dari {totalTestiCount} Ulasan Terverifikasi
+                      </p>
                     </div>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                    100% Wali murid merekomendasikan kurikulum Beekoding untuk mengasah logika & kreativitas digital anak.
+                  </p>
+                </div>
 
-                    {/* Review Text */}
-                    <p
-                      className={`text-xs sm:text-sm leading-relaxed mb-6 italic ${
-                        isDark ? 'text-slate-200' : 'text-slate-700'
-                      }`}
-                    >
-                      "{testimonial.review}"
-                    </p>
+                {/* Rating Distribution Bars */}
+                <div className="md:col-span-4 space-y-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-14 font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                      5 <Star className="w-3 h-3 fill-amber-400 text-amber-400 inline" />
+                    </span>
+                    <div className="flex-1 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full bg-amber-400 rounded-full transition-all duration-500"
+                        style={{ width: `${pct5}%` }}
+                      />
+                    </div>
+                    <span className="w-9 text-right font-semibold text-slate-400">{pct5}%</span>
                   </div>
 
-                  {/* Parent Profile Box */}
-                  <div
-                    className={`pt-4 border-t flex items-center space-x-3.5 ${
-                      isDark ? 'border-slate-800' : 'border-slate-100'
-                    }`}
-                  >
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-lg font-bold text-slate-950 shrink-0 shadow-sm">
-                      {testimonial.avatarEmojiOrUrl || '👩‍💼'}
+                  <div className="flex items-center gap-2">
+                    <span className="w-14 font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                      4 <Star className="w-3 h-3 fill-amber-400 text-amber-400 inline" />
+                    </span>
+                    <div className="flex-1 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full bg-amber-400/80 rounded-full transition-all duration-500"
+                        style={{ width: `${pct4}%` }}
+                      />
                     </div>
+                    <span className="w-9 text-right font-semibold text-slate-400">{pct4}%</span>
+                  </div>
 
-                    <div className="space-y-0.5 overflow-hidden">
-                      <div className="flex items-center space-x-1.5">
-                        <h4
-                          className={`font-bold text-xs sm:text-sm truncate ${
-                            isDark ? 'text-white' : 'text-slate-900'
-                          }`}
-                        >
-                          {testimonial.parentName}
-                        </h4>
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      </div>
-                      <p className="text-[11px] text-slate-400 truncate">
-                        {testimonial.roleOrProfession}
-                      </p>
-                      <p className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold truncate">
-                        Orang tua dari {testimonial.childName} ({testimonial.childAge} thn) •{' '}
-                        {testimonial.programTaken}
-                      </p>
+                  <div className="flex items-center gap-2">
+                    <span className="w-14 font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                      3 <Star className="w-3 h-3 fill-amber-400 text-amber-400 inline" />
+                    </span>
+                    <div className="flex-1 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full bg-amber-400/50 rounded-full transition-all duration-500"
+                        style={{ width: `${pct3}%` }}
+                      />
                     </div>
+                    <span className="w-9 text-right font-semibold text-slate-400">{pct3}%</span>
                   </div>
                 </div>
-              ))}
+
+                {/* Big Action Button */}
+                <div className="md:col-span-4 flex flex-col items-center md:items-end justify-center space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsWriteReviewModalOpen(true)}
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 text-slate-950 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5"
+                  >
+                    <PenSquare className="w-4 h-4" />
+                    <span>Beri Rating & Tulis Ulasan</span>
+                  </button>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium text-center md:text-right">
+                    ✓ Terbuka untuk seluruh wali murid & siswa
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {/* 2. Filter Pills & Search Input */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              {/* Rating Filter Pills */}
+              <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setSelectedRatingFilter('all')}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+                    selectedRatingFilter === 'all'
+                      ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                      : isDark
+                      ? 'bg-slate-900/60 text-slate-300 border-slate-800 hover:bg-slate-800'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  Semua ({totalTestiCount})
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedRatingFilter(5)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border flex items-center gap-1 cursor-pointer ${
+                    selectedRatingFilter === 5
+                      ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                      : isDark
+                      ? 'bg-slate-900/60 text-slate-300 border-slate-800 hover:bg-slate-800'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>5 Bintang</span>
+                  <span className="text-[10px] opacity-75">({count5})</span>
+                </button>
+
+                {count4 > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRatingFilter(4)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border flex items-center gap-1 cursor-pointer ${
+                      selectedRatingFilter === 4
+                        ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                        : isDark
+                        ? 'bg-slate-900/60 text-slate-300 border-slate-800 hover:bg-slate-800'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>4 Bintang</span>
+                    <span className="text-[10px] opacity-75">({count4})</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative w-full sm:w-72">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={testiSearchQuery}
+                  onChange={(e) => setTestiSearchQuery(e.target.value)}
+                  placeholder="Cari ulasan atau nama murid..."
+                  className={`w-full pl-9 pr-3 py-1.5 rounded-full text-xs border transition-all ${
+                    isDark
+                      ? 'bg-slate-900/80 border-slate-800 text-white placeholder-slate-500 focus:border-amber-500'
+                      : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-amber-500'
+                  }`}
+                />
+                {testiSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setTestiSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 3. Review Cards Grid */}
+            {filteredTestimonials.length === 0 ? (
+              <div className="text-center py-16 px-4 rounded-3xl border border-dashed border-slate-700/30">
+                <Quote className="w-10 h-10 text-amber-500/40 mx-auto mb-3" />
+                <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">
+                  Tidak Ada Ulasan yang Cocok
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
+                  Coba ganti kata kunci pencarian atau bersihkan filter bintang Anda.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedRatingFilter('all');
+                    setTestiSearchQuery('');
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950"
+                >
+                  Reset Filter
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredTestimonials.map((testimonial) => (
+                  <div
+                    key={testimonial.id}
+                    className={`rounded-3xl border p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group hover:-translate-y-1 ${
+                      isDark
+                        ? 'bg-[#111420]/95 border-amber-500/20 hover:border-amber-400/50 shadow-md shadow-black/20'
+                        : 'bg-white border-amber-200/90 hover:border-amber-400 shadow-md shadow-amber-900/5'
+                    }`}
+                  >
+                    <div>
+                      {/* Top Bar: Stars + Verified Badge */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-1 text-amber-400">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < testimonial.rating
+                                  ? 'fill-amber-400 text-amber-400'
+                                  : 'text-slate-300 dark:text-slate-700'
+                              }`}
+                            />
+                          ))}
+                          <span className="ml-1.5 text-xs font-extrabold text-slate-600 dark:text-slate-300">
+                            {testimonial.rating}.0
+                          </span>
+                        </div>
+
+                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                          <ShieldCheck className="w-3 h-3" />
+                          <span>Wali Terverifikasi</span>
+                        </span>
+                      </div>
+
+                      {/* Review Quote Text */}
+                      <p
+                        className={`text-xs sm:text-sm leading-relaxed mb-6 italic ${
+                          isDark ? 'text-slate-200' : 'text-slate-700'
+                        }`}
+                      >
+                        "{testimonial.review}"
+                      </p>
+                    </div>
+
+                    {/* Parent Profile Card */}
+                    <div
+                      className={`pt-4 border-t flex items-center space-x-3.5 ${
+                        isDark ? 'border-slate-800' : 'border-slate-100'
+                      }`}
+                    >
+                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-xl font-bold text-slate-950 shrink-0 shadow-sm ring-2 ring-amber-400/20">
+                        {testimonial.avatarEmojiOrUrl || '👩‍💼'}
+                      </div>
+
+                      <div className="space-y-0.5 overflow-hidden">
+                        <div className="flex items-center space-x-1.5">
+                          <h4
+                            className={`font-black text-xs sm:text-sm truncate ${
+                              isDark ? 'text-white' : 'text-slate-900'
+                            }`}
+                          >
+                            {testimonial.parentName}
+                          </h4>
+                        </div>
+                        <p className="text-[11px] text-slate-400 truncate font-medium">
+                          {testimonial.roleOrProfession}
+                        </p>
+                        <p className="text-[10px] text-amber-600 dark:text-amber-400 font-extrabold truncate">
+                          Orang tua dari {testimonial.childName} ({testimonial.childAge} thn) •{' '}
+                          {testimonial.programTaken}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -676,6 +920,13 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
           </div>
         </div>
       )}
+
+      {/* Public Interactive Write Review Modal */}
+      <WriteReviewModal
+        isOpen={isWriteReviewModalOpen}
+        onClose={() => setIsWriteReviewModalOpen(false)}
+        onSuccess={() => loadData()}
+      />
     </section>
   );
 };

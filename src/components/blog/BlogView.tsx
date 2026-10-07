@@ -43,8 +43,11 @@ import {
   Zap,
   Type,
   ArrowUp,
+  Star,
+  PenSquare,
 } from 'lucide-react';
 import { LegalModal, type LegalTabType } from '../common/LegalModal';
+import { WriteReviewModal } from '../testimonials/WriteReviewModal';
 
 interface BlogViewProps {
   initialSlug?: string;
@@ -149,6 +152,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
   const [quickSort, setQuickSort] = useState<'all' | 'latest' | 'quick'>('all');
   const [likesMap, setLikesMap] = useState<Record<string, number>>(getStoredLikesMap);
   const [userLikedSet, setUserLikedSet] = useState<Set<string>>(getStoredUserLikedSet);
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
 
   // Legal Modal (Privacy Policy & AdSense compliance)
   const [legalModalOpen, setLegalModalOpen] = useState(false);
@@ -752,6 +756,60 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
             {/* Bottom In-Article AdSense Banner */}
             <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor / Google AdSense" />
+
+            {/* Social Proof & Rating Box in Blog */}
+            <div
+              className={`my-6 p-5 sm:p-6 rounded-2xl border transition-all ${
+                isDark
+                  ? 'bg-[#121624] border-amber-500/20 text-slate-200'
+                  : 'bg-amber-50/70 border-amber-200 text-slate-800'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-amber-500">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current" />
+                    ))}
+                    <span className="text-xs font-black text-slate-900 dark:text-white ml-1">
+                      4.9 / 5.0
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                      (380+ Ulasan Wali Murid)
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
+                    "Anak saya jadi lebih kritis dan bisa membuat game sendiri setelah belajar koding di Beekoding."
+                  </p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    — Bunda Ratna (Orang Tua Murid Kelas Scratch SD)
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsWriteReviewModalOpen(true)}
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-extrabold bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <PenSquare className="w-3.5 h-3.5" />
+                    <span>Beri Rating</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onBackToHome();
+                      setTimeout(() => {
+                        window.location.hash = '#showcase';
+                      }, 100);
+                    }}
+                    className="w-full sm:w-auto px-3.5 py-2 rounded-xl text-xs font-bold border border-amber-500/30 hover:bg-amber-500/10 transition-all cursor-pointer"
+                  >
+                    Lihat Semua
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {/* Social Share Bar + Phase 2 Like Reactions */}
             <div className="pt-6 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-4">
@@ -1402,6 +1460,12 @@ export const BlogView: React.FC<BlogViewProps> = ({
         onItemClick={scrollToHeading}
         isOpen={isMobileTocOpen}
         onClose={() => setIsMobileTocOpen(false)}
+      />
+
+      {/* Public Interactive Write Review Modal */}
+      <WriteReviewModal
+        isOpen={isWriteReviewModalOpen}
+        onClose={() => setIsWriteReviewModalOpen(false)}
       />
     </div>
   );

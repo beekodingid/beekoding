@@ -12,7 +12,9 @@ import {
   ChevronDown,
   ArrowLeft,
   Calendar,
+  PenSquare,
 } from 'lucide-react';
+import { WriteReviewModal } from '../testimonials/WriteReviewModal';
 
 export type AgeLandingTier = 'sd' | 'teens';
 
@@ -451,6 +453,7 @@ export const AgeTierLandingPage: React.FC<AgeTierLandingPageProps> = ({
 }) => {
   const { isDark } = useTheme();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
 
   useEffect(() => {
     // Prefetch TalentAssessmentView chunk during idle time
@@ -964,6 +967,17 @@ export const AgeTierLandingPage: React.FC<AgeTierLandingPageProps> = ({
               </div>
             ))}
           </div>
+
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={() => setIsWriteReviewModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold bg-amber-500/10 hover:bg-amber-500 hover:text-slate-950 text-amber-500 border border-amber-500/30 transition-all cursor-pointer shadow-xs"
+            >
+              <PenSquare className="w-3.5 h-3.5" />
+              <span>Punya Pengalaman Belajar di Beekoding? Tulis Ulasan & Rating Anda</span>
+            </button>
+          </div>
         </div>
       </section>
 
@@ -1066,6 +1080,17 @@ export const AgeTierLandingPage: React.FC<AgeTierLandingPageProps> = ({
       <footer className="py-8 text-center text-xs text-slate-500 border-t border-slate-700/20">
         <p>© 2026 Beekoding. Seluruh Hak Cipta Dilindungi.</p>
       </footer>
+
+      {/* Public Interactive Write Review Modal */}
+      <WriteReviewModal
+        isOpen={isWriteReviewModalOpen}
+        onClose={() => setIsWriteReviewModalOpen(false)}
+        defaultProgram={
+          tier === 'sd'
+            ? 'Junior Explorer: Visual Scratch 3.0 (Usia 6-10 Thn)'
+            : 'Teens Innovator: Fullstack Web & AI App (Usia 15-18 Thn)'
+        }
+      />
     </div>
   );
 };

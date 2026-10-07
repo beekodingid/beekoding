@@ -130,6 +130,13 @@ export function App() {
         setShowBlog(false);
         setShowGlossary(false);
         setAgeLandingTier(null);
+      } else if (hash === '#review' || hash === '#showcase' || hash === '#testimoni') {
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
       } else if (
         hash.startsWith('#kursus-coding-anak-sd') ||
         pathname.startsWith('/kursus-coding-anak-sd')
