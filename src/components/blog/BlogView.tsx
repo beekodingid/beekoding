@@ -13,6 +13,7 @@ import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
 import { AdSenseStickyFooter } from './AdSenseStickyFooter';
 import { BlogLeadMagnet } from './BlogLeadMagnet';
+import { BlogCommentsSection } from './BlogCommentsSection';
 import { MarkdownRenderer, slugifyHeading } from './MarkdownRenderer';
 import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
 import { getArticleReadTime } from '../../utils/readTime';
@@ -852,6 +853,12 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 </button>
               </div>
             </div>
+
+            {/* Community Q&A and Interactive Discussion */}
+            <BlogCommentsSection
+              articleSlug={currentArticle.slug}
+              articleTitle={currentArticle.title}
+            />
 
             {/* Related Articles */}
             <section className="pt-12 border-t border-amber-500/20 space-y-6">

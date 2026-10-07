@@ -43,7 +43,21 @@ import {
   Clock,
   Zap,
   Globe,
+  MessageSquare,
+  CheckCircle,
+  AlertTriangle,
+  CornerDownRight,
+  ShieldCheck,
+  Heart,
+  Send,
 } from 'lucide-react';
+import {
+  getAllComments,
+  updateCommentStatus,
+  deleteComment,
+  addComment as addBlogComment,
+  type BlogComment,
+} from '../../services/blogCommentsStorage';
 
 interface AdminBlogProps {
   isDark?: boolean;
@@ -85,11 +99,21 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
   const autoWordCount = useMemo(() => countWords(formContent), [formContent]);
   const autoReadTime = useMemo(() => calculateReadTime(formContent), [formContent]);
 
+  // Sub-tab: 'articles' or 'comments'
+  const [mainTab, setMainTab] = useState<'articles' | 'comments'>('articles');
+  const [commentsList, setCommentsList] = useState<BlogComment[]>(() => getAllComments());
+  const [commentSearch, setCommentSearch] = useState('');
+  const [commentStatusFilter, setCommentStatusFilter] = useState<'all' | 'approved' | 'pending' | 'spam'>('all');
+  const [replyingCommentId, setReplyingCommentId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [replyMentorName, setReplyMentorName] = useState('Kak Febri Hasan (Mentor)');
+
   // Sync listener
   useEffect(() => {
     const unsub = onStorageUpdate((type) => {
       if (type === 'blog' || type === 'all') {
         setArticles(getBlogArticles());
+        setCommentsList(getAllComments());
       }
     });
     return unsub;
@@ -97,6 +121,38 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
 
   const refreshList = () => {
     setArticles(getBlogArticles());
+    setCommentsList(getAllComments());
+  };
+
+  const handleApproveComment = (id: string) => {
+    updateCommentStatus(id, 'approved');
+    setCommentsList(getAllComments());
+  };
+
+  const handleSpamComment = (id: string) => {
+    updateCommentStatus(id, 'spam');
+    setCommentsList(getAllComments());
+  };
+
+  const handleDeleteComment = (id: string) => {
+    if (!window.confirm('Hapus komentar ini secara permanen?')) return;
+    deleteComment(id);
+    setCommentsList(getAllComments());
+  };
+
+  const handleSendMentorReply = async (comment: BlogComment) => {
+    if (!replyText.trim()) return;
+    await addBlogComment({
+      articleSlug: comment.articleSlug,
+      authorName: replyMentorName.trim(),
+      authorRole: 'Mentor & Curriculum Lead Beekoding',
+      content: replyText.trim(),
+      parentId: comment.id,
+      isMentor: true,
+    });
+    setReplyText('');
+    setReplyingCommentId(null);
+    setCommentsList(getAllComments());
   };
 
   // Filtered list
@@ -127,6 +183,28 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
     const categoriesCount = new Set(articles.map((a) => a.category)).size;
     return { total, published, draft, categoriesCount };
   }, [articles]);
+
+  const filteredComments = useMemo(() => {
+    return commentsList.filter((c) => {
+      const matchStatus =
+        commentStatusFilter === 'all' ? true : c.status === commentStatusFilter;
+      const q = commentSearch.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        c.authorName.toLowerCase().includes(q) ||
+        c.content.toLowerCase().includes(q) ||
+        c.articleSlug.toLowerCase().includes(q);
+      return matchStatus && matchSearch;
+    });
+  }, [commentsList, commentStatusFilter, commentSearch]);
+
+  const commentStats = useMemo(() => {
+    const total = commentsList.length;
+    const approved = commentsList.filter((c) => c.status === 'approved').length;
+    const pending = commentsList.filter((c) => c.status === 'pending').length;
+    const mentors = commentsList.filter((c) => c.isMentor).length;
+    return { total, approved, pending, mentors };
+  }, [commentsList]);
 
   const handleOpenNewModal = () => {
     setEditingArticle(null);
@@ -463,8 +541,60 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
         </div>
       )}
 
-      {/* Metric Stat Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {/* Tab Switcher: Kelola Artikel vs Moderasi Komentar */}
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <button
+          type="button"
+          onClick={() => setMainTab('articles')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer ${
+            mainTab === 'articles'
+              ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+              : isDark
+              ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100'
+          }`}
+        >
+          <BookOpen className="w-4 h-4" />
+          <span>Kelola Artikel</span>
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full font-bold ${
+              mainTab === 'articles' ? 'bg-slate-950/20 text-slate-950' : 'bg-slate-500/20 text-slate-400'
+            }`}
+          >
+            {articles.length}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMainTab('comments')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer ${
+            mainTab === 'comments'
+              ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+              : isDark
+              ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100'
+          }`}
+        >
+          <MessageSquare className="w-4 h-4" />
+          <span>Moderasi Komentar & Tanya Jawab</span>
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full font-bold ${
+              mainTab === 'comments' ? 'bg-slate-950/20 text-slate-950' : 'bg-slate-500/20 text-slate-400'
+            }`}
+          >
+            {commentsList.length}
+          </span>
+          {commentStats.pending > 0 && (
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+          )}
+        </button>
+      </div>
+
+      {mainTab === 'articles' ? (
+        <>
+          {/* Metric Stat Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div
           className={`p-4 rounded-2xl border transition-colors ${
             isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
@@ -718,6 +848,354 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
           </div>
         )}
       </div>
+        </>
+      ) : (
+        /* =========================================================================
+           TAB 2: MODERASI KOMENTAR & TANYA JAWAB
+           ========================================================================= */
+        <div className="space-y-6">
+          {/* Comment Metric Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div
+              className={`p-4 rounded-2xl border transition-colors ${
+                isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+              }`}
+            >
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Komentar</div>
+              <div className="text-2xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white mt-1">
+                {commentStats.total}
+              </div>
+            </div>
+
+            <div
+              className={`p-4 rounded-2xl border transition-colors ${
+                isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+              }`}
+            >
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Komentar Disetujui</div>
+              <div className="text-2xl font-black font-['Space_Grotesk'] text-emerald-500 mt-1">
+                {commentStats.approved}
+              </div>
+            </div>
+
+            <div
+              className={`p-4 rounded-2xl border transition-colors ${
+                isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+              }`}
+            >
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Menunggu Moderasi</div>
+              <div className="text-2xl font-black font-['Space_Grotesk'] text-amber-500 mt-1">
+                {commentStats.pending}
+              </div>
+            </div>
+
+            <div
+              className={`p-4 rounded-2xl border transition-colors ${
+                isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+              }`}
+            >
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Balasan Mentor</div>
+              <div className="text-2xl font-black font-['Space_Grotesk'] text-sky-500 mt-1">
+                {commentStats.mentors}
+              </div>
+            </div>
+          </div>
+
+          {/* Comment Search & Filters Bar */}
+          <div
+            className={`p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 ${
+              isDark ? 'bg-[#131722] border-slate-800' : 'bg-white border-amber-200/80 shadow-xs'
+            }`}
+          >
+            <div className="relative w-full md:w-80">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={commentSearch}
+                onChange={(e) => setCommentSearch(e.target.value)}
+                placeholder="Cari nama, isi komentar, atau slug..."
+                className={`w-full pl-10 pr-4 py-2 rounded-xl text-xs border outline-none transition-colors ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-slate-200 focus:border-amber-500'
+                    : 'bg-amber-50/40 border-amber-200 text-slate-800 focus:border-amber-500'
+                }`}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
+              {(
+                [
+                  { id: 'all', label: 'Semua' },
+                  { id: 'approved', label: 'Disetujui' },
+                  { id: 'pending', label: 'Menunggu' },
+                  { id: 'spam', label: 'Spam' },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setCommentStatusFilter(tab.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    commentStatusFilter === tab.id
+                      ? 'bg-amber-500 text-slate-950 shadow-xs'
+                      : isDark
+                      ? 'bg-slate-900 text-slate-400 hover:text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Comments List */}
+          <div className="space-y-4">
+            {filteredComments.length > 0 ? (
+              filteredComments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className={`p-5 rounded-2xl border transition-all ${
+                    isDark
+                      ? comment.isMentor
+                        ? 'bg-amber-500/5 border-amber-500/30'
+                        : 'bg-[#131722] border-slate-800'
+                      : comment.isMentor
+                      ? 'bg-amber-50/50 border-amber-300 shadow-xs'
+                      : 'bg-white border-amber-200/80 shadow-xs'
+                  }`}
+                >
+                  {/* Comment Top Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                          comment.isMentor
+                            ? 'bg-gradient-to-tr from-amber-500 to-yellow-400 text-slate-950 shadow-xs'
+                            : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        {comment.authorName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-slate-900 dark:text-white">
+                            {comment.authorName}
+                          </span>
+                          {comment.isMentor && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 uppercase tracking-wide">
+                              <ShieldCheck className="w-3 h-3" />
+                              Mentor Beekoding
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                          <span>{comment.authorRole}</span>
+                          <span>•</span>
+                          <span>
+                            {new Date(comment.createdAt).toLocaleDateString('id-ID', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {/* Status Badge */}
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                          comment.status === 'approved'
+                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                            : comment.status === 'pending'
+                            ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                            : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
+                        }`}
+                      >
+                        {comment.status === 'approved'
+                          ? 'Disetujui'
+                          : comment.status === 'pending'
+                          ? 'Menunggu'
+                          : 'Spam'}
+                      </span>
+
+                      {/* Article link */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (onOpenArticleInWeb) {
+                            onOpenArticleInWeb(comment.articleSlug);
+                          } else {
+                            window.open(`/blog/${comment.articleSlug}`, '_blank');
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-colors cursor-pointer ${
+                          isDark
+                            ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-amber-400'
+                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-amber-600'
+                        }`}
+                        title="Lihat artikel blog tempat komentar ini diposting"
+                      >
+                        <Eye className="w-3 h-3" />
+                        <span className="max-w-[140px] truncate">/{comment.articleSlug}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Comment Body */}
+                  <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed mb-4">
+                    {comment.content}
+                  </p>
+
+                  {/* Bottom Action Bar */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200/60 dark:border-slate-800/60">
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <span className="flex items-center gap-1 font-semibold text-rose-500">
+                        <Heart className="w-3.5 h-3.5 fill-rose-500" />
+                        {comment.likesCount} suka
+                      </span>
+                      {comment.parentId && (
+                        <span className="flex items-center gap-1 text-[11px] bg-slate-500/10 px-2 py-0.5 rounded-md">
+                          <CornerDownRight className="w-3 h-3" />
+                          Membalas #{comment.parentId.slice(0, 8)}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {comment.status !== 'approved' && (
+                        <button
+                          type="button"
+                          onClick={() => handleApproveComment(comment.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition-colors cursor-pointer"
+                        >
+                          <CheckCircle className="w-3.5 h-3.5" />
+                          <span>Setujui</span>
+                        </button>
+                      )}
+
+                      {comment.status !== 'spam' && (
+                        <button
+                          type="button"
+                          onClick={() => handleSpamComment(comment.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors cursor-pointer"
+                        >
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <span>Tandai Spam</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Hapus</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setReplyingCommentId(replyingCommentId === comment.id ? null : comment.id)
+                        }
+                        className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                          replyingCommentId === comment.id
+                            ? 'bg-amber-500 text-slate-950 font-black'
+                            : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
+                        }`}
+                      >
+                        <CornerDownRight className="w-3.5 h-3.5" />
+                        <span>{replyingCommentId === comment.id ? 'Tutup Balas' : 'Balas Resmi'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Inline Mentor Reply Form */}
+                  {replyingCommentId === comment.id && (
+                    <div className="mt-4 pt-4 border-t border-amber-500/30 bg-amber-500/5 p-4 rounded-xl space-y-3 animate-fadeIn">
+                      <div className="flex items-center gap-2 text-xs font-bold text-amber-500">
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>Kirim Jawaban Resmi sebagai Mentor Beekoding</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                            Nama Mentor Penjawab:
+                          </label>
+                          <input
+                            type="text"
+                            value={replyMentorName}
+                            onChange={(e) => setReplyMentorName(e.target.value)}
+                            className={`w-full px-3 py-1.5 rounded-lg text-xs border outline-none ${
+                              isDark
+                                ? 'bg-slate-900 border-slate-800 text-white focus:border-amber-500'
+                                : 'bg-white border-amber-200 text-slate-900 focus:border-amber-500'
+                            }`}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                          Isi Balasan Edukatif:
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder={`Tulis panduan atau solusi untuk pertanyaan ${comment.authorName}...`}
+                          className={`w-full p-3 rounded-lg text-xs border outline-none resize-none ${
+                            isDark
+                              ? 'bg-slate-900 border-slate-800 text-white focus:border-amber-500'
+                              : 'bg-white border-amber-200 text-slate-900 focus:border-amber-500'
+                          }`}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReplyingCommentId(null);
+                            setReplyText('');
+                          }}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+                        >
+                          Batal
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSendMentorReply(comment)}
+                          disabled={!replyText.trim()}
+                          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors disabled:opacity-50 cursor-pointer shadow-md shadow-amber-500/20"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Publikasikan Jawaban Mentor</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="py-16 text-center space-y-3 bg-white dark:bg-[#131722] rounded-2xl border border-slate-200 dark:border-slate-800">
+                <MessageSquare className="w-10 h-10 text-slate-400 mx-auto opacity-50" />
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                  {commentSearch
+                    ? 'Tidak ada komentar yang cocok dengan pencarian Anda.'
+                    : 'Belum ada komentar atau pertanyaan dari pembaca blog.'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* =========================================================================
          MODAL FORM TULIS / EDIT ARTIKEL
