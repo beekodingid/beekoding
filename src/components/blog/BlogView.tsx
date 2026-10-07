@@ -13,6 +13,7 @@ import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
 import { MarkdownRenderer, slugifyHeading } from './MarkdownRenderer';
 import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
+import { getArticleReadTime } from '../../utils/readTime';
 import {
   ArrowLeft,
   Search,
@@ -213,7 +214,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
         article.excerpt.toLowerCase().includes(q) ||
         article.tags.some((t) => t.toLowerCase().includes(q));
 
-      const matchQuick = quickSort === 'quick' ? article.readTimeMinutes <= 5 : true;
+      const matchQuick = quickSort === 'quick' ? getArticleReadTime(article) <= 5 : true;
 
       return matchCategory && matchSearch && matchQuick;
     });
@@ -611,7 +612,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-amber-500" />
-                    {currentArticle.readTimeMinutes} menit baca
+                    {getArticleReadTime(currentArticle)} menit baca
                   </span>
                   <button
                     type="button"
@@ -1038,7 +1039,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
                                   <Clock className="w-3.5 h-3.5 text-amber-500" />
-                                  {hero.readTimeMinutes} menit baca
+                                  {getArticleReadTime(hero)} menit baca
                                 </span>
                                 <span>•</span>
                                 <span className="flex items-center gap-1 text-rose-500 font-semibold">
@@ -1150,7 +1151,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                             <span>•</span>
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3 text-amber-500" />
-                              {article.readTimeMinutes} mnt
+                              {getArticleReadTime(article)} mnt
                             </span>
                             <span>•</span>
                             <span className="flex items-center gap-1 text-rose-500 font-medium">

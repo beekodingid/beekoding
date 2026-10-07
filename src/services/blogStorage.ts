@@ -1,6 +1,7 @@
 import { blogArticles as defaultSeedArticles, type BlogArticle, type BlogAuthor } from '../data/blogArticles';
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
 import { emitStorageUpdate } from './adminStorage';
+import { calculateReadTime } from '../utils/readTime';
 
 export type { BlogArticle, BlogAuthor };
 
@@ -26,7 +27,7 @@ function normalizeArticle(article: Partial<BlogArticle>, index: number = 0): Blo
       article.coverImage ||
       'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
     publishedAt: article.publishedAt || new Date().toISOString().split('T')[0],
-    readTimeMinutes: Number(article.readTimeMinutes) || 5,
+    readTimeMinutes: article.content ? calculateReadTime(article.content) : (Number(article.readTimeMinutes) || 1),
     author: {
       name: article.author?.name || 'Tim Akademik Beekoding',
       role: article.author?.role || 'Curriculum & Pedagogy Lead',

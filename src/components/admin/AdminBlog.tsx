@@ -15,6 +15,7 @@ import { readFileAsDataUrl, uploadToSupabaseStorage } from '../../services/supab
 import { BLOG_CATEGORIES } from '../../data/blogArticles';
 import { MarkdownRenderer } from '../blog/MarkdownRenderer';
 import { formatBlogDate } from '../blog/BlogView';
+import { calculateReadTime, countWords, formatReadTime } from '../../utils/readTime';
 import {
   BookOpen,
   Plus,
@@ -39,6 +40,8 @@ import {
   Link2,
   Minus,
   Share2,
+  Clock,
+  Zap,
 } from 'lucide-react';
 
 interface AdminBlogProps {
@@ -73,10 +76,13 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
   const [formAuthorRole, setFormAuthorRole] = useState('Curriculum & Pedagogy Lead');
   const [formAuthorAvatar, setFormAuthorAvatar] = useState('/bee-mascot.png');
   const [formTagsString, setFormTagsString] = useState('Coding Anak, Logika');
-  const [formReadTime, setFormReadTime] = useState(5);
   const [formStatus, setFormStatus] = useState<'published' | 'draft'>('published');
   const [editorTab, setEditorTab] = useState<'write' | 'preview' | 'social'>('write');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  // Kalkulasi otomatis jumlah kata dan durasi baca (WPM)
+  const autoWordCount = useMemo(() => countWords(formContent), [formContent]);
+  const autoReadTime = useMemo(() => calculateReadTime(formContent), [formContent]);
 
   // Sync listener
   useEffect(() => {
@@ -133,7 +139,6 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
     setFormAuthorRole('Curriculum & Pedagogy Lead');
     setFormAuthorAvatar('/bee-mascot.png');
     setFormTagsString('Coding Anak, Pemula, Logika');
-    setFormReadTime(5);
     setFormStatus('published');
     setEditorTab('write');
     setModalOpen(true);
@@ -151,7 +156,6 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
     setFormAuthorRole(article.author.role);
     setFormAuthorAvatar(article.author.avatar);
     setFormTagsString(article.tags?.join(', ') || '');
-    setFormReadTime(article.readTimeMinutes || 5);
     setFormStatus(article.status === 'draft' ? 'draft' : 'published');
     setEditorTab('write');
     setModalOpen(true);
@@ -223,7 +227,7 @@ export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpen
         avatar: formAuthorAvatar.trim() || '/bee-mascot.png',
       },
       tags: tagsArray.length > 0 ? tagsArray : ['Edukasi'],
-      readTimeMinutes: Number(formReadTime) || 5,
+      readTimeMinutes: autoReadTime,
       status: formStatus,
       publishedAt: editingArticle?.publishedAt || new Date().toISOString().split('T')[0],
     };
@@ -630,7 +634,9 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400">
                       <div>{formatBlogDate(art.publishedAt)}</div>
-                      <div className="text-[10px]">{art.readTimeMinutes} menit baca</div>
+                      <div className="text-[10px] text-amber-500/90 font-medium">
+                        {formatReadTime(art.readTimeMinutes || calculateReadTime(art.content || ''))}
+                      </div>
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <span
@@ -806,17 +812,30 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Estimasi Baca (Menit)</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="60"
-                    value={formReadTime}
-                    onChange={(e) => setFormReadTime(parseInt(e.target.value) || 5)}
-                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none font-semibold ${
-                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Estimasi Baca</span>
+                    </label>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                      <Sparkles className="w-2.5 h-2.5" />
+                      <span>Otomatis (WPM)</span>
+                    </span>
+                  </div>
+                  <div
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs border flex items-center justify-between font-semibold select-none ${
+                      isDark ? 'bg-slate-900/80 border-slate-700 text-slate-200' : 'bg-slate-50 border-slate-300 text-slate-800'
                     }`}
-                  />
+                    title="Dihitung otomatis berdasarkan jumlah kata dalam isi konten (kecepatan baca rata-rata 180 kata/menit)"
+                  >
+                    <span className="flex items-center gap-1.5 font-bold text-amber-500">
+                      <Zap className="w-3.5 h-3.5" />
+                      ~{autoReadTime} Menit Baca
+                    </span>
+                    <span className="text-[11px] text-slate-400 font-normal">
+                      {autoWordCount.toLocaleString('id-ID')} kata
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -1116,6 +1135,29 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                       }`}
                       placeholder="Ketik konten artikel di sini menggunakan Markdown (# untuk H1, ## untuk H2, **teks** untuk bold, dll)..."
                     />
+
+                    {/* Live Word Count & Reading Time Status Bar */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-slate-800/40 border border-slate-700/60 text-[11px] text-slate-400">
+                      <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-1.5 text-slate-200 font-semibold">
+                          <BookOpen className="w-3.5 h-3.5 text-amber-500" />
+                          <span>{autoWordCount.toLocaleString('id-ID')} kata</span>
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1.5 text-amber-400 font-bold">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>~{autoReadTime} menit baca</span>
+                        </span>
+                        <span>•</span>
+                        <span className="text-slate-400">
+                          {formContent.length.toLocaleString('id-ID')} karakter
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" />
+                        Kalkulasi otomatis (@ 180 WPM)
+                      </span>
+                    </div>
                   </div>
                 ) : editorTab === 'preview' ? (
                   /* Live Preview */
