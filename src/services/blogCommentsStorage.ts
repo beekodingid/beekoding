@@ -1,5 +1,5 @@
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
-import { emitStorageUpdate } from './adminStorage';
+import { emitStorageUpdate, enqueueMessage, getGatewayConfig } from './adminStorage';
 
 export interface BlogComment {
   id: string;
@@ -162,7 +162,47 @@ export async function addComment(data: {
     });
   }
 
+  // Trigger otomatis alert ke antrean WhatsApp Gateway Beekoding
+  if (!data.isMentor) {
+    try {
+      const config = getGatewayConfig();
+      if (config.isAutomationActive && config.autoTriggers?.blog_comment_alert !== false) {
+        const mentorHotline = config.deviceNumber || '+62 818-1890-1737';
+        const cleanPhone = mentorHotline.replace(/[^\d+]/g, '');
+        const previewText =
+          data.content.trim().length > 180
+            ? `${data.content.trim().substring(0, 180)}...`
+            : data.content.trim();
+
+        enqueueMessage({
+          recipientPhone: cleanPhone,
+          recipientName: 'Tim Mentor & Hotline Beekoding',
+          recipientRole: 'instructor',
+          triggerType: 'blog_comment_alert',
+          scheduledAt: new Date().toISOString(),
+          content: `🐝 *[PERTANYAAN BLOG BARU]*\n\nHalo Mentor Beekoding! Ada pertanyaan baru di artikel blog edukasi:\n\n👤 *Penanya:* ${data.authorName.trim()} (${newComment.authorRole})\n📖 *Artikel:* /blog/${data.articleSlug}\n💬 *Pertanyaan:* "${previewText}"\n\n👉 *Moderasi & Balas di Admin Blog:* https://beekoding.id/#admin`,
+        });
+      }
+    } catch (err) {
+      console.debug('Gagal enqueue WhatsApp comment alert:', err);
+    }
+  }
+
   return newComment;
+}
+
+/**
+ * Buat link cepat untuk meneruskan pertanyaan blog langsung ke WhatsApp Hotline Beekoding
+ */
+export function generateWhatsAppCommentForwardUrl(comment: {
+  authorName: string;
+  articleSlug: string;
+  content: string;
+  authorEmail?: string;
+}): string {
+  const hotline = '6281818901737';
+  const text = `Halo Mentor Beekoding! 🐝\n\nSaya ingin menanyakan seputar artikel blog:\n*https://beekoding.id/blog/${comment.articleSlug}*\n\n*Nama:* ${comment.authorName}\n*Pertanyaan:* "${comment.content}"\n\nMohon panduannya ya Kak! Terima kasih.`;
+  return `https://wa.me/${hotline}?text=${encodeURIComponent(text)}`;
 }
 
 /**

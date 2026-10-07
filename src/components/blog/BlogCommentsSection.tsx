@@ -6,6 +6,7 @@ import {
   addComment,
   toggleCommentLike,
   fetchCommentsFromCloud,
+  generateWhatsAppCommentForwardUrl,
 } from '../../services/blogCommentsStorage';
 import { onStorageUpdate } from '../../services/adminStorage';
 import {
@@ -18,6 +19,7 @@ import {
   CheckCircle2,
   Clock,
   User,
+  MessageCircle,
 } from 'lucide-react';
 
 interface BlogCommentsSectionProps {
@@ -41,6 +43,7 @@ export const BlogCommentsSection: React.FC<BlogCommentsSectionProps> = ({
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessNotice, setShowSuccessNotice] = useState(false);
+  const [lastSubmittedComment, setLastSubmittedComment] = useState<BlogComment | null>(null);
 
   // Reply State (Nested)
   const [replyingToId, setReplyingToId] = useState<string | null>(null);
@@ -73,16 +76,17 @@ export const BlogCommentsSection: React.FC<BlogCommentsSectionProps> = ({
 
     setIsSubmitting(true);
     try {
-      await addComment({
+      const created = await addComment({
         articleSlug,
         authorName: authorName.trim(),
         content: content.trim(),
       });
 
       setContent('');
+      setLastSubmittedComment(created);
       setComments(getCommentsForArticle(articleSlug));
       setShowSuccessNotice(true);
-      setTimeout(() => setShowSuccessNotice(false), 4000);
+      setTimeout(() => setShowSuccessNotice(false), 8000);
     } catch (err) {
       console.error('Error submitting comment:', err);
     } finally {
@@ -181,9 +185,27 @@ export const BlogCommentsSection: React.FC<BlogCommentsSectionProps> = ({
         </div>
 
         {showSuccessNotice && (
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2 animate-fadeIn">
-            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            <span>Pertanyaan Anda berhasil dikirim! Terima kasih telah berdiskusi.</span>
+          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                <span>Pertanyaan Anda berhasil dikirim & diteruskan ke antrean Mentor!</span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                Butuh jawaban lebih cepat? Anda dapat meneruskan pertanyaan ini langsung ke WhatsApp Hotline Beekoding.
+              </p>
+            </div>
+            {lastSubmittedComment && (
+              <a
+                href={generateWhatsAppCommentForwardUrl(lastSubmittedComment)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Tanya via WhatsApp</span>
+              </a>
+            )}
           </div>
         )}
 
@@ -329,8 +351,8 @@ export const BlogCommentsSection: React.FC<BlogCommentsSectionProps> = ({
                   {comment.content}
                 </p>
 
-                {/* Reply Button Trigger */}
-                <div className="pl-10 sm:pl-10.5 pt-1">
+                {/* Action Trigger Buttons */}
+                <div className="pl-10 sm:pl-10.5 pt-1 flex flex-wrap items-center gap-3 sm:gap-4">
                   <button
                     type="button"
                     onClick={() =>
@@ -341,6 +363,17 @@ export const BlogCommentsSection: React.FC<BlogCommentsSectionProps> = ({
                     <CornerDownRight className="w-3 h-3" />
                     <span>{replyingToId === comment.id ? 'Batal Balas' : 'Balas Diskusi'}</span>
                   </button>
+
+                  <a
+                    href={generateWhatsAppCommentForwardUrl(comment)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+                    title="Konsultasikan pertanyaan ini langsung ke Mentor via WhatsApp"
+                  >
+                    <MessageCircle className="w-3 h-3 text-emerald-500" />
+                    <span>Tanya via WhatsApp</span>
+                  </a>
                 </div>
 
                 {/* Reply Form (If active) */}

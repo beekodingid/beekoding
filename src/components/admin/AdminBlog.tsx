@@ -50,12 +50,14 @@ import {
   ShieldCheck,
   Heart,
   Send,
+  MessageCircle,
 } from 'lucide-react';
 import {
   getAllComments,
   updateCommentStatus,
   deleteComment,
   addComment as addBlogComment,
+  generateWhatsAppCommentForwardUrl,
   type BlogComment,
 } from '../../services/blogCommentsStorage';
 
@@ -1088,6 +1090,17 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                           <span>Tandai Spam</span>
                         </button>
                       )}
+
+                      <a
+                        href={generateWhatsAppCommentForwardUrl(comment)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition-colors cursor-pointer"
+                        title="Buka atau teruskan pertanyaan ini ke WhatsApp Hotline Beekoding"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>WA Mentor</span>
+                      </a>
 
                       <button
                         type="button"

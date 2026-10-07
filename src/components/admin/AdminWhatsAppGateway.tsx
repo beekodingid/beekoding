@@ -125,6 +125,13 @@ const TRIGGER_META: Record<
     timing: 'Terkirim sesuai jadwal broadcast manual administrator',
     defaultTemplate: 'Siaran berita, pengumuman libur nasional, atau update kebijakan akademik.',
   },
+  blog_comment_alert: {
+    label: 'Notifikasi Pertanyaan & Komentar Blog',
+    icon: MessageSquare,
+    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    timing: 'Terkirim saat ada komentar atau pertanyaan baru dari pembaca blog edukasi',
+    defaultTemplate: 'Alert WhatsApp otomatis ke hotline mentor berisi nama penanya, artikel terkait, dan isi pertanyaan agar langsung dibalas.',
+  },
 };
 
 export const AdminWhatsAppGateway: React.FC<AdminWhatsAppGatewayProps> = ({ isDark }) => {

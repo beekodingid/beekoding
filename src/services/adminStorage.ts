@@ -12029,7 +12029,8 @@ export type DispatchTriggerType =
   | 'trial_class_invitation'
   | 'quiz_announcement'
   | 'talent_assessment_completed'
-  | 'custom_broadcast';
+  | 'custom_broadcast'
+  | 'blog_comment_alert';
 
 export type DispatchMessageStatus = 'pending' | 'processing' | 'delivered' | 'read' | 'failed';
 
@@ -12087,6 +12088,7 @@ export const DEFAULT_GATEWAY_CONFIG: WhatsAppGatewayConfig = {
     quiz_announcement: false,
     talent_assessment_completed: true,
     custom_broadcast: false,
+    blog_comment_alert: true,
   },
   updatedAt: new Date().toISOString(),
 };
