@@ -9,17 +9,25 @@ const DEFAULT_META = {
   title: 'Beekoding | Coding & AI Learning for Future-Ready Minds',
   description:
     'Beekoding membekali anak-anak dan generasi muda dengan skill Coding, Artificial Intelligence, dan 21st-century skills seru dan aplikatif.',
-  image: 'https://beekoding.id/og-image.jpg',
-  url: 'https://beekoding.id/',
+  image: 'https://beekoding.pages.dev/og-image.jpg',
+  url: 'https://beekoding.pages.dev/',
   type: 'website',
 };
+
+export function getPublicBaseUrl(): string {
+  if (typeof window === 'undefined') return 'https://beekoding.pages.dev';
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return 'https://beekoding.pages.dev';
+  }
+  return window.location.origin;
+}
 
 function ensureAbsoluteUrl(url: string): string {
   if (!url) return DEFAULT_META.image;
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (url.startsWith('/')) {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://beekoding.id';
-    return `${origin}${url}`;
+    return `${getPublicBaseUrl()}${url}`;
   }
   return url;
 }
@@ -57,8 +65,8 @@ function injectArticleJsonLd(article: BlogArticle) {
     document.head.appendChild(scriptEl);
   }
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://beekoding.id';
-  const articleUrl = `${origin}/#blog/${article.slug}`;
+  const origin = getPublicBaseUrl();
+  const articleUrl = `${origin}/blog/${article.slug}`;
 
   const jsonLdData = {
     '@context': 'https://schema.org',
@@ -107,8 +115,8 @@ function removeArticleJsonLd() {
 export function updateArticleSocialMeta(article: BlogArticle) {
   if (typeof document === 'undefined') return;
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://beekoding.id';
-  const articleUrl = `${origin}/#blog/${article.slug}`;
+  const origin = getPublicBaseUrl();
+  const articleUrl = `${origin}/blog/${article.slug}`;
   const coverUrl = ensureAbsoluteUrl(article.coverImage);
 
   // 1. Browser Tab Title

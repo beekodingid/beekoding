@@ -12,7 +12,7 @@ import {
 import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
 import { MarkdownRenderer, slugifyHeading } from './MarkdownRenderer';
-import { updateArticleSocialMeta, resetSocialMetaToDefault } from '../../utils/socialMeta';
+import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
 import {
   ArrowLeft,
   Search,
@@ -162,29 +162,42 @@ export const BlogView: React.FC<BlogViewProps> = ({
     return () => unsubscribe();
   }, []);
 
-  // Sync state if hash changes
+  // Sync selected slug if parent passes a new initialSlug
   useEffect(() => {
-    const handleHash = () => {
+    if (initialSlug !== undefined) {
+      setSelectedSlug(initialSlug || null);
+    }
+  }, [initialSlug]);
+
+  // Sync state if hash or history changes
+  useEffect(() => {
+    const handleLocationChange = () => {
       const hash = window.location.hash || '';
       const pathname = window.location.pathname || '';
-      if (hash.startsWith('#blog/')) {
-        const slug = hash.replace('#blog/', '');
-        setSelectedSlug(slug);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (pathname.startsWith('/blog/')) {
-        const slug = pathname.replace('/blog/', '');
-        setSelectedSlug(slug);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (hash === '#blog' || pathname === '/blog') {
+      if (pathname.startsWith('/blog/')) {
+        const slug = pathname.replace('/blog/', '').replace(/\/$/, '').trim();
+        if (slug) {
+          setSelectedSlug(slug);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+      } else if (hash.startsWith('#blog/')) {
+        const slug = hash.replace('#blog/', '').replace(/\/$/, '').trim();
+        if (slug) {
+          setSelectedSlug(slug);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+      } else if (hash === '#blog' || pathname === '/blog' || pathname === '/blog/') {
         setSelectedSlug(null);
       }
     };
-    handleHash();
-    window.addEventListener('hashchange', handleHash);
-    window.addEventListener('popstate', handleHash);
+    handleLocationChange();
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
     return () => {
-      window.removeEventListener('hashchange', handleHash);
-      window.removeEventListener('popstate', handleHash);
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
     };
   }, []);
 
@@ -326,27 +339,31 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
   const handleSelectArticle = (slug: string) => {
     setSelectedSlug(slug);
-    window.location.hash = `#blog/${slug}`;
+    window.history.pushState(null, '', `/blog/${slug}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToList = () => {
     setSelectedSlug(null);
-    window.location.hash = '#blog';
+    window.history.pushState(null, '', '/blog');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCopyLink = () => {
     if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(window.location.href);
+      const baseUrl = getPublicBaseUrl();
+      const urlToCopy = currentArticle
+        ? `${baseUrl}/blog/${currentArticle.slug}`
+        : `${baseUrl}/blog`;
+      navigator.clipboard.writeText(urlToCopy);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
     }
   };
 
   const handleShareWhatsApp = (article: BlogArticle) => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://beekoding.id';
-    const articleUrl = `${origin}/#blog/${article.slug}`;
+    const baseUrl = getPublicBaseUrl();
+    const articleUrl = `${baseUrl}/blog/${article.slug}`;
     const text = `*${article.title}*\n\n${article.excerpt}\n\n👉 Baca selengkapnya di Blog Edukasi Beekoding:\n${articleUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };

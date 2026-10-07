@@ -234,7 +234,8 @@ export function App() {
   };
 
   const handleOpenBlog = (slug?: string) => {
-    window.location.hash = slug ? `#blog/${slug}` : '#blog';
+    const targetUrl = slug ? `/blog/${slug}` : '/blog';
+    window.history.pushState(null, '', targetUrl);
     startTransition(() => {
       setShowBlog(true);
       setBlogSlug(slug);
@@ -249,8 +250,8 @@ export function App() {
       setShowBlog(false);
       setBlogSlug(undefined);
     });
-    if (window.location.hash.startsWith('#blog')) {
-      window.history.pushState(null, '', window.location.pathname);
+    if (window.location.hash.startsWith('#blog') || window.location.pathname.startsWith('/blog')) {
+      window.history.pushState(null, '', '/');
     }
   };
 
