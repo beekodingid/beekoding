@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { Megaphone, ExternalLink, Sparkles } from 'lucide-react';
 
-interface AdSenseSlotProps {
+export interface AdSenseSlotProps {
   slotId?: string;
-  format?: 'auto' | 'rectangle' | 'horizontal';
+  format?: 'auto' | 'rectangle' | 'horizontal' | 'in-article';
   className?: string;
   label?: string;
 }
@@ -23,15 +23,20 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
 }) => {
   const { isDark } = useTheme();
   const adRef = useRef<HTMLDivElement>(null);
+  const isPushedRef = useRef(false);
   const adsenseClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-6361492236129824';
   const isLiveAdSense = Boolean(adsenseClientId && adsenseClientId.startsWith('ca-pub-'));
 
   useEffect(() => {
-    if (isLiveAdSense && typeof window !== 'undefined') {
+    if (isLiveAdSense && !isPushedRef.current && typeof window !== 'undefined') {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
+        isPushedRef.current = true;
       } catch (err) {
-        console.warn('AdSense slot initialization:', err);
+        // Prevent console pollution from double push in StrictMode
+        if (process.env.NODE_ENV !== 'production') {
+          console.debug('AdSense slot init skipped or handled:', err);
+        }
       }
     }
   }, [isLiveAdSense, slotId]);
@@ -39,15 +44,18 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
   // Height reservation to guarantee 0 Cumulative Layout Shift (CLS)
   const minHeightClass =
     format === 'rectangle'
-      ? 'min-h-[260px]'
+      ? 'min-h-[280px]'
       : format === 'horizontal'
-      ? 'min-h-[100px]'
+      ? 'min-h-[120px]'
+      : format === 'in-article'
+      ? 'min-h-[160px] sm:min-h-[200px]'
       : 'min-h-[140px]';
 
   return (
     <div
       ref={adRef}
-      className={`w-full my-6 p-3 rounded-2xl border transition-all duration-300 ${minHeightClass} ${
+      style={{ contain: 'layout paint' }}
+      className={`w-full my-6 p-3 sm:p-4 rounded-2xl border transition-all duration-300 ${minHeightClass} ${
         isDark
           ? 'bg-[#121622]/90 border-amber-500/20 shadow-inner shadow-black/20'
           : 'bg-amber-50/70 border-amber-200/80 shadow-xs'
@@ -63,15 +71,27 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
       </div>
 
       {isLiveAdSense ? (
-        <div className="overflow-hidden flex justify-center items-center min-h-[90px]">
-          <ins
-            className="adsbygoogle block"
-            style={{ display: 'block', textAlign: 'center' }}
-            data-ad-client={adsenseClientId}
-            data-ad-slot={slotId}
-            data-ad-format={format}
-            data-full-width-responsive="true"
-          />
+        <div className="overflow-hidden flex justify-center items-center min-h-[90px] w-full">
+          {format === 'in-article' ? (
+            <ins
+              className="adsbygoogle block w-full"
+              style={{ display: 'block', textAlign: 'center' }}
+              data-ad-layout="in-article"
+              data-ad-format="fluid"
+              data-ad-layout-key="-fb+5w+4e-db+86"
+              data-ad-client={adsenseClientId}
+              data-ad-slot={slotId}
+            />
+          ) : (
+            <ins
+              className="adsbygoogle block w-full"
+              style={{ display: 'block', textAlign: 'center' }}
+              data-ad-client={adsenseClientId}
+              data-ad-slot={slotId}
+              data-ad-format={format}
+              data-full-width-responsive="true"
+            />
+          )}
         </div>
       ) : (
         /* Preview / Placeholder Banner with Zero Layout Shift */
@@ -82,7 +102,7 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
               <span>Ruang Monetisasi Google AdSense (Preview)</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
-              Unit iklan ini aktif otomatis begitu akun AdSense Anda disetujui. Layout telah terkunci dengan reservasi tinggi tetap demi menjamin skor Core Web Vitals (CLS = 0).
+              Unit iklan ini aktif otomatis begitu akun AdSense disetujui. Layout telah terkunci dengan reservasi tinggi tetap demi menjamin skor Core Web Vitals (CLS = 0).
             </p>
           </div>
           <a

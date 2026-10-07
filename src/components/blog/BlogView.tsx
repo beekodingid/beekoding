@@ -11,6 +11,7 @@ import {
 } from '../../services/blogStorage';
 import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
+import { AdSenseStickyFooter } from './AdSenseStickyFooter';
 import { MarkdownRenderer, slugifyHeading } from './MarkdownRenderer';
 import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
 import { getArticleReadTime } from '../../utils/readTime';
@@ -139,6 +140,8 @@ export const BlogView: React.FC<BlogViewProps> = ({
 
   // Phase 3: Floating Action Bar state
   const [showFloatingBar, setShowFloatingBar] = useState(false);
+  // AdSense Sticky Footer visibility state (for dynamic floating bar offset)
+  const [isStickyAdVisible, setIsStickyAdVisible] = useState(false);
 
   // Phase 2: Interactivity & Discovery states
   const [quickSort, setQuickSort] = useState<'all' | 'latest' | 'quick'>('all');
@@ -243,6 +246,24 @@ export const BlogView: React.FC<BlogViewProps> = ({
     if (!selectedSlug) return null;
     return articles.find((a) => a.slug === selectedSlug) || null;
   }, [articles, selectedSlug]);
+
+  // Mid-article in-article AdSense split (anti-CLS injection between major headings)
+  const articleContentParts = useMemo(() => {
+    if (!currentArticle?.content) return { part1: '', part2: null };
+    const raw = currentArticle.content;
+    const h2Regex = /\n(?=## )/g;
+    const matches = [...raw.matchAll(h2Regex)];
+    if (matches.length >= 3) {
+      const splitMatch = matches[Math.floor(matches.length / 2)];
+      if (splitMatch && splitMatch.index !== undefined) {
+        return {
+          part1: raw.slice(0, splitMatch.index),
+          part2: raw.slice(splitMatch.index),
+        };
+      }
+    }
+    return { part1: raw, part2: null };
+  }, [currentArticle]);
 
   // Reading progress and floating action bar scroll listener
   useEffect(() => {
@@ -721,7 +742,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
               </div>
             )}
 
-            {/* Article Body Content with Dynamic Font Size */}
+            {/* Article Body Content with Dynamic Font Size & Mid-Article AdSense */}
             <div
               className={`max-w-none transition-all duration-200 ${
                 fontSizeStep === 'normal'
@@ -731,7 +752,13 @@ export const BlogView: React.FC<BlogViewProps> = ({
                   : 'text-xl sm:text-2xl leading-loose'
               }`}
             >
-              <MarkdownRenderer content={currentArticle.content} isDark={isDark} />
+              <MarkdownRenderer content={articleContentParts.part1} isDark={isDark} />
+              {articleContentParts.part2 && (
+                <div className="my-8">
+                  <AdSenseSlot slotId="5878990472" format="in-article" label="Iklan Sponsor Edukasi Terkait" />
+                  <MarkdownRenderer content={articleContentParts.part2} isDark={isDark} />
+                </div>
+              )}
             </div>
 
             {/* Tag Pills Footer */}
@@ -1254,7 +1281,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
       {currentArticle && (
         <aside
           aria-label="Aksi Cepat Artikel"
-          className={`fixed bottom-6 right-4 sm:right-6 z-40 transition-all duration-300 ${
+          className={`fixed ${isStickyAdVisible ? 'bottom-28 sm:bottom-32' : 'bottom-6'} right-4 sm:right-6 z-40 transition-all duration-300 ${
             showFloatingBar
               ? 'opacity-100 translate-y-0 pointer-events-auto'
               : 'opacity-0 translate-y-8 pointer-events-none'
@@ -1342,6 +1369,14 @@ export const BlogView: React.FC<BlogViewProps> = ({
             </button>
           </div>
         </aside>
+      )}
+
+      {/* Sticky Bottom Footer Ad (Zero-CLS & AdSense Compliant Anchor Banner) */}
+      {currentArticle && (
+        <AdSenseStickyFooter
+          slotId="5878990472"
+          onVisibilityChange={setIsStickyAdVisible}
+        />
       )}
 
       {/* Blog Footer with Legal Policies & Compliance */}
