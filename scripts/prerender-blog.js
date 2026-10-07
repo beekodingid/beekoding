@@ -155,6 +155,64 @@ async function main() {
       .replace(/<meta[^>]*?name="twitter:image"[^>]*?>/s, `<meta name="twitter:image" content="${image}" />`)
       .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${url}" />`);
 
+    const articleJsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: article.title,
+      description: article.excerpt,
+      image: [image],
+      datePublished: article.publishedAt,
+      dateModified: article.publishedAt,
+      inLanguage: 'id-ID',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': url,
+      },
+      author: {
+        '@type': 'Person',
+        name: 'Mentor Beekoding',
+      },
+      publisher: {
+        '@type': 'EducationalOrganization',
+        name: 'Beekoding',
+        url: 'https://beekoding.id',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://beekoding.pages.dev/og-image.jpg',
+        },
+      },
+      articleSection: article.category,
+    });
+
+    const breadcrumbJsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Beranda',
+          item: 'https://beekoding.pages.dev',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Blog Edukasi',
+          item: 'https://beekoding.pages.dev/blog',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: article.title,
+          item: url,
+        },
+      ],
+    });
+
+    const schemasTag = `\n    <!-- Article & Breadcrumb Structured Data for Google Rich Results -->\n    <script type="application/ld+json">\n    ${articleJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${breadcrumbJsonLd}\n    </script>\n  </head>`;
+
+    articleHtml = articleHtml.replace('</head>', schemasTag);
+
     // Write both dist/blog/:slug/index.html and dist/blog/:slug.html for Cloudflare Pages Clean URLs
     fs.writeFileSync(path.join(articleDir, 'index.html'), articleHtml, 'utf-8');
     fs.writeFileSync(path.join(blogDir, `${article.slug}.html`), articleHtml, 'utf-8');

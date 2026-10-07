@@ -205,5 +205,65 @@ export const onRequestGet = async (context: {
         e.setAttribute('content', coverUrl);
       },
     })
+    .on('head', {
+      element(e) {
+        const articleJsonLd = JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: articleData.title,
+          description: desc,
+          image: [coverUrl],
+          datePublished: new Date().toISOString().split('T')[0],
+          inLanguage: 'id-ID',
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': pageUrl,
+          },
+          author: {
+            '@type': 'Person',
+            name: 'Mentor Beekoding',
+          },
+          publisher: {
+            '@type': 'EducationalOrganization',
+            name: 'Beekoding',
+            url: url.origin,
+            logo: {
+              '@type': 'ImageObject',
+              url: `${url.origin}/og-image.jpg`,
+            },
+          },
+        });
+
+        const breadcrumbJsonLd = JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Beranda',
+              item: url.origin,
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: 'Blog Edukasi',
+              item: `${url.origin}/blog`,
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: articleData.title,
+              item: pageUrl,
+            },
+          ],
+        });
+
+        e.append(
+          `<script type="application/ld+json">${articleJsonLd}</script><script type="application/ld+json">${breadcrumbJsonLd}</script>`,
+          { html: true }
+        );
+      },
+    })
     .transform(baseRes);
 };

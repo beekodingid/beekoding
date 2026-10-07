@@ -1,7 +1,7 @@
 import React from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
-import { Sparkles, ArrowRight, Compass, Rocket, ChevronDown, Heart, Brain, Calendar } from 'lucide-react';
+import { Sparkles, ArrowRight, Compass, Rocket, ChevronDown, Heart, Brain, Calendar, Star } from 'lucide-react';
 
 interface HeroProps {
   onOpenBootcampModal: () => void;
@@ -64,6 +64,38 @@ export const Hero: React.FC<HeroProps> = ({
             >
               {siteConfig.heroSubtitle}
             </p>
+
+            {/* Social Proof & Google Review Stars (Rating 4.9/5) */}
+            <div className="flex justify-center lg:justify-start pt-1">
+              <a
+                href="#showcase"
+                className={`inline-flex items-center gap-2.5 py-1.5 px-3 rounded-full border transition-all hover:scale-105 group ${
+                  isDark
+                    ? 'bg-amber-500/10 border-amber-500/30 hover:border-amber-400/50'
+                    : 'bg-amber-50/90 border-amber-200 hover:border-amber-400 shadow-xs'
+                }`}
+              >
+                <div className="flex -space-x-1.5 overflow-hidden">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full ring-2 ring-amber-400 bg-amber-200 text-xs select-none">👨‍💼</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full ring-2 ring-amber-400 bg-yellow-200 text-xs select-none">👩‍🏫</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full ring-2 ring-amber-400 bg-amber-300 text-xs select-none">👨‍💻</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full ring-2 ring-amber-400 bg-rose-200 text-xs select-none">👩‍⚕️</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-bold">
+                  <div className="flex text-amber-500">
+                    <Star className="w-3.5 h-3.5 fill-current" />
+                    <Star className="w-3.5 h-3.5 fill-current" />
+                    <Star className="w-3.5 h-3.5 fill-current" />
+                    <Star className="w-3.5 h-3.5 fill-current" />
+                    <Star className="w-3.5 h-3.5 fill-current" />
+                  </div>
+                  <span className="font-extrabold text-amber-600 dark:text-amber-400">4.9/5</span>
+                  <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>
+                    • 380+ Ulasan Wali Murid
+                  </span>
+                </div>
+              </a>
+            </div>
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 xl:gap-4 pt-2">

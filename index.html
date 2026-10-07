@@ -17,19 +17,164 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://beekoding.id/" />
 
-    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets -->
+    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets & Rating Bintang 5 -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "name": "Beekoding",
+      "alternateName": "Beekoding Academy",
       "url": "https://beekoding.id",
-      "logo": "https://beekoding.id/og-image.jpg",
+      "logo": "https://beekoding.pages.dev/og-image.jpg",
+      "image": "https://beekoding.pages.dev/og-image.jpg",
       "description": "Platform edukasi Koding & Artificial Intelligence interaktif untuk anak dan remaja. Membangun logika, kreativitas, dan portofolio teknologi masa depan.",
       "telephone": "+6281818901737",
+      "email": "halo@beekoding.id",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "ID"
+      },
       "sameAs": [
         "https://www.instagram.com/beekoding.id"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "384",
+        "reviewCount": "384"
+      }
+    }
+    </script>
+
+    <!-- Google Course & Review Snippet Schema (Eligibility for Gold Star Ratings in SERP) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Kursus Coding & AI untuk Anak & Remaja - Beekoding",
+      "description": "Program belajar koding interaktif dari Scratch, Python, Roblox Studio, hingga Artificial Intelligence & Machine Learning untuk anak usia 6-17 tahun bersama mentor berpengalaman.",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "Beekoding",
+        "url": "https://beekoding.id",
+        "sameAs": "https://beekoding.id"
+      },
+      "educationalCredentialAwarded": "Sertifikat Resmi Kelulusan & Portofolio Digital Beekoding",
+      "hasCourseInstance": [
+        {
+          "@type": "CourseInstance",
+          "courseMode": "Online",
+          "courseWorkload": "PT1H30M",
+          "instructor": {
+            "@type": "Person",
+            "name": "Mentor Profesional Beekoding"
+          }
+        }
+      ],
+      "offers": [
+        {
+          "@type": "Offer",
+          "category": "Trial",
+          "name": "Free Diagnostic & Trial Class Coding Anak",
+          "price": "0",
+          "priceCurrency": "IDR",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "2026-01-01"
+        },
+        {
+          "@type": "Offer",
+          "category": "Paid",
+          "name": "Program Reguler Coding & AI Interactive",
+          "price": "350000",
+          "priceCurrency": "IDR",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "2026-01-01"
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "384",
+        "reviewCount": "384"
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Bambang Pratama (Wali Kenzo Alvaro)"
+          },
+          "datePublished": "2026-06-29",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5",
+            "bestRating": "5"
+          },
+          "reviewBody": "Kenzo awalnya hanya suka bermain game di tablet, tapi setelah 2 bulan di Beekoding dia sekarang bisa bikin game Scratch sendiri dan bangga dipamerkan ke teman sekolahnya! Logika matematika di sekolah juga meningkat drastis."
+        },
+        {
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Siti Nurhaliza (Wali Alya Zahra)"
+          },
+          "datePublished": "2026-07-01",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5",
+            "bestRating": "5"
+          },
+          "reviewBody": "Pendampingan mentornya sabar banget dan materi Roblox Studio-nya terstruktur. Alya belajar coding bahasa Lua sambil bersenang-senang membuat dunia game 3D. Sangat worth it untuk investasi masa depan ananda!"
+        },
+        {
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Hendra Gunawan (Wali Rafi Danendra)"
+          },
+          "datePublished": "2026-07-06",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5",
+            "bestRating": "5"
+          },
+          "reviewBody": "Sebagai orang tua yang berlatar belakang teknologi, saya kagum dengan kurikulum Teens Innovator. Materinya kekinian (React, TypeScript, Cloud). Rafi sekarang punya portofolio web nyata."
+        },
+        {
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Dewi Kusuma (Wali Nathania Putri)"
+          },
+          "datePublished": "2026-06-26",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5",
+            "bestRating": "5"
+          },
+          "reviewBody": "Laporan rapor asesmen 8 pilar kognitifnya sangat ilmiah dan mendalam. Guru sekolah Nathania sampai memuji karena konsentrasi belajarnya naik signifikan sejak belajar algoritma sekuensial di Beekoding."
+        }
       ]
+    }
+    </script>
+
+    <!-- Google WebSite Schema for Sitelinks Search Box -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Beekoding",
+      "url": "https://beekoding.id",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://beekoding.id/blog?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
 
