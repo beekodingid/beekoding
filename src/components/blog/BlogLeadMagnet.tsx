@@ -8,12 +8,16 @@ import {
   ArrowRight,
   ShieldCheck,
   Send,
+  Rocket,
+  Brain,
 } from 'lucide-react';
 
 interface BlogLeadMagnetProps {
   articleTitle?: string;
   articleCategory?: string;
   onOpenTrialEvents?: () => void;
+  onOpenBootcampModal?: () => void;
+  onOpenTalentAssessment?: () => void;
 }
 
 const AGE_TIERS = [
@@ -26,6 +30,8 @@ export const BlogLeadMagnet: React.FC<BlogLeadMagnetProps> = ({
   articleTitle = 'Panduan Edukasi Beekoding',
   articleCategory = 'Coding Anak',
   onOpenTrialEvents,
+  onOpenBootcampModal,
+  onOpenTalentAssessment,
 }) => {
   const { isDark } = useTheme();
 
@@ -141,151 +147,196 @@ export const BlogLeadMagnet: React.FC<BlogLeadMagnetProps> = ({
           </div>
         </div>
       ) : (
-        <div className="relative z-10 grid lg:grid-cols-12 gap-8 items-center">
-          {/* Left Column: Hook & Benefits */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400">
-              <Gift className="w-3.5 h-3.5" />
-              <span>Gratis & Eksklusif Pembaca Blog</span>
+        <div className="relative z-10 space-y-6">
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column: Hook & Benefits */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400">
+                <Gift className="w-3.5 h-3.5" />
+                <span>Eksklusif Pembaca Blog Beekoding</span>
+              </div>
+
+              <h3 className="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white leading-tight">
+                Ingin Anak Anda Langsung Praktik Membuat Game & AI Sendiri?
+              </h3>
+
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Dapatkan <strong>Panduan Kurikulum & Roadmap Coding Anak 2026</strong> langsung ke WhatsApp Anda, plus <strong>Voucher Belajar Eksklusif</strong> senilai Rp 150.000 untuk kelas interaktif bersama mentor ramah anak.
+              </p>
+
+              {/* Checklist Value Points */}
+              <div className="grid sm:grid-cols-2 gap-2.5 pt-1 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Roadmap Belajar Sesuai Usia</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Rekomendasi Software & Game Edukatif</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Konsultasi Diagnostik Minat Gratis</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Kelas Praktik Interaktif Live Mentor</span>
+                </div>
+              </div>
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white leading-tight">
-              Ingin Ananda Belajar Coding & AI Terarah Sejak Dini?
-            </h3>
+            {/* Right Column: Fast Lead Form */}
+            <div className="lg:col-span-5">
+              <form
+                onSubmit={handleSubmit}
+                className={`p-5 sm:p-6 rounded-2xl border transition-all space-y-3.5 ${
+                  isDark
+                    ? 'bg-slate-900/90 border-slate-700/80 shadow-inner'
+                    : 'bg-white border-amber-200/90 shadow-md'
+                }`}
+              >
+                <div className="flex items-center justify-between pb-1 border-b border-amber-500/10">
+                  <span className="text-xs font-black font-['Space_Grotesk'] text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Klaim Panduan & Voucher Belajar</span>
+                  </span>
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full">
+                    100% Gratis
+                  </span>
+                </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Dapatkan <strong>Panduan Kurikulum & Roadmap Coding Anak 2026</strong> langsung ke WhatsApp Anda, plus <strong>Voucher Uji Coba Belajar Eksklusif</strong> senilai Rp 150.000 untuk kelas bersama mentor ramah anak.
-            </p>
+                {errorMessage && (
+                  <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">
+                    {errorMessage}
+                  </div>
+                )}
 
-            {/* Checklist Value Points */}
-            <div className="grid sm:grid-cols-2 gap-2.5 pt-1 text-xs text-slate-700 dark:text-slate-300 font-medium">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span>Roadmap Belajar Sesuai Usia</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span>Rekomendasi Software & Game Edukatif</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span>Konsultasi Diagnostik Minat Gratis</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span>Kelas Praktik Interaktif Live Mentor</span>
-              </div>
+                {/* Form Input: Nama Orang Tua */}
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+                    Nama Ayah / Bunda
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={parentName}
+                    onChange={(e) => setParentName(e.target.value)}
+                    placeholder="Contoh: Bunda Rina"
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
+                      isDark
+                        ? 'bg-slate-800/90 border-slate-700 text-white focus:border-amber-400'
+                        : 'bg-slate-50 border-amber-200 text-slate-900 focus:border-amber-500'
+                    }`}
+                  />
+                </div>
+
+                {/* Form Input: Nomor WhatsApp */}
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+                    Nomor WhatsApp Aktif
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={whatsapp}
+                    onChange={(e) => setWhatsapp(e.target.value)}
+                    placeholder="Contoh: 0812-3456-7890"
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
+                      isDark
+                        ? 'bg-slate-800/90 border-slate-700 text-white focus:border-amber-400'
+                        : 'bg-slate-50 border-amber-200 text-slate-900 focus:border-amber-500'
+                    }`}
+                  />
+                </div>
+
+                {/* Form Select: Tingkatan Usia Anak */}
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+                    Jenjang Usia Ananda
+                  </label>
+                  <select
+                    value={selectedTier}
+                    onChange={(e) => setSelectedTier(e.target.value)}
+                    className={`w-full px-3 py-2.5 rounded-xl text-xs border outline-none transition-all cursor-pointer ${
+                      isDark
+                        ? 'bg-slate-800/90 border-slate-700 text-white focus:border-amber-400'
+                        : 'bg-slate-50 border-amber-200 text-slate-900 focus:border-amber-500'
+                    }`}
+                  >
+                    {AGE_TIERS.map((tier) => (
+                      <option key={tier.id} value={tier.label}>
+                        {tier.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Submit CTA Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full mt-2 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <span>Mengirim Permohonan...</span>
+                  ) : (
+                    <>
+                      <span>Kirim Panduan via WhatsApp</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+
+                {/* Privacy Reassurance */}
+                <div className="flex items-center justify-center gap-1.5 pt-1 text-[10px] text-slate-500 dark:text-slate-400 text-center">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                  <span>Privasi terjamin 100%. Bebas spam promosi.</span>
+                </div>
+              </form>
             </div>
           </div>
 
-          {/* Right Column: Fast Lead Form */}
-          <div className="lg:col-span-5">
-            <form
-              onSubmit={handleSubmit}
-              className={`p-5 sm:p-6 rounded-2xl border transition-all space-y-3.5 ${
-                isDark
-                  ? 'bg-slate-900/90 border-slate-700/80 shadow-inner'
-                  : 'bg-white border-amber-200/90 shadow-md'
-              }`}
-            >
-              <div className="flex items-center justify-between pb-1 border-b border-amber-500/10">
-                <span className="text-xs font-black font-['Space_Grotesk'] text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Klaim Panduan & Voucher Belajar</span>
-                </span>
-                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full">
-                  100% Gratis
-                </span>
-              </div>
+          {/* Quick Direct Actions Footer Strip */}
+          <div className="pt-4 border-t border-amber-500/15 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <span className="font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Opsi praktis lainnya untuk Ayah & Bunda:</span>
+            </span>
 
-              {errorMessage && (
-                <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">
-                  {errorMessage}
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {onOpenTrialEvents && (
+                <button
+                  type="button"
+                  onClick={onOpenTrialEvents}
+                  className="px-3.5 py-1.5 rounded-lg font-bold bg-amber-500/15 hover:bg-amber-500 text-amber-600 dark:text-amber-400 hover:text-slate-950 border border-amber-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Rocket className="w-3.5 h-3.5" />
+                  <span>Klaim Free Trial Class</span>
+                </button>
               )}
 
-              {/* Form Input: Nama Orang Tua */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                  Nama Ayah / Bunda
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={parentName}
-                  onChange={(e) => setParentName(e.target.value)}
-                  placeholder="Contoh: Bunda Rina"
-                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
-                    isDark
-                      ? 'bg-slate-800/90 border-slate-700 text-white focus:border-amber-400'
-                      : 'bg-slate-50 border-amber-200 text-slate-900 focus:border-amber-500'
-                  }`}
-                />
-              </div>
-
-              {/* Form Input: Nomor WhatsApp */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                  Nomor WhatsApp Aktif
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                  placeholder="Contoh: 0812-3456-7890"
-                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
-                    isDark
-                      ? 'bg-slate-800/90 border-slate-700 text-white focus:border-amber-400'
-                      : 'bg-slate-50 border-amber-200 text-slate-900 focus:border-amber-500'
-                  }`}
-                />
-              </div>
-
-              {/* Form Select: Tingkatan Usia Anak */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                  Jenjang Usia Ananda
-                </label>
-                <select
-                  value={selectedTier}
-                  onChange={(e) => setSelectedTier(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl text-xs border outline-none transition-all cursor-pointer ${
-                    isDark
-                      ? 'bg-slate-800/90 border-slate-700 text-white focus:border-amber-400'
-                      : 'bg-slate-50 border-amber-200 text-slate-900 focus:border-amber-500'
-                  }`}
+              {onOpenBootcampModal && (
+                <button
+                  type="button"
+                  onClick={onOpenBootcampModal}
+                  className="px-3.5 py-1.5 rounded-lg font-bold bg-slate-200/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:border-amber-400 border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  {AGE_TIERS.map((tier) => (
-                    <option key={tier.id} value={tier.label}>
-                      {tier.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Kurikulum Bootcamp 2026</span>
+                </button>
+              )}
 
-              {/* Submit CTA Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full mt-2 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <span>Mengirim Permohonan...</span>
-                ) : (
-                  <>
-                    <span>Kirim Panduan via WhatsApp</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-
-              {/* Privacy Reassurance */}
-              <div className="flex items-center justify-center gap-1.5 pt-1 text-[10px] text-slate-500 dark:text-slate-400 text-center">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                <span>Privasi terjamin 100%. Bebas spam promosi.</span>
-              </div>
-            </form>
+              {onOpenTalentAssessment && (
+                <button
+                  type="button"
+                  onClick={onOpenTalentAssessment}
+                  className="px-3.5 py-1.5 rounded-lg font-bold bg-purple-500/15 hover:bg-purple-500/25 text-purple-700 dark:text-purple-300 border border-purple-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Brain className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Tes Bakat Digital (Gratis)</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

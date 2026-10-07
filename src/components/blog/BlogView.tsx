@@ -786,55 +786,17 @@ export const BlogView: React.FC<BlogViewProps> = ({
               </div>
             )}
 
-            {/* Lead Magnet: Panduan Kurikulum & Voucher Belajar Anak */}
+            {/* Unified High-Converting CTA & Lead Magnet: Panduan Kurikulum & Voucher Belajar */}
             <BlogLeadMagnet
               articleTitle={currentArticle.title}
               articleCategory={currentArticle.category}
               onOpenTrialEvents={onOpenTrialEvents}
+              onOpenBootcampModal={onOpenBootcampModal}
+              onOpenTalentAssessment={onOpenTalentAssessment}
             />
 
             {/* Bottom In-Article AdSense Banner */}
             <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor / Google AdSense" />
-
-            {/* Interactive Call to Action Card: Free Trial Class */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-sky-500/15 border-2 border-amber-400/60 shadow-xl space-y-4">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Kelas Praktik Coding & AI Bersama Mentor Beekoding</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-slate-950 dark:text-white">
-                Ingin Anak Anda Langsung Praktik Membuat Game & AI Sendiri?
-              </h3>
-              <p className="text-sm text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
-                Daftarkan putra-putri Anda dalam sesi <strong>Free Trial Class Beekoding</strong>. Didampingi langsung oleh mentor ramah anak, rasio kelas kecil (maksimal 4 siswa), dan sertifikat uji coba gratis!
-              </p>
-              <div className="pt-2 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={onOpenTrialEvents}
-                  className="px-6 py-3 rounded-xl font-black text-sm bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 hover:brightness-110 shadow-lg shadow-amber-500/30 transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <Rocket className="w-4 h-4" />
-                  <span>Klaim Slot Free Trial Class</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={onOpenBootcampModal}
-                  className="px-6 py-3 rounded-xl font-bold text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-amber-300 dark:border-slate-700 hover:border-amber-500 transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span>Kurikulum Bootcamp 2026</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={onOpenTalentAssessment}
-                  className="px-6 py-3 rounded-xl font-bold text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-amber-300 dark:border-slate-700 hover:border-amber-500 transition-all cursor-pointer flex items-center gap-2"
-                >
-                  <Brain className="w-4 h-4 text-purple-400" />
-                  <span>Tes Bakat Digital (Gratis)</span>
-                </button>
-              </div>
-            </div>
 
             {/* Social Share Bar + Phase 2 Like Reactions */}
             <div className="pt-6 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-4">
