@@ -12,6 +12,7 @@ import {
 import { onStorageUpdate } from '../../services/adminStorage';
 import { AdSenseSlot } from './AdSenseSlot';
 import { AdSenseStickyFooter } from './AdSenseStickyFooter';
+import { BlogLeadMagnet } from './BlogLeadMagnet';
 import { MarkdownRenderer, slugifyHeading } from './MarkdownRenderer';
 import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
 import { getArticleReadTime } from '../../utils/readTime';
@@ -784,6 +785,13 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 ))}
               </div>
             )}
+
+            {/* Lead Magnet: Panduan Kurikulum & Voucher Belajar Anak */}
+            <BlogLeadMagnet
+              articleTitle={currentArticle.title}
+              articleCategory={currentArticle.category}
+              onOpenTrialEvents={onOpenTrialEvents}
+            />
 
             {/* Bottom In-Article AdSense Banner */}
             <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor / Google AdSense" />
