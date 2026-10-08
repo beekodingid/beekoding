@@ -2,7 +2,7 @@ import React, { useState, useEffect, startTransition } from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
-import { Menu, X, Phone, ArrowRight, Sparkles, Brain, GraduationCap, Calendar, BookOpen } from 'lucide-react';
+import { Menu, X, Phone, ArrowRight, Sparkles, Brain, GraduationCap, Calendar, BookOpen, Smartphone } from 'lucide-react';
 
 interface NavbarProps {
   onOpenBootcampModal: () => void;
@@ -538,6 +538,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 <span>Summer AI & Coding Bootcamp 2026</span>
+              </button>
+
+              {/* Pasang Aplikasi Beekoding (PWA) di Layar HP */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent('beekoding:open-pwa-install'));
+                }}
+                className={`w-full text-center py-3 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+                  isDark
+                    ? 'bg-gradient-to-r from-amber-500/15 to-yellow-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/25'
+                    : 'bg-gradient-to-r from-amber-100/90 to-yellow-100/90 text-amber-950 border-amber-300 hover:bg-amber-200/90'
+                }`}
+              >
+                <Smartphone className="w-4 h-4 text-amber-500" />
+                <span>📲 Pasang Aplikasi Beekoding di HP</span>
               </button>
               <a
                 href="#contact"

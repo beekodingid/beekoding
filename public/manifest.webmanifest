@@ -1,7 +1,7 @@
 {
   "name": "Beekoding - AI & Coding Academy",
   "short_name": "Beekoding",
-  "description": "Coding & AI Learning for Future-Ready Minds",
+  "description": "Platform Edukasi Koding & Artificial Intelligence untuk Generasi Muda Indonesia",
   "start_url": "/",
   "id": "/",
   "scope": "/",
@@ -30,5 +30,59 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["education", "productivity"]
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Kuis Minat Anak (1 Menit)",
+      "short_name": "Kuis Minat",
+      "description": "Tes bakat dan minat koding anak instan",
+      "url": "/cek-minat-anak",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Portal Siswa & Raport",
+      "short_name": "Portal Siswa",
+      "description": "Cek sertifikat dan portofolio belajar anak",
+      "url": "/#portal",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Tes Bakat 8 Pilar",
+      "short_name": "Tes Bakat",
+      "description": "Diagnostik kognitif dan logika komprehensif",
+      "url": "/#talent",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Blog Edukasi",
+      "short_name": "Blog",
+      "description": "Artikel dan wawasan koding masa depan",
+      "url": "/blog",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }

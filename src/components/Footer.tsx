@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
-import { Mail, Phone, Globe, ArrowUp, Shield, GraduationCap, BookOpen } from 'lucide-react';
+import { Mail, Phone, Globe, ArrowUp, Shield, GraduationCap, BookOpen, Smartphone } from 'lucide-react';
 import { LegalModal, type LegalTabType } from './common/LegalModal';
 
 interface FooterProps {
@@ -162,6 +162,18 @@ export const Footer: React.FC<FooterProps> = ({
                   }`}
                 >
                   <span>📖 Kamus & Glosarium Koding</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('beekoding:open-pwa-install'))}
+                  className={`flex items-center gap-1.5 font-bold transition-colors cursor-pointer ${
+                    isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-700 hover:text-amber-900'
+                  }`}
+                >
+                  <Smartphone className="w-3.5 h-3.5 text-amber-500" />
+                  <span>📲 Pasang Aplikasi Beekoding (PWA)</span>
                 </button>
               </li>
               <li>
@@ -475,6 +487,17 @@ export const Footer: React.FC<FooterProps> = ({
             >
               <Shield className="w-3.5 h-3.5 text-amber-500" />
               <span>Portal Admin</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('beekoding:open-pwa-install'))}
+              className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
+                isDark ? 'text-slate-400 hover:text-amber-400' : 'text-slate-600 hover:text-amber-600'
+              }`}
+            >
+              <Smartphone className="w-3.5 h-3.5 text-amber-500" />
+              <span>Pasang Aplikasi</span>
             </button>
 
             <button

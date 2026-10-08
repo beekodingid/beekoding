@@ -452,65 +452,80 @@ export function App() {
   // 0. Jika Kuis Minat & Bakat Coding Anak sedang aktif
   if (showQuizMinat) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Kuis Minat & Bakat Coding Anak..." />}>
-        <QuizMinatView
-          onBackToHome={handleCloseQuizMinat}
-          onOpenTrialEvents={handleOpenTrialEvents}
-        />
-      </Suspense>
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Menyiapkan Kuis Minat & Bakat Coding Anak..." />}>
+          <QuizMinatView
+            onBackToHome={handleCloseQuizMinat}
+            onOpenTrialEvents={handleOpenTrialEvents}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
     );
   }
 
   // 1. Jika Talent Assessment sedang aktif, utamakan langsung tampil
   if (showTalentAssessment) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Asesmen Minat & Bakat..." />}>
-        <TalentAssessmentView onClose={handleCloseTalentAssessment} />
-      </Suspense>
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Menyiapkan Asesmen Minat & Bakat..." />}>
+          <TalentAssessmentView onClose={handleCloseTalentAssessment} />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
     );
   }
 
   // Jika Glosarium / Kamus Koding sedang aktif
   if (showGlossary) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Membuka Kamus & Glosarium Koding Anak..." />}>
-        <GlossaryView
-          initialSlug={glossarySlug}
-          onBackToHome={handleCloseGlossary}
-          onOpenTalentAssessment={handleOpenTalentAssessment}
-          onOpenTrialEvents={handleOpenTrialEvents}
-        />
-      </Suspense>
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Membuka Kamus & Glosarium Koding Anak..." />}>
+          <GlossaryView
+            initialSlug={glossarySlug}
+            onBackToHome={handleCloseGlossary}
+            onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenTrialEvents={handleOpenTrialEvents}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
     );
   }
 
   // Jika Landing Page Khusus Jenjang Usia sedang aktif
   if (ageLandingTier) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Kurikulum & Program Belajar..." />}>
-        <AgeTierLandingPage
-          tier={ageLandingTier}
-          onBackToHome={handleCloseAgeLanding}
-          onOpenTalentAssessment={handleOpenTalentAssessment}
-          onOpenTrialEvents={handleOpenTrialEvents}
-          onOpenBootcampModal={handleOpenBootcampModal}
-        />
-      </Suspense>
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Menyiapkan Kurikulum & Program Belajar..." />}>
+          <AgeTierLandingPage
+            tier={ageLandingTier}
+            onBackToHome={handleCloseAgeLanding}
+            onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenTrialEvents={handleOpenTrialEvents}
+            onOpenBootcampModal={handleOpenBootcampModal}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
     );
   }
 
   // Jika Blog Edukasi sedang aktif
   if (showBlog) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Membuka Artikel & Blog Edukasi Beekoding..." />}>
-        <BlogView
-          initialSlug={blogSlug}
-          onBackToHome={handleCloseBlog}
-          onOpenBootcampModal={handleOpenBootcampModal}
-          onOpenTalentAssessment={handleOpenTalentAssessment}
-          onOpenTrialEvents={handleOpenTrialEvents}
-        />
-      </Suspense>
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Membuka Artikel & Blog Edukasi Beekoding..." />}>
+          <BlogView
+            initialSlug={blogSlug}
+            onBackToHome={handleCloseBlog}
+            onOpenBootcampModal={handleOpenBootcampModal}
+            onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenTrialEvents={handleOpenTrialEvents}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
     );
   }
 
@@ -526,9 +541,12 @@ export function App() {
   // Jika Portal Siswa & Wali Murid sedang aktif
   if (showStudentPortal) {
     return (
-      <Suspense fallback={<AppLoadingFallback message="Membuka Portal Siswa & Wali Murid..." />}>
-        <StudentPortalView onClose={handleCloseStudentPortal} />
-      </Suspense>
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Membuka Portal Siswa & Wali Murid..." />}>
+          <StudentPortalView onClose={handleCloseStudentPortal} />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
     );
   }
 
