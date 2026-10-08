@@ -11,6 +11,7 @@ interface NavbarProps {
   onOpenTrialEvents?: () => void;
   onOpenBlog?: () => void;
   onOpenGlossary?: () => void;
+  onOpenQuizMinat?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -20,6 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenTrialEvents,
   onOpenBlog,
   onOpenGlossary,
+  onOpenQuizMinat,
 }) => {
   const { isDark } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -307,6 +309,27 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="xl:hidden">Portal</span>
           </button>
 
+          {/* Tombol Kuis Minat Anak (1 Menit) */}
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenQuizMinat) onOpenQuizMinat();
+              else window.location.hash = '#kuis-minat';
+            }}
+            className={`whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer ${
+              isDark
+                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/40 hover:bg-amber-500/25'
+                : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden xl:inline">Kuis Minat Anak</span>
+            <span className="xl:hidden">Kuis</span>
+            <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-emerald-500 text-white">
+              1 Mnt
+            </span>
+          </button>
+
           {/* Tombol Tes Bakat Anak (Gratis) */}
           <button
             type="button"
@@ -434,6 +457,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <BookOpen className="w-4 h-4 text-amber-500" />
                 <span>Blog & Panduan Edukasi</span>
+              </button>
+
+              {/* Kuis Minat Anak 1 Menit */}
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onOpenQuizMinat) onOpenQuizMinat();
+                  else window.location.hash = '#kuis-minat';
+                }}
+                className={`w-full text-center py-3 rounded-xl border text-sm font-black flex items-center justify-center gap-2 ${
+                  isDark
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                    : 'bg-amber-100 text-amber-900 border-amber-300'
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>Kuis Minat Koding Anak (1 Menit Viral)</span>
               </button>
 
               {/* Tes Bakat Anak */}

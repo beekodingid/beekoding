@@ -58,6 +58,9 @@ const AgeTierLandingPage = lazy(() =>
 const GlossaryView = lazy(() =>
   import('./components/glossary/GlossaryView').then((m) => ({ default: m.GlossaryView }))
 );
+const QuizMinatView = lazy(() =>
+  import('./components/quiz/QuizMinatView').then((m) => ({ default: m.QuizMinatView }))
+);
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
   return (
@@ -88,19 +91,35 @@ export function App() {
   const [blogSlug, setBlogSlug] = useState<string | undefined>(undefined);
   const [showGlossary, setShowGlossary] = useState(false);
   const [glossarySlug, setGlossarySlug] = useState<string | undefined>(undefined);
+  const [showQuizMinat, setShowQuizMinat] = useState(false);
   const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
-  // Deteksi URL (clean path /kursus-*, /glosarium, /blog, /admin, /portal, /talent maupun hash #...)
+  // Deteksi URL (clean path /kursus-*, /glosarium, /blog, /admin, /portal, /talent, /cek-minat-anak maupun hash #...)
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash || '';
       const pathname = window.location.pathname || '';
       const search = window.location.search || '';
 
-      // 1. Prioritaskan route hash spesifik (#talent, #admin, #portal) agar instan aktif dari halaman mana pun
-      if (hash === '#talent' || pathname === '/talent') {
+      // 1. Prioritaskan route kuis minat & bakat anak
+      if (
+        hash === '#kuis-minat' ||
+        hash === '#quiz' ||
+        hash === '#quiz-minat' ||
+        pathname.startsWith('/cek-minat-anak') ||
+        pathname.startsWith('/kuis-minat')
+      ) {
+        setShowQuizMinat(true);
+        setShowTalentAssessment(false);
+        setShowAdmin(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
+      } else if (hash === '#talent' || pathname === '/talent') {
         setShowTalentAssessment(true);
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowStudentPortal(false);
         setShowBlog(false);
@@ -113,6 +132,7 @@ export function App() {
         search.includes('type=recovery')
       ) {
         setShowAdmin(true);
+        setShowQuizMinat(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
@@ -125,12 +145,14 @@ export function App() {
         search.includes('report=')
       ) {
         setShowStudentPortal(true);
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowBlog(false);
         setShowGlossary(false);
         setAgeLandingTier(null);
       } else if (hash === '#review' || hash === '#showcase' || hash === '#testimoni') {
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
@@ -142,6 +164,7 @@ export function App() {
         pathname.startsWith('/kursus-coding-anak-sd')
       ) {
         setAgeLandingTier('sd');
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
@@ -152,6 +175,7 @@ export function App() {
         pathname.startsWith('/kursus-python-remaja-smp-sma')
       ) {
         setAgeLandingTier('teens');
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
@@ -162,6 +186,7 @@ export function App() {
         pathname.startsWith('/glosarium')
       ) {
         setShowGlossary(true);
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
@@ -176,6 +201,7 @@ export function App() {
         setGlossarySlug(slug || undefined);
       } else if (hash.startsWith('#blog') || pathname.startsWith('/blog')) {
         setShowBlog(true);
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
@@ -189,6 +215,7 @@ export function App() {
         }
         setBlogSlug(slug ? slug : undefined);
       } else {
+        setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
@@ -230,6 +257,44 @@ export function App() {
       setTrialEventsModalOpen(false);
       setSelectedEventForModal(null);
     });
+  };
+
+  const handleOpenQuizMinat = () => {
+    window.location.hash = '#kuis-minat';
+    startTransition(() => {
+      setShowQuizMinat(true);
+      setShowTalentAssessment(false);
+      setShowAdmin(false);
+      setAgeLandingTier(null);
+      setShowBlog(false);
+      setShowGlossary(false);
+      setShowStudentPortal(false);
+    });
+  };
+
+  const handleCloseQuizMinat = () => {
+    startTransition(() => {
+      setShowQuizMinat(false);
+      const pathname = window.location.pathname || '';
+      if (pathname.startsWith('/kursus-coding-anak-sd')) {
+        setAgeLandingTier('sd');
+      } else if (pathname.startsWith('/kursus-python-remaja-smp-sma')) {
+        setAgeLandingTier('teens');
+      } else if (pathname.startsWith('/glosarium')) {
+        setShowGlossary(true);
+      } else if (pathname.startsWith('/blog')) {
+        setShowBlog(true);
+      }
+    });
+    if (
+      window.location.hash === '#kuis-minat' ||
+      window.location.hash === '#quiz' ||
+      window.location.hash === '#quiz-minat' ||
+      window.location.pathname.startsWith('/cek-minat-anak') ||
+      window.location.pathname.startsWith('/kuis-minat')
+    ) {
+      window.history.pushState(null, '', '/');
+    }
   };
 
   const handleOpenTalentAssessment = () => {
@@ -384,6 +449,18 @@ export function App() {
     }
   };
 
+  // 0. Jika Kuis Minat & Bakat Coding Anak sedang aktif
+  if (showQuizMinat) {
+    return (
+      <Suspense fallback={<AppLoadingFallback message="Menyiapkan Kuis Minat & Bakat Coding Anak..." />}>
+        <QuizMinatView
+          onBackToHome={handleCloseQuizMinat}
+          onOpenTrialEvents={handleOpenTrialEvents}
+        />
+      </Suspense>
+    );
+  }
+
   // 1. Jika Talent Assessment sedang aktif, utamakan langsung tampil
   if (showTalentAssessment) {
     return (
@@ -469,6 +546,7 @@ export function App() {
         onOpenTrialEvents={handleOpenTrialEvents}
         onOpenBlog={handleOpenBlog}
         onOpenGlossary={handleOpenGlossary}
+        onOpenQuizMinat={handleOpenQuizMinat}
       />
 
       {/* Main Content Sections */}
@@ -477,6 +555,7 @@ export function App() {
           onOpenBootcampModal={handleOpenBootcampModal}
           onOpenTalentAssessment={handleOpenTalentAssessment}
           onOpenTrialEvents={handleOpenTrialEvents}
+          onOpenQuizMinat={handleOpenQuizMinat}
         />
         <About />
         <Programs

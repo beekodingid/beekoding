@@ -295,6 +295,81 @@ async function main() {
   fs.writeFileSync(path.join(distDir, 'glosarium.html'), glossaryHtml, 'utf-8');
   console.log(`[prerender-blog] Successfully prerendered Glosarium SEO page!`);
 
+  // =========================================================================
+  // 3d. PRERENDER LEAD MAGNET: KUIS MINAT KODING ANAK (VIRAL WHATSAPP)
+  // =========================================================================
+  const quizDir = path.join(distDir, 'cek-minat-anak');
+  if (!fs.existsSync(quizDir)) {
+    fs.mkdirSync(quizDir, { recursive: true });
+  }
+
+  const quizAltDir = path.join(distDir, 'kuis-minat');
+  if (!fs.existsSync(quizAltDir)) {
+    fs.mkdirSync(quizAltDir, { recursive: true });
+  }
+
+  const quizTitle = 'Kuis Minat & Bakat Coding Anak (1 Menit) | Temukan Potensi Digital Buah Hati';
+  const quizDesc = 'Apakah anak Anda tipe The Game Creator, Logic Sleuth, Web Designer, atau AI Builder? Ikuti kuis 1 menit gratis untuk mengetahui gaya belajar dan rekomendasi kurikulum koding terbaik ananda.';
+  const quizKeywords = 'kuis minat coding anak, tes bakat logika anak, tes potensi koding, arketipe digital anak, belajar coding anak pemula, kursus scratch beekoding, kursus python remaja';
+  const quizUrl = 'https://beekoding.pages.dev/cek-minat-anak';
+
+  const quizJsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Quiz',
+    name: 'Kuis Minat & Bakat Coding Anak (1 Menit) - Beekoding',
+    description: quizDesc,
+    educationalLevel: 'Beginner / Kids & Teens',
+    provider: {
+      '@type': 'EducationalOrganization',
+      name: 'Beekoding',
+      url: 'https://beekoding.id',
+    },
+    about: {
+      '@type': 'Thing',
+      name: 'Kecerdasan Digital & Pemrograman Anak',
+    },
+  });
+
+  const quizBreadcrumbJsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: 'https://beekoding.pages.dev',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Kuis Minat Koding Anak',
+        item: quizUrl,
+      },
+    ],
+  });
+
+  const quizSchemasTag = `\n    <!-- Quiz Structured Data for Social & Search Snippets -->\n    <script type="application/ld+json">\n    ${quizJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${quizBreadcrumbJsonLd}\n    </script>\n  </head>`;
+
+  let quizHtml = baseHtml
+    .replace(/<title>.*?<\/title>/, `<title>${quizTitle}</title>`)
+    .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${quizUrl}" />`)
+    .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${quizDesc}" />`)
+    .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${quizKeywords}" />`)
+    .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${quizTitle}" />`)
+    .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${quizDesc}" />`)
+    .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${quizUrl}" />`)
+    .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${quizTitle}" />`)
+    .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${quizDesc}" />`)
+    .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${quizUrl}" />`)
+    .replace('</head>', quizSchemasTag);
+
+  fs.writeFileSync(path.join(quizDir, 'index.html'), quizHtml, 'utf-8');
+  fs.writeFileSync(path.join(quizAltDir, 'index.html'), quizHtml, 'utf-8');
+  fs.writeFileSync(path.join(distDir, 'cek-minat-anak.html'), quizHtml, 'utf-8');
+  fs.writeFileSync(path.join(distDir, 'kuis-minat.html'), quizHtml, 'utf-8');
+  console.log(`[prerender-blog] Successfully prerendered Lead Magnet Quiz SEO page!`);
+
   // 4. Prerender each article static directory and index.html
   for (const article of articles) {
     const articleDir = path.join(blogDir, article.slug);
@@ -481,6 +556,18 @@ async function main() {
       <image:loc>${domain}/og-image.jpg</image:loc>
       <image:title>Kamus Istilah Koding &amp; AI Anak Beekoding</image:title>
       <image:caption>Kamus istilah coding dan artificial intelligence ramah anak terlengkap di Indonesia.</image:caption>
+    </image:image>
+  </url>
+  <!-- Lead Magnet: Kuis Minat & Bakat Coding Anak -->
+  <url>
+    <loc>${domain}/cek-minat-anak</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Kuis Minat &amp; Bakat Coding Anak (1 Menit) Beekoding</image:title>
+      <image:caption>Temukan potensi digital buah hati: The Game Creator, Logic Sleuth, Web Designer, atau AI Builder.</image:caption>
     </image:image>
   </url>
 `;

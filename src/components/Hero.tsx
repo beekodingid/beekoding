@@ -7,12 +7,14 @@ interface HeroProps {
   onOpenBootcampModal: () => void;
   onOpenTalentAssessment?: () => void;
   onOpenTrialEvents?: () => void;
+  onOpenQuizMinat?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   onOpenBootcampModal,
   onOpenTalentAssessment,
   onOpenTrialEvents,
+  onOpenQuizMinat,
 }) => {
   const { isDark } = useTheme();
 
@@ -65,8 +67,8 @@ export const Hero: React.FC<HeroProps> = ({
               {siteConfig.heroSubtitle}
             </p>
 
-            {/* Social Proof & Google Review Stars (Rating 4.9/5) */}
-            <div className="flex justify-center lg:justify-start pt-1">
+            {/* Social Proof & Quick Quiz Pills */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1">
               <a
                 href="#showcase"
                 className={`inline-flex items-center gap-2.5 py-1.5 px-3 rounded-full border transition-all hover:scale-105 group ${
@@ -91,10 +93,29 @@ export const Hero: React.FC<HeroProps> = ({
                   </div>
                   <span className="font-extrabold text-amber-600 dark:text-amber-400">4.9/5</span>
                   <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>
-                    • 380+ Ulasan Wali Murid
+                    • 380+ Ulasan
                   </span>
                 </div>
               </a>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onOpenQuizMinat) onOpenQuizMinat();
+                  else window.location.hash = '#kuis-minat';
+                }}
+                className={`inline-flex items-center gap-1.5 py-1.5 px-3.5 rounded-full border transition-all hover:scale-105 cursor-pointer shadow-xs ${
+                  isDark
+                    ? 'bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border-amber-500/40 text-amber-300 hover:border-amber-400'
+                    : 'bg-amber-100/90 border-amber-300 text-amber-950 hover:bg-amber-200/90'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                <span className="text-xs font-bold">Kuis Minat Anak</span>
+                <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-slate-950 text-amber-400">
+                  1 Menit
+                </span>
+              </button>
             </div>
 
             {/* Action Buttons */}
