@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 07 - Merancang Karakter Hero Bersama AI Generator | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #ec4899;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #be185d;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #db2777;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.15) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Badges & Titles */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-pink { background: rgba(236, 72, 153, 0.2); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); }
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(236, 72, 153, 0.5);
+      background: rgba(236, 72, 153, 0.08);
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Media Viewport */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(236, 72, 153, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Scratch Code Block Mockups */
+    .scratch-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin: 4px 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      font-family: 'Fredoka', cursive;
+    }
+
+    .scratch-event { background: #d97706; border-left: 6px solid #b45309; }
+    .scratch-motion { background: #2563eb; border-left: 6px solid #1d4ed8; }
+    .scratch-looks { background: #9333ea; border-left: 6px solid #7e22ce; }
+    .scratch-tts { background: #0891b2; border-left: 6px solid #0e7490; }
+
+    .code-slot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Live AI Prompt Studio Simulator */
+    .prompt-studio {
+      background: #0f172a;
+      border: 2px solid #ec4899;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .builder-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .builder-label {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #f472b6;
+    }
+
+    .pill-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-btn:hover {
+      border-color: #f472b6;
+      color: #ffffff;
+    }
+
+    .pill-btn.active {
+      background: #db2777;
+      border-color: #ec4899;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+    }
+
+    .prompt-result-box {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .prompt-text {
+      font-family: monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      font-weight: 700;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .btn-copy-prompt {
+      background: #334155;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-copy-prompt:hover {
+      background: #475569;
+    }
+
+    .hero-preview-stage {
+      background: radial-gradient(circle at 50% 50%, #2e1065 0%, #0f172a 100%);
+      border-radius: 14px;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-avatar-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+
+    .hero-avatar-card.generating {
+      animation: heroSparkle 0.6s infinite alternate;
+    }
+
+    @keyframes heroSparkle {
+      0% { transform: scale(0.95); filter: brightness(0.8); }
+      100% { transform: scale(1.08); filter: brightness(1.3) drop-shadow(0 0 15px #ec4899); }
+    }
+
+    .hero-emoji {
+      font-size: 60px;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+    }
+
+    .hero-title-tag {
+      font-family: 'Fredoka', cursive;
+      font-size: 16px;
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .btn-generate-hero {
+      background: linear-gradient(135deg, #ec4899, #be185d);
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+      transition: transform 0.15s;
+    }
+    .btn-generate-hero:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Checklist & Steps */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 18px;
+      border-radius: 12px;
+    }
+
+    .step-num {
+      background: #be185d;
+      color: #ffffff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #ec4899;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #be185d;
+      border-color: #9d174d;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #db2777;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #ec4899;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #f472b6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #ec4899;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>JUNIOR AI GENERATOR</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-06/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 06">⏪ Sesi 06</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-08/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 08" style="opacity: 0.5; pointer-events: none;">Sesi 08 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-pink">Sesi 07 • Generative AI for Kids</div>
+              <h1 class="slide-title">Merancang Hero Bersama AI! 🎨🚀</h1>
+              <p class="slide-subtitle">Belajar Menulis <strong>Prompt Gambar Ramah Anak</strong> & Menjadikannya Sprite Karakter Sendiri di Scratch 3.0!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #f472b6; font-weight: 700;">LEVEL BELAJAR</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Junior Explorer (6–9 Thn)</div>
+                </div>
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #fbbf24; font-weight: 700;">PROYEK HARI INI</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Hero Sprite Astronot Cilik</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-ai-hero.jpg" alt="Beeby memakai helm astronot di studio AI generator">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ICE BREAKING -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-amber">Ice Breaking & Curiositas</div>
+          <h2 class="slide-title">Pernahkah Kamu Membayangkan Pahlawan Impian? 🦸✨</h2>
+          <p class="slide-subtitle">Bagaimana jika robot pelukis AI bisa melukis karakter impianmu hanya dalam 5 detik?</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">✏️</div>
+              <h3 class="card-title">Dulu: Gambar Manual</h3>
+              <p class="card-desc">Kita butuh kertas gambar, pensil warna, penghapus, dan waktu berjam-jam untuk menggambar satu karakter.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">🪄</div>
+              <h3 class="card-title">Sekarang: AI Pelukis Cilik</h3>
+              <p class="card-desc">Kita cukup menjadi <strong>Sutradara Kreatif</strong>! Kita ceritakan ide kita lewat kata-kata, dan AI melukisnya seketika!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🎮</div>
+              <h3 class="card-title">Masuk ke Game Scratch!</h3>
+              <p class="card-desc">Karakter lukisan AI bukan cuma pajangan foto, tapi bisa kita bawa masuk ke Scratch untuk kita gerakkan!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: RUMUS RAHASIA PROMPT 4 ELEMEN -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-purple">Konsep Utama: Prompt Engineering</div>
+          <h2 class="slide-title">Rumus Rahasia 4 Elemen Mantra AI 📜</h2>
+          <p class="slide-subtitle">Agar AI melukis persis seperti yang kamu mau, gunakan formula ini:</p>
+
+          <div class="grid-4">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">1️⃣ 🐝</div>
+              <h4 style="color: #f472b6; font-size: 15px; font-weight: 800; margin-bottom: 6px;">KARAKTER</h4>
+              <p class="card-desc">Siapa tokohnya?<br><em>Contoh: Cute baby bee / baby cat</em></p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">2️⃣ 🚀</div>
+              <h4 style="color: #fbbf24; font-size: 15px; font-weight: 800; margin-bottom: 6px;">KOSTUM / TOPI</h4>
+              <p class="card-desc">Pakai baju apa?<br><em>Contoh: with tiny astronaut helmet</em></p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">3️⃣ ✨</div>
+              <h4 style="color: #22d3ee; font-size: 15px; font-weight: 800; margin-bottom: 6px;">GAYA SENI</h4>
+              <p class="card-desc">Gaya kartun apa?<br><em>Contoh: 3D Pixar cartoon style</em></p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">4️⃣ 🌈</div>
+              <h4 style="color: #34d399; font-size: 15px; font-weight: 800; margin-bottom: 6px;">WARNA / SUASANA</h4>
+              <p class="card-desc">Warna apa?<br><em>Contoh: glowing yellow and blue</em></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: KATA KUNCI BAHASA INGGRIS -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-cyan">Kamus Sutradara Cilik</div>
+          <h2 class="slide-title">Kata Kunci Ajaib Favorit AI 📖</h2>
+          <p class="slide-subtitle">AI memahami Bahasa Inggris lebih akurat. Yuk kenali kata-kata kuncinya:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🧸</div>
+              <h4 style="color: #38bdf8; font-size: 16px; font-weight: 800; margin-bottom: 8px;">Bentuk Karakter</h4>
+              <p class="card-desc">• <strong>Cute</strong> = Menggemaskan<br>• <strong>Baby / Tiny</strong> = Mungil imut<br>• <strong>Happy</strong> = Ceria tersenyum</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">🎬</div>
+              <h4 style="color: #f472b6; font-size: 16px; font-weight: 800; margin-bottom: 8px;">Gaya Animasi Bioskop</h4>
+              <p class="card-desc">• <strong>3D Pixar style</strong> = Gaya film Pixar<br>• <strong>Claymation</strong> = Animasi tanah liat<br>• <strong>Chibi / Kawaii</strong> = Kartun Jepang imut</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">✨</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 8px;">Aksesoris & Efek</h4>
+              <p class="card-desc">• <strong>Helmet</strong> = Helm pelindung<br>• <strong>Crown</strong> = Mahkota emas<br>• <strong>Glowing</strong> = Bersinar terang</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: BEDAH CONTOH MANTRA PROMPT -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-amber">Contoh Nyata Mantra</div>
+          <h2 class="slide-title">Mantra Beeby Si Lebah Astronot 🐝🚀</h2>
+          <p class="slide-subtitle">Mari kita gabungkan 4 elemen tadi menjadi 1 kalimat prompt utuh:</p>
+
+          <div class="info-card highlight" style="margin-bottom: 20px;">
+            <div style="font-size: 12px; color: #f472b6; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px;">MANTRA PROMPT LENGKAP:</div>
+            <div style="font-family: monospace; font-size: 18px; color: #ffffff; background: #0f172a; padding: 14px 18px; border-radius: 10px; border-left: 4px solid #ec4899; line-height: 1.5;">
+              "Cute baby bee with tiny astronaut helmet, 3D Pixar cartoon style, white background"
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 14px; margin-bottom: 4px;">🎯 Kenapa "Tiny Helmet"?</div>
+              <p class="card-desc">Supaya helmnya pas di kepala Beeby dan terlihat proporsional serta lucu!</p>
+            </div>
+            <div class="info-card">
+              <div style="color: #22d3ee; font-weight: 800; font-size: 14px; margin-bottom: 4px;">🎯 Kenapa "3D Pixar"?</div>
+              <p class="card-desc">Supaya tekstur kulit, sayap, dan matanya bulat bersinar seperti film bioskop!</p>
+            </div>
+            <div class="info-card highlight">
+              <div style="color: #34d399; font-weight: 800; font-size: 14px; margin-bottom: 4px;">🎯 Kenapa "White Background"?</div>
+              <p class="card-desc">Trik rahasia! Latar putih polos membuat gambar sangat mudah dihapus background-nya!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE PROMPT BUILDER SIMULATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-pink">Studio Simulator Langsung</div>
+          <h2 class="slide-title">Lab Sutradara Prompt Hero Cilik 🧪✨</h2>
+          <p class="slide-subtitle">Pilih resep hero impianmu di bawah dan lihat mantra prompt-nya tercipta otomatis!</p>
+
+          <div class="prompt-studio">
+            <!-- Builder Options -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="builder-section">
+                <span class="builder-label">1. Pilih Karakter:</span>
+                <div class="pill-group" id="groupChar">
+                  <button class="pill-btn active" data-val="Cute baby bee" data-emoji="🐝" data-name="Beeby Si Lebah">🐝 Lebah</button>
+                  <button class="pill-btn" data-val="Cute baby kitten" data-emoji="🐱" data-name="Miko Si Kucing">🐱 Kucing</button>
+                  <button class="pill-btn" data-val="Cute tiny dinosaur" data-emoji="🦖" data-name="Rexy Si Dino">🦖 Dinosaurus</button>
+                  <button class="pill-btn" data-val="Cute little robot" data-emoji="🤖" data-name="Robo Cilik">🤖 Robot</button>
+                </div>
+              </div>
+
+              <div class="builder-section">
+                <span class="builder-label">2. Pilih Aksesoris / Topi:</span>
+                <div class="pill-group" id="groupCostume">
+                  <button class="pill-btn active" data-val="with tiny astronaut helmet" data-icon="🚀">🚀 Helm Astronot</button>
+                  <button class="pill-btn" data-val="wearing golden royal crown" data-icon="👑">👑 Mahkota Raja</button>
+                  <button class="pill-btn" data-val="with red superhero cape" data-icon="🦸">🦸 Jubah Hero</button>
+                  <button class="pill-btn" data-val="wearing cyber glowing goggles" data-icon="🥽">🥽 Kacamata Lab</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prompt Box & Stage -->
+            <div class="prompt-result-box">
+              <span class="prompt-text" id="livePromptText">"Cute baby bee with tiny astronaut helmet, 3D Pixar cartoon style, white background"</span>
+              <button class="btn-copy-prompt" id="btnCopyPrompt">📋 Salin</button>
+            </div>
+
+            <div class="hero-preview-stage">
+              <div class="hero-avatar-card" id="heroCard">
+                <div class="hero-emoji" id="heroEmoji">🐝</div>
+                <div class="hero-title-tag" id="heroNameTag">Beeby Si Lebah Astronot</div>
+              </div>
+
+              <button class="btn-generate-hero" id="btnGenerateHero">
+                <span>🪄</span> Generate Karakter Hero!
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: 3 LANGKAH KE SCRATCH -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-emerald">Alur Produksi Digital</div>
+          <h2 class="slide-title">Membawa Karakter AI ke Scratch 💻</h2>
+          <p class="slide-subtitle">Tiga langkah mudah untuk memasukkan karakter ke game koding:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div>
+                <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Simpan Gambar dari AI (Download)</h4>
+                <p style="font-size: 13px; color: #94a3b8;">Klik kanan gambar hasil AI -> pilih <em>Save Image As</em> (Simpan Gambar Sebagai...) ke folder Downloads.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div>
+                <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Hapus Latar Belakang (Remove BG)</h4>
+                <p style="font-size: 13px; color: #94a3b8;">Gunakan tool pembersih background agar hanya tubuh hero yang tersisa (latar belakang menjadi transparan/kotak catur).</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div>
+                <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Upload Sprite ke Scratch</h4>
+                <p style="font-size: 13px; color: #94a3b8;">Arahkan mouse ke tombol kucing di pojok kanan bawah Scratch -> klik tombol paling atas: <strong>Upload Sprite</strong> (Ikon panah atas)!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: COMMON BUG & DEBUGGING -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <h2 class="slide-title">Detektif Bug Gambar Hero 🕵️‍♂️🔍</h2>
+          <p class="slide-subtitle">Solusi cepat jika ada masalah saat memasukkan sprite AI:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 10px;">📦</div>
+              <h4 style="color: #ef4444; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Ada Kotak Putih / Hitam</h4>
+              <p class="card-desc">Lupa menghapus background! Sprite terlihat kaku seperti menempelkan perangko kertas. Pastikan gambar berformat <strong>PNG transparan</strong>.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 10px;">🐘</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Sprite Raksasa Memenuhi Layar</h4>
+              <p class="card-desc">Gambar AI beresolusi HD sangat besar. Ubah kolom <strong>Size</strong> di panel Scratch dari 100 menjadi <strong>35 atau 40</strong>!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 10px;">👾</div>
+              <h4 style="color: #38bdf8; font-size: 16px; font-weight: 800; margin-bottom: 6px;">AI Menggambar Hal Berbeda</h4>
+              <p class="card-desc">Mungkin kalimat prompt-nya terlalu panjang atau rumit. Cukup gunakan rumus 4 elemen singkat yang kita pelajari hari ini!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: TANTANGAN KREATIF -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-pink">Misi Mandiri Kreatif</div>
+          <h2 class="slide-title">Tantangan: "Pahlawan Super Galaksi" 🌌⭐</h2>
+          <p class="slide-subtitle">Kreasikan pahlawan unikmu dan berikan kekuatan koding di Scratch!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #f472b6; font-family: 'Fredoka', cursive; margin-bottom: 10px;">Misi Kamu Hari Ini:</h4>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #e2e8f0;">
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Rancang 1 karakter hero impianmu dengan formula 4 elemen prompt.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Hapus background dan upload sprite hero ke Scratch.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Tambahkan blok gerak meluncur (<em>glide</em>) atau lompat saat tombol spasi ditekan!
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">⭐</span> <strong>Bonus:</strong> Pasang blok Text-to-Speech agar hero-mu bisa berteriak jurus rahasia!
+                </li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 54px; margin-bottom: 10px;">🏆🎨</div>
+              <h4 style="font-size: 20px; font-family: 'Fredoka', cursive; color: #fbbf24; margin-bottom: 6px;">Badge Spesial Sesi 07</h4>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 280px;">Siswa yang berhasil membuat sprite AI pertamanya berhak memakai lencana kehormatan <strong>"Junior AI Prompt Artist"</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: SHOWCASE & PENUTUP -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-amber">Showcase & Perayaan</div>
+          <h2 class="slide-title">Parade Pahlawan AI & Tepuk Koding! 👏🎉</h2>
+          <p class="slide-subtitle">Tunjukkan karakter hero buatanmu dan perkenalkan kekuatannya ke teman-teman!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Rutinitas Pameran Karya (Showcase):</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">1. Tunjukkan karakter hero yang berhasil kamu upload ke Scratch.</p>
+              <p class="card-desc" style="margin-bottom: 10px;">2. Jelaskan aksesoris dan kekuatan super hero ciptaanmu.</p>
+              <p class="card-desc" style="margin-bottom: 14px;">3. Berikan apresiasi meriah dengan <strong>Tepuk Koding Beekoding</strong>!</p>
+              
+              <button class="btn-generate-hero" id="btnConfettiCelebration" style="background: linear-gradient(135deg, #10b981, #059669);">
+                🎉 Rayakan Keberhasilan Kelas!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🚀 Misi Pertemuan Berikutnya (Sesi 08):</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #f472b6; margin-bottom: 4px;">Sesi 08: Mini Proyek 1 — Buku Cerita Animasi Interaktif</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Kita akan menggabungkan karakter hero AI, suara Text-to-Speech, dan tombol navigasi halaman cerita menjadi sebuah e-book animasi yang keren!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–05' (Pembuka & Hook Antusias)",
+        text: "Mulai dengan membangkitkan imajinasi anak-anak tentang pahlawan super. Tanyakan apakah mereka ingin punya karakter buatan sendiri di Scratch yang tidak ada di perpustakaan bawaan.",
+        script: "Halo para kreator cilik Beekoding! Hari ini kita punya misi super spesial. Pernah nggak kalian ingin punya pahlawan super sendiri di Scratch, tapi gambarnya nggak ada di Scratch? Hari ini kita akan jadi sutradara AI yang memerintahkan robot pelukis untuk menggambarkannya untuk kita!"
+      },
+      2: {
+        timing: "Menit 05–12' (Ice Breaking & Analogi)",
+        text: "Jelaskan peran manusia vs peran AI. Tekankan bahwa AI bukan pengganti kreativitas, melainkan asisten pelukis. Idenya tetap 100% berasal dari pikiran anak-anak.",
+        script: "Komputer AI itu seperti kuas ajaib, teman-teman. Tapi kuas ajaib tidak tahu mau menggambar apa kalau kita tidak kasih tahu ide ceritanya. Jadi yang paling hebat dan pintar tetaplah kalian sebagai sutradaranya!"
+      },
+      3: {
+        timing: "Menit 12–22' (Konsep Rumus 4 Elemen)",
+        text: "Ajarkan formula 4 elemen dengan jelas: Karakter + Aksesoris/Topi + Gaya Seni + Warna. Minta anak-anak menyebutkan contoh untuk masing-masing elemen.",
+        script: "Ingat rumus rahasia kita: Pertama, siapa hewannya? Kedua, dia pakai kostum apa? Ketiga, gaya kartun apa? Keempat, apa warnanya? Kalau 4 bahan ini lengkap, robot AI akan memasak lukisan paling keren untuk kalian!"
+      },
+      4: {
+        timing: "Menit 22–30' (Kosakata Sutradara Cilik)",
+        text: "Kenalkan kata-kata kunci bahasa Inggris sederhana (Cute, Tiny, 3D Pixar, Shiny). Anak usia 6–9 tahun sangat suka mempelajari kata baru jika dikaitkan dengan kartun favorit mereka.",
+        script: "AI itu belajar dari buku berbahasa Inggris. Jadi kalau kita bilang 'Cute baby bee', dia langsung mengerti: 'Wah, lebah bayi yang imut!'. Dan kata ajaib '3D Pixar' bikin matanya berkilau seperti film bioskop kesukaan kalian!"
+      },
+      5: {
+        timing: "Menit 30–40' (Bedah Contoh Nyata)",
+        text: "Bahas prompt Beeby Astronot. Jelaskan trik 'white background' agar proses menghapus latar belakang jadi sangat mudah dan tidak meninggalkan noda.",
+        script: "Lihat mantra Beeby: 'Cute baby bee with tiny astronaut helmet, 3D Pixar cartoon style, white background'. Perhatikan kata 'white background'. Itu trik rahasia sutradara supaya latarnya putih bersih dan gampang kita gunting di Scratch!"
+      },
+      6: {
+        timing: "Menit 40–55' (Uji Coba Simulator di Slide)",
+        text: "Ajak anak-anak mencoba Simulator Lab Prompt di slide. Klik kombinasi karakter (Dino, Kucing, Robot) dan topi (Mahkota, Helm, Jubah). Tunjukkan bagaimana prompt berubah secara real-time.",
+        script: "Ayo kita coba mainkan simulator ini! Siapa yang mau bikin Dinosaurus bermahkota emas? Klik Dino, klik Mahkota! Lihat mantranya langsung terbuat sendiri di kotak bawah! Siap di-generate jadi pahlawan super!"
+      },
+      7: {
+        timing: "Menit 55–70' (Hands-on: Download & Upload Sprite)",
+        text: "Bimbing siswa melakukan 3 langkah: simpan gambar hasil AI, hapus latar belakang, lalu upload sprite ke Scratch. Pantau anak yang kesulitan menemukan tombol Upload Sprite.",
+        script: "Sekarang mari kita bawa hero kita ke dunia Scratch! Langkah 1: Simpan gambarnya ke komputer. Langkah 2: Kita bersihkan background-nya. Langkah 3: Buka Scratch, arahkan mouse ke kepala kucing di kanan bawah, lalu klik panah atas 'Upload Sprite'!"
+      },
+      8: {
+        timing: "Menit 70–78' (Detektif Bug Gambar)",
+        text: "Bantu siswa yang spritenya terlalu besar dengan mengubah ukuran (Size: 40%). Untuk yang masih ada kotak putihnya, bimbing cara remove background ulang.",
+        script: "Wah, ada lebah yang badannya sebesar gajah di panggung! Tenang saja, jangan panik. Cari tulisan 'Size 100' di Scratch, ganti angkanya jadi 40. Cling! Lebah kita sudah kembali mungil dan lincah!"
+      },
+      9: {
+        timing: "Menit 78–85' (Tantangan Mandiri)",
+        text: "Ajak siswa memberikan kode gerak atau suara Text-to-Speech dari Sesi 06 pada hero baru mereka. Ini membuat mereka merasa karyanya hidup.",
+        script: "Sekarang pahlawan AI kalian sudah berdiri di panggung Scratch! Ayo gabungkan dengan pelajaran minggu lalu: pasang blok 'When space pressed' dan blok 'Speak' supaya pahlawan kalian bisa meluncur dan memperkenalkan diri!"
+      },
+      10: {
+        timing: "Menit 85–90' (Showcase & Penutup)",
+        text: "Pamerkan karya 2-3 siswa. Berikan pujian antusias dan lakukan Tepuk Koding Beekoding. Beri sneak peek Sesi 08: Mini Proyek Buku Cerita Animasi Interaktif.",
+        script: "Hebat luar biasa semuanya! Hari ini kalian resmi menjadi Sutradara AI dan Seniman Koding Cilik! Minggu depan kita akan menggabungkan semuanya jadi Buku Cerita Digital Interaktif! Beri tepuk koding paling meriah untuk kita semua!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#be185d' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Confetti celebration
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 120,
+            spread: 80,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // ==========================================
+    // LIVE PROMPT BUILDER SIMULATOR LOGIC
+    // ==========================================
+    let selectedChar = { val: "Cute baby bee", emoji: "🐝", name: "Beeby Si Lebah" };
+    let selectedCostume = { val: "with tiny astronaut helmet", icon: "🚀", title: "Astronot" };
+
+    const charButtons = document.querySelectorAll('#groupChar .pill-btn');
+    const costumeButtons = document.querySelectorAll('#groupCostume .pill-btn');
+    const promptTextEl = document.getElementById('livePromptText');
+    const heroEmojiEl = document.getElementById('heroEmoji');
+    const heroNameTagEl = document.getElementById('heroNameTag');
+    const heroCardEl = document.getElementById('heroCard');
+    const btnGenerateHero = document.getElementById('btnGenerateHero');
+    const btnCopyPrompt = document.getElementById('btnCopyPrompt');
+
+    function updatePromptString() {
+      const promptString = `"${selectedChar.val} ${selectedCostume.val}, 3D Pixar cartoon style, white background"`;
+      promptTextEl.textContent = promptString;
+      heroEmojiEl.textContent = selectedChar.emoji;
+      heroNameTagEl.textContent = `${selectedChar.name} ${selectedCostume.title}`;
+    }
+
+    charButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        charButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedChar = {
+          val: btn.dataset.val,
+          emoji: btn.dataset.emoji,
+          name: btn.dataset.name
+        };
+        updatePromptString();
+      });
+    });
+
+    costumeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        costumeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCostume = {
+          val: btn.dataset.val,
+          icon: btn.dataset.icon,
+          title: btn.textContent.replace(btn.dataset.icon, '').trim()
+        };
+        updatePromptString();
+      });
+    });
+
+    btnGenerateHero.addEventListener('click', () => {
+      heroCardEl.classList.add('generating');
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 60,
+          spread: 50,
+          origin: { y: 0.7 }
+        });
+      }
+      setTimeout(() => {
+        heroCardEl.classList.remove('generating');
+      }, 900);
+    });
+
+    btnCopyPrompt.addEventListener('click', () => {
+      navigator.clipboard.writeText(promptTextEl.textContent.replace(/"/g, '')).then(() => {
+        btnCopyPrompt.textContent = '✅ Tersalin!';
+        setTimeout(() => {
+          btnCopyPrompt.textContent = '📋 Salin';
+        }, 1800);
+      });
+    });
+
+    // Initialize slide
+    updatePromptString();
+    updateSlide();
+  </script>
+</body>
+</html>
