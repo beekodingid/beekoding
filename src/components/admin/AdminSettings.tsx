@@ -38,6 +38,9 @@ import {
   RefreshCw,
   Server,
   Upload,
+  CreditCard,
+  QrCode,
+  Zap,
 } from 'lucide-react';
 import { uploadAvatar } from '../../services/supabaseStorage';
 import {
@@ -52,6 +55,12 @@ import {
   pullAllDataFromSupabase,
   type SyncResult,
 } from '../../services/supabaseSync';
+import {
+  getPaymentGatewayConfig,
+  savePaymentGatewayConfig,
+  type PaymentGatewayConfig,
+  type PaymentChannel,
+} from '../../services/paymentGateway';
 
 interface AdminSettingsProps {
   isDark: boolean;
@@ -59,7 +68,7 @@ interface AdminSettingsProps {
   onRefreshAllData?: () => void;
 }
 
-type SettingsTab = 'profile' | 'security' | 'preferences' | 'backup';
+type SettingsTab = 'profile' | 'security' | 'preferences' | 'backup' | 'payment';
 
 export const AdminSettings: React.FC<AdminSettingsProps> = ({
   isDark,
@@ -68,6 +77,12 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [profile, setProfile] = useState<AdminUser>(getAdminProfile());
+
+  // Form State Payment Gateway
+  const [gatewayConfig, setGatewayConfig] = useState<PaymentGatewayConfig>(() =>
+    getPaymentGatewayConfig()
+  );
+  const [isSavingGateway, setIsSavingGateway] = useState(false);
 
   // Form State Profile
   const [name, setName] = useState(profile.name || '');
@@ -459,6 +474,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           { id: 'profile' as SettingsTab, label: 'Profil Saya', icon: User },
           { id: 'security' as SettingsTab, label: 'Ganti Password & Keamanan', icon: Lock },
           { id: 'preferences' as SettingsTab, label: 'Preferensi & Notifikasi', icon: Bell },
+          { id: 'payment' as SettingsTab, label: 'Payment Gateway (Midtrans & QRIS)', icon: CreditCard },
           { id: 'backup' as SettingsTab, label: 'Database & Cadangan', icon: Database },
         ].map((tab) => {
           const Icon = tab.icon;
@@ -1684,6 +1700,296 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* TAB 5: PAYMENT GATEWAY & QRIS (MIDTRANS / XENDIT)        */}
+      {/* ======================================================== */}
+      {activeTab === 'payment' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Status Gateway Card */}
+          <div
+            className={`p-5 sm:p-6 rounded-3xl border ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+            }`}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 p-[2px] shadow-lg shadow-amber-500/20 flex-shrink-0">
+                  <div
+                    className={`w-full h-full rounded-[14px] flex items-center justify-center ${
+                      isDark ? 'bg-[#0f1322]' : 'bg-white'
+                    }`}
+                  >
+                    <CreditCard className="w-6 h-6 text-amber-500" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-black tracking-tight font-['Space_Grotesk']">
+                      Payment Gateway & QRIS Engine
+                    </h3>
+                    <span
+                      className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+                        gatewayConfig.environment === 'production'
+                          ? 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30'
+                          : 'bg-amber-500/15 text-amber-500 border-amber-500/30'
+                      }`}
+                    >
+                      {gatewayConfig.environment === 'production' ? '● LIVE / PRODUKSI' : '● SANDBOX / DEMO'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Menerima pembayaran kursus real-time via QRIS, Virtual Account (BCA, Mandiri, BRI, BNI), dan E-Wallet tanpa cek mutasi manual.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-500">Mode Sistem:</span>
+                <select
+                  value={gatewayConfig.environment}
+                  onChange={(e) =>
+                    setGatewayConfig({
+                      ...gatewayConfig,
+                      environment: e.target.value as 'sandbox' | 'production',
+                    })
+                  }
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border focus:outline-none focus:ring-2 focus:ring-amber-500/50 ${
+                    isDark
+                      ? 'bg-slate-800 border-slate-700 text-white'
+                      : 'bg-slate-100 border-slate-200 text-slate-900'
+                  }`}
+                >
+                  <option value="sandbox">Sandbox (Testing / Demo)</option>
+                  <option value="production">Production (Transaksi Nyata)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Provider & Credentials */}
+            <div className="pt-5 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Penyedia Gateway (Aggregator)
+                  </label>
+                  <select
+                    value={gatewayConfig.provider}
+                    onChange={(e) =>
+                      setGatewayConfig({
+                        ...gatewayConfig,
+                        provider: e.target.value as 'midtrans' | 'xendit',
+                      })
+                    }
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-bold ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  >
+                    <option value="midtrans">Midtrans (Snap Popup & Core API)</option>
+                    <option value="xendit">Xendit (Invoice & XenPlatform)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Merchant ID
+                  </label>
+                  <input
+                    type="text"
+                    value={gatewayConfig.merchantId}
+                    onChange={(e) =>
+                      setGatewayConfig({ ...gatewayConfig, merchantId: e.target.value })
+                    }
+                    placeholder="Contoh: M-BK20268819"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Client Key (Public API Key)
+                  </label>
+                  <input
+                    type="text"
+                    value={gatewayConfig.clientKey}
+                    onChange={(e) =>
+                      setGatewayConfig({ ...gatewayConfig, clientKey: e.target.value })
+                    }
+                    placeholder="SB-Mid-client-..."
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Server Key (Secret Key)
+                  </label>
+                  <input
+                    type="password"
+                    value={gatewayConfig.serverKey}
+                    onChange={(e) =>
+                      setGatewayConfig({ ...gatewayConfig, serverKey: e.target.value })
+                    }
+                    placeholder="SB-Mid-server-..."
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
+                    }`}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Konfigurasi QRIS & Merchant Name */}
+          <div
+            className={`p-5 sm:p-6 rounded-3xl border ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+            }`}
+          >
+            <h4 className="text-sm font-black mb-1 flex items-center gap-2">
+              <QrCode className="w-4 h-4 text-amber-500" />
+              <span>Detail Stempel QRIS Dinamis</span>
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              Nama dan kota yang akan muncul di layar aplikasi perbankan wali murid saat memindai QR code.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Nama Merchant QRIS
+                </label>
+                <input
+                  type="text"
+                  value={gatewayConfig.qrisMerchantName}
+                  onChange={(e) =>
+                    setGatewayConfig({ ...gatewayConfig, qrisMerchantName: e.target.value.toUpperCase() })
+                  }
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-bold uppercase ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Kota Domisili Merchant
+                </label>
+                <input
+                  type="text"
+                  value={gatewayConfig.qrisCity}
+                  onChange={(e) =>
+                    setGatewayConfig({ ...gatewayConfig, qrisCity: e.target.value.toUpperCase() })
+                  }
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-bold uppercase ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-300'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Saluran Pembayaran Aktif */}
+          <div
+            className={`p-5 sm:p-6 rounded-3xl border ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+            }`}
+          >
+            <h4 className="text-sm font-black mb-1 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <span>Saluran Pembayaran yang Diaktifkan</span>
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              Pilih kanal pembayaran yang dapat dipilih oleh orang tua di modal pembayaran online.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                { id: 'qris' as PaymentChannel, label: 'QRIS (Semua E-Wallet & Bank)' },
+                { id: 'bca_va' as PaymentChannel, label: 'BCA Virtual Account' },
+                { id: 'mandiri_va' as PaymentChannel, label: 'Mandiri Virtual Account' },
+                { id: 'bri_va' as PaymentChannel, label: 'BRI Virtual Account (BRIVA)' },
+                { id: 'bni_va' as PaymentChannel, label: 'BNI Virtual Account' },
+                { id: 'gopay' as PaymentChannel, label: 'GoPay Deeplink Instant' },
+                { id: 'card' as PaymentChannel, label: 'Kartu Kredit / Debit Visa / Master' },
+              ].map((ch) => {
+                const isChecked = gatewayConfig.activeChannels.includes(ch.id);
+                return (
+                  <label
+                    key={ch.id}
+                    className={`p-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-colors ${
+                      isChecked
+                        ? 'border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+                        : isDark
+                        ? 'border-slate-800 bg-slate-800/40 text-slate-400'
+                        : 'border-slate-200 bg-slate-50 text-slate-600'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        const updated = e.target.checked
+                          ? [...gatewayConfig.activeChannels, ch.id]
+                          : gatewayConfig.activeChannels.filter((x) => x !== ch.id);
+                        setGatewayConfig({ ...gatewayConfig, activeChannels: updated });
+                      }}
+                      className="rounded text-amber-500 focus:ring-amber-500/50"
+                    />
+                    <span className="text-xs">{ch.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+
+            {/* Toggle Simulasi Sandbox */}
+            <div className="mt-5 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold block">
+                  Aktifkan Tombol Simulasi 1-Klik di Modal Pembayaran (Sandbox Demo)
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Memudahkan admin & penguji untuk menguji pelunasan otomatis secara instan tanpa perlu transfer nyata.
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={gatewayConfig.autoSettlementDemo}
+                onChange={(e) =>
+                  setGatewayConfig({ ...gatewayConfig, autoSettlementDemo: e.target.checked })
+                }
+                className="w-5 h-5 rounded text-amber-500 focus:ring-amber-500/50 cursor-pointer"
+              />
+            </div>
+          </div>
+
+          {/* Save Action */}
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              disabled={isSavingGateway}
+              onClick={() => {
+                setIsSavingGateway(true);
+                savePaymentGatewayConfig(gatewayConfig);
+                setTimeout(() => {
+                  setIsSavingGateway(false);
+                  setSuccessMessage('Konfigurasi Payment Gateway berhasil disimpan dengan aman!');
+                }, 400);
+              }}
+              className="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 hover:brightness-110 shadow-lg shadow-amber-500/25 transition-all cursor-pointer flex items-center gap-2"
+            >
+              <Save className="w-4 h-4" />
+              <span>Simpan Konfigurasi Payment Gateway</span>
+            </button>
           </div>
         </div>
       )}

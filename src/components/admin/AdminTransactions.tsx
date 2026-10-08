@@ -19,6 +19,7 @@ import {
 } from '../../services/adminStorage';
 import { uploadTransferProof } from '../../services/supabaseStorage';
 import { AdminInvoiceModal } from './AdminInvoiceModal';
+import { PaymentGatewayModal } from '../payment/PaymentGatewayModal';
 import {
   Receipt,
   Plus,
@@ -45,6 +46,7 @@ import {
   Upload,
   ExternalLink,
   Image as ImageIcon,
+  Zap,
 } from 'lucide-react';
 
 interface AdminTransactionsProps {
@@ -67,6 +69,7 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
 
   // Modal State
   const [selectedInvoice, setSelectedInvoice] = useState<TransactionRecord | null>(null);
+  const [gatewayModalTx, setGatewayModalTx] = useState<TransactionRecord | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<TransactionRecord | null>(null);
   const [copiedInvoice, setCopiedInvoice] = useState<string | null>(null);
@@ -739,9 +742,14 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
           }`}
         >
           <option value="all">Semua Metode</option>
+          <option value="qris">QRIS Instan</option>
           <option value="bca">Transfer BCA</option>
           <option value="mandiri">Transfer Mandiri</option>
-          <option value="qris">QRIS</option>
+          <option value="bca_va">BCA Virtual Account</option>
+          <option value="mandiri_va">Mandiri VA</option>
+          <option value="bri_va">BRI VA (BRIVA)</option>
+          <option value="bni_va">BNI VA</option>
+          <option value="gopay">GoPay</option>
           <option value="cash">Tunai / Cash</option>
         </select>
       </div>
@@ -915,6 +923,19 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
 
                     {/* Aksi */}
                     <td className="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
+                      {/* Bayar via Payment Gateway */}
+                      {tx.status !== 'paid' && (
+                        <button
+                          type="button"
+                          onClick={() => setGatewayModalTx(tx)}
+                          className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 hover:brightness-110 shadow-sm transition-all inline-flex items-center gap-1 cursor-pointer"
+                          title="Buka Payment Gateway QRIS / Virtual Account"
+                        >
+                          <Zap className="w-3.5 h-3.5" />
+                          <span>Bayar</span>
+                        </button>
+                      )}
+
                       {/* Buka Faktur Modal */}
                       <button
                         type="button"
@@ -1498,6 +1519,23 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({ isDark }) 
             </form>
           </div>
         </div>
+      )}
+
+      {/* Payment Gateway Modal */}
+      {gatewayModalTx && (
+        <PaymentGatewayModal
+          transaction={gatewayModalTx}
+          isDark={isDark}
+          onClose={() => setGatewayModalTx(null)}
+          onPaymentSuccess={(updated) => {
+            setGatewayModalTx(null);
+            setTransactions(getTransactions());
+            showAlert(
+              'success',
+              `Pembayaran invoice ${updated.invoiceNumber} berhasil terverifikasi real-time via ${updated.paymentGatewayChannel || 'Gateway'}!`
+            );
+          }}
+        />
       )}
     </div>
   );

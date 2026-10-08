@@ -14,7 +14,9 @@ import {
   Building2,
   ExternalLink,
   Image as ImageIcon,
+  Zap,
 } from 'lucide-react';
+import { PaymentGatewayModal } from '../payment/PaymentGatewayModal';
 
 interface AdminInvoiceModalProps {
   transaction: TransactionRecord;
@@ -30,6 +32,8 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
   onStatusChange,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const [currentTx, setCurrentTx] = React.useState<TransactionRecord>(transaction);
+  const [paymentGatewayOpen, setPaymentGatewayOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
 
   const formatRupiah = (val: number) => {
@@ -173,6 +177,16 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {currentTx.status !== 'paid' && (
+              <button
+                type="button"
+                onClick={() => setPaymentGatewayOpen(true)}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 hover:brightness-110 transition-all flex items-center gap-1.5 shadow-md shadow-amber-500/20 cursor-pointer"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span>Bayar via QRIS / VA</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={handlePrint}
@@ -551,6 +565,21 @@ export const AdminInvoiceModal: React.FC<AdminInvoiceModalProps> = ({
           </div>
         )}
       </div>
+
+      {/* Payment Gateway Modal */}
+      {paymentGatewayOpen && (
+        <PaymentGatewayModal
+          transaction={currentTx}
+          isDark={isDark}
+          onClose={() => setPaymentGatewayOpen(false)}
+          onPaymentSuccess={(updated) => {
+            setCurrentTx(updated);
+            if (onStatusChange) {
+              onStatusChange(updated.id, 'paid');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

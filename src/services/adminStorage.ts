@@ -282,7 +282,17 @@ export interface WhatsAppTemplate {
 }
 
 export type PaymentStatus = 'paid' | 'pending' | 'partial' | 'cancelled';
-export type PaymentMethod = 'bca' | 'mandiri' | 'qris' | 'cash';
+export type PaymentMethod =
+  | 'bca'
+  | 'mandiri'
+  | 'qris'
+  | 'cash'
+  | 'bca_va'
+  | 'mandiri_va'
+  | 'bni_va'
+  | 'bri_va'
+  | 'gopay'
+  | 'midtrans';
 
 export interface TransactionItem {
   name: string;
@@ -316,6 +326,9 @@ export interface TransactionRecord {
   updatedAt: string; // ISO string
   notes?: string;
   transferProofUrl?: string;
+  paymentGatewayRef?: string;
+  paymentGatewayChannel?: string;
+  paymentGatewayStatus?: 'pending' | 'settlement' | 'expire' | 'cancel';
 }
 
 export type CertificateType = 'graduation' | 'achievement' | 'completion' | 'honor_roll';

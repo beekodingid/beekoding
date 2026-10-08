@@ -42,6 +42,7 @@ import {
   Users,
   RefreshCw,
   Compass,
+  Zap,
 } from 'lucide-react';
 import {
   getSubmissions,
@@ -103,6 +104,9 @@ const AdminPrintableReportModal = React.lazy(() =>
 );
 const AdminInvoiceModal = React.lazy(() =>
   import('../admin/AdminInvoiceModal').then((m) => ({ default: m.AdminInvoiceModal }))
+);
+const PaymentGatewayModal = React.lazy(() =>
+  import('../payment/PaymentGatewayModal').then((m) => ({ default: m.PaymentGatewayModal }))
 );
 
 
@@ -213,6 +217,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({ onClose: _
   const [selectedCertificateForModal, setSelectedCertificateForModal] = useState<StudentCertificate | null>(null);
   const [selectedReportForModal, setSelectedReportForModal] = useState<StudentAcademicReport | null>(null);
   const [selectedTransactionForModal, setSelectedTransactionForModal] = useState<TransactionRecord | null>(null);
+  const [selectedTxForPaymentGateway, setSelectedTxForPaymentGateway] = useState<TransactionRecord | null>(null);
 
   // Load all data from storage with reactive states
   const [submissions, setSubmissions] = useState(() => getSubmissions());
@@ -3615,14 +3620,27 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
                             })}
                           </span>
 
-                          <button
-                            type="button"
-                            onClick={() => setSelectedTransactionForModal(tx)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                          >
-                            <Printer className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Lihat & Cetak Kwitansi</span>
-                          </button>
+                          <div className="flex items-center gap-2">
+                            {tx.status !== 'paid' && (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedTxForPaymentGateway(tx)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 hover:brightness-110 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                              >
+                                <Zap className="w-3.5 h-3.5" />
+                                <span>Bayar via QRIS / VA</span>
+                              </button>
+                            )}
+
+                            <button
+                              type="button"
+                              onClick={() => setSelectedTransactionForModal(tx)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                            >
+                              <Printer className="w-3.5 h-3.5 text-slate-500" />
+                              <span>Lihat & Cetak Kwitansi</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))
@@ -5407,6 +5425,21 @@ Ayo bergabung dan ciptakan karya game & AI bareng! 🚀`;
               transaction={selectedTransactionForModal}
               isDark={isDark}
               onClose={() => setSelectedTransactionForModal(null)}
+            />
+          </React.Suspense>
+        )}
+
+        {/* MODAL: PAYMENT GATEWAY (MIDTRANS / QRIS / VA) */}
+        {selectedTxForPaymentGateway && (
+          <React.Suspense fallback={null}>
+            <PaymentGatewayModal
+              transaction={selectedTxForPaymentGateway}
+              isDark={isDark}
+              onClose={() => setSelectedTxForPaymentGateway(null)}
+              onPaymentSuccess={(_updated) => {
+                setSelectedTxForPaymentGateway(null);
+                setTransactions(getTransactions());
+              }}
             />
           </React.Suspense>
         )}
