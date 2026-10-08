@@ -3,11 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brosur Ekstrakurikuler Coding & AI - Beekoding Academy</title>
+  <title>Brosur Ekstrakurikuler Coding & AI 2026/2027 - Beekoding Academy</title>
+  <meta name="description" content="Brosur resmi program ekstrakurikuler Coding, Robotika & Artificial Intelligence (AI) Beekoding Academy untuk sekolah tingkat SD, SMP, dan SMA.">
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="canonical" href="https://beekoding.pages.dev/brosur-ekskul.html" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Brosur Ekstrakurikuler Coding & AI - Beekoding Academy" />
+  <meta property="og:description" content="Program Ekstrakurikuler Unggulan Sekolah Modern: Coding, Robotika & AI bersama Beekoding Academy." />
+  <meta property="og:image" content="https://beekoding.pages.dev/brosur-ekskul.jpg" />
+  <meta property="og:url" content="https://beekoding.pages.dev/brosur-ekskul.html" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <style>
     * {
       box-sizing: border-box;
@@ -17,509 +27,163 @@
     }
 
     body {
-      background-color: #0f172a;
-      color: #1e293b;
+      background-color: #0b0f19;
+      color: #f8fafc;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
-      padding: 24px;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Print action bar on screen */
-    .screen-actions {
-      position: fixed;
-      top: 16px;
-      right: 20px;
-      z-index: 999;
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-action {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #000;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5);
-    }
-
-    /* Exact A4 Portrait Dimensions (210mm x 297mm) */
-    .flyer-container {
-      width: 210mm;
-      min-height: 297mm;
-      max-height: 297mm;
-      background: #ffffff;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 14mm 14mm 10mm 14mm;
-    }
-
-    /* Top decorative gradient bar */
-    .top-accent-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 7px;
-      background: linear-gradient(90deg, #f59e0b, #ec4899, #3b82f6);
-    }
-
-    /* Header */
-    .header {
+    /* Action Bar */
+    .action-header {
+      width: 100%;
+      max-width: 840px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 18px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
 
-    .brand {
+    .brand-title {
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .logo-badge {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
-    }
-
-    .brand-name {
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      color: #0f172a;
-      line-height: 1;
-    }
-
-    .brand-name span {
-      color: #d97706;
-    }
-
-    .brand-tagline {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #64748b;
-      margin-top: 2px;
-    }
-
-    .header-pill {
-      background: #fef3c7;
-      border: 1px solid #fde68a;
-      color: #92400e;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 6px 14px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Hero Headline */
-    .hero {
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 6px;
-    }
-
-    .hero-title {
-      font-size: 21px;
-      font-weight: 900;
-      color: #0f172a;
-      line-height: 1.25;
-      letter-spacing: -0.5px;
-    }
-
-    .hero-title .highlight {
-      background: linear-gradient(120deg, #d97706, #b45309);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 11.5px;
-      color: #475569;
-      margin-top: 4px;
-      font-weight: 500;
-      line-height: 1.4;
-      max-width: 90%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Why Coding & AI (3 Key Highlights) */
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-top: 10px;
-    }
-
-    .why-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 9px;
-      text-align: left;
-    }
-
-    .why-icon {
-      font-size: 18px;
-      margin-bottom: 4px;
-    }
-
-    .why-title {
-      font-size: 11px;
       font-weight: 800;
-      color: #0f172a;
-      line-height: 1.2;
-    }
-
-    .why-desc {
-      font-size: 9.5px;
-      color: #64748b;
-      margin-top: 3px;
-      line-height: 1.35;
-    }
-
-    /* 3 Program Tiers */
-    .section-title {
-      font-size: 13px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #0f172a;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 10px;
-      margin-bottom: 6px;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e2e8f0;
-    }
-
-    .programs-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-    }
-
-    .program-card {
-      border-radius: 10px;
-      padding: 10px;
-      border: 1.5px solid #e2e8f0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    .prog-1 { background: #fffbeb; border-color: #fde68a; }
-    .prog-2 { background: #eff6ff; border-color: #bfdbfe; }
-    .prog-3 { background: #faf5ff; border-color: #e9d5ff; }
-
-    .prog-badge {
-      font-size: 8.5px;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 5px;
-      width: fit-content;
-    }
-
-    .prog-1 .prog-badge { background: #fef3c7; color: #92400e; }
-    .prog-2 .prog-badge { background: #dbeafe; color: #1e40af; }
-    .prog-3 .prog-badge { background: #f3e8ff; color: #6b21a8; }
-
-    .prog-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: #0f172a;
-      line-height: 1.25;
-    }
-
-    .prog-age {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: #64748b;
-      margin-top: 2px;
-    }
-
-    .prog-list {
-      list-style: none;
-      margin-top: 6px;
-      font-size: 9px;
-      color: #334155;
-      line-height: 1.45;
-    }
-
-    .prog-list li {
-      position: relative;
-      padding-left: 11px;
-      margin-bottom: 2px;
-    }
-
-    .prog-list li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      font-weight: 800;
-      color: #10b981;
-    }
-
-    .prog-output {
-      margin-top: 7px;
-      padding-top: 6px;
-      border-top: 1px dashed rgba(0,0,0,0.1);
-      font-size: 9px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    /* Beekoding Exclusive Features */
-    .features-strip {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #ffffff;
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      text-align: center;
-    }
-
-    .feat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .feat-icon {
-      font-size: 16px;
-      margin-bottom: 3px;
-    }
-
-    .feat-label {
-      font-size: 9.5px;
-      font-weight: 800;
+      font-size: 15px;
       color: #fbbf24;
     }
 
-    .feat-desc {
-      font-size: 8px;
-      color: #cbd5e1;
-      margin-top: 1px;
-      line-height: 1.25;
+    .brand-title span {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 500;
     }
 
-    /* Investment & Pricing Card */
-    .price-cta-box {
-      background: #f8fafc;
-      border: 2px dashed #f59e0b;
-      border-radius: 12px;
-      padding: 10px 14px;
-      margin-top: 10px;
+    .btn-group {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .price-info {
-      flex: 1;
-    }
-
-    .price-tag-title {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: #b45309;
-      letter-spacing: 0.5px;
-    }
-
-    .price-highlight {
-      display: flex;
-      align-items: baseline;
+    .btn {
+      display: inline-flex;
+      align-items: center;
       gap: 6px;
-      margin-top: 1px;
-    }
-
-    .price-num {
-      font-size: 22px;
-      font-weight: 900;
-      color: #0f172a;
-      letter-spacing: -0.5px;
-    }
-
-    .price-unit {
-      font-size: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
       font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    }
+
+    .btn-secondary {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    .btn-wa {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .btn-wa:hover {
+      background: #16a34a;
+    }
+
+    /* Flyer Preview Card */
+    .flyer-wrapper {
+      max-width: 820px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      transition: transform 0.2s ease;
+      display: flex;
+      justify-content: center;
+    }
+
+    .flyer-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* Footer Note */
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 13px;
       color: #64748b;
     }
 
-    .price-sub {
-      font-size: 9px;
-      color: #475569;
-      margin-top: 2px;
-    }
-
-    .cta-banner {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #ffffff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      text-align: center;
-      min-width: 170px;
-    }
-
-    .cta-banner-badge {
-      font-size: 8px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      background: rgba(0,0,0,0.2);
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
-    .cta-banner-text {
-      font-size: 11px;
-      font-weight: 900;
-      margin-top: 2px;
-      line-height: 1.2;
-    }
-
-    /* Footer / Contact */
-    .footer {
-      border-top: 2px solid #f1f5f9;
-      padding-top: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .contact-items {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .contact-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 9.5px;
-      color: #334155;
+    .footer-note a {
+      color: #fbbf24;
+      text-decoration: none;
       font-weight: 600;
     }
 
-    .contact-row strong {
-      color: #0f172a;
-    }
-
-    .qr-block {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f1f5f9;
-      padding: 5px 8px;
-      border-radius: 8px;
-    }
-
-    .qr-box {
-      width: 44px;
-      height: 44px;
-      background: #0f172a;
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fbbf24;
-      font-size: 9px;
-      font-weight: 900;
-      line-height: 1;
-      text-align: center;
-      padding: 2px;
-    }
-
-    .qr-text {
-      font-size: 8px;
-      color: #475569;
-      line-height: 1.2;
-    }
-
-    .qr-text strong {
-      display: block;
-      color: #0f172a;
-      font-size: 8.5px;
-    }
-
-    /* Print styling rules */
+    /* Strict A4 Print Styling */
     @media print {
       body {
         background: transparent !important;
         padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
       }
 
-      .screen-actions {
+      .action-header, .footer-note {
         display: none !important;
       }
 
-      .flyer-container {
+      .flyer-wrapper {
+        max-width: 100% !important;
         width: 100% !important;
         height: 100% !important;
-        max-height: none !important;
+        border-radius: 0 !important;
         box-shadow: none !important;
-        padding: 10mm 12mm 8mm 12mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .flyer-img {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain !important;
+        page-break-inside: avoid !important;
       }
 
       @page {
@@ -531,198 +195,41 @@
 </head>
 <body>
 
-  <!-- Floating Button on Web View -->
-  <div class="screen-actions">
-    <button class="btn-action" onclick="window.print()">
-      🖨️ Cetak / Simpan PDF (A4)
-    </button>
-    <a href="/" class="btn-action" style="background: #334155; color: #fff;">
-      🏠 Beranda Beekoding
-    </a>
-  </div>
-
-  <!-- A4 Single Page Flyer -->
-  <div class="flyer-container">
-    <div class="top-accent-bar"></div>
-
-    <!-- 1. Header -->
-    <header class="header">
-      <div class="brand">
-        <div class="logo-badge">🐝</div>
-        <div>
-          <div class="brand-name">BEE<span>KODING</span></div>
-          <div class="brand-tagline">Next-Gen Coding & AI Academy for Kids</div>
-        </div>
-      </div>
-      <div class="header-pill">
-        Program Ekskul 2026 / 2027
-      </div>
-    </header>
-
-    <!-- 2. Hero Headline -->
-    <div class="hero">
-      <div class="hero-badge">🚀 Ekstrakurikuler Unggulan Sekolah Modern</div>
-      <h1 class="hero-title">
-        Ubah Waktu <span class="highlight">Screen-Time Gadget</span> Anak Menjadi<br>
-        Prestasi Pencipta Game & Kreator Kecerdasan Buatan!
-      </h1>
-      <p class="hero-subtitle">
-        Kurikulum aplikatif yang membimbing siswa berpikir logis, kreatif, dan percaya diri menciptakan teknologi masa depan melalui pendekatan <em>Project-Based Learning</em> yang seru.
-      </p>
+  <!-- Top Action Navigation Bar -->
+  <header class="action-header">
+    <div class="brand-title">
+      🐝 Beekoding Academy
+      <span>• Brosur Ekstrakurikuler</span>
     </div>
-
-    <!-- 3. Why Coding & AI (3 Pilar Utama) -->
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-icon">🧩</div>
-        <div class="why-title">Logika Computational Thinking</div>
-        <div class="why-desc">Melatih logika dekomposisi masalah, matematika terapan, dan daya nalar sekuensial sesuai Kurikulum Merdeka.</div>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">🛡️</div>
-        <div class="why-title">Anti Candu Gadget Pasif</div>
-        <div class="why-desc">Anak tidak lagi hanya konsumtif main game, tapi berbalik bangga menciptakan animasi dan game miliknya sendiri.</div>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">🤖</div>
-        <div class="why-title">Literasi AI & Masa Depan</div>
-        <div class="why-desc">Mengenalkan teknologi Machine Learning, Teachable Machine, dan etika kecerdasan buatan sejak dini.</div>
-      </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="window.print()">
+        🖨️ Cetak / Simpan PDF (A4)
+      </button>
+      <a href="/brosur-ekskul.jpg" download="Brosur-Ekstrakurikuler-Beekoding-2026.jpg" class="btn btn-secondary">
+        📥 Unduh Gambar HD
+      </a>
+      <a href="https://wa.me/6281818901737?text=Halo%20Beekoding%2C%20saya%20ingin%20konsultasi%20mengenai%20Program%20Ekstrakurikuler%20Coding%20%26%20AI%20untuk%20sekolah." target="_blank" rel="noopener noreferrer" class="btn btn-wa">
+        💬 Hubungi WA
+      </a>
+      <a href="/" class="btn btn-secondary">
+        🏠 Beranda
+      </a>
     </div>
+  </header>
 
-    <!-- 4. Tiga Jenjang Kelas -->
-    <div class="section-title">
-      3 Pilihan Jenjang Kelas Ekskul (14 Sesi / Semester)
-    </div>
+  <!-- High Resolution Flyer Display -->
+  <main class="flyer-wrapper">
+    <img 
+      src="/brosur-ekskul.jpg" 
+      alt="Brosur Ekstrakurikuler Coding, Robotika & Artificial Intelligence (AI) - Beekoding Academy 2026/2027" 
+      class="flyer-img"
+      loading="eager"
+    />
+  </main>
 
-    <div class="programs-grid">
-      <!-- Level 1 -->
-      <div class="program-card prog-1">
-        <div>
-          <span class="prog-badge">Fase A/B • Level 1</span>
-          <div class="prog-title">Junior Cyber Explorer</div>
-          <div class="prog-age">Untuk Siswa Kelas 1 – 3 SD</div>
-          <ul class="prog-list">
-            <li>Visual Block Coding (Scratch 3.0)</li>
-            <li>Animasi Cerita & Karakter Gerak</li>
-            <li>Logika Urutan & Perulangan (Loops)</li>
-            <li>Sensor Tabrakan & Efek Suara</li>
-            <li>Pengenalan AI Gerakan Kamera</li>
-          </ul>
-        </div>
-        <div class="prog-output">
-          🏆 Output: 3 Game Edukasi Interaktif
-        </div>
-      </div>
-
-      <!-- Level 2 -->
-      <div class="program-card prog-2">
-        <div>
-          <span class="prog-badge">Fase C • Level 2</span>
-          <div class="prog-title">Game Creator & AI Innovator</div>
-          <div class="prog-age">Untuk Siswa Kelas 4 – 6 SD</div>
-          <ul class="prog-list">
-            <li>Game Physics (Lompat & Gravitasi)</li>
-            <li>Variabel Skor, Waktu & Kloning Partikel</li>
-            <li>AI Google Teachable Machine</li>
-            <li>Game Kontrol Kamera Tanpa Sentuh</li>
-            <li>Desain Game UI/UX Arkade Lengkap</li>
-          </ul>
-        </div>
-        <div class="prog-output">
-          🏆 Output: 1 Game Arkade + Model AI
-        </div>
-      </div>
-
-      <!-- Level 3 -->
-      <div class="program-card prog-3">
-        <div>
-          <span class="prog-badge">Remaja • Level 3</span>
-          <div class="prog-title">Teen Python & AI Architect</div>
-          <div class="prog-age">Untuk Siswa SMP & SMA</div>
-          <ul class="prog-list">
-            <li>Bahasa Python Teks (Data & Logika)</li>
-            <li>Game 2D Python (Pygame / Turtle)</li>
-            <li>Roblox Studio 3D (Scripting Lua)</li>
-            <li>Generative AI & Prompt Engineering</li>
-            <li>Etika AI & Cyber Security Dasar</li>
-          </ul>
-        </div>
-        <div class="prog-output">
-          🏆 Output: Aplikasi Python & Game 3D Roblox
-        </div>
-      </div>
-    </div>
-
-    <!-- 5. Fasilitas Eksklusif Beekoding -->
-    <div class="features-strip">
-      <div class="feat-item">
-        <div class="feat-icon">📱</div>
-        <div class="feat-label">Portal Siswa & Ortu</div>
-        <div class="feat-desc">Pantau absen, materi, dan capaian 24/7 di beekoding.pages.dev/#portal</div>
-      </div>
-      <div class="feat-item">
-        <div class="feat-icon">📊</div>
-        <div class="feat-label">Rapor 8 Pilar Kognitif</div>
-        <div class="feat-desc">Evaluasi ilmiah mendalam: logika, pemecahan masalah & kreativitas</div>
-      </div>
-      <div class="feat-item">
-        <div class="feat-icon">📜</div>
-        <div class="feat-label">Sertifikat Ber-QR Code</div>
-        <div class="feat-desc">Piagam resmi terverifikasi online untuk portofolio jenjang lanjut</div>
-      </div>
-      <div class="feat-item">
-        <div class="feat-icon">🎪</div>
-        <div class="feat-label">Demo Day & Pameran</div>
-        <div class="feat-desc">Pameran karya siswa langsung di hadapan orang tua & guru</div>
-      </div>
-    </div>
-
-    <!-- 6. Harga Bersahabat & Promo CTA -->
-    <div class="price-cta-box">
-      <div class="price-info">
-        <div class="price-tag-title">Biaya Investasi Sangat Bersahabat</div>
-        <div class="price-highlight">
-          <div class="price-num">Rp 65.000,-</div>
-          <div class="price-unit">/ Siswa / Sesi (atau Rp 220.000 / Bulan)</div>
-        </div>
-        <div class="price-sub">
-          ✨ <strong>Khusus Rombel ≥ 20 Siswa:</strong> Hanya <strong>Rp 50.000,- / sesi</strong> • Sekolah mendapatkan <strong>Bagi Hasil Fasilitas 10%–15%</strong>.
-        </div>
-      </div>
-      <div class="cta-banner">
-        <div class="cta-banner-badge">PROMO AWAL TAHUN AJARAN</div>
-        <div class="cta-banner-text">
-          GRATIS 1x Sesi Trial &<br>Demo Day di Sekolah!
-        </div>
-      </div>
-    </div>
-
-    <!-- 7. Footer & Kontak Pendaftaran -->
-    <footer class="footer">
-      <div class="contact-items">
-        <div class="contact-row">
-          <span>📲</span> <strong>WhatsApp Hotline Kemitraan:</strong> +62 818-1890-1737 (Konsultasi Jadwal & Trial)
-        </div>
-        <div class="contact-row">
-          <span>🌐</span> <strong>Website Resmi:</strong> https://beekoding.pages.dev &bull; <strong>Email:</strong> halo@beekoding.id
-        </div>
-        <div class="contact-row">
-          <span>🏫</span> <strong>Alamat Kampus:</strong> Depok & Jabodetabek &bull; <strong>Instagram:</strong> @beekoding.id
-        </div>
-      </div>
-      <div class="qr-block">
-        <div class="qr-box">
-          SCAN<br>KAMI
-        </div>
-        <div class="qr-text">
-          <strong>DAFTAR & TRIAL</strong>
-          Kunjungi website atau hubungi WA kami
-        </div>
-      </div>
-    </footer>
-
-  </div>
+  <footer class="footer-note">
+    © 2026 Beekoding Academy &bull; <a href="https://beekoding.pages.dev">beekoding.pages.dev</a> &bull; Hotline: +62 818-1890-1737
+  </footer>
 
 </body>
 </html>
