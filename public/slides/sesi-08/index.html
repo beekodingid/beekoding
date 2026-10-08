@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 08 - Evaluasi Mini Proyek 1: Buku Cerita Animasi Interaktif | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #8b5cf6;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #7c3aed;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #6d28d9;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Badges & Titles */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-purple { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4); }
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(139, 92, 246, 0.5);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Media Viewport */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Scratch Code Blocks */
+    .scratch-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin: 4px 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      font-family: 'Fredoka', cursive;
+    }
+
+    .scratch-event { background: #d97706; border-left: 6px solid #b45309; }
+    .scratch-looks { background: #9333ea; border-left: 6px solid #7e22ce; }
+    .scratch-sound { background: #c026d3; border-left: 6px solid #a21caf; }
+    .scratch-control { background: #ea580c; border-left: 6px solid #c2410c; }
+    .scratch-tts { background: #0891b2; border-left: 6px solid #0e7490; }
+
+    .code-slot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Live Storybook Simulator */
+    .storybook-container {
+      background: #0f172a;
+      border: 2px solid #8b5cf6;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .storybook-scene-box {
+      background: radial-gradient(circle at 50% 30%, #312e81 0%, #090d16 100%);
+      border-radius: 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 14px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s ease;
+    }
+
+    .scene-backdrop-tag {
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .story-character {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .story-character.talking {
+      animation: charTalk 0.5s infinite alternate;
+    }
+
+    @keyframes charTalk {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-8px) scale(1.08); }
+    }
+
+    .story-speech-bubble {
+      position: absolute;
+      top: -48px;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 14px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .story-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+    }
+
+    .story-speech-bubble.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .storybook-controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #1e293b;
+      padding: 10px 16px;
+      border-radius: 12px;
+    }
+
+    .btn-story-nav {
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-story-nav:hover:not(:disabled) {
+      background: #475569;
+    }
+
+    .btn-story-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .btn-narrate {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: #ffffff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+      transition: transform 0.15s;
+    }
+    .btn-narrate:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Rubric Card Stars */
+    .rubric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .rubric-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rubric-star {
+      font-size: 22px;
+      color: #fbbf24;
+    }
+
+    .rubric-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .rubric-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #8b5cf6;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #7c3aed;
+      border-color: #6d28d9;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #8b5cf6;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #8b5cf6;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #c084fc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #8b5cf6;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>MINI PROYEK 1 • CAPSTONE</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-07/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 07">⏪ Sesi 07</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-09/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 09" style="opacity: 0.5; pointer-events: none;">Sesi 09 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-purple">Sesi 08 • Evaluasi Mini Proyek 1</div>
+              <h1 class="slide-title">Buku Cerita Animasi Interaktif! 📖✨</h1>
+              <p class="slide-subtitle">Menggabungkan <strong>Karakter Hero AI</strong>, <strong>Suara Nyata Text-to-Speech</strong>, dan <strong>Tombol Pembalik Halaman</strong> menjadi E-Book Digital Pertama!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #c084fc; font-weight: 700;">MILESTONE</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Mini Proyek Perdana (Sesi 1–8)</div>
+                </div>
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #fbbf24; font-weight: 700;">PENGHARGAAN</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Badge Digital Storyteller 👑</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-storybook.jpg" alt="Beeby dan teman robot membaca buku cerita digital pop-up">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: KILAS BALIK PERJALANAN KITA -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-amber">Kilas Balik Petualangan</div>
+          <h2 class="slide-title">Lihat Seberapa Jauh Kita Melangkah! 🚀🌟</h2>
+          <p class="slide-subtitle">Dari bermain arah panah fisik di lantai, sekarang kita sudah bisa membuat film animasi bersuara:</p>
+
+          <div class="grid-4">
+            <div class="info-card">
+              <div style="font-size: 24px; margin-bottom: 6px;">🐾 Sesi 1–2</div>
+              <h4 style="font-size: 15px; color: #fbbf24; margin-bottom: 4px;">Gerak & Panggung</h4>
+              <p class="card-desc">Langkah panah presisi, memilih sprite lebah, dan perintah gerak 50 langkah.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 24px; margin-bottom: 6px;">⚡ Sesi 3–4</div>
+              <h4 style="font-size: 15px; color: #22d3ee; margin-bottom: 4px;">Event & Kepakan Sayap</h4>
+              <p class="card-desc">Event klik topi emas, efek suara Magic Spell, dan perulangan loop sayap otomatis.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 24px; margin-bottom: 6px;">💬 Sesi 5–6</div>
+              <h4 style="font-size: 15px; color: #34d399; margin-bottom: 4px;">Dialog & Suara Nyata</h4>
+              <p class="card-desc">Sinkronisasi giliran bicara (wait block) dan suara AI Text-to-Speech Indonesia.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 24px; margin-bottom: 6px;">🎨 Sesi 7–8</div>
+              <h4 style="font-size: 15px; color: #c084fc; margin-bottom: 4px;">Hero AI & Buku Cerita</h4>
+              <p class="card-desc">Merancang sprite hero dengan prompt AI dan menyatukannya jadi buku cerita utuh!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: 3 PILAR BUKU CERITA DIGITAL -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-cyan">Anatomi Karya Digital</div>
+          <h2 class="slide-title">Tiga Bahan Rahasia Buku Cerita Ajaib 🪄📚</h2>
+          <p class="slide-subtitle">Sebuah buku cerita animasi interaktif membutuhkan 3 elemen kunci:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🎭</div>
+              <h3 class="card-title">1. Tokoh Utama Hero</h3>
+              <p class="card-desc">Sprite buatanmu sendiri dari generator AI (misal: Beeby astronot atau dino imut) sebagai tokoh utama yang berpetualang.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">🗣️</div>
+              <h3 class="card-title">2. Percakapan Bersuara</h3>
+              <p class="card-desc">Dialog ramah bersuara nyata AI Text-to-Speech yang saling bersahut-sahutan secara rapi tanpa berebutan bicara.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🔘</div>
+              <h3 class="card-title">3. Tombol Pembalik Halaman</h3>
+              <p class="card-desc">Sprite tombol panah yang ketika diklik pembaca, berpindah ke latar belakang berikutnya (Backdrop baru).</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: KODE TOMBOL PEMBALIK HALAMAN -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-purple">Logika Koding Baru</div>
+          <h2 class="slide-title">Koding Tombol Pembalik Halaman ⏩📖</h2>
+          <p class="slide-subtitle">Bagaimana cara berpindah dari Halaman 1 ke Halaman 2 saat tombol diklik?</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">🔘 PADA SPRITE TOMBOL (Arrow Right):</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-event">when this sprite clicked</div>
+                <div class="scratch-block scratch-sound" style="margin-left: 14px;">start sound <span class="code-slot">Pop ▾</span></div>
+                <div class="scratch-block scratch-looks" style="margin-left: 14px;">next backdrop</div>
+              </div>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 12px;">Setiap tombol diklik, Scratch membunyikan efek suara kertas atau <em>Pop</em> dan mengganti latar panggung ke halaman berikutnya!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 14px; font-weight: 800; color: #22d3ee; margin-bottom: 8px;">🐝 PADA SPRITE KARAKTER (Merespons Halaman):</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-event">when backdrop switches to <span class="code-slot">Halaman 2 ▾</span></div>
+                <div class="scratch-block scratch-tts" style="margin-left: 14px;">speak <span class="code-slot">Wah, kita sudah sampai di Istana Pelangi!</span></div>
+              </div>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 12px;">Karakter otomatis tahu ketika halaman berganti dan langsung membacakan dialog babak baru!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: RUBRIK PENILAIAN 4 BINTANG -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-amber">Rubrik Kelulusan Proyek</div>
+          <h2 class="slide-title">Misi Meraih 4 Bintang Emas! ⭐🏆</h2>
+          <p class="slide-subtitle">Periksa apakah buku cerita kodingmu sudah memiliki semua syarat ini:</p>
+
+          <div class="rubric-grid">
+            <div class="rubric-card">
+              <div class="rubric-star">⭐</div>
+              <div class="rubric-title">2 Karakter & Latar</div>
+              <div class="rubric-desc">Ada minimal 2 karakter di panggung dan 2 latar belakang (Backdrop) berbeda.</div>
+            </div>
+
+            <div class="rubric-card">
+              <div class="rubric-star">⭐⭐</div>
+              <div class="rubric-title">Dialog Rapi</div>
+              <div class="rubric-desc">Karakter saling menunggu giliran bicara dengan blok <em>wait</em> tanpa saling menimpa.</div>
+            </div>
+
+            <div class="rubric-card">
+              <div class="rubric-star">⭐⭐⭐</div>
+              <div class="rubric-title">Suara Nyata AI TTS</div>
+              <div class="rubric-desc">Setiap dialog diucapkan dengan suara Text-to-Speech bahasa Indonesia yang jelas.</div>
+            </div>
+
+            <div class="rubric-card" style="border-color: rgba(251, 191, 36, 0.4); background: rgba(245, 158, 11, 0.1);">
+              <div class="rubric-star">⭐⭐⭐⭐</div>
+              <div class="rubric-title">Tombol Interaktif</div>
+              <div class="rubric-desc"><strong>Nilai Sempurna!</strong> Ada tombol next halaman bersuara Pop dan animasi gerak karakter!</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE STORYBOOK SIMULATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-purple">Simulasi E-Book Nyata</div>
+          <h2 class="slide-title">Uji Coba Simulator Buku Cerita Ajaib 📖🔊</h2>
+          <p class="slide-subtitle">Klik tombol pembalik halaman dan dengarkan cerita bersuara secara langsung:</p>
+
+          <div class="storybook-container">
+            <!-- Scene Box -->
+            <div class="storybook-scene-box" id="storySceneBox">
+              <div class="scene-backdrop-tag" id="sceneTag">🌸 Halaman 1: Taman Bunga Indah</div>
+
+              <!-- Character 1: Beeby -->
+              <div class="story-character" id="storyCharBeeby">
+                <div class="story-speech-bubble" id="storyBubbleBeeby">Halo! Aku Beeby lebah petualang!</div>
+                <div style="font-size: 54px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));">🐝</div>
+                <div style="font-size: 12px; font-weight: 800; color: #fbbf24;">Beeby</div>
+              </div>
+
+              <!-- Character 2: Robo Friend -->
+              <div class="story-character" id="storyCharRobo">
+                <div class="story-speech-bubble" id="storyBubbleRobo">Bip bop! Ayo kita ke istana pelangi!</div>
+                <div style="font-size: 54px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));">🤖</div>
+                <div style="font-size: 12px; font-weight: 800; color: #38bdf8;">Robo</div>
+              </div>
+            </div>
+
+            <!-- Story Navigation & Controls -->
+            <div class="storybook-controls-bar">
+              <button class="btn-story-nav" id="btnStoryPrev" disabled>
+                ◀ Halaman 1
+              </button>
+
+              <button class="btn-narrate" id="btnPlayStoryAudio">
+                <span>🔊</span> Dengarkan Dialog Cerita
+              </button>
+
+              <button class="btn-story-nav" id="btnStoryNext">
+                Halaman 2 ▶
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: TIPS MERAPIKAN ALUR CERITA -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-emerald">Bimbingan Storyboard Cilik</div>
+          <h2 class="slide-title">Resep 3 Babak Cerita yang Menarik 🎬</h2>
+          <p class="slide-subtitle">Bantu anak-anak menyusun cerita dongeng sederhana dengan alur 3 babak:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🌅</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Babak 1: Perkenalan</h4>
+              <p class="card-desc">Latar taman bunga cerah. Tokoh Beeby memperkenalkan dirinya dan impiannya mencari istana pelangi.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">🤝</div>
+              <h4 style="color: #c084fc; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Babak 2: Bertemu Teman</h4>
+              <p class="card-desc">Beeby bertemu sahabat baru (Robo). Mereka saling menyapa dan memutuskan menjelajah bersama!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🏰</div>
+              <h4 style="color: #34d399; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Babak 3: Penutup Ceria</h4>
+              <p class="card-desc">Mereka berhasil sampai di Istana Pelangi dan menari gembira bersama seluruh penonton!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: DETEKTIF BUG & CHECKLIST -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <h2 class="slide-title">Mengatasi 2 Bug Paling Sering Terjadi 🕵️‍♂️🔍</h2>
+          <p class="slide-subtitle">Periksa jika cerita dongeng digital anak mengalami kendala ini:</p>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 10px;">👻</div>
+              <h4 style="color: #ef4444; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Karakter Nyasar di Halaman yang Salah!</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">Jika tokoh baru seharusnya hanya muncul di Halaman 2, sembunyikan saat di Halaman 1!</p>
+              <div class="scratch-block scratch-looks" style="font-size: 12px;">
+                when backdrop switches to <span class="code-slot">Halaman 1 ▾</span> -> hide
+              </div>
+              <div class="scratch-block scratch-looks" style="font-size: 12px; margin-top: 6px;">
+                when backdrop switches to <span class="code-slot">Halaman 2 ▾</span> -> show
+              </div>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 10px;">🗣️💥</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Suara Bertabrakan / Berbicara Bersamaan</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">Kedua karakter bicara berbarengan sehingga suaranya tidak terdengar jelas!</p>
+              <div style="background: rgba(15, 23, 42, 0.7); padding: 8px 12px; border-radius: 8px; font-size: 12px; color: #cbd5e1;">
+                <strong>Solusi:</strong> Hitung durasi kalimat tokoh A (misal 3 detik). Berikan tokoh B blok <code style="color: #fbbf24;">wait 3 secs</code> sebelum berbicara!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: PRODUKSI MANDIRI & POLES KARYA -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-cyan">Studio Koding Mandiri</div>
+          <h2 class="slide-title">Waktunya Memoles Karya Impianmu! 🎨💻</h2>
+          <p class="slide-subtitle">Instruktur akan mendampingi setiap siswa merapikan detail proyeknya:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #c084fc; font-family: 'Fredoka', cursive; margin-bottom: 10px;">Checklist Terakhir Sebelum Showcase:</h4>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #e2e8f0;">
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Apakah nama proyek sudah diganti jadi judul ceritamu?
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Apakah tombol pembalik halaman berfungsi saat diklik?
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Apakah semua karakter berbicara bahasa Indonesia dengan lancar?
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">⭐</span> Klik tombol <strong>Share (Bagikan)</strong> agar karyamu bisa dilihat dunia!
+                </li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 54px; margin-bottom: 10px;">👑🌟</div>
+              <h4 style="font-size: 20px; font-family: 'Fredoka', cursive; color: #fbbf24; margin-bottom: 6px;">Penganugerahan Badge Resmi</h4>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 280px;">Siswa yang berhasil menyelesaikan Mini Proyek 1 hari ini berhak mendapatkan badge kompetensi <strong>"Junior Digital Storyteller"</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: SHOWCASE AKBAR & PENUTUP -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-amber">Showcase & Perayaan</div>
+          <h2 class="slide-title">Panggung Cerita Cilik & Tepuk Koding! 👏🎉</h2>
+          <p class="slide-subtitle">Selamat! Kamu berhasil menuntaskan 8 sesi pertama dengan karya dongeng yang luar biasa!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Festival Pameran Dongeng Digital:</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">1. Siswa membacakan judul dan mendemokan e-book kodingnya.</p>
+              <p class="card-desc" style="margin-bottom: 10px;">2. Seluruh teman sekelas menyimak dan memberikan tepuk tangan.</p>
+              <p class="card-desc" style="margin-bottom: 14px;">3. Guru menyerahkan piagam digital mini proyek pertama!</p>
+              
+              <button class="btn-narrate" id="btnConfettiCelebration" style="background: linear-gradient(135deg, #10b981, #059669);">
+                🎉 Pesta Konfeti Kelulusan Mini Proyek 1!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🐝 Petualangan Baru Menanti (Sesi 09):</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #22d3ee; margin-bottom: 4px;">Sesi 09: Labirin Sarang Lebah (Navigasi Tombol & Sensing Warna)</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Kita akan memasuki dunia game petualangan! Beeby harus dipandu tombol panah melewati tembok labirin tanpa menabrak!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–05' (Pembuka & Pemanasan)",
+        text: "Berikan ucapan selamat karena hari ini adalah hari puncak Mini Proyek 1. Ajak anak-anak merasa bangga karena hari ini mereka akan menerbitkan buku cerita animasi interaktif perdana mereka.",
+        script: "Selamat datang para pendongeng digital cilik Beekoding! Hari ini adalah hari istimewa... hari perayaan Mini Proyek 1! Kita akan menyatukan semua jurus koding yang sudah kita pelajari menjadi sebuah buku dongeng ajaib yang bisa bicara sendiri!"
+      },
+      2: {
+        timing: "Menit 05–12' (Kilas Balik Petualangan)",
+        text: "Tinjau perjalanan anak dari Sesi 01 hingga Sesi 07. Ini membangun rasa pencapaian (sense of achievement) yang kuat dan menumbuhkan rasa percaya diri anak usia 6–9 tahun.",
+        script: "Coba ingat-ingat saat hari pertama, kita baru belajar mengarahkan robot di lantai. Sekarang? Kalian sudah bisa membuat karakter AI, memberi efek suara, dan membuat mereka berbicara bahasa Indonesia! Kalian sungguh luar biasa!"
+      },
+      3: {
+        timing: "Menit 12–20' (3 Pilar Buku Cerita Digital)",
+        text: "Jelaskan struktur karya hari ini: tokoh pahlawan AI, suara dialog TTS, dan tombol pembalik halaman. Tanyakan ide cerita singkat dari beberapa anak.",
+        script: "Buku cerita kita punya 3 rahasia: Pertama, ada tokoh pahlawan buatan kalian sendiri. Kedua, mereka saling menyapa dengan suara asli. Ketiga, pembaca bisa membalik halaman seperti buku pop-up sungguhan!"
+      },
+      4: {
+        timing: "Menit 20–30' (Koding Tombol Pembalik Halaman)",
+        text: "Ajarkan konsep 'next backdrop' pada sprite tombol panah dan event 'when backdrop switches to' pada karakter. Tekankan bagaimana karakter tahu kapan harus bicara.",
+        script: "Bagaimana cara membalik halaman di komputer? Kita buat sprite tombol panah. Saat tombol dipencet, komputer membunyikan 'Pop!' lalu mengganti pemandangan di belakangnya. Keren kan?"
+      },
+      5: {
+        timing: "Menit 30–40' (Rubrik Penilaian 4 Bintang)",
+        text: "Perkenalkan kriteria penilaian dengan bahasa yang menyenangkan berupa 'Misi Mengumpulkan 4 Bintang'. Jangan buat terkesan sebagai ujian yang menakutkan, melainkan quest game.",
+        script: "Siapa yang mau mendapatkan 4 Bintang Emas hari ini? Quest kita mudah: 2 karakter dan latar berbeda, bicara bergantian rapi, ada suara TTS Indonesia, dan tombol halamannya bisa diklik! Ayo kita kumpulkan semua bintangnya!"
+      },
+      6: {
+        timing: "Menit 40–55' (Uji Coba Simulator di Slide)",
+        text: "Mainkan simulator di slide. Klik Halaman 1, klik 'Dengarkan Dialog Cerita', lalu klik 'Halaman 2' dan dengarkan kelanjutannya. Biarkan anak merasakan pengalaman membaca e-book interaktif.",
+        script: "Yuk lihat simulator buku di layar depan! Sekarang kita ada di Halaman 1 di taman bunga. Ayo kita klik Dengarkan Suara! Sekarang mari kita buka Halaman 2: Cling! Sekarang kita sampai di depan Istana Pelangi bersama Robo!"
+      },
+      7: {
+        timing: "Menit 55–65' (Storyboarding 3 Babak)",
+        text: "Bimbing anak menyusun alur cerita sederhana: Pembuka (salam kenal), Pertemuan teman (ajakan petualangan), dan Akhir cerita (sampai tujuan).",
+        script: "Cerita yang seru itu seperti jalan-jalan: ada saat kita berangkat, ada teman yang menemani di jalan, dan ada tempat indah yang kita tuju bersama. Ayo tuliskan dongeng terindah kalian!"
+      },
+      8: {
+        timing: "Menit 65–75' (Detektif Bug: Hide & Show)",
+        text: "Ajarkan trik 'hide' dan 'show' saat backdrop berganti. Ini masalah paling klasik di Scratch di mana semua sprite berkumpul di panggung yang salah.",
+        script: "Pernah lihat karakter yang nyasar padahal belum waktunya muncul? Triknya mudah: pasang balok 'Hide' (sembunyi) di halaman 1, lalu saat halaman 2 tiba, pasang balok 'Show' (muncul)! Seperti pesulap!"
+      },
+      9: {
+        timing: "Menit 75–85' (Produksi Mandiri & Bimbingan)",
+        text: "Instruktur berkeliling mengecek proyek setiap siswa secara 1-on-1. Bantu membetulkan timing wait block dan pastikan audio TTS berfungsi baik.",
+        script: "Waktunya sentuhan magis terakhir! Cek apakah nama game sudah ditulis rapi. Siapa yang butuh bantuan instruktur untuk cek suara, boleh panggil ya!"
+      },
+      10: {
+        timing: "Menit 85–90' (Showcase & Penganugerahan Badge)",
+        text: "Pamerkan karya setiap siswa ke seluruh kelas. Berikan apresiasi meriah dengan tepuk koding dan bagikan lencana kelulusan Mini Proyek 1.",
+        script: "Selamat kepada seluruh kreator hebat Beekoding! Kalian resmi menjadi 'Junior Digital Storyteller'! Minggu depan kita akan mulai masuk ke dunia Game Arcade Labirin! Tepuk koding paling dahsyat untuk kita semua!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#7c3aed' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Confetti celebration
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 150,
+            spread: 90,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // ==========================================
+    // LIVE STORYBOOK SIMULATOR LOGIC
+    // ==========================================
+    let currentStoryPage = 1;
+
+    const storySceneBox = document.getElementById('storySceneBox');
+    const sceneTag = document.getElementById('sceneTag');
+    const charBeeby = document.getElementById('storyCharBeeby');
+    const charRobo = document.getElementById('storyCharRobo');
+    const bubbleBeeby = document.getElementById('storyBubbleBeeby');
+    const bubbleRobo = document.getElementById('storyBubbleRobo');
+    const btnStoryPrev = document.getElementById('btnStoryPrev');
+    const btnStoryNext = document.getElementById('btnStoryNext');
+    const btnPlayAudio = document.getElementById('btnPlayStoryAudio');
+
+    const pagesData = {
+      1: {
+        tag: "🌸 Halaman 1: Taman Bunga Indah",
+        bg: "radial-gradient(circle at 50% 30%, #312e81 0%, #090d16 100%)",
+        beebyText: "Halo! Aku Beeby lebah petualang!",
+        roboText: "Bip bop! Aku Robo siap membantumu!",
+        showRobo: true
+      },
+      2: {
+        tag: "🏰 Halaman 2: Istana Pelangi Ajaib",
+        bg: "radial-gradient(circle at 50% 30%, #701a75 0%, #090d16 100%)",
+        beebyText: "Wah! Kita sudah sampai di Istana Pelangi!",
+        roboText: "Hore! Mari kita rayakan bersama!",
+        showRobo: true
+      }
+    };
+
+    function playPopSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+      } catch (err) {}
+    }
+
+    function renderStoryPage(page) {
+      currentStoryPage = page;
+      const data = pagesData[page];
+
+      storySceneBox.style.background = data.bg;
+      sceneTag.textContent = data.tag;
+      bubbleBeeby.textContent = data.beebyText;
+      bubbleRobo.textContent = data.roboText;
+
+      bubbleBeeby.classList.remove('visible');
+      bubbleRobo.classList.remove('visible');
+      charBeeby.classList.remove('talking');
+      charRobo.classList.remove('talking');
+
+      btnStoryPrev.disabled = page === 1;
+      btnStoryNext.disabled = page === 2;
+    }
+
+    btnStoryPrev.addEventListener('click', () => {
+      playPopSound();
+      renderStoryPage(1);
+    });
+
+    btnStoryNext.addEventListener('click', () => {
+      playPopSound();
+      renderStoryPage(2);
+    });
+
+    btnPlayAudio.addEventListener('click', () => {
+      if (!('speechSynthesis' in window)) {
+        alert('Browser Anda belum mendukung Web Speech Synthesis.');
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      const data = pagesData[currentStoryPage];
+
+      // Step 1: Beeby speaks
+      const utter1 = new SpeechSynthesisUtterance(data.beebyText);
+      utter1.lang = 'id-ID';
+      utter1.pitch = 1.7; // Squeak child pitch
+      utter1.rate = 1.1;
+
+      bubbleBeeby.classList.add('visible');
+      charBeeby.classList.add('talking');
+      bubbleRobo.classList.remove('visible');
+      charRobo.classList.remove('talking');
+
+      utter1.onend = () => {
+        charBeeby.classList.remove('talking');
+        bubbleBeeby.classList.remove('visible');
+
+        // Step 2: Robo speaks after 0.5s pause
+        setTimeout(() => {
+          const utter2 = new SpeechSynthesisUtterance(data.roboText);
+          utter2.lang = 'id-ID';
+          utter2.pitch = 0.8; // Robo pitch
+          utter2.rate = 0.95;
+
+          bubbleRobo.classList.add('visible');
+          charRobo.classList.add('talking');
+
+          utter2.onend = () => {
+            charRobo.classList.remove('talking');
+            setTimeout(() => {
+              bubbleRobo.classList.remove('visible');
+            }, 1200);
+          };
+
+          window.speechSynthesis.speak(utter2);
+        }, 500);
+      };
+
+      window.speechSynthesis.speak(utter1);
+    });
+
+    // Initialize slide & storybook
+    renderStoryPage(1);
+    updateSlide();
+  </script>
+</body>
+</html>
