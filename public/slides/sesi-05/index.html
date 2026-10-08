@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 05 - Percakapan Dua Karakter | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #f59e0b;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
+    }
+
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Stage Viewport */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(30px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 36px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-session {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Titles */
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 34px;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-top: 8px;
+    }
+
+    .slide-title span {
+      color: #fbbf24;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin: 18px 0;
+    }
+
+    .text-column {
+      flex: 1.2;
+    }
+
+    .visual-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      max-height: 340px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .concept-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .concept-icon {
+      font-size: 26px;
+      line-height: 1;
+      background: rgba(245, 158, 11, 0.2);
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    .concept-text h4 {
+      font-size: 15px;
+      color: #f1f5f9;
+      font-weight: 800;
+    }
+
+    .concept-text p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* Code Comparison Dual Box */
+    .dual-code-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .script-box {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .script-box.bee { border-color: #f59e0b; }
+    .script-box.bella { border-color: #a855f7; }
+
+    .script-header {
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scratch-block {
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: 'Fredoka', cursive;
+      font-size: 12px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .scratch-block.event { background: #ffbf00; color: #000; }
+    .scratch-block.looks { background: #9966ff; }
+    .scratch-block.control { background: #ffab19; }
+
+    .block-input {
+      background: #ffffff;
+      color: #000;
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* Live Interactive Dialogue Simulator Stage */
+    .scratch-sim-box {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      border: 3px solid #475569;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .sim-top-bar {
+      background: #e2e8f0;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .sim-stage-dialogue {
+      height: 220px;
+      background: linear-gradient(180deg, #fef08a 0%, #bae6fd 50%, #86efac 50%, #4ade80 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sim-actor {
+      position: absolute;
+      bottom: 25px;
+      font-size: 52px;
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    .actor-beeby { left: 40px; }
+    .actor-bella { right: 40px; transform: scaleX(-1); }
+
+    .balloon {
+      position: absolute;
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid #0f172a;
+      border-radius: 14px;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 800;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 20;
+      max-width: 170px;
+      line-height: 1.3;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .balloon.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .balloon-beeby {
+      top: 40px;
+      left: 30px;
+    }
+
+    .balloon-beeby::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 20px;
+      border-width: 8px 8px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+    }
+
+    .balloon-bella {
+      top: 40px;
+      right: 30px;
+    }
+
+    .balloon-bella::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 20px;
+      border-width: 8px 8px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+    }
+
+    .dialogue-timeline {
+      background: #f8fafc;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-panel.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notes-title {
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notes-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .notes-script {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 14px;
+      margin-top: 8px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #fef08a;
+    }
+
+    /* Slide Footer Controls */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 12px;
+    }
+
+    .footer-hints {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: 'Fredoka', cursive;
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    .slide-counter span {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .btn-nav {
+      background: #334155;
+      color: #fff;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING <span>STAGE 1: SESI 05</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-04/index.html" class="btn">
+        ⏪ Sesi 04
+      </a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+      <a href="/brosur-ekskul.html" class="btn">
+        📄 Brosur A4
+      </a>
+    </div>
+  </div>
+
+  <!-- Stage Area -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+
+      <!-- ================= SLIDE 1: COVER SESI 05 ================= -->
+      <div class="slide active">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 05 • Dialogue & Synchronization</div>
+          <div class="badge-time">⏱️ 00–10 Menit Pertama</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Percakapan Dua Karakter: <span>Timing & Wait</span>! 💬🗣️
+            </h1>
+            <p style="color: #cbd5e1; font-size: 16px; margin: 12px 0 20px; line-height: 1.5;">
+              Hari ini Beeby bertemu teman baru di taman bunga, yaitu <strong>Bella si Kupu-kupu</strong>! Kita akan membuat mereka saling mengobrol dan berkenalan secara bergantian!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">⏱️</div>
+              <div class="concept-text">
+                <h4>Karya Hari Ini:</h4>
+                <p>Sinkronisasi waktu: Saat Beeby bicara 3 detik, Bella mendengarkan (wait 3 detik), baru kemudian Bella membalas sapaan Beeby!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <img src="/slides/sesi-05/beeby-dialogue.jpg" alt="Percakapan Dua Karakter di Scratch" class="hero-img" />
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">💡 Tips Guru: Tanyakan siapa yang punya sahabat akrab di kelas untuk ice breaking.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()" disabled>&larr;</button>
+            <div class="slide-counter"><span id="currSlide">1</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: ANALOGI TELEPON ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Etika • Mendengarkan Dulu Baru Menjawab</div>
+          <div class="badge-time">⏱️ Menit ke 10–20</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Analogi: <span>Mengobrol di Telepon</span> 📞
+            </h2>
+            <div class="concept-card" style="border-color: #ef4444;">
+              <div class="concept-icon" style="background: rgba(239, 68, 68, 0.2);">🗣️🗣️</div>
+              <div class="concept-text">
+                <h4 style="color: #fca5a5;">Jika Berdua Bicara BARENGAN:</h4>
+                <p>Suasana jadi bising, kata-katanya bertubrukan, dan tidak ada yang paham apa isi pesannya!</p>
+              </div>
+            </div>
+            <div class="concept-card" style="border-color: #10b981;">
+              <div class="concept-icon" style="background: rgba(16, 185, 129, 0.2);">👂➔🗣️</div>
+              <div class="concept-text">
+                <h4 style="color: #86efac;">Aturan Komunikasi yang Benar:</h4>
+                <p>1. Teman bicara ➔ 2. Kita mendengarkan dengan sabar ➔ 3. Baru kita menjawab! Di koding, menunggu itu pakai balok <strong>WAIT</strong>!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px dashed #f59e0b; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 64px;">🐝💬 ➔ 👂🦋</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #fbbf24; margin-top: 8px;">Giliran Bicara</h4>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 4px;">Satu bicara 3 detik, yang satu menunggu 3 detik!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Beri contoh peragaan 2 anak berbicara bersamaan vs bergantian.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>2</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: MENAMBAHKAN SPRITE BELLA (BUTTERFLY) ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Langkah Praktik 1 • Menambah Sahabat Baru</div>
+          <div class="badge-time">⏱️ Menit ke 20–30</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Panggil Sahabat: <span>Bella Si Kupu-kupu</span> 🦋
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">🔍</div>
+              <div class="concept-text">
+                <h4>1. Tambahkan Sprite Butterfly</h4>
+                <p>Klik tombol biru lingkaran tambah Sprite ➔ cari kata <strong>"Butterfly"</strong> ➔ Klik kupu-kupu ungu yang cantik!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">📐</div>
+              <div class="concept-text">
+                <h4>2. Atur Ukuran & Posisi</h4>
+                <p>Ubah ukuran Bella menjadi <strong>Size: 60</strong>, lalu geser Beeby di sebelah kiri dan Bella di sebelah kanan saling berhadapan!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(168, 85, 247, 0.15); border: 2px solid #c084fc; border-radius: 16px; padding: 20px; text-align: center;">
+              <div style="font-size: 60px;">🐝 &nbsp; &nbsp; 🌸 &nbsp; &nbsp; 🦋</div>
+              <div style="font-family: 'Fredoka', cursive; font-size: 18px; color: #d8b4fe; margin-top: 8px;">Dua Sahabat di Taman</div>
+              <p style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">Kiri: Beeby Lebah • Kanan: Bella Kupu-kupu</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Pastikan Sprite yang sedang dipilih berwarna biru aktif di daftar Sprite.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>3</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: PENTING! SPRITE YANG BERBEDA PUNYA KODE BERBEDA ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Super Penting • Otak Terpisah Tiap Aktor</div>
+          <div class="badge-time">⏱️ Menit ke 30–38</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tiap Karakter Punya <span>Otak Sendiri</span> 🧠
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 14px;">
+              Ingat rahasia ini: Kertas kerja koding Beeby berbeda dengan kertas kerja koding Bella!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🐝</div>
+              <div class="concept-text">
+                <h4>Klik Sprite Beeby:</h4>
+                <p>Di pojok kanan atas lembar kerja ada gambar bayangan Beeby kecil. Kode di sini khusus untuk Beeby!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🦋</div>
+              <div class="concept-text">
+                <h4>Klik Sprite Bella:</h4>
+                <p>Kertas kerjanya kosong dan ada bayangan Bella. Kode di sini khusus untuk Bella!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: #1e293b; border: 2px solid #eab308; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 40px; margin-bottom: 6px;">⚠️ JANGAN SALAH KAMAR! ⚠️</div>
+              <p style="font-size: 13px; color: #fde047; font-weight: 700; line-height: 1.5;">
+                "Pastikan kamu mengeklik karakter yang benar sebelum memasang balok kode!"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ini kesalahan paling sering: anak mengetik kode Bella di dalam kamar Beeby.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>4</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: FORMULA KODE BERSAMA (DUAL SCRIPT) ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Kode Inti • Formula Sinkronisasi Bergantian</div>
+          <div class="badge-time">⏱️ Menit ke 38–52</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Rahasia <span>3 Detik Sempurna</span> ⏱️
+            </h2>
+            <div class="dual-code-container">
+              <!-- Script Beeby -->
+              <div class="script-box bee">
+                <div class="script-header" style="color: #fbbf24;">
+                  🐝 Kode Beeby (Mulai Bicara)
+                </div>
+                <div class="scratch-block event">🚩 when green flag clicked</div>
+                <div class="scratch-block looks">
+                  💬 say <span class="block-input">Halo sahabat!</span> for <span class="block-input">3</span> secs
+                </div>
+                <div class="scratch-block control">
+                  ⏱️ wait <span class="block-input">3</span> secs
+                </div>
+              </div>
+
+              <!-- Script Bella -->
+              <div class="script-box bella">
+                <div class="script-header" style="color: #c084fc;">
+                  🦋 Kode Bella (Mendengarkan Dulu)
+                </div>
+                <div class="scratch-block event">🚩 when green flag clicked</div>
+                <div class="scratch-block control">
+                  ⏱️ wait <span class="block-input">3</span> secs
+                </div>
+                <div class="scratch-block looks">
+                  💬 say <span class="block-input">Halo! Aku Bella!</span> for <span class="block-input">3</span> secs
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 16px; font-size: 13px; line-height: 1.55;">
+              <div style="color: #fbbf24; font-weight: 800; margin-bottom: 6px;">💡 Garis Waktu Detik:</div>
+              <p>⏱️ <strong>Detik 1–3:</strong> Beeby bicara, Bella diam mendengarkan.</p>
+              <p style="margin-top: 6px;">⏱️ <strong>Detik 4–6:</strong> Beeby diam, Bella mulai membalas!</p>
+              <p style="margin-top: 6px; color: #86efac; font-weight: 700;">Rapi dan tidak bertabrakan! ✨</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tekankan bahwa durasi 'say for 3 secs' harus sama dengan 'wait 3 secs'.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>5</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: LIVE SIMULATOR PERCAKAPAN DI SLIDE ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Uji Coba Langsung • Tonton Sandiwara Kartun!</div>
+          <div class="badge-time">⏱️ Menit ke 52–62</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Uji Coba: <span>Panggung Sandiwara</span> 🎭
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14px; margin: 8px 0 14px;">
+              Klik tombol <strong>"▶️ Putar Percakapan"</strong> di simulator samping untuk melihat bagaimana Beeby dan Bella berbicara bergantian secara ajaib!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🍿</div>
+              <div class="concept-text">
+                <h4>Perhatikan Balon Katanya:</h4>
+                <p>Saat balon kata Beeby tertutup, persis pada detik yang sama balon kata Bella langsung terbuka!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div class="scratch-sim-box">
+              <div class="sim-top-bar">
+                <span style="font-weight: 800; font-size: 11px; color: #0f172a;">Sandiwara Beeby & Bella</span>
+                <button onclick="playDialogueSim()" style="background:#10b981; color:#fff; border:none; padding:4px 12px; border-radius:6px; font-weight:800; font-size:11px; cursor:pointer;" id="btnPlayDial">
+                  ▶️ Putar Percakapan
+                </button>
+              </div>
+              <div class="sim-stage-dialogue" id="stageDial">
+                <div class="balloon balloon-beeby" id="balloonBee">Halo sahabat baru! 🌸</div>
+                <div class="balloon balloon-bella" id="balloonBella">Halo Beeby! Aku Bella si Kupu-kupu! 🦋</div>
+                <div class="sim-actor actor-beeby" id="simBee5">🐝</div>
+                <div class="sim-actor actor-bella" id="simBella5">🦋</div>
+              </div>
+              <div class="dialogue-timeline">
+                <span id="dialStatus">Status: Siap diputar (Klik tombol hijau)</span>
+                <span id="dialTimer">0.0s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Hitung bersama murid detik per detik saat balon kata bergantian muncul.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>6</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: MEMPERPANJANG PERCAKAPAN (RONDE 2) ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Tantangan Tingkat Lanjut • Menambah Dialog Ronde 2</div>
+          <div class="badge-time">⏱️ Menit ke 62–72</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tantangan: <span>Obrolan Panjang</span> 🗣️💬
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 12px;">
+              Bisa nggak ya bikin Beeby membalas lagi omongan Bella? Tentu bisa!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🐝</div>
+              <div class="concept-text">
+                <h4>Tambahan di Kamar Beeby:</h4>
+                <p>Setelah <code>wait (3) secs</code> ➔ tempel lagi <code>say [Ayo kita terbang cari madu bareng!] for (3) secs</code>.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🦋</div>
+              <div class="concept-text">
+                <h4>Tambahan di Kamar Bella:</h4>
+                <p>Setelah bicara ➔ tempel lagi <code>wait (3) secs</code> agar mendengarkan balasan Beeby!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #10b981; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 50px;">🐝💬 ➔ 🦋💬 ➔ 🐝💬</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #34d399; margin-top: 8px;">Pola Selang-Seling</h4>
+              <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Bicara ➔ Tunggu ➔ Bicara ➔ Tunggu!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Pola selang-seling ini melatih logika urutan berpikir (computational thinking).</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>7</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: KREATIVITAS TEBAK-TEBAKAN & LELUCON ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Eksplorasi Kreatif • Bikin Cerita Lucu Sendiri</div>
+          <div class="badge-time">⏱️ Menit ke 72–80</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Bikin <span>Tebak-tebakan Lucu</span>! 🎭🤣
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 14px;">
+              Bebaskan imajinasimu! Ganti kalimat Beeby dan Bella menjadi tebak-tebakan:
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">❓</div>
+              <div class="concept-text">
+                <h4>Beeby Tanya:</h4>
+                <p><code>say [Hewan apa yang bersuara meong tapi terbang?] for (3) secs</code></p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">💡</div>
+              <div class="concept-text">
+                <h4>Bella Jawab:</h4>
+                <p><code>say [Kucing naik pesawat terbang!] for (3) secs</code></p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(254, 240, 138, 0.1); border: 2px dashed #f59e0b; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 54px;">😹🛸</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #fbbf24; margin-top: 6px;">Drama Komedi Kartun</h4>
+              <p style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">Anak-anak bebas memasukkan lelucon favorit mereka!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Apresiasi humor anak: koding jadi sangat menyenangkan saat ada cerita lucu!</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>8</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: SHOWCASE DRAMA KELAS ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Showcase Kelas • Festival Film Kartun Cilik</div>
+          <div class="badge-time">⏱️ Menit ke 80–86</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Festival <span>Film Kartun Cilik</span> 🎬🍿
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">🌟</div>
+              <div class="concept-text">
+                <h4>Pameran Layar Kelas:</h4>
+                <p>Tonton drama percakapan buatan teman sebangkumu! Bacakan cerita lucu mereka bersama-sama!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🏆</div>
+              <div class="concept-text">
+                <h4>Pencapaian Besar Hari Ini:</h4>
+                <p>Kalian sudah bukan sekadar animator, tapi sudah menjadi <strong>Sutradara Film Kartun</strong>!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="text-align: center; background: linear-gradient(135deg, #10b981, #059669); border-radius: 18px; padding: 24px; color: #fff;">
+              <div style="font-size: 54px;">🎬⭐👏</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 22px; margin-top: 6px;">SUTRADARA HEBAT!</h3>
+              <p style="font-size: 13px; margin-top: 4px;">Drama kalian sangat seru dan rapi!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 12px; background: #fff; color: #065f46; border: none; padding: 8px 18px; border-radius: 999px; font-weight: 800; cursor: pointer;">
+                🎊 Beri Tepuk Standing Ovation!
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Minta 1-2 anak membacakan dialog buatan mereka dengan intonasi seru di depan kelas.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>9</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER SESI 06 ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Sampai Jumpa di Sesi 06!</div>
+          <div class="badge-time">⏱️ Menit ke 86–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Misi Pekan Depan: <span>Suara Asli AI (Text-to-Speech)</span>! 🤖🎙️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 18px; line-height: 1.5;">
+              Di pertemuan berikutnya (Sesi 06), Beeby tidak cuma menampilkan balon tulisan, tapi bisa <strong>BERBICARA NYATA DENGAN SUARA ASLI BAHASA INDONESIA</strong> menggunakan kecerdasan buatan (*Text-to-Speech*)!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">💾</div>
+              <div class="concept-text">
+                <h4>Simpan Berkas:</h4>
+                <p>Klik <strong>File ➔ Save to your computer</strong> dengan nama <em>"Beeby-Pertemuan-05.sb3"</em>.</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 24px; text-align: center;">
+              <div style="font-size: 54px;">🎙️🤖🐝</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #fbbf24; margin-top: 8px;">Beekoding Academy</h3>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">"Coding Today Leads to a Brighter Tomorrow!"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Bimbing anak merapikan meja komputer dan memberi salam penutup hangat.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>10</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()" disabled>&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Teacher / Speaker Notes Bottom Panel (Toggled via 'N' or Button) -->
+  <div class="teacher-notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div class="notes-title">
+        📝 CATATAN INSTRUKTUR / GURU &bull; <span id="notesTime" style="color:#e2e8f0; font-weight:600;"></span>
+      </div>
+      <button class="notes-close" onclick="toggleNotes()">✕</button>
+    </div>
+    <div class="notes-content" id="notesContent"></div>
+  </div>
+
+  <script>
+    // Interactive Dialogue Simulator
+    let dialRunning = false;
+    let dialTimerInterval = null;
+
+    function playDialogueSim() {
+      if (dialRunning) return;
+      dialRunning = true;
+      const bBee = document.getElementById('balloonBee');
+      const bBella = document.getElementById('balloonBella');
+      const status = document.getElementById('dialStatus');
+      const timer = document.getElementById('dialTimer');
+      const btn = document.getElementById('btnPlayDial');
+      
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+
+      let sec = 0;
+      dialTimerInterval = setInterval(() => {
+        sec += 0.1;
+        timer.innerText = `${sec.toFixed(1)}s`;
+      }, 100);
+
+      // Phase 1: Beeby speaks (0s - 3s)
+      status.innerText = "🗣️ Beeby sedang berbicara (Bella mendengarkan...)";
+      bBee.classList.add('show');
+      bBella.classList.remove('show');
+
+      // Phase 2: Bella replies (3s - 6s)
+      setTimeout(() => {
+        bBee.classList.remove('show');
+        bBella.classList.add('show');
+        status.innerText = "🗣️ Bella sedang menjawab (Beeby mendengarkan...)";
+      }, 3000);
+
+      // Phase 3: Finish (6s)
+      setTimeout(() => {
+        bBella.classList.remove('show');
+        status.innerText = "✅ Selesai! Percakapan sukses bergantian!";
+        clearInterval(dialTimerInterval);
+        dialRunning = false;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        triggerConfetti();
+      }, 6000);
+    }
+
+    // Teacher Speaker Notes Data for Session 05
+    const teacherNotesData = [
+      {
+        title: "Slide 1: Pembukaan Sesi 05",
+        time: "Menit 00–10 (Total 90 Menit)",
+        instructions: "Ajak anak membayangkan bagaimana kartun SpongeBob atau Upin Ipin berbicara bergantian.",
+        script: "Halo anak-anak pintar! Pekan lalu Beeby sudah jago terbang keliling taman. Hari ini Beeby ketemu teman baru, namanya Bella si Kupu-kupu! Siapa yang mau bikin mereka saling berkenalan dan mengobrol seperti film kartun di TV?"
+      },
+      {
+        title: "Slide 2: Konsep Komunikasi 2 Arah & Analogi Telepon",
+        time: "Menit 10–20",
+        instructions: "Tanyakan: 'Kalau kalian teleponan sama teman tapi ngomongnya barengan terus, kedengaran nggak?' Tanamkan etika mendengarkan.",
+        script: "Bayangkan kalau kamu teleponan sama teman, tapi kamu teriak dan temanmu juga teriak barengan. Pusing kan? Nah, makanya kuncinya: saat satu orang bicara, yang satu lagi mendengarkan! Di koding, mendengarkan itu namanya balok WAIT!"
+      },
+      {
+        title: "Slide 3: Menambahkan Sprite Butterfly (Bella)",
+        time: "Menit 20–30",
+        instructions: "Bimbing anak klik Choose a Sprite -> Butterfly. Atur ukuran jadi 60% dan letakkan berhadapan.",
+        script: "Ayo kita panggil temannya: Klik tombol Choose a Sprite di kanan bawah, cari 'Butterfly', lalu klik! Ubah Size jadi 60 ya biar pas dengan Beeby. Letakkan Beeby di kiri dan Bella di kanan, saling pandang!"
+      },
+      {
+        title: "Slide 4: Setiap Karakter Punya Kamar Kode Sendiri",
+        time: "Menit 30–38",
+        instructions: "Tekankan agar anak mengecek icon sprite kecil di pojok kanan atas lembar kerja sebelum menarik balok.",
+        script: "Perhatikan baik-baik ya: Jangan sampai tertukar kamar! Kalau mau pasang kode Beeby, klik gambar Beeby di bawah. Kalau mau pasang kode Bella, klik gambar Bella! Lihat bayangan kecil di pojok kanan atas lembar kerja kalian!"
+      },
+      {
+        title: "Slide 5: Rumus 3 Detik Sempurna",
+        time: "Menit 38–52",
+        instructions: "Jelaskan rumus matematika waktu: Durasi bicara Beeby (3 detik) = Durasi tunggu Bella (3 detik).",
+        script: "Ini rumusnya: Di kamar Beeby, pasang 'say Halo sahabat! for 3 secs' lalu 'wait 3 secs'. Di kamar Bella, DIBALIK! Pasang 'wait 3 secs' dulu baru 'say Halo! Aku Bella! for 3 secs'! Pas banget kan?"
+      },
+      {
+        title: "Slide 6: Uji Coba Simulator di Layar",
+        time: "Menit 52–62",
+        instructions: "Guru mendemokan di layar proyektor tombol 'Putar Percakapan' dan menghitung detik bergantian.",
+        script: "Lihat di layar proyektor! Saat kakak klik Putar Percakapan: Detik 1 sampai 3, Beeby bicara: 'Halo sahabat baru!' Bella diam mendengarkan. Pas detik ke-4, balon kata Beeby hilang dan Bella langsung menjawab! Rapi sekali tanpa bertubrukan!"
+      },
+      {
+        title: "Slide 7: Menambah Ronde Obrolan 2",
+        time: "Menit 62–72",
+        instructions: "Ajak anak menambah dialog balasan: Beeby membalas ajakan terbang mencari madu.",
+        script: "Sekarang kita buat obrolannya lebih panjang: Di kamar Beeby, setelah wait 3 detik, pasang lagi 'say Ayo kita terbang cari madu bareng! for 3 secs'. Dan di kamar Bella, tambah 'wait 3 secs' lagi agar mendengarkan balasan Beeby!"
+      },
+      {
+        title: "Slide 8: Bikin Tebak-tebakan Lucu",
+        time: "Menit 72–80",
+        instructions: "Beri kebebasan murid memasukkan teka-teki atau lelucon mereka sendiri.",
+        script: "Sekarang tantangan komedi: Ganti kata-katanya jadi tebak-tebakan! Misalnya Beeby tanya: 'Hewan apa yang bersuara meong tapi bisa terbang?' Lalu Bella jawab: 'Kucing naik roket!' Ayo bikin tebak-tebakan terlucu kalian!"
+      },
+      {
+        title: "Slide 9: Festival Film Kartun Cilik",
+        time: "Menit 80–86",
+        instructions: "Panggil 1-2 anak membacakan percakapan lucu buatan mereka di depan kelas.",
+        script: "Wah, lucu-lucu banget ceritanya! Kalian hari ini resmi naik level bukan cuma programmer, tapi sutradara film animasi! Ayo kita beri tepuk standing ovation untuk seluruh sutradara cilik!"
+      },
+      {
+        title: "Slide 10: Simpan Berkas & Teaser Sesi 06",
+        time: "Menit 86–90",
+        instructions: "Bimbing File -> Save to your computer ('Beeby-05.sb3'). Teaser Sesi 06 (AI Text-to-Speech suara nyata).",
+        script: "Simpan berkas kalian ya: File -> Save to your computer. Di Sesi 06 pekan depan, kita akan pakai Kecerdasan Buatan (AI Text-to-Speech) agar Beeby bisa BICARA NYATA DENGAN SUARA SUARA BAHASA INDONESIA keluar dari speaker! Sampai jumpa pekan depan!"
+      }
+    ];
+
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const notesPanel = document.getElementById('notesPanel');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlideIndex);
+      });
+
+      document.getElementById('currSlide').innerText = currentSlideIndex + 1;
+
+      document.querySelectorAll('.btn-nav').forEach((btn) => {
+        if (btn.innerText.includes('←') || btn.innerText.includes('larr')) {
+          btn.disabled = (currentSlideIndex === 0);
+        }
+        if (btn.innerText.includes('→') || btn.innerText.includes('rarr')) {
+          btn.disabled = (currentSlideIndex === totalSlides - 1);
+        }
+      });
+
+      const note = teacherNotesData[currentSlideIndex];
+      if (note) {
+        document.getElementById('notesTime').innerText = `${note.time}`;
+        document.getElementById('notesContent').innerHTML = `
+          <h4 style="color:#fbbf24; font-size:14px; margin-bottom:4px;">${note.title}</h4>
+          <p><strong>🎯 Panduan Aktivitas Guru:</strong> ${note.instructions}</p>
+          <div class="notes-script">
+            <strong>🗣️ Contoh Script Kata-Kata Guru:</strong><br>
+            "${note.script}"
+          </div>
+        `;
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < totalSlides - 1) {
+        currentSlideIndex++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesPanel.classList.toggle('open');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
