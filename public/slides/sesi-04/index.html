@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 04 - Kepakan Sayap & Perulangan Loop | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #f59e0b;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
+    }
+
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Stage Viewport */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(30px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 36px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-session {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Titles */
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 34px;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-top: 8px;
+    }
+
+    .slide-title span {
+      color: #fbbf24;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin: 18px 0;
+    }
+
+    .text-column {
+      flex: 1.2;
+    }
+
+    .visual-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      max-height: 340px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .concept-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .concept-icon {
+      font-size: 26px;
+      line-height: 1;
+      background: rgba(245, 158, 11, 0.2);
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    .concept-text h4 {
+      font-size: 15px;
+      color: #f1f5f9;
+      font-weight: 800;
+    }
+
+    .concept-text p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* Scratch Loop Block (C-Mouth Forever) */
+    .loop-wrapper {
+      background: #ffab19;
+      border-radius: 12px;
+      padding: 10px 10px 10px 18px;
+      font-family: 'Fredoka', cursive;
+      font-size: 15px;
+      color: #ffffff;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 360px;
+      margin-top: 8px;
+    }
+
+    .loop-header {
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .loop-inside {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-left: 6px solid #e69100;
+    }
+
+    .scratch-block {
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-family: 'Fredoka', cursive;
+      font-size: 13px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scratch-block.looks { background: #9966ff; }
+    .scratch-block.control { background: #ffab19; }
+    .scratch-block.motion { background: #4c97ff; }
+
+    .block-input {
+      background: #ffffff;
+      color: #000;
+      border-radius: 999px;
+      padding: 1px 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    /* Live Flying Bee Stage Simulator */
+    .scratch-sim-box {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      border: 3px solid #475569;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .sim-top-bar {
+      background: #e2e8f0;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .sim-stage-fly {
+      height: 220px;
+      background: linear-gradient(180deg, #38bdf8 0%, #bae6fd 55%, #86efac 55%, #22c55e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bee-actor {
+      position: absolute;
+      top: 60px;
+      left: 40px;
+      font-size: 42px;
+      transition: transform 0.1s linear;
+      transform-origin: center;
+      z-index: 10;
+    }
+
+    .speed-toggle-bar {
+      background: #f8fafc;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .btn-toggle-speed {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-toggle-speed:hover { background: #2563eb; }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-panel.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notes-title {
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notes-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .notes-script {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 14px;
+      margin-top: 8px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #fef08a;
+    }
+
+    /* Slide Footer Controls */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 12px;
+    }
+
+    .footer-hints {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: 'Fredoka', cursive;
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    .slide-counter span {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .btn-nav {
+      background: #334155;
+      color: #fff;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING <span>STAGE 1: SESI 04</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-03/index.html" class="btn">
+        ⏪ Sesi 03
+      </a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+      <a href="/brosur-ekskul.html" class="btn">
+        📄 Brosur A4
+      </a>
+    </div>
+  </div>
+
+  <!-- Stage Area -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+
+      <!-- ================= SLIDE 1: COVER SESI 04 ================= -->
+      <div class="slide active">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 04 • Animation & Loops</div>
+          <div class="badge-time">⏱️ 00–10 Menit Pertama</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Kepakan Sayap Beeby: <span>Looping Forever</span>! 🪽🔄
+            </h1>
+            <p style="color: #cbd5e1; font-size: 16px; margin: 12px 0 20px; line-height: 1.5;">
+              Lebah di dunia nyata tidak terbang cuma sekali, tapi mengepakkan sayapnya ribuan kali tanpa henti! Hari ini kita akan belajar balok ajaib <strong>Perulangan (Loop)</strong>!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🔄</div>
+              <div class="concept-text">
+                <h4>Karya Hari Ini:</h4>
+                <p>Membuat animasi Beeby terbang mondar-mandir di layar, sayapnya mengepak hidup, dan memantul otomatis saat menabrak dinding panggung!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <img src="/slides/sesi-04/beeby-flying.jpg" alt="Kepakan Sayap Beeby Looping Forever" class="hero-img" />
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">💡 Tips Guru: Ajak anak menggerakkan kedua tangan seperti sayap lebah mengepak.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()" disabled>&larr;</button>
+            <div class="slide-counter"><span id="currSlide">1</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: MENGAPA BUTUH LOOPING? ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Dasar • Jangan Susun 100 Balok!</div>
+          <div class="badge-time">⏱️ Menit ke 10–20</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Capek Nggak Kalau <span>Menyusun 100 Balok</span>? 🥱
+            </h2>
+            <div class="concept-card" style="border-color: #ef4444;">
+              <div class="concept-icon" style="background: rgba(239, 68, 68, 0.2);">😫</div>
+              <div class="concept-text">
+                <h4 style="color: #fca5a5;">Cara Melelahkan (Tanpa Loop):</h4>
+                <p>Maju ➔ Maju ➔ Maju ➔ Maju ➔ (terus disusun sampai 100 balok ke bawah). Tangan pegal, layar penuh!</p>
+              </div>
+            </div>
+            <div class="concept-card" style="border-color: #10b981;">
+              <div class="concept-icon" style="background: rgba(16, 185, 129, 0.2);">🚀</div>
+              <div class="concept-text">
+                <h4 style="color: #86efac;">Jurus Programmer Cerdas (Pakai Loop):</h4>
+                <p>Cukup pasang 1 balok <strong>Forever (Selamanya)</strong>! Komputer yang akan mengulanginya otomatis tanpa henti!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px dashed #f59e0b; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 60px;">🚴‍♂️🌀⏰</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #fbbf24; margin-top: 8px;">Analogi Mengayuh Sepeda</h4>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 4px;">Kaki kita terus berputar mengayuh sampai kita tiba di tujuan!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Beri analogi kipas angin atau jarum jam dinding yang terus berputar.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>2</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: KOSTUM SPRITE BEE (SAYAP ATAS & BAWAH) ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Rahasia Kartun • Tab Costumes</div>
+          <div class="badge-time">⏱️ Menit ke 20–30</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Kenapa Sayap Bisa <span>Mengepak</span>? 🪽
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 14px;">
+              Buka tab <strong>Costumes</strong> di pojok kiri atas! Perhatikan bahwa Sprite Bee memiliki 2 gambar:
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">1️⃣</div>
+              <div class="concept-text">
+                <h4>Kostum 1 (bee-a):</h4>
+                <p>Sayap lebah sedang terangkat ke ATAS.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">2️⃣</div>
+              <div class="concept-text">
+                <h4>Kostum 2 (bee-b):</h4>
+                <p>Sayap lebah sedang mengepak ke BAWAH.</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: #1e293b; border: 2px solid #38bdf8; border-radius: 16px; padding: 20px; text-align: center;">
+              <div style="font-size: 50px;">🐝(atas) ⇄ 🐝(bawah)</div>
+              <div style="font-family: 'Fredoka', cursive; font-size: 18px; color: #38bdf8; margin-top: 8px;">Balok: [next costume]</div>
+              <p style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">Berganti gambar dengan cepat = Film Kartun Animasi!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Minta anak mengeklik bergantian antara kostum 1 dan kostum 2 untuk melihat bedanya.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>3</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: MENGENAL MULUT BALOK FOREVER ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Balok Control • Mulut Capit Forever</div>
+          <div class="badge-time">⏱️ Menit ke 30–40</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Balok Capit <span>"Forever" (Selamanya)</span> 🟧
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 8px 0 16px;">
+              Buka rak oranye <strong>Control</strong>! Cari balok berbentuk huruf C dengan mulut capit besar:
+            </p>
+            <div class="loop-wrapper">
+              <div class="loop-header">🔄 forever</div>
+              <div class="loop-inside" style="padding: 14px; text-align: center; color: #94a3b8; font-size: 12px;">
+                👈 Semua balok di dalam mulut ini akan diulang selamanya!
+              </div>
+            </div>
+            <p style="font-size: 13px; color: #fde047; margin-top: 10px; font-weight: 700;">
+              "Selama tombol Stop Merah belum ditekan, komputer akan terus memutar kode di dalamnya!"
+            </p>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 54px;">🐊🔄</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #fbbf24; margin-top: 8px;">Si Mulut Buaya</h4>
+              <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Balok apa pun yang masuk ke mulutnya akan dimakan dan diputar terus!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tunjukkan cara memasukkan balok ke dalam celah mulut balok 'forever'.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>4</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: SUSUNAN KODE TERBANG UTUH ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Kode Inti • Formula Terbang & Pantul</div>
+          <div class="badge-time">⏱️ Menit ke 40–55</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Susunan Kode <span>Terbang Sempurna</span> 🧩
+            </h2>
+            <div class="loop-wrapper">
+              <div class="loop-header">🚩 when green flag clicked ➔ forever</div>
+              <div class="loop-inside">
+                <div class="scratch-block looks">
+                  🪽 next costume
+                </div>
+                <div class="scratch-block control">
+                  ⏱️ wait <span class="block-input">0.2</span> secs
+                </div>
+                <div class="scratch-block motion">
+                  ➡️ move <span class="block-input">5</span> steps
+                </div>
+                <div class="scratch-block motion">
+                  🛡️ if on edge, bounce
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(255,255,255,0.05); border-radius: 14px; padding: 16px; font-size: 12.5px; line-height: 1.55;">
+              <p>🟪 <strong>next costume:</strong> Ganti posisi sayap atas/bawah.</p>
+              <p style="margin-top: 5px;">🟧 <strong>wait 0.2 secs:</strong> Beri jeda nafas agar kepakan sayap santai.</p>
+              <p style="margin-top: 5px;">🟦 <strong>move 5 steps:</strong> Terbang maju sedikit demi sedikit.</p>
+              <p style="margin-top: 5px;">🟦 <strong>if on edge, bounce:</strong> Jika kena dinding panggung, langsung memantul balik!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Pastikan balok 'wait 0.2 secs' diketik menggunakan tanda TITIK (0.2), bukan koma (0,2).</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>5</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: SIMULATOR LIVE TERBANG ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Uji Coba Langsung • Perhatikan Gerak Sayap!</div>
+          <div class="badge-time">⏱️ Menit ke 55–65</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Uji Coba: <span>Beeby Terbang Nyata!</span> 🐝💨
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 16px;">
+              Lihat simulator di samping! Beeby terbang maju, sayapnya bergerak, dan saat menyentuh dinding kanan, dia memantul kembali ke kiri!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🔬</div>
+              <div class="concept-text">
+                <h4>Coba Tombol "Bandingkan Kecepatan":</h4>
+                <p>Uji bedanya saat memakai <code>wait 0.2s</code> (sayap rileks) vs tanpa wait (sayap ngebut kejang)!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div class="scratch-sim-box">
+              <div class="sim-top-bar">
+                <span style="font-weight: 800; font-size: 11px; color: #0f172a;">Panggung Terbang Beeby</span>
+                <button onclick="toggleFlySimulation()" style="background:#10b981; color:#fff; border:none; padding:4px 12px; border-radius:6px; font-weight:800; font-size:11px; cursor:pointer;" id="btnFly">
+                  ▶️ Jalankan Terbang
+                </button>
+              </div>
+              <div class="sim-stage-fly" id="stageFly">
+                <div class="bee-actor" id="beeActor">🐝</div>
+                <div style="position: absolute; bottom: 8px; left: 10px; font-size: 24px;">🌸</div>
+                <div style="position: absolute; bottom: 8px; right: 15px; font-size: 24px;">🌻</div>
+              </div>
+              <div class="speed-toggle-bar">
+                <span id="speedLabel">Mode: Normal (Wait 0.2s)</span>
+                <button class="btn-toggle-speed" onclick="toggleSimSpeed()">Ganti Mode Speed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tunjukkan bagaimana Beeby memantul tanpa menembus keluar layar panggung.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>6</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: MEMBEDAH BUG 1: SAYAP KILAT ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Bug 1 • Sayap Kejang Secepat Kilat</div>
+          <div class="badge-time">⏱️ Menit ke 65–72</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Bug 1: <span>Sayap Terlalu Cepat!</span> ⚡🐞
+            </h2>
+            <div class="concept-card" style="border-color: #ef4444;">
+              <div class="concept-icon" style="background: rgba(239,68,68,0.2);">⚠️</div>
+              <div class="concept-text">
+                <h4 style="color: #fca5a5;">Kenapa Sayap Beeby Bergetar Heboh?</h4>
+                <p>Komputer itu sangat pintar dan lari kencang! Dalam 1 detik, komputer bisa memutar kode 60 kali!</p>
+              </div>
+            </div>
+            <div class="concept-card" style="border-color: #10b981;">
+              <div class="concept-icon" style="background: rgba(16,185,129,0.2);">💊</div>
+              <div class="concept-text">
+                <h4 style="color: #86efac;">Obat Penawarnya (Debugging):</h4>
+                <p>Pasang balok <strong>wait 0.2 secs</strong>! Ini memberi jeda sepersekian detik agar kepakan sayap tampak alami dan anggun!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px dashed #f59e0b; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 54px;">⏱️ 0.2</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #fbbf24; margin-top: 8px;">Kunci Rahasia Animator</h4>
+              <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Disney dan Pixar pun selalu memberi jeda waktu pada frame animasi kartun!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ingatkan: jika diketik 2 detik kelamaan, 0.02 detik kencang, 0.2 detik pas!</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>7</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: MEMBEDAH BUG 2: LEBAH TERBALIK ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Bug 2 • Beeby Terbang Terbalik (Jungkir Balik)</div>
+          <div class="badge-time">⏱️ Menit ke 72–78</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Bug 2: <span>Aduh, Beeby Jungkir Balik!</span> 🙃
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 12px;">
+              "Kak! Pas Beeby nabrak dinding kanan, kepalanya jadi di bawah dan kakinya di atas!"
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🛠️</div>
+              <div class="concept-text">
+                <h4>Cara Memperbaiki (Rotation Style):</h4>
+                <p>Di bawah panggung, klik kotak <strong>Direction: 90</strong> ➔ Pilih ikon panah dua arah di tengah: <strong>Left/Right (Kiri/Kanan)</strong>!</p>
+              </div>
+            </div>
+            <div class="scratch-block motion" style="width: fit-content; margin-top: 8px;">
+              set rotation style <span class="block-input">left-right ▼</span>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: #1e293b; border: 2px solid #38bdf8; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 54px;">🙃 ➔ ↔️ ➔ 🐝</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #38bdf8; margin-top: 8px;">Mode Kiri / Kanan</h4>
+              <p style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px;">Sekarang saat memantul, Beeby hanya berbalik hadap, tidak jungkir balik!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tunjukkan tombol Left/Right pada menu Direction di laptop instruktur.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>8</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: SHOWCASE KELAS & CELEBRATION ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Showcase Kelas • Pameran Lebah Terbang</div>
+          <div class="badge-time">⏱️ Menit ke 78–85</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Pamer Karya: <span>Taman Lebah Cilik</span> 🐝🌸
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">🚀</div>
+              <div class="concept-text">
+                <h4>Lihat Seluruh Layar Kelas!</h4>
+                <p>Semua laptop sekarang dipenuhi Beeby yang terbang lincah ke sana kemari! Taman koding kita hidup!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🏆</div>
+              <div class="concept-text">
+                <h4>Skill Baru yang Kalian Kuasai:</h4>
+                <p>Loop Forever, Costumes Switch, Timing Delay (Wait), dan Wall Bounce Detection!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="text-align: center; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 18px; padding: 24px; color: #000;">
+              <div style="font-size: 54px;">🎉🐝🏆</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 22px; margin-top: 6px;">ANIMASI BERHASIL!</h3>
+              <p style="font-size: 13px; font-weight: 700; margin-top: 4px;">Kalian master animator Scratch!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 12px; background: #000; color: #fbbf24; border: none; padding: 8px 18px; border-radius: 999px; font-weight: 800; cursor: pointer;">
+                🎊 Letuskan Pesta Balon!
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Beri tepuk koding berirama: "Beeby terbang, Beeby hebat!"</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>9</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER SESI 05 ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Sampai Jumpa di Sesi 05!</div>
+          <div class="badge-time">⏱️ Menit ke 85–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Misi Pekan Depan: <span>Dialog 2 Karakter</span>! 💬🗣️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 18px; line-height: 1.5;">
+              Di pertemuan berikutnya (Sesi 05), Beeby akan bertemu teman barunya (Kupu-kupu atau Kodok)! Kita akan belajar membuat mereka <strong>bercakap-cakap bergantian</strong> seperti drama kartun!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">💾</div>
+              <div class="concept-text">
+                <h4>Simpan Berkas Hari Ini:</h4>
+                <p>Klik <strong>File ➔ Save to your computer</strong> dengan nama <em>"Beeby-Pertemuan-04.sb3"</em>.</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 24px; text-align: center;">
+              <div style="font-size: 54px;">💬🐝🦋</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #fbbf24; margin-top: 8px;">Beekoding Academy</h3>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">"Coding Today Leads to a Brighter Tomorrow!"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Bimbing anak merapikan meja lab komputer dan mematikan perangkat dengan tertib.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>10</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()" disabled>&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Teacher / Speaker Notes Bottom Panel (Toggled via 'N' or Button) -->
+  <div class="teacher-notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div class="notes-title">
+        📝 CATATAN INSTRUKTUR / GURU &bull; <span id="notesTime" style="color:#e2e8f0; font-weight:600;"></span>
+      </div>
+      <button class="notes-close" onclick="toggleNotes()">✕</button>
+    </div>
+    <div class="notes-content" id="notesContent"></div>
+  </div>
+
+  <script>
+    // Flying Bee Simulator Logic
+    let flyRunning = false;
+    let flyInterval = null;
+    let beeX = 40;
+    let beeDir = 1; // 1 = right, -1 = left
+    let wingState = false;
+    let speedModeFast = false;
+
+    function toggleFlySimulation() {
+      flyRunning = !flyRunning;
+      const btn = document.getElementById('btnFly');
+      if (flyRunning) {
+        btn.innerText = '⏹️ Hentikan';
+        btn.style.background = '#ef4444';
+        startFlying();
+      } else {
+        btn.innerText = '▶️ Jalankan Terbang';
+        btn.style.background = '#10b981';
+        clearInterval(flyInterval);
+      }
+    }
+
+    function startFlying() {
+      clearInterval(flyInterval);
+      const delay = speedModeFast ? 30 : 200;
+      flyInterval = setInterval(() => {
+        // Move
+        beeX += (speedModeFast ? 12 : 6) * beeDir;
+        if (beeX > 370) {
+          beeDir = -1;
+          beeX = 370;
+        } else if (beeX < 20) {
+          beeDir = 1;
+          beeX = 20;
+        }
+
+        wingState = !wingState;
+        const bee = document.getElementById('beeActor');
+        bee.style.left = `${beeX}px`;
+        bee.style.transform = `scaleX(${beeDir}) ${wingState ? 'translateY(-4px)' : 'translateY(4px)'}`;
+      }, delay);
+    }
+
+    function toggleSimSpeed() {
+      speedModeFast = !speedModeFast;
+      document.getElementById('speedLabel').innerText = speedModeFast 
+        ? 'Mode: Tanpa Wait (Sayap Kejang/Ngebut!)' 
+        : 'Mode: Normal (Wait 0.2s - Alami)';
+      if (flyRunning) startFlying();
+    }
+
+    // Teacher Speaker Notes Data for Session 04
+    const teacherNotesData = [
+      {
+        title: "Slide 1: Pembukaan Sesi 04",
+        time: "Menit 00–10 (Total 90 Menit)",
+        instructions: "Ajak anak menggerakkan tangan seperti sayap lebah. Jelaskan bahwa hari ini Beeby terbang non-stop!",
+        script: "Halo anak-anak pintar! Pekan lalu Beeby membesar dan bersuara kalau diklik. Nah, hari ini Beeby mau terbang menjelajahi seluruh taman! Tapi lebah kan mengepakkan sayap terus menerus ya? Hari ini kita akan belajar balok ajaib bernama LOOP atau PERULANGAN!"
+      },
+      {
+        title: "Slide 2: Mengapa Butuh Looping?",
+        time: "Menit 10–20",
+        instructions: "Tanyakan: 'Kalau disuruh nulis maju 100 kali, capek nggak tangannya?' Jelaskan efisiensi koding.",
+        script: "Bayangkan kalau kamu mau bikin Beeby jalan terus, kamu harus pasang balok maju 100 biji! Capek banget kan? Makanya programmer bikin balok sakti namanya 'Forever'. Sekali dipasang, komputer yang capek mutar kodenya, kitanya tinggal santai nonton!"
+      },
+      {
+        title: "Slide 3: Kostum Sprite Bee (Sayap Atas & Bawah)",
+        time: "Menit 20–30",
+        instructions: "Minta anak membuka tab Costumes di pojok kiri atas dan melihat perbedaan gambar bee-a dan bee-b.",
+        script: "Coba lihat di pojok kiri atas, klik tab 'Costumes'. Lihat ada gambar lebah 1 (sayapnya ke atas) dan lebah 2 (sayapnya ke bawah). Kalau kita ganti gambar 1 dan 2 dengan cepat, kelihatan kayak apa? Kayak film kartun sayapnya mengepak beneran!"
+      },
+      {
+        title: "Slide 4: Balok Capit 'Forever'",
+        time: "Menit 30–40",
+        instructions: "Tunjukkan balok Forever di rak oranye Control. Sebut balok ini 'Si Mulut Buaya'.",
+        script: "Buka rak oranye 'Control'. Ada balok 'Forever' yang punya mulut capit besar kayak buaya! Apa pun balok lego yang kita masukkan ke dalam mulutnya, akan dimakan dan diputar terus menerus sampai kita pencet tombol stop merah!"
+      },
+      {
+        title: "Slide 5: Susunan Kode Terbang Utuh",
+        time: "Menit 40–55",
+        instructions: "Pandu susunan 4 balok di dalam mulut Forever: next costume, wait 0.2 secs, move 5 steps, if on edge bounce.",
+        script: "Ayo susun di dalam mulut buaya: 1. Balok ungu 'next costume', 2. Balok oranye 'wait 0.2 secs', 3. Balok biru 'move 5 steps', 4. Balok biru 'if on edge, bounce'. Ingat ya ketik angkanya 0.2 (nol titik dua), bukan koma!"
+      },
+      {
+        title: "Slide 6: Uji Coba Simulator di Layar",
+        time: "Menit 55–65",
+        instructions: "Guru mendemokan di proyektor. Jalankan Beeby dan tunjukkan animasi terbangnya.",
+        script: "Lihat di layar proyektor! Saat kakak jalankan: Beeby terbang maju, sayapnya mengepak indah, dan saat menabrak dinding kanan: BOING! Memantul sendiri tanpa jatuh ke luar panggung! Keren banget kan?"
+      },
+      {
+        title: "Slide 7: Bedah Bug 1 - Sayap Kilat",
+        time: "Menit 65–72",
+        instructions: "Peragakan apa yang terjadi jika balok 'wait 0.2' dibuang: sayap bergetar kencang.",
+        script: "Siapa yang Beeby-nya bergetar kencang kayak kesetrum? Itu karena kalian lupa pasang balok 'wait 0.2'! Komputer larinya kencang banget. Tanpa jeda istirahat, sayapnya bergerak ratusan kali per detik. Makanya beri balok tunggu 0.2 detik ya!"
+      },
+      {
+        title: "Slide 8: Bedah Bug 2 - Lebah Terbang Terbalik",
+        time: "Menit 72–78",
+        instructions: "Tunjukkan cara mengubah Rotation Style ke Left/Right di kolom Direction bawah panggung.",
+        script: "Ada yang Beeby-nya pas nabrak dinding malah terbang jungkir balik kakinya di atas? Jangan panik! Klik kotak Direction di bawah panggung, pilih tanda panah kiri-kanan (Left/Right). Sekarang Beeby hanya berbalik arah secara tegak!"
+      },
+      {
+        title: "Slide 9: Pameran Kelas 'Taman Lebah Cilik'",
+        time: "Menit 78–85",
+        instructions: "Keliling kelas melihat laptop semua murid. Semua Beeby sedang terbang serentak.",
+        script: "Luar biasa! Coba tengok sekeliling kelas, semua layar laptop sekarang dipenuhi Beeby yang terbang lincah! Kalian resmi menguasai teknik dasar animasi kartun! Tepuk tangan meriah untuk kita semua!"
+      },
+      {
+        title: "Slide 10: Simpan Berkas & Teaser Sesi 05",
+        time: "Menit 85–90",
+        instructions: "Bimbing File -> Save to your computer ('Beeby-04.sb3'). Teaser Sesi 05 (percakapan 2 karakter berteman).",
+        script: "Simpan proyek kalian ya: File -> Save to your computer. Di Sesi 05 pekan depan, Beeby akan bertemu sahabat barunya si Kupu-kupu, dan mereka akan saling mengobrol bergantian! Sampai jumpa pekan depan, dadah semuanya!"
+      }
+    ];
+
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const notesPanel = document.getElementById('notesPanel');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlideIndex);
+      });
+
+      document.getElementById('currSlide').innerText = currentSlideIndex + 1;
+
+      document.querySelectorAll('.btn-nav').forEach((btn) => {
+        if (btn.innerText.includes('←') || btn.innerText.includes('larr')) {
+          btn.disabled = (currentSlideIndex === 0);
+        }
+        if (btn.innerText.includes('→') || btn.innerText.includes('rarr')) {
+          btn.disabled = (currentSlideIndex === totalSlides - 1);
+        }
+      });
+
+      const note = teacherNotesData[currentSlideIndex];
+      if (note) {
+        document.getElementById('notesTime').innerText = `${note.time}`;
+        document.getElementById('notesContent').innerHTML = `
+          <h4 style="color:#fbbf24; font-size:14px; margin-bottom:4px;">${note.title}</h4>
+          <p><strong>🎯 Panduan Aktivitas Guru:</strong> ${note.instructions}</p>
+          <div class="notes-script">
+            <strong>🗣️ Contoh Script Kata-Kata Guru:</strong><br>
+            "${note.script}"
+          </div>
+        `;
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < totalSlides - 1) {
+        currentSlideIndex++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesPanel.classList.toggle('open');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
