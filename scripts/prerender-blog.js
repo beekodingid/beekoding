@@ -151,8 +151,8 @@ async function main() {
       provider: {
         '@type': 'EducationalOrganization',
         name: 'Beekoding',
-        url: 'https://beekoding.id',
-        sameAs: 'https://beekoding.id',
+        url: 'https://beekoding.pages.dev',
+        sameAs: 'https://beekoding.pages.dev',
       },
       aggregateRating: {
         '@type': 'AggregateRating',
@@ -322,7 +322,7 @@ async function main() {
     provider: {
       '@type': 'EducationalOrganization',
       name: 'Beekoding',
-      url: 'https://beekoding.id',
+      url: 'https://beekoding.pages.dev',
     },
     about: {
       '@type': 'Thing',
@@ -432,7 +432,7 @@ async function main() {
       publisher: {
         '@type': 'EducationalOrganization',
         name: 'Beekoding',
-        url: 'https://beekoding.id',
+        url: 'https://beekoding.pages.dev',
         logo: {
           '@type': 'ImageObject',
           url: 'https://beekoding.pages.dev/og-image.jpg',

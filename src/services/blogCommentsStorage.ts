@@ -180,7 +180,7 @@ export async function addComment(data: {
           recipientRole: 'instructor',
           triggerType: 'blog_comment_alert',
           scheduledAt: new Date().toISOString(),
-          content: `🐝 *[PERTANYAAN BLOG BARU]*\n\nHalo Mentor Beekoding! Ada pertanyaan baru di artikel blog edukasi:\n\n👤 *Penanya:* ${data.authorName.trim()} (${newComment.authorRole})\n📖 *Artikel:* /blog/${data.articleSlug}\n💬 *Pertanyaan:* "${previewText}"\n\n👉 *Moderasi & Balas di Admin Blog:* https://beekoding.id/#admin`,
+          content: `🐝 *[PERTANYAAN BLOG BARU]*\n\nHalo Mentor Beekoding! Ada pertanyaan baru di artikel blog edukasi:\n\n👤 *Penanya:* ${data.authorName.trim()} (${newComment.authorRole})\n📖 *Artikel:* /blog/${data.articleSlug}\n💬 *Pertanyaan:* "${previewText}"\n\n👉 *Moderasi & Balas di Admin Blog:* https://beekoding.pages.dev/#admin`,
         });
       }
     } catch (err) {
@@ -201,7 +201,7 @@ export function generateWhatsAppCommentForwardUrl(comment: {
   authorEmail?: string;
 }): string {
   const hotline = '6281818901737';
-  const text = `Halo Mentor Beekoding! 🐝\n\nSaya ingin menanyakan seputar artikel blog:\n*https://beekoding.id/blog/${comment.articleSlug}*\n\n*Nama:* ${comment.authorName}\n*Pertanyaan:* "${comment.content}"\n\nMohon panduannya ya Kak! Terima kasih.`;
+  const text = `Halo Mentor Beekoding! 🐝\n\nSaya ingin menanyakan seputar artikel blog:\n*https://beekoding.pages.dev/blog/${comment.articleSlug}*\n\n*Nama:* ${comment.authorName}\n*Pertanyaan:* "${comment.content}"\n\nMohon panduannya ya Kak! Terima kasih.`;
   return `https://wa.me/${hotline}?text=${encodeURIComponent(text)}`;
 }
 

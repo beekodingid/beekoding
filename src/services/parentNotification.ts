@@ -6,7 +6,7 @@ import {
 } from './adminStorage';
 import { CATEGORIES, getTierLabel, type AssessmentResult } from '../data/talentQuestions';
 
-export const PORTAL_BASE_URL = 'https://beekoding.id/#portal';
+export const PORTAL_BASE_URL = 'https://beekoding.pages.dev/#portal';
 
 export function formatIndoDate(dateStr: string): string {
   try {
@@ -86,7 +86,7 @@ export function generateCertificateNotification(cert: StudentCertificate): Notif
     `Salam hangat & bangga,`,
     `*Tim Akademik Beekoding*`,
     `_Next Gen Coding & AI Academy for Kids & Teens_`,
-    `🌐 https://beekoding.id`,
+    `🌐 https://beekoding.pages.dev`,
   ].filter(Boolean);
 
   const emailSubject = `[Beekoding] Selamat! Sertifikat Kelulusan Siswa: ${cert.studentName} - ${cert.programName}`;
@@ -114,7 +114,7 @@ export function generateCertificateNotification(cert: StudentCertificate): Notif
     ``,
     `Hormat kami,`,
     `Tim Akademik Beekoding`,
-    `Website: https://beekoding.id`,
+    `Website: https://beekoding.pages.dev`,
   ].filter(Boolean);
 
   return {
@@ -177,7 +177,7 @@ export function generateReportNotification(report: StudentAcademicReport): Notif
     `Terima kasih atas dukungan penuh Bapak/Ibu mendampingi ananda belajar coding & AI bersama Beekoding. Lembar resmi A4 dapat dicetak langsung via tautan portal di atas.`,
     ``,
     `_Beekoding - Next Gen Coding & AI Academy for Kids & Teens_`,
-    `🌐 https://beekoding.id`,
+    `🌐 https://beekoding.pages.dev`,
   ].filter(Boolean);
 
   const emailSubject = `[Beekoding] Rapor Hasil Belajar Siswa: ${report.studentName} - ${report.batchName}`;
@@ -214,7 +214,7 @@ export function generateReportNotification(report: StudentAcademicReport): Notif
     `Salam hormat,`,
     `Mentor: ${report.instructorName}`,
     `Tim Akademik Beekoding`,
-    `Website: https://beekoding.id`,
+    `Website: https://beekoding.pages.dev`,
   ].filter(Boolean);
 
   return {
@@ -237,7 +237,7 @@ export function generateTalentAssessmentNotification(result: AssessmentResult): 
   const childAge = result.profile.childAge;
   const gradeLevel = result.profile.gradeLevel || 'Siswa';
   const tier = getTierLabel(result.profile.tier);
-  const portalUrl = `https://beekoding.id/#portal?child=${encodeURIComponent(childName)}`;
+  const portalUrl = `https://beekoding.pages.dev/#portal?child=${encodeURIComponent(childName)}`;
 
   const top3 = result.topStrengths
     .slice(0, 3)
@@ -279,7 +279,7 @@ export function generateTalentAssessmentNotification(result: AssessmentResult): 
     `Salam hangat & sukses selalu,`,
     `*Tim Akademik & Konsultan Bakat Beekoding*`,
     `_Next-Gen Coding & AI Academy for Kids & Teens_`,
-    `🌐 https://beekoding.id`,
+    `🌐 https://beekoding.pages.dev`,
   ].filter(Boolean);
 
   const emailSubject = `[Beekoding] Laporan Hasil Diagnostic Bakat Digital Ananda ${childName} (${result.totalScore}/100)`;
@@ -303,7 +303,7 @@ export function generateTalentAssessmentNotification(result: AssessmentResult): 
     `Hormat kami,`,
     `Tim Akademik Beekoding`,
     `Hotline WA: +62 818-1890-1737`,
-    `Website: https://beekoding.id`,
+    `Website: https://beekoding.pages.dev`,
   ];
 
   return {

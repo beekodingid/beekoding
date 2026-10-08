@@ -40,7 +40,7 @@ export interface CurriculumPhase {
 
 export const siteConfig = {
   name: "Beekoding",
-  domain: "beekoding.id",
+  domain: "beekoding.pages.dev",
   tagline: "Coding & AI for Future-Ready Minds",
   email: "halo@beekoding.id",
   phone: "+62 818-1890-1737",
