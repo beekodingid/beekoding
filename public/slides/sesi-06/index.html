@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 06 - Ekstensi AI Text-to-Speech | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #06b6d4;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #0e7490;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #0891b2;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.15) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Typography & Badges */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Content Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(6, 182, 212, 0.5);
+      background: rgba(6, 182, 212, 0.08);
+    }
+
+    .info-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Image Presentation */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(6, 182, 212, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Scratch Code Block Mockups */
+    .scratch-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin: 4px 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      font-family: 'Fredoka', cursive;
+      letter-spacing: 0.3px;
+    }
+
+    .scratch-event { background: #d97706; border-left: 6px solid #b45309; }
+    .scratch-looks { background: #9333ea; border-left: 6px solid #7e22ce; }
+    .scratch-sound { background: #c026d3; border-left: 6px solid #a21caf; }
+    .scratch-control { background: #ea580c; border-left: 6px solid #c2410c; }
+    .scratch-tts { background: #0891b2; border-left: 6px solid #0e7490; }
+
+    .code-slot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* Live AI Voice Simulator */
+    .simulator-container {
+      background: #0f172a;
+      border: 2px solid #0891b2;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .voice-selector-tabs {
+      display: flex;
+      gap: 8px;
+      background: #1e293b;
+      padding: 6px;
+      border-radius: 12px;
+    }
+
+    .voice-tab {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .voice-tab.active {
+      background: #0891b2;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(8, 145, 178, 0.4);
+    }
+
+    .stage-sim-display {
+      background: radial-gradient(circle at 50% 40%, #1e293b 0%, #090d16 100%);
+      border-radius: 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sim-character {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .sim-character.speaking {
+      animation: bounceTalk 0.5s infinite alternate;
+    }
+
+    @keyframes bounceTalk {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-8px) scale(1.08); }
+    }
+
+    .character-avatar {
+      font-size: 54px;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+    }
+
+    .sim-bubble {
+      position: absolute;
+      top: -46px;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .sim-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+    }
+
+    .sim-bubble.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sim-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .sim-text-input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+    }
+    .sim-text-input:focus {
+      border-color: #0891b2;
+    }
+
+    .btn-speak-now {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+      transition: transform 0.15s;
+    }
+    .btn-speak-now:hover {
+      transform: translateY(-2px);
+    }
+    .btn-speak-now:active {
+      transform: translateY(1px);
+    }
+
+    /* Soundwaves animation bar */
+    .soundwave-anim {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 20px;
+    }
+    .soundwave-bar {
+      width: 4px;
+      height: 6px;
+      background: #22d3ee;
+      border-radius: 2px;
+      transition: height 0.1s;
+    }
+    .speaking .soundwave-bar {
+      animation: wavePulse 0.4s infinite alternate;
+    }
+    .speaking .soundwave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .speaking .soundwave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .speaking .soundwave-bar:nth-child(4) { animation-delay: 0.3s; }
+
+    @keyframes wavePulse {
+      0% { height: 4px; }
+      100% { height: 20px; }
+    }
+
+    /* Step Checklist */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 18px;
+      border-radius: 12px;
+    }
+
+    .step-num {
+      background: #0891b2;
+      color: #ffffff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Bottom Controller & Navigation */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #06b6d4;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #0891b2;
+      border-color: #0e7490;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #06b6d4;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #0891b2;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #22d3ee;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #06b6d4;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>JUNIOR EXPLORER</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-05/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 05">⏪ Sesi 05</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-07/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 07" style="opacity: 0.5; pointer-events: none;">Sesi 07 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-cyan">Sesi 06 • Modul Junior AI</div>
+              <h1 class="slide-title">Karakter Berbicara Nyata! 🗣️✨</h1>
+              <p class="slide-subtitle">Memanfaatkan Keajaiban <strong>Ekstensi AI Text-to-Speech</strong> di Scratch 3.0 agar Karakter Bisa Bicara Bahasa Indonesia!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #22d3ee; font-weight: 700;">LEVEL BELAJAR</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Junior Explorer (6–9 Thn)</div>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #34d399; font-weight: 700;">DURASI</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">90 Menit Interaktif</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-tts.jpg" alt="Beeby dan teman-teman bernyanyi dengan mikrofon AI">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ICE BREAKING -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-amber">Ice Breaking & Curiositas</div>
+          <h2 class="slide-title">Pernah Dengar Robot Berbicara? 🤖💬</h2>
+          <p class="slide-subtitle">Bagaimana komputer bisa tahu cara mengucapkan kata-kata seperti manusia?</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div class="info-icon">📱</div>
+              <h3 class="card-title">Siri & Google Voice</h3>
+              <p class="card-desc">Saat kita bertanya pada smartphone, ada asisten pintar yang menjawab dengan suara manusia asli!</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div class="info-icon">🧠</div>
+              <h3 class="card-title">Kecerdasan Buatan (AI)</h3>
+              <p class="card-desc">AI membaca teks tulisan kita huruf per huruf, lalu mengubahnya menjadi gelombang suara vokal!</p>
+            </div>
+
+            <div class="info-card">
+              <div class="info-icon">🐝</div>
+              <h3 class="card-title">Hari Ini Giliran Beeby!</h3>
+              <p class="card-desc">Kita akan memberikan Beeby pita suara ajaib! Dia tidak cuma menampilkan teks gelembung, tapi bersuara merdu!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: KONSEP & ANALOGI -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-purple">Konsep Koding & Analogi</div>
+          <h2 class="slide-title">Analogi: Pita Suara Ajaib Sang Robot 🎙️</h2>
+          <p class="slide-subtitle">Perbedaan blok <em>Say</em> biasa vs blok <em>Speak AI</em>.</p>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">💭</div>
+              <h3 class="card-title">Blok Say (Komik Bisu)</h3>
+              <div class="scratch-block scratch-looks">
+                say <span class="code-slot">Halo!</span> for <span class="code-slot">2</span> secs
+              </div>
+              <p class="card-desc" style="margin-top: 14px;">Hanya memunculkan teks gelembung komik di atas kepala karakter. Karakter tetap sunyi tanpa ada bunyi suara.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">🗣️</div>
+              <h3 class="card-title">Blok Speak (AI Voice Synthesis)</h3>
+              <div class="scratch-block scratch-tts">
+                speak <span class="code-slot">Halo teman-teman!</span>
+              </div>
+              <p class="card-desc" style="margin-top: 14px;">Scratch mengirim teks ke server AI, lalu komputer menyalakan speaker dan mengucapkannya dengan aksen Indonesia!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: CARA MEMBUKA EXTENSION -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-cyan">Langkah Praktik 1</div>
+          <h2 class="slide-title">Membuka Menu Extension di Scratch 🧩</h2>
+          <p class="slide-subtitle">Tombol rahasia di pojok kiri bawah untuk membuka kekuatan tersembunyi Scratch!</p>
+
+          <div class="grid-2">
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div>
+                  <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Lihat Pojok Kiri Bawah Layar</h4>
+                  <p style="font-size: 13px; color: #94a3b8;">Cari tombol biru bergambar 2 balok puzzle bertanda <strong>+ (Add Extension)</strong>.</p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div>
+                  <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Pilih Text to Speech</h4>
+                  <p style="font-size: 13px; color: #94a3b8;">Klik kotak kartu warna hijau toska bertuliskan <em>"Make your projects talk"</em>.</p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div>
+                  <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Hore! Kategori Baru Muncul!</h4>
+                  <p style="font-size: 13px; color: #94a3b8;">Di panel blok kiri, sekarang ada warna toska khusus bernama <strong>Text to Speech</strong>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center; background: rgba(8, 145, 178, 0.15); border-color: rgba(6, 182, 212, 0.4);">
+              <div style="font-size: 64px; margin-bottom: 12px;">🧩✨</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 24px; color: #22d3ee; margin-bottom: 8px;">Add Extension Menu</h3>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 320px;">Didukung teknologi cloud speech canggih Amazon Web Services (AWS) yang terintegrasi di Scratch 3.0!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: 3 BLOK KUNCI -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-emerald">Bedah Kode Blok</div>
+          <h2 class="slide-title">Trio Blok Sakti Text-to-Speech 🧙‍♂️</h2>
+          <p class="slide-subtitle">Tiga blok penting yang wajib dipasang berurutan:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🎭</div>
+              <h4 style="color: #22d3ee; font-weight: 800; font-size: 15px; margin-bottom: 8px;">1. SET VOICE TO</h4>
+              <div class="scratch-block scratch-tts" style="font-size: 12px;">
+                set voice to <span class="code-slot">squeak ▾</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;">Memilih kepribadian suara: <strong>alto</strong> (normal wanita), <strong>tenor</strong> (normal pria), <strong>squeak</strong> (imut), <strong>giant</strong> (raksasa), <strong>kitten</strong> (kucing).</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">🇮🇩</div>
+              <h4 style="color: #22d3ee; font-weight: 800; font-size: 15px; margin-bottom: 8px;">2. SET LANGUAGE TO</h4>
+              <div class="scratch-block scratch-tts" style="font-size: 12px;">
+                set language to <span class="code-slot">Indonesian ▾</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;"><strong>Sangat Penting!</strong> Supaya komputer melafalkan kata-kata dengan logat Bahasa Indonesia yang fasih dan alami.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">📢</div>
+              <h4 style="color: #22d3ee; font-weight: 800; font-size: 15px; margin-bottom: 8px;">3. SPEAK</h4>
+              <div class="scratch-block scratch-tts" style="font-size: 12px;">
+                speak <span class="code-slot">Halo Beekoding!</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;">Memerintahkan karakter membacakan kalimat di dalam kotak putih secara lantang melalui speaker!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE SIMULATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-cyan">Demo Langsung Bersuara</div>
+          <h2 class="slide-title">Uji Coba Suara AI di Sini! 🔊</h2>
+          <p class="slide-subtitle">Pilih karakter, atur jenis suara, ketik kalimat, dan dengarkan suaranya nyata!</p>
+
+          <div class="simulator-container">
+            <!-- Voice Selector Tabs -->
+            <div class="voice-selector-tabs">
+              <button class="voice-tab active" data-type="squeak" data-char="beeby">
+                🐝 Beeby (Squeak / Anak Ceria)
+              </button>
+              <button class="voice-tab" data-type="giant" data-char="frog">
+                🐸 Pak Katak (Giant / Bass Rendah)
+              </button>
+              <button class="voice-tab" data-type="kitten" data-char="cat">
+                🐱 Miko Si Kucing (Kitten / Nyaring Imut)
+              </button>
+            </div>
+
+            <!-- Virtual Stage Display -->
+            <div class="stage-sim-display">
+              <div class="sim-character" id="charBeeby">
+                <div class="sim-bubble" id="bubbleBeeby">Halo, aku Beeby lebah koding!</div>
+                <div class="character-avatar">🐝</div>
+                <div style="font-size: 12px; font-weight: 800; color: #fbbf24;">Beeby</div>
+              </div>
+
+              <div class="sim-character" id="charFrog">
+                <div class="sim-bubble" id="bubbleFrog">Kroook! Lompat bersamaku!</div>
+                <div class="character-avatar">🐸</div>
+                <div style="font-size: 12px; font-weight: 800; color: #34d399;">Pak Katak</div>
+              </div>
+
+              <div class="sim-character" id="charCat">
+                <div class="sim-bubble" id="bubbleCat">Meooong! Koding itu asyik!</div>
+                <div class="character-avatar">🐱</div>
+                <div style="font-size: 12px; font-weight: 800; color: #f472b6;">Miko</div>
+              </div>
+            </div>
+
+            <!-- Speech Input Control -->
+            <div class="sim-input-row">
+              <input type="text" id="simTextInput" class="sim-text-input" value="Halo teman-teman Beekoding! Aku bisa bicara bahasa Indonesia!" placeholder="Ketik kata-kata di sini...">
+              <button class="btn-speak-now" id="btnSpeakNow">
+                <span>🔊</span> Bicara Sekarang!
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: LIVE CODING STEP-BY-STEP -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-amber">Panduan Praktik Siswa</div>
+          <h2 class="slide-title">Menyusun Skrip Kode Karakter 💻</h2>
+          <p class="slide-subtitle">Instruksikan siswa menyusun blok ini di komputer masing-masing:</p>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <span style="font-size: 24px;">🐝</span>
+                <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive;">Sprite 1: Beeby</h4>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-event">when 🏴 clicked</div>
+                <div class="scratch-block scratch-tts" style="margin-left: 14px;">set voice to <span class="code-slot">squeak ▾</span></div>
+                <div class="scratch-block scratch-tts" style="margin-left: 14px;">set language to <span class="code-slot">Indonesian ▾</span></div>
+                <div class="scratch-block scratch-looks" style="margin-left: 14px;">say <span class="code-slot">Halo teman-teman!</span> for <span class="code-slot">2</span> secs</div>
+                <div class="scratch-block scratch-tts" style="margin-left: 14px;">speak <span class="code-slot">Halo teman-teman!</span></div>
+              </div>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 10px;">💡 <em>Tips: Pasang blok Say dan Speak agar ada balon teks sekaligus suara!</em></p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <span style="font-size: 24px;">🐸</span>
+                <h4 style="font-size: 18px; color: #34d399; font-family: 'Fredoka', cursive;">Sprite 2: Katak Lucu</h4>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-event">when this sprite clicked</div>
+                <div class="scratch-block scratch-tts" style="margin-left: 14px;">set voice to <span class="code-slot">giant ▾</span></div>
+                <div class="scratch-block scratch-control" style="margin-left: 14px;">wait <span class="code-slot">2</span> secs</div>
+                <div class="scratch-block scratch-tts" style="margin-left: 14px;">speak <span class="code-slot">Krok! Namaku Katak Raksasa!</span></div>
+                <div class="scratch-block scratch-sound" style="margin-left: 14px;">start sound <span class="code-slot">Boing ▾</span></div>
+              </div>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 10px;">💡 <em>Saat diklik, katak menjawab dengan suara bas raksasa yang menggelitik!</em></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: COMMON BUG & DEBUGGING -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <h2 class="slide-title">Mengapa Suaranya Tidak Muncul? 🕵️‍♂️🔍</h2>
+          <p class="slide-subtitle">3 hal utama yang harus dicek saat suara tidak terdengar:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 10px;">🔇</div>
+              <h4 style="color: #ef4444; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Volume Laptop Mati / Nol</h4>
+              <p class="card-desc">Cek ikon speaker di pojok laptop atau kabel earphone. Pastikan volume minimal 60% dan tidak dalam posisi <em>Mute</em>.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 10px;">🌐</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Lupa Set Bahasa Indonesia</h4>
+              <p class="card-desc">Jika bahasa masih <em>English</em>, kata "Halo" akan diucapkan dengan logat aneh "Hey-low". Ubah ke <strong>Indonesian</strong>!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 10px;">📶</div>
+              <h4 style="color: #38bdf8; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Koneksi Internet Putus</h4>
+              <p class="card-desc">Karena Text to Speech butuh server cloud AWS Scratch, pastikan internet tersambung agar suara bisa disintesis.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: TANTANGAN KREATIF -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-emerald">Tantangan Mandiri</div>
+          <h2 class="slide-title">Tantangan: "Paduan Suara Hutan Fantasi" 🌳🎶</h2>
+          <p class="slide-subtitle">Uji kreativitasmu dengan menambahkan karakter hewan lain!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #22d3ee; font-family: 'Fredoka', cursive; margin-bottom: 10px;">Misi Kamu Hari Ini:</h4>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #e2e8f0;">
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Tambahkan minimal <strong>3 karakter sprite berbeda</strong> di panggung.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Atur jenis suara yang berbeda: <em>Squeak</em>, <em>Giant</em>, dan <em>Kitten</em>.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Saat karakter diklik, mereka memperkenalkan nama dan makanan kesukaannya!
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">⭐</span> <strong>Bonus:</strong> Tambahkan efek gerak lompat atau putar saat berbicara!
+                </li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 54px; margin-bottom: 10px;">👑⭐</div>
+              <h4 style="font-size: 20px; font-family: 'Fredoka', cursive; color: #fbbf24; margin-bottom: 6px;">Badge Spesial Sesi 06</h4>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 280px;">Siswa yang berhasil menyelesaikan tantangan akan mendapatkan gelar <strong>"Junior AI Voice Master"</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: SHOWCASE & PENUTUP -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-cyan">Showcase & Refleksi</div>
+          <h2 class="slide-title">Panggung Karya Cilik & Tepuk Koding! 👏🎉</h2>
+          <p class="slide-subtitle">Waktunya menunjukkan proyek karakter bicaramu ke teman-teman sekelas!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Rutinitas Pameran Karya (Showcase):</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">1. Siswa share screen atau angkat laptop ke depan kelas.</p>
+              <p class="card-desc" style="margin-bottom: 10px;">2. Klik bendera hijau dan klik setiap karakter untuk mendengarkan dialognya.</p>
+              <p class="card-desc" style="margin-bottom: 14px;">3. Seluruh kelas memberikan apresiasi bersama <strong>Tepuk Koding Beekoding</strong>!</p>
+              
+              <button class="btn-speak-now" id="btnConfettiCelebration" style="background: linear-gradient(135deg, #10b981, #059669);">
+                🎉 Rayakan Keberhasilan Kelas!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🚀 Misi Pertemuan Berikutnya (Sesi 07):</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #22d3ee; margin-bottom: 4px;">Sesi 07: Merancang Karakter Hero Bersama AI Generator</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Kita akan menjadi sutradara dan mendesain avatar robot atau hewan ajaib buatan sendiri dengan AI image generator prompt!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–05' (Pembuka & Pemanasan)",
+        text: "Sambut anak-anak dengan ceria! Tanyakan: 'Siapa yang pernah dengar suara Google Maps atau Siri? Hari ini kita akan menyulap Scratch agar karakter kita bisa bicara sendiri dalam Bahasa Indonesia!'",
+        script: "Halo teman-teman cerdas Beekoding! Hari ini Beeby punya kejutan luar biasa... Beeby sekarang sudah bisa bicara loh! Siapa yang mau bikin karakternya bisa ngomong seperti manusia? Angkat tangannya tinggi-tinggi!"
+      },
+      2: {
+        timing: "Menit 05–12' (Ice Breaking & Curiositas)",
+        text: "Bangun rasa ingin tahu anak tentang teknologi Text-to-Speech (TTS). Tunjukkan perbedaan bahwa suara ini bukan rekaman kaset biasa, melainkan komputer yang membaca tulisan kita secara pintar.",
+        script: "Komputer itu hebat sekali, teman-teman. Di dalamnya ada otak buatan (AI). Kalau kita ketik 'Selamat Pagi', komputer akan membaca huruf demi huruf lalu menggerakkan speaker-nya untuk bilang 'Selamat Pagi'! Ajaib kan?"
+      },
+      3: {
+        timing: "Menit 12–20' (Konsep & Analogi)",
+        text: "Jelaskan kontras antara blok 'Say' ungu biasa (seperti balon komik bisu) dengan blok 'Speak' toska AI. Anak usia 6–9 tahun sangat memahami perbandingan visual komik vs film kartun bersuara.",
+        script: "Ingat sesi kemarin saat kita buat balon obrolan? Itu seperti kita baca buku komik di majalah, matanya melihat tulisan tapi telinga kita tidak dengar suara. Nah, hari ini kita ganti jadi bioskop kartun: ada suaranya beneran!"
+      },
+      4: {
+        timing: "Menit 20–30' (Guided Demo: Extension)",
+        text: "Ajak semua anak membuka Scratch dan fokus ke layar instruktur. Bimbing mereka menemukan tombol biru puzzle di pojok kiri bawah. Pastikan setiap siswa berhasil menambahkan Text to Speech.",
+        script: "Sekarang coba lihat pojok kiri paling bawah di laptop kalian. Ada tombol biru dengan tanda tambah (+). Ayo kita klik bersama! Lalu cari gambar kartun yang ada mikrofonnya: Text to Speech. Klik sekali, cling! Blok ajaib kita sudah terbuka!"
+      },
+      5: {
+        timing: "Menit 30–42' (Bedah 3 Blok Sakti)",
+        text: "Tekankan pentingnya urutan: (1) Pilih jenis suara -> (2) Set bahasa ke Indonesian -> (3) Speak kalimat. Tunjukkan opsi suara: squeak untuk suara anak/tikus imut, giant untuk monster/raksasa.",
+        script: "Sebelum karakter kita bicara, kita harus kasih tahu dia dulu: mau jadi raksasa atau anak kecil? Kalau mau jadi anak imut, pilih 'squeak'. Lalu jangan lupa pilih bahasa 'Indonesian' ya, biar Beeby nggak ngomong bahasa alien!"
+      },
+      6: {
+        timing: "Menit 42–55' (Uji Coba Simulator di Slide)",
+        text: "Gunakan simulator langsung di slide ini! Klik tombol suara Beeby, Pak Katak, dan Miko. Biarkan anak tertawa mendengar perbedaannya. Ajak salah satu anak memilih kata lucu untuk diucapkan.",
+        script: "Yuk kita coba tes suara di slide ini! Mau coba suara Pak Katak yang berat atau Miko yang manja? Ayo Budi, mau ketik apa di kotak ini? Kita dengarkan sama-sama suaranya ya!"
+      },
+      7: {
+        timing: "Menit 55–70' (Hands-on Student Coding)",
+        text: "Waktunya anak menyusun kode di Scratch mereka. Keliling atau periksa layar share screen siswa. Pastikan mereka menggabungkan blok 'Say' dan 'Speak' agar efeknya lebih hidup.",
+        script: "Sekarang giliran kalian! Buka tab Scratch kalian. Masukkan blok bendera hijau, lalu pasang trio blok sakti tadi. Coba tekan bendera hijaunya, apakah karakter kalian sudah bersuara? Yang sudah bersuara boleh acungkan jempol!"
+      },
+      8: {
+        timing: "Menit 70–78' (Detektif Bug Cilik)",
+        text: "Antisipasi masalah teknis paling umum: volume laptop mute, headset belum dicolok, atau lupa memilih bahasa Indonesia. Ajarkan anak untuk tenang dan memeriksa satu per satu.",
+        script: "Ada yang belum keluar suaranya? Jangan panik, detektif koding tidak pernah panik! Ayo kita cek 3 hal: Pertama, apakah tombol volume laptop sudah dinaikkan? Kedua, apakah bahasa sudah dipilih Indonesian? Ketiga, apakah wifi masih tersambung?"
+      },
+      9: {
+        timing: "Menit 78–85' (Tantangan Kreatif)",
+        text: "Beri tantangan bagi anak yang sudah selesai lebih cepat: tambahkan sprite katak dan kucing dengan suara giant dan kitten. Biarkan mereka berkreasi dengan kata-kata mereka sendiri.",
+        script: "Hebat semuanya! Sekarang tantangan master: coba tambahkan satu hewan lagi, misalnya katak atau kucing. Buat mereka saling berkenalan dengan suara yang berbeda! Siapa yang bisa bikin dialog paling lucu?"
+      },
+      10: {
+        timing: "Menit 85–90' (Showcase & Penutup)",
+        text: "Minta 2–3 siswa memamerkan karya dan memperdengarkan suara karakternya. Akhiri dengan tepuk koding dan umumkan sesi berikutnya: Merancang Hero dengan AI Generator gambar!",
+        script: "Luar biasa sekali karya teman-teman hari ini! Karakter kalian sekarang sudah pintar berbicara seperti manusia! Minggu depan kita akan mendesain kostum superhero robot kalian sendiri pakai AI Gambar! Tepuk koding untuk kita semua!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return; // Don't trigger when typing in simulator
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#0891b2' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Confetti celebration
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // ==========================================
+    // LIVE AI VOICE SIMULATOR LOGIC (Web Speech API)
+    // ==========================================
+    let currentVoiceType = 'squeak';
+    let currentChar = 'beeby';
+
+    const voiceTabs = document.querySelectorAll('.voice-tab');
+    const simInput = document.getElementById('simTextInput');
+    const btnSpeak = document.getElementById('btnSpeakNow');
+
+    const charElements = {
+      beeby: document.getElementById('charBeeby'),
+      frog: document.getElementById('charFrog'),
+      cat: document.getElementById('charCat')
+    };
+
+    const bubbleElements = {
+      beeby: document.getElementById('bubbleBeeby'),
+      frog: document.getElementById('bubbleFrog'),
+      cat: document.getElementById('bubbleCat')
+    };
+
+    const presetTexts = {
+      beeby: "Halo teman-teman Beekoding! Aku Beeby, lebah yang suka koding!",
+      frog: "Kroook! Aku Pak Katak! Suaraku besar dan berat seperti raksasa!",
+      cat: "Meooong! Aku Miko si kucing pintar! Senang belajar bersama kalian!"
+    };
+
+    voiceTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        voiceTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentVoiceType = tab.dataset.type;
+        currentChar = tab.dataset.char;
+        simInput.value = presetTexts[currentChar];
+      });
+    });
+
+    function speakText(text, voiceType, charKey) {
+      if (!('speechSynthesis' in window)) {
+        alert('Browser Anda belum mendukung Web Speech Synthesis.');
+        return;
+      }
+
+      window.speechSynthesis.cancel(); // Stop any pending speech
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'id-ID';
+
+      // Pitch and rate simulation for Scratch voice personalities
+      if (voiceType === 'squeak') {
+        utterance.pitch = 1.7; // High squeaky child pitch
+        utterance.rate = 1.15;
+      } else if (voiceType === 'giant') {
+        utterance.pitch = 0.55; // Deep booming bass pitch
+        utterance.rate = 0.85;
+      } else if (voiceType === 'kitten') {
+        utterance.pitch = 1.95; // Super high cute pitch
+        utterance.rate = 1.25;
+      } else {
+        utterance.pitch = 1.0;
+        utterance.rate = 1.0;
+      }
+
+      // Visual feedback
+      const charEl = charElements[charKey];
+      const bubbleEl = bubbleElements[charKey];
+
+      // Hide all bubbles first
+      Object.values(bubbleElements).forEach(b => b.classList.remove('visible'));
+      Object.values(charElements).forEach(c => c.classList.remove('speaking'));
+
+      bubbleEl.textContent = text;
+      bubbleEl.classList.add('visible');
+      charEl.classList.add('speaking');
+
+      utterance.onend = () => {
+        charEl.classList.remove('speaking');
+        setTimeout(() => {
+          bubbleEl.classList.remove('visible');
+        }, 1500);
+      };
+
+      utterance.onerror = () => {
+        charEl.classList.remove('speaking');
+        bubbleEl.classList.remove('visible');
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    btnSpeak.addEventListener('click', () => {
+      const textToSay = simInput.value.trim() || 'Halo teman-teman Beekoding!';
+      speakText(textToSay, currentVoiceType, currentChar);
+    });
+
+    // Initialize slide
+    updateSlide();
+  </script>
+</body>
+</html>
