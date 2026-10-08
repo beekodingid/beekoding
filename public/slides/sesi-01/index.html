@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 01 - Petualangan Robot Lebah | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Navigation Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #f59e0b;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
+    }
+
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Main Presentation Stage (16:9 Aspect Ratio) */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(30px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 36px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-session {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Slide Content Typography */
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 34px;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-top: 8px;
+    }
+
+    .slide-title span {
+      color: #fbbf24;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin: 18px 0;
+    }
+
+    .text-column {
+      flex: 1.2;
+    }
+
+    .visual-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      max-height: 340px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .concept-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .concept-icon {
+      font-size: 28px;
+      line-height: 1;
+      background: rgba(245, 158, 11, 0.2);
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    .concept-text h4 {
+      font-size: 16px;
+      color: #f1f5f9;
+      font-weight: 800;
+    }
+
+    .concept-text p {
+      font-size: 13.5px;
+      color: #cbd5e1;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    /* Direction Cards (Arrow Command Cards) */
+    .command-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+
+    .cmd-card {
+      background: #1e293b;
+      border: 2px solid #3b82f6;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .cmd-card:hover {
+      transform: scale(1.04);
+    }
+
+    .cmd-card.forward { border-color: #10b981; }
+    .cmd-card.turn { border-color: #3b82f6; }
+    .cmd-card.action { border-color: #f59e0b; }
+
+    .cmd-icon {
+      font-size: 32px;
+      margin-bottom: 4px;
+    }
+
+    .cmd-label {
+      font-family: 'Fredoka', cursive;
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .cmd-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* Interactive Floor Grid Simulator */
+    .maze-container {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .maze-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 56px);
+      grid-template-rows: repeat(4, 56px);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .cell {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      position: relative;
+    }
+
+    .cell.bee {
+      background: #fef08a;
+      box-shadow: 0 0 15px rgba(250, 204, 21, 0.6);
+    }
+
+    .cell.goal {
+      background: #fde68a;
+      animation: pulse 1.5s infinite;
+    }
+
+    .cell.rock {
+      background: #475569;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .maze-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-step {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-step:hover { background: #2563eb; }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-panel.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notes-title {
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notes-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .notes-script {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 14px;
+      margin-top: 8px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #fef08a;
+    }
+
+    /* Bottom Slide Footer Controls */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 12px;
+    }
+
+    .footer-hints {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: 'Fredoka', cursive;
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    .slide-counter span {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .btn-nav {
+      background: #334155;
+      color: #fff;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING <span>STAGE 1: JUNIOR EXPLORER</span>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+      <a href="/brosur-ekskul.html" class="btn">
+        📄 Brosur A4
+      </a>
+    </div>
+  </div>
+
+  <!-- Stage Area -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+
+      <!-- ================= SLIDE 1: COVER ================= -->
+      <div class="slide active" data-time="00–10' (Ice Breaking)">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 01 • Computational Thinking Dasar</div>
+          <div class="badge-time">⏱️ 00–10 Menit Pertama</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Petualangan <span>Robot Lebah</span> Cilik! 🐝🤖
+            </h1>
+            <p style="color: #cbd5e1; font-size: 16px; margin: 12px 0 20px; line-height: 1.5;">
+              Halo para programmer cilik! Hari ini kita akan membantu <strong>Beeby</strong>, si robot lebah yang lucu, menjelajahi labirin warna-warni untuk mencari pot madu emas!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">⭐</div>
+              <div class="concept-text">
+                <h4>Misi Hari Ini:</h4>
+                <p>Belajar memberikan instruksi langkah-demi-langkah yang rapi agar robot kita tidak tersesat!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <img src="/slides/sesi-01/beeby-maze.jpg" alt="Petualangan Robot Lebah" class="hero-img" />
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">💡 Tips Guru: Sapa nama anak satu per satu dengan ceria, ajak tepuk koding 3x.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()" disabled>&larr;</button>
+            <div class="slide-counter"><span id="currSlide">1</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: HOOK CERITA ================= -->
+      <div class="slide" data-time="10–18' (Pengenalan Konsep)">
+        <div class="slide-header">
+          <div class="badge-session">Konsep 1 • Karakter Robot</div>
+          <div class="badge-time">⏱️ Menit ke 10–18</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Siapakah itu <span>Robot</span>? 🤖
+            </h2>
+            <div class="concept-card" style="margin-top: 14px;">
+              <div class="concept-icon">🧠</div>
+              <div class="concept-text">
+                <h4>Apakah Robot Punya Pikiran Sendiri?</h4>
+                <p>Jawabannya: <strong>TIDAK!</strong> Robot itu hebat, tapi robot tidak bisa berpikir tanpa bantuan manusia.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">💻</div>
+              <div class="concept-text">
+                <h4>Siapa yang Mengendalikan Robot?</h4>
+                <p>Yaitu <strong>PROGRAMMER</strong>! Kalian semua di kelas ini adalah programmer hebat yang akan menjadi otak bagi Beeby!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(245,158,11,0.1); border: 2px dashed #f59e0b; border-radius: 18px; padding: 24px; text-align: center;">
+              <div style="font-size: 70px;">🐝✨</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 22px; color: #fbbf24; margin-top: 8px;">Aku Beeby!</h3>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 6px;">"Aku hanya bisa bergerak kalau kakak programmer memberi instruksi yang jelas!"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Gunakan tombol panah [Kiri / Kanan] di keyboard untuk berpindah slide.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>2</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: ANALOGI ROBOT PELAYAN ================= -->
+      <div class="slide" data-time="18–25' (Analogi Konkrit)">
+        <div class="slide-header">
+          <div class="badge-session">Konsep 2 • Instruksi Presisi</div>
+          <div class="badge-time">⏱️ Menit ke 18–25</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Analogi: <span>Robot Pelayan Dapur</span> ☕
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px;">
+              Bayangkan kamu punya robot pelayan di rumah. Kamu ingin minta dibuatkan segelas Teh Manis hangat!
+            </p>
+            <div class="concept-card" style="border-color: #ef4444;">
+              <div class="concept-icon" style="background: rgba(239,68,68,0.2);">❌</div>
+              <div class="concept-text">
+                <h4 style="color: #fca5a5;">Perintah yang SALAH:</h4>
+                <p>"Robot, bikinin teh manis dong!" 👉 <em>Robot akan bingung dan diam mematung, karena tidak tahu langkah-langkahnya!</em></p>
+              </div>
+            </div>
+            <div class="concept-card" style="border-color: #10b981;">
+              <div class="concept-icon" style="background: rgba(16,185,129,0.2);">✅</div>
+              <div class="concept-text">
+                <h4 style="color: #86efac;">Perintah yang BENAR (Presisi):</h4>
+                <p>1. Ambil gelas -> 2. Masukkan kantung teh -> 3. Tuang air panas -> 4. Beri 1 sendok gula -> 5. Aduk 5 kali!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="font-size: 80px; text-align: center;">
+              🍵🥄🤖
+              <div style="font-size: 14px; color: #94a3b8; margin-top: 10px; font-weight: 700;">Urutan Langkah = ALGORITMA!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Kunci Utama: Anak memahami kata "ALGORITMA" = urutan langkah pasti.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>3</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: KARTU KODE ARAH ================= -->
+      <div class="slide" data-time="25–35' (Pengenalan Kartu Arah)">
+        <div class="slide-header">
+          <div class="badge-session">Alat Permainan • 4 Kartu Perintah Ajaib</div>
+          <div class="badge-time">⏱️ Menit ke 25–35</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Kartu Perintah <span>Arah Beeby</span> 🗺️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 16px;">
+              Untuk menggerakkan Beeby di atas labirin lantai, kita menggunakan 4 kartu kode sakti ini:
+            </p>
+            <div class="command-cards-grid">
+              <div class="cmd-card forward">
+                <div class="cmd-icon">⬆️</div>
+                <div class="cmd-label">MAJU 1 LANGKAH</div>
+                <div class="cmd-sub">Melangkah ke petak depan</div>
+              </div>
+              <div class="cmd-card turn">
+                <div class="cmd-icon">↪️</div>
+                <div class="cmd-label">PUTAR KANAN 90°</div>
+                <div class="cmd-sub">Badan berputar ke kanan (tidak jalan)</div>
+              </div>
+              <div class="cmd-card turn">
+                <div class="cmd-icon">↩️</div>
+                <div class="cmd-label">PUTAR KIRI 90°</div>
+                <div class="cmd-sub">Badan berputar ke kiri (tidak jalan)</div>
+              </div>
+              <div class="cmd-card action">
+                <div class="cmd-icon">🍯</div>
+                <div class="cmd-label">AMBIL MADU!</div>
+                <div class="cmd-sub">Klaim pot madu & menang</div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.8); border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; text-align: center;">
+              <div style="font-size: 28px; margin-bottom: 6px;">⚠️ INGAT RAHASIA INI!</div>
+              <p style="font-size: 13px; color: #fde047; font-weight: 700;">
+                "Putar Kanan & Putar Kiri hanya mengubah arah hadap kepala robot, TIDAK otomatis melangkah maju!"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tekankan perbedaan antara "Belok" (rotasi di tempat) vs "Maju" (langkah kaki).</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>4</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: ROLEPLAY GAME FISIK ================= -->
+      <div class="slide" data-time="35–55' (Permainan Fisik Kelas)">
+        <div class="slide-header">
+          <div class="badge-session">Aktivitas Unplugged • Game Robot Manusia</div>
+          <div class="badge-time">⏱️ Menit ke 35–55</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Ayo Main: <span>Robot & Programmer</span>! 🎭
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">🤖</div>
+              <div class="concept-text">
+                <h4>Peran 1: Teman Jadi ROBOT BEEBY</h4>
+                <p>Tutup mata sedikit / berdiri tegak. Robot HANYA BOLEH bergerak jika dibacakan kartu perintah!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">👨‍💻</div>
+              <div class="concept-text">
+                <h4>Peran 2: Teman Jadi PROGRAMMER</h4>
+                <p>Menyusun barisan kartu panah di lantai, lalu menekan tombol "RUN" (Tepuk Tangan 1x) dan membacakan kodenya!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🏆</div>
+              <div class="concept-text">
+                <h4>Target Misi:</h4>
+                <p>Capai pot madu tanpa menyentuh garis petak atau menabrak kursi!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <img src="/slides/sesi-01/beeby-maze.jpg" alt="Aktivitas Kelas" class="hero-img" style="max-height: 280px;" />
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Minta 2 anak maju ke depan kelas sebagai peraga, anak lain menebak kodenya.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>5</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: SIMULATOR LABIRIN 1 (INTERAKTIF) ================= -->
+      <div class="slide" data-time="55–65' (Tantangan Level 1)">
+        <div class="slide-header">
+          <div class="badge-session">Tantangan 1 • Jalur Lurus Bebas Rintangan</div>
+          <div class="badge-time">⏱️ Menit ke 55–65</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tantangan 1: <span>Jalur Lurus</span> 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14px; margin: 8px 0 14px;">
+              Berapa kartu <strong>[MAJU]</strong> yang dibutuhkan Beeby dari titik start untuk sampai ke Pot Madu?
+            </p>
+            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; font-size: 13px;">
+              📝 <strong>Tebakan Kode:</strong><br>
+              <code>[MAJU] ➔ [MAJU] ➔ [MAJU] ➔ [AMBIL MADU]</code>
+            </div>
+            <p style="font-size: 12.5px; color: #38bdf8; margin-top: 10px;">
+              👉 Coba klik tombol kontrol di samping untuk menguji langsung gerak Beeby!
+            </p>
+          </div>
+          <div class="visual-column">
+            <!-- Mini Simulator Grid 1 -->
+            <div class="maze-container">
+              <div class="maze-grid" id="grid1">
+                <div class="cell bee" id="c0">🐝</div>
+                <div class="cell" id="c1"></div>
+                <div class="cell" id="c2"></div>
+                <div class="cell goal" id="c3">🍯</div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="maze-controls">
+                <button class="btn-step" onclick="moveBee1()">➡️ Jalankan [Maju]</button>
+                <button class="btn-step" style="background:#64748b;" onclick="resetBee1()">🔄 Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ajak siswa menghitung bersama-sama: 1, 2, 3 langkah!</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>6</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: SIMULATOR LABIRIN 2 (BERBELOK) ================= -->
+      <div class="slide" data-time="65–75' (Tantangan Level 2)">
+        <div class="slide-header">
+          <div class="badge-session">Tantangan 2 • Belok Menghindari Batu</div>
+          <div class="badge-time">⏱️ Menit ke 65–75</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tantangan 2: <span>Awas Ada Batu!</span> 🪨
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14px; margin: 8px 0 12px;">
+              Jalur lurus dihalangi batu hitam! Beeby harus belok ke bawah lalu belok ke kanan lagi.
+            </p>
+            <div style="background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 10px; font-size: 12.5px; line-height: 1.6;">
+              🎯 <strong>Susunan Kartu Algoritma:</strong><br>
+              1. <code>[MAJU]</code><br>
+              2. <code>[PUTAR KANAN]</code> ➔ <code>[MAJU]</code><br>
+              3. <code>[PUTAR KIRI]</code> ➔ <code>[MAJU 2 LANGKAH]</code><br>
+              4. <code>[AMBIL MADU]</code>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div class="maze-container">
+              <div class="maze-grid">
+                <div class="cell bee">🐝</div>
+                <div class="cell"></div>
+                <div class="cell rock">🪨</div>
+                <div class="cell"></div>
+                
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell goal">🍯</div>
+
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <p style="font-size: 11px; color: #94a3b8; text-align: center;">Minta murid mempraktikkannya dengan kartu fisik di meja masing-masing!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Biarkan anak berdiskusi berpasangan menentukan urutan belokan.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>7</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: MENGENAL BUG & DEBUGGING ================= -->
+      <div class="slide" data-time="75–82' (Konsep Debugging)">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Super Programmer • Bug & Debugging</div>
+          <div class="badge-time">⏱️ Menit ke 75–82</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Apa yang Terjadi Jika <span>Salah Langkah</span>? 🐞
+            </h2>
+            <div class="concept-card" style="border-color: #ef4444; margin-top: 14px;">
+              <div class="concept-icon" style="background: rgba(239, 68, 68, 0.2);">🐞</div>
+              <div class="concept-text">
+                <h4 style="color: #fca5a5;">Namanya BUG (Kutu Kode)!</h4>
+                <p>Saat robot menabrak tembok atau salah belok, itu bukan robotnya yang nakal, tapi kodenya ada yang keliru.</p>
+              </div>
+            </div>
+            <div class="concept-card" style="border-color: #38bdf8;">
+              <div class="concept-icon" style="background: rgba(56, 189, 248, 0.2);">🔍</div>
+              <div class="concept-text">
+                <h4 style="color: #7dd3fc;">Ayo Lakukan DEBUGGING!</h4>
+                <p>Programmer hebat tidak boleh menyerah! Kita cari kartu mana yang keliru, lalu ganti dengan yang benar.</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; text-align: center;">
+              <div style="font-size: 64px;">💥🧱</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #f87171; margin-top: 8px;">Jangan Takut Salah!</h3>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 6px;">"Salah kode itu wajar! Memperbaiki kode justru membuat otak kita makin cerdas!"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tanamkan Growth Mindset: Kesalahan adalah pintu belajar koding.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>8</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: RANGKUMAN HARI INI ================= -->
+      <div class="slide" data-time="82–87' (Rangkuman & Review)">
+        <div class="slide-header">
+          <div class="badge-session">Rangkuman Keren Hari Ini</div>
+          <div class="badge-time">⏱️ Menit ke 82–87</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              3 Rahasia <span>Programmer Cilik</span> 🌟
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">1️⃣</div>
+              <div class="concept-text">
+                <h4>ALGORITMA</h4>
+                <p>Adalah urutan langkah-langkah yang rapi dan teratur.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">2️⃣</div>
+              <div class="concept-text">
+                <h4>INSTRUKSI PRESISI</h4>
+                <p>Perintah harus jelas agar robot mengerti apa yang harus dilakukan.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">3️⃣</div>
+              <div class="concept-text">
+                <h4>DEBUGGING</h4>
+                <p>Mencari kesalahan dan memperbaikinya dengan ceria tanpa menyerah!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="text-align: center; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 18px; padding: 24px; color: #000;">
+              <div style="font-size: 50px;">🏆🎉</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 22px; margin-top: 6px;">SEMUANYA HEBAT!</h3>
+              <p style="font-size: 13px; font-weight: 700; margin-top: 4px;">Kalian resmi lulus Misi 01!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 12px; background: #000; color: #fbbf24; border: none; padding: 8px 16px; border-radius: 999px; font-weight: 800; cursor: pointer;">
+                🎊 Rayakan Pesta Koding!
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ajak seluruh kelas tepuk tangan apresiasi untuk semua teman!</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>9</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER SESI 02 ================= -->
+      <div class="slide" data-time="87–90' (Penutup & Quest Sesi Depan)">
+        <div class="slide-header">
+          <div class="badge-session">Sampai Jumpa di Sesi 02!</div>
+          <div class="badge-time">⏱️ Menit ke 87–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Misi Pekan Depan: <span>Scratch 3.0</span>! 💻🐱
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 18px; line-height: 1.5;">
+              Di pertemuan berikutnya, kita akan membuka laptop dan menyusun <strong>Blok Warna-Warni di Scratch</strong> untuk membuat Beeby benar-benar bergerak dan menyapa di layar komputer!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🎁</div>
+              <div class="concept-text">
+                <h4>Quest Tantangan di Rumah:</h4>
+                <p>Coba bimbing Ayah atau Bunda menjadi "Robot Dapur" saat mengambil air minum menggunakan instruksi langkah-demi-langkah!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 24px; text-align: center;">
+              <div style="font-size: 60px;">🚀🐝</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 22px; color: #fbbf24; margin-top: 8px;">Beekoding Academy</h3>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">"Coding Today Leads to a Brighter Tomorrow!"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ucapkan salam hangat, rapikan kartu bersama murid, dan puji keaktifan mereka.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>10</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()" disabled>&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Teacher / Speaker Notes Bottom Panel (Toggled via 'N' or Button) -->
+  <div class="teacher-notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div class="notes-title">
+        📝 CATATAN INSTRUKTUR / GURU &bull; <span id="notesTime" style="color:#e2e8f0; font-weight:600;"></span>
+      </div>
+      <button class="notes-close" onclick="toggleNotes()">✕</button>
+    </div>
+    <div class="notes-content" id="notesContent">
+      <!-- Injected dynamically via JS based on current slide -->
+    </div>
+  </div>
+
+  <script>
+    // Presenter Notes Database for Session 01
+    const teacherNotesData = [
+      {
+        title: "Slide 1: Pembukaan & Sambutan Ramah",
+        time: "Menit 00–10 (Total 90 Menit)",
+        instructions: "Fokus pada membangun bonding dan antusiasme anak.",
+        script: "Halo semuanya! Selamat datang di Beekoding Academy! Siapa di sini yang suka main game? Nah, hari ini kita bukan cuma main game biasa, tapi kita akan menjadi 'Programmer Cilik' yang menciptakan petualangan sendiri! Ayo semuanya, kita tepuk koding dulu yuk: Tepuk-Koding! (Prok-Prok-Prok, Go Beeby!)"
+      },
+      {
+        title: "Slide 2: Konsep Karakter Robot",
+        time: "Menit 10–18",
+        instructions: "Tanyakan interaktif: 'Anak-anak, siapa yang pernah lihat robot?' Biarkan beberapa anak menjawab, lalu tekankan bahwa robot butuh kode.",
+        script: "Hebat! Robot ada yang bisa bersih-bersih, ada yang bantu dokter. Tapi tahu nggak rahasianya? Kalau remote-nya mati atau kabel kodenya kosong, robotnya bisa gerak nggak? Nggak bisa! Karena robot butuh kakak programmer seperti kalian!"
+      },
+      {
+        title: "Slide 3: Analogi Robot Pelayan Dapur",
+        time: "Menit 18–25",
+        instructions: "Lakukan peragaan langsung di depan kelas. Guru berpura-pura menjadi Robot Pelayan yang kaku.",
+        script: "Kakak sekarang jadi robot nih! Coba instruksikan kakak bikin teh! Kalau kamu cuma teriak 'bikin teh', robotnya bakal bingung: gelasnya di mana? Airnya dingin atau panas? Nah, makanya urutan langkah itu harus jelas satu per satu. Urutan langkah itu namanya: AL-GO-RIT-MA!"
+      },
+      {
+        title: "Slide 4: Kartu Kode 4 Arah",
+        time: "Menit 25–35",
+        instructions: "Tunjukkan kartu fisik panah. Minta semua anak berdiri dan mencoba belok badan.",
+        script: "Ayo semuanya berdiri! Hadap ke depan. Sekarang dengarkan aba-aba: 'PUTAR KANAN!' Ingat, kakinya jangan melangkah ya, cuma putar badan ke kanan! Nah, kalau aba-abanya 'MAJU 1 LANGKAH', baru melangkah 1 kaki ke depan!"
+      },
+      {
+        title: "Slide 5: Permainan Fisik Robot Manusia",
+        time: "Menit 35–55",
+        instructions: "Bagi murid berpasangan atau 1 peraga di tengah kelas. 1 murid jadi Robot Beeby (mata agak tertutup), 1 murid jadi programmer.",
+        script: "Ayo Budi dan Sari! Sari jadi programmer yang menyusun kartu panah di lantai ya. Budi jadi Robot Beeby. Saat Sari bilang 'RUN!', Budi jalan sesuai kartu yang disusun Sari sampai menyentuh pot madu!"
+      },
+      {
+        title: "Slide 6: Tantangan 1 (Jalur Lurus)",
+        time: "Menit 55–65",
+        instructions: "Minta siswa mengamati layar atau petak grid. Tanyakan berapa langkah yang dibutuhkan.",
+        script: "Coba kita hitung sama-sama petak kosong di depan Beeby: 1, 2, 3! Jadi kita butuh 3 kartu MAJU dan 1 kartu AMBIL MADU. Ayo kita klik tombol kodenya!"
+      },
+      {
+        title: "Slide 7: Tantangan 2 (Ada Batu / Rintangan)",
+        time: "Menit 65–75",
+        instructions: "Tantangan tingkat lanjut. Murid harus memutar badan robot agar tidak menabrak rintangan batu.",
+        script: "Waduh! Ada batu besar di jalur lurus! Kalau Beeby jalan lurus, apa yang terjadi? Nabrak batu! Berarti Beeby harus belok ke mana dulu? Ya, belok kanan ke bawah, maju, lalu belok kiri lagi!"
+      },
+      {
+        title: "Slide 8: Mengenal Bug & Debugging",
+        time: "Menit 75–82",
+        instructions: "Tanamkan rasa percaya diri. Jangan biarkan anak merasa gagal saat salah memilih kartu arah.",
+        script: "Ada yang robotnya nabrak meja? Nggak apa-apa! Di dunia koding, kesalahan itu namanya BUG atau Kutu Kode. Kalau ada kutu di rambut kita bersihkan kan? Nah, kalau di kode, kita cari kartu mana yang salah, lalu kita perbaiki. Namanya DEBUGGING!"
+      },
+      {
+        title: "Slide 9: Rangkuman & Pesta Apresiasi",
+        time: "Menit 82–87",
+        instructions: "Review 3 kata kunci: Algoritma, Instruksi Presisi, Debugging. Tekan tombol kembang api!",
+        script: "Hebat sekali kalian hari ini! Tiga kata sakti kita: 1. Algoritma (langkah teratur), 2. Presisi (perintah jelas), dan 3. Debugging (perbaiki kesalahan). Kalian semua resmi jadi pahlawan koding!"
+      },
+      {
+        title: "Slide 10: Penutup & Misi Selanjutnya",
+        time: "Menit 87–90",
+        instructions: "Beri teaser Scratch 3.0 pekan depan. Minta anak merapikan kartu ke dalam kotak penyimpanan.",
+        script: "Minggu depan kita akan ketemu lagi dan kita akan pakai laptop beneran di Scratch! Siap-siap bikin animasi Beeby yang bisa terbang dan bersuara ya! Sampai jumpa pekan depan, dadah semuanya!"
+      }
+    ];
+
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const notesPanel = document.getElementById('notesPanel');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlideIndex);
+      });
+
+      // Update counters
+      document.getElementById('currSlide').innerText = currentSlideIndex + 1;
+
+      // Update nav buttons disabled state
+      document.querySelectorAll('.btn-nav').forEach((btn, idx) => {
+        if (btn.innerText.includes('←') || btn.innerText.includes('larr')) {
+          btn.disabled = (currentSlideIndex === 0);
+        }
+        if (btn.innerText.includes('→') || btn.innerText.includes('rarr')) {
+          btn.disabled = (currentSlideIndex === totalSlides - 1);
+        }
+      });
+
+      // Update Teacher Notes
+      const note = teacherNotesData[currentSlideIndex];
+      if (note) {
+        document.getElementById('notesTime').innerText = `${note.time}`;
+        document.getElementById('notesContent').innerHTML = `
+          <h4 style="color:#fbbf24; font-size:14px; margin-bottom:4px;">${note.title}</h4>
+          <p><strong>🎯 Panduan Aktivitas Guru:</strong> ${note.instructions}</p>
+          <div class="notes-script">
+            <strong>🗣️ Contoh Script Kata-Kata Guru:</strong><br>
+            "${note.script}"
+          </div>
+        `;
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < totalSlides - 1) {
+        currentSlideIndex++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesPanel.classList.toggle('open');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Mini Simulator 1 Logic
+    let beePos1 = 0;
+    function moveBee1() {
+      if (beePos1 < 3) {
+        document.getElementById(`c${beePos1}`).classList.remove('bee');
+        document.getElementById(`c${beePos1}`).innerText = '';
+        beePos1++;
+        document.getElementById(`c${beePos1}`).classList.add('bee');
+        document.getElementById(`c${beePos1}`).innerText = '🐝';
+
+        if (beePos1 === 3) {
+          document.getElementById('c3').innerText = '🐝🍯';
+          triggerConfetti();
+        }
+      }
+    }
+
+    function resetBee1() {
+      for (let i = 0; i <= 3; i++) {
+        const el = document.getElementById(`c${i}`);
+        el.classList.remove('bee');
+        el.innerText = '';
+      }
+      document.getElementById('c3').innerText = '🍯';
+      beePos1 = 0;
+      document.getElementById('c0').classList.add('bee');
+      document.getElementById('c0').innerText = '🐝';
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
