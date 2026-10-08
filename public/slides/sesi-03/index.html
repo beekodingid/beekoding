@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 03 - Pemicu Peristiwa & Efek Suara | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #f59e0b;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
+    }
+
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Stage Viewport */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(30px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 36px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-session {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Titles */
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 34px;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-top: 8px;
+    }
+
+    .slide-title span {
+      color: #fbbf24;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin: 18px 0;
+    }
+
+    .text-column {
+      flex: 1.2;
+    }
+
+    .visual-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      max-height: 340px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .concept-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .concept-icon {
+      font-size: 26px;
+      line-height: 1;
+      background: rgba(245, 158, 11, 0.2);
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    .concept-text h4 {
+      font-size: 15px;
+      color: #f1f5f9;
+      font-weight: 800;
+    }
+
+    .concept-text p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* Scratch Blocks Stack */
+    .block-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+      max-width: 400px;
+      margin: 10px 0;
+    }
+
+    .scratch-block {
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: 'Fredoka', cursive;
+      font-size: 15px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .scratch-block.event {
+      background: #ffbf00;
+      color: #000;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+    }
+
+    .scratch-block.looks {
+      background: #9966ff;
+    }
+
+    .scratch-block.sound {
+      background: #d946ef;
+    }
+
+    .block-input {
+      background: #ffffff;
+      color: #000;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* Interactive Scratch Live Garden Sound Simulator */
+    .scratch-sim-box {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      border: 3px solid #475569;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .sim-top-bar {
+      background: #e2e8f0;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .sim-stage {
+      height: 220px;
+      background: linear-gradient(180deg, #fef08a 0%, #fed7aa 40%, #bbf7d0 40%, #86efac 100%);
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .interactive-item {
+      cursor: pointer;
+      position: absolute;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+
+    .interactive-item:hover {
+      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9));
+    }
+
+    .item-bee {
+      top: 60px;
+      left: 60px;
+      font-size: 50px;
+      z-index: 10;
+    }
+
+    .item-flower-1 {
+      bottom: 20px;
+      left: 170px;
+      font-size: 40px;
+      z-index: 5;
+    }
+
+    .item-flower-2 {
+      bottom: 25px;
+      left: 250px;
+      font-size: 44px;
+      z-index: 5;
+    }
+
+    .item-flower-3 {
+      bottom: 18px;
+      left: 330px;
+      font-size: 38px;
+      z-index: 5;
+    }
+
+    .sparkle-pop {
+      position: absolute;
+      pointer-events: none;
+      font-size: 20px;
+      animation: floatUp 0.6s ease-out forwards;
+      z-index: 30;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-35px) scale(1.4); }
+    }
+
+    .sim-bottom-info {
+      background: #f8fafc;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-panel.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notes-title {
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notes-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .notes-script {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 14px;
+      margin-top: 8px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #fef08a;
+    }
+
+    /* Slide Footer Controls */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 12px;
+    }
+
+    .footer-hints {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: 'Fredoka', cursive;
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    .slide-counter span {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .btn-nav {
+      background: #334155;
+      color: #fff;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING <span>STAGE 1: SESI 03</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-02/index.html" class="btn">
+        ⏪ Sesi 02
+      </a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+      <a href="/brosur-ekskul.html" class="btn">
+        📄 Brosur A4
+      </a>
+    </div>
+  </div>
+
+  <!-- Stage Area -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+
+      <!-- ================= SLIDE 1: COVER SESI 03 ================= -->
+      <div class="slide active">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 03 • Events & Sound FX</div>
+          <div class="badge-time">⏱️ 00–10 Menit Pertama</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Pemicu Peristiwa & <span>Efek Suara Ajaib</span>! 🔔✨
+            </h1>
+            <p style="color: #cbd5e1; font-size: 16px; margin: 12px 0 20px; line-height: 1.5;">
+              Hari ini Beeby punya kekuatan baru! Jika kita <strong>klik Beeby pakai mouse</strong>, dia akan membesar dan mengeluarkan suara sihir <em>Magic Spell</em> yang merdu!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🖱️</div>
+              <div class="concept-text">
+                <h4>Misi Hari Ini:</h4>
+                <p>Belajar blok topi emas <code>When this sprite clicked</code> dan memasang suara <em>Pop</em> & <em>Coin</em> pada 3 bunga di taman!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <img src="/slides/sesi-03/beeby-sounds.jpg" alt="Pemicu Peristiwa dan Suara" class="hero-img" />
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">💡 Tips Guru: Ajak anak menekan tombol klik kiri mouse bersamaan: "Klik! Bunyi magic!"</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()" disabled>&larr;</button>
+            <div class="slide-counter"><span id="currSlide">1</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: KONSEP SEBAB AKIBAT ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Utama • Hubungan Sebab & Akibat</div>
+          <div class="badge-time">⏱️ Menit ke 10–18</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Apa itu <span>Event (Pemicu)</span>? ⚡
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">🔔</div>
+              <div class="concept-text">
+                <h4>Contoh Nyata: Bel Pintu Rumah</h4>
+                <p><strong>SEBAB (Pemicu):</strong> Tamu menekan tombol bel rumah.<br>
+                <strong>AKIBAT (Aksi):</strong> Terdengar bunyi nyaring <em>"Ting-tong!"</em> di ruang tamu.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🎮</div>
+              <div class="concept-text">
+                <h4>Di Dunia Game: Tombol Joystick</h4>
+                <p>Saat jempol kita menekan tombol [Lompat], Mario langsung melompat tinggi ke udara!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(254, 240, 138, 0.1); border: 2px dashed #fbbf24; border-radius: 18px; padding: 22px; text-align: center;">
+              <div style="font-size: 64px;">👆 ➔ 💥🎶</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #fbbf24; margin-top: 6px;">Sentuhan = Keajaiban!</h4>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 4px;">Komputer selalu menunggu perintah klik dari kita!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Tanyakan contoh lain: saklar lampu dipencet -> lampu menyala!</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>2</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: MENGENAL BLOK TOPI EMAS KLIK ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Balok Sakti • Topi Emas Events</div>
+          <div class="badge-time">⏱️ Menit ke 18–26</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Balok <span>When This Sprite Clicked</span> 🟨
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 8px 0 16px;">
+              Buka rak warna kuning <strong>Events</strong>. Cari balok yang memiliki bentuk topi bulat di atasnya:
+            </p>
+            <div class="scratch-block event" style="width: fit-content; font-size: 18px; padding: 12px 22px;">
+              👆 when this sprite clicked
+            </div>
+            <div class="concept-card" style="margin-top: 14px;">
+              <div class="concept-icon">🎩</div>
+              <div class="concept-text">
+                <h4>Kenapa Berbentuk Topi?</h4>
+                <p>Karena balok ini <strong>TIDAK BISA</strong> ditempeli balok lain di atasnya! Balok ini selalu menjadi <strong>PEMIMPIN / AWAL</strong> dari perintah.</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: #1e293b; border: 2px solid #eab308; border-radius: 16px; padding: 20px; text-align: center;">
+              <div style="font-size: 40px; margin-bottom: 6px;">⭐ RAHASIA UTAMA ⭐</div>
+              <p style="font-size: 13.5px; color: #fde047; font-weight: 700; line-height: 1.5;">
+                "Kode di bawah topi ini HANYA akan berjalan jika karakter tersebut diklik pakai mouse!"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Minta anak mencari balok 'when this sprite clicked' di rak kuning mereka.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>3</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: MENAMBAHKAN SUARA DARI SOUND LIBRARY ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Pustaka Suara • Tab Sounds di Scratch</div>
+          <div class="badge-time">⏱️ Menit ke 26–36</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Membuka Gudang <span>Suara Ajaib</span> 🎵🔊
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">1️⃣</div>
+              <div class="concept-text">
+                <h4>Klik Tab "Sounds" di Kiri Atas</h4>
+                <p>Di sebelah tab <em>Code</em> dan <em>Costumes</em>, ada tab bergambar pengeras suara bernama <strong>Sounds</strong>.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">2️⃣</div>
+              <div class="concept-text">
+                <h4>Cari Suara "Magic Spell"</h4>
+                <p>Klik tombol lingkaran biru speaker di pojok kiri bawah ➔ Ketik <strong>"Magic Spell"</strong> di kolom pencarian ➔ Klik suaranya!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: linear-gradient(135deg, #d946ef, #a855f7); border-radius: 16px; padding: 22px; text-align: center; color: #fff; box-shadow: 0 10px 25px rgba(217, 70, 239, 0.4);">
+              <div style="font-size: 54px;">🪄✨🎶</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 20px; margin-top: 6px;">Suara: Magic Spell</h3>
+              <p style="font-size: 12px; margin-top: 2px;">Bunyi lonceng gemerlap peri ajaib!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Anak-anak sangat suka mendengarkan contoh bunyi di Sound Library.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>4</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: FORMULA KODE BEEBY (KLIK + BESAR + SUARA) ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Susunan Kode Inti • Formula Beeby Ajaib</div>
+          <div class="badge-time">⏱️ Menit ke 36–48</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Susun <span>3 Balok Spektakuler</span>! 🧩
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14px; margin: 6px 0 12px;">
+              Sekarang satukan balok kuning, balok ungu, dan balok merah muda:
+            </p>
+            <div class="block-stack">
+              <div class="scratch-block event">
+                👆 when this sprite clicked
+              </div>
+              <div class="scratch-block looks">
+                change size by <span class="block-input">20</span>
+              </div>
+              <div class="scratch-block sound">
+                🔊 start sound <span class="block-input">Magic Spell ▼</span>
+              </div>
+            </div>
+            <p style="font-size: 12.5px; color: #94a3b8; margin-top: 6px;">
+              Setiap kali diklik: Beeby akan membesar 20 angka sambil bersuara <em>ting-ting-ting!</em>
+            </p>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 18px; font-size: 13px; line-height: 1.5;">
+              <div style="color: #fbbf24; font-weight: 800; margin-bottom: 6px;">🔍 Apa Bedanya:</div>
+              <p>🟣 <strong>set size to 100%:</strong> Ukuran langsung dipatok pas 100.</p>
+              <p style="margin-top: 6px;">🟣 <strong>change size by 20:</strong> Ukurannya BERTAMBAH gemuk terus setiap diklik!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Pastikan balok suara yang dipilih adalah 'start sound', bukan 'play sound until done'.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>5</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: SIMULATOR INTERAKTIF TAMAN SUARA ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Uji Coba Langsung • Coba Klik Beeby & Bunga!</div>
+          <div class="badge-time">⏱️ Menit ke 48–58</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Coba Klik <span>Panggung Ajaib</span>! 🖱️🌸
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 16px;">
+              Simulator di samping sudah dipasangi kode suara!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🐝</div>
+              <div class="concept-text">
+                <h4>Klik Beeby Si Lebah:</h4>
+                <p>Dia akan membesar dan mengeluarkan bunyi lonceng <em>Magic Spell</em>!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🌺</div>
+              <div class="concept-text">
+                <h4>Klik 3 Bunga di Taman:</h4>
+                <p>Setiap bunga akan memantul dan berbunyi <em>Pop</em> serta <em>Coin</em>!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <!-- Scratch Interactive Stage -->
+            <div class="scratch-sim-box">
+              <div class="sim-top-bar">
+                <div style="font-size: 11px; font-weight: 800; color: #0f172a;">Taman Interaktif Beeby</div>
+                <button onclick="resetStage3()" style="background:#64748b; color:#fff; border:none; padding:3px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">
+                  🔄 Reset Ukuran
+                </button>
+              </div>
+              <div class="sim-stage" id="stage3">
+                <div class="interactive-item item-bee" id="simBee3" onclick="clickBee3(event)" title="Klik aku!">🐝</div>
+                <div class="interactive-item item-flower-1" id="flw1" onclick="clickFlower(event, 'pop', '🌷')" title="Klik Bunga Tulip!">🌷</div>
+                <div class="interactive-item item-flower-2" id="flw2" onclick="clickFlower(event, 'coin', '🌻')" title="Klik Bunga Matahari!">🌻</div>
+                <div class="interactive-item item-flower-3" id="flw3" onclick="clickFlower(event, 'pop', '🌸')" title="Klik Bunga Sakura!">🌸</div>
+              </div>
+              <div class="sim-bottom-info">
+                <span>Klik karakter untuk dengar suara!</span>
+                <span id="clickCount">Klik: 0x</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Pastikan speaker laptop / proyektor menyala agar anak-anak mendengar bunyinya.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>6</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: TANTANGAN 3 BUNGA BERSUARA ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Tantangan Kelas • Menambahkan 3 Bunga Musik</div>
+          <div class="badge-time">⏱️ Menit ke 58–70</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tantangan: <span>3 Bunga Musik</span> 🌷🌻🌸
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 14px;">
+              Sekarang giliran kalian di laptop masing-masing:
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">🌸</div>
+              <div class="concept-text">
+                <h4>1. Tambahkan 3 Sprite Bunga</h4>
+                <p>Klik tombol tambah Sprite ➔ cari kategori <em>Food/Plants</em> atau cari sprite bunga / apel / lonceng.</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🎶</div>
+              <div class="concept-text">
+                <h4>2. Beri Suara Berbeda pada Tiap Bunga!</h4>
+                <p>• Bunga 1: Suara <code>Pop</code><br>
+                • Bunga 2: Suara <code>Coin</code> (koin emas game!)<br>
+                • Bunga 3: Suara <code>Boing</code> (pantulan pegas!)</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #10b981; border-radius: 16px; padding: 20px; text-align: center;">
+              <div style="font-size: 48px;">🌷➔🔊 🌻➔🪙 🌸➔🔔</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #34d399; margin-top: 8px;">Taman Musik Cilik!</h4>
+              <p style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">Panggung kalian sekarang berubah jadi alat musik piano!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Biarkan anak mengeksplorasi sound library: ada suara gong, drum, dan flute.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>7</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: KODE RESET UKURAN (AGAR TIDAK KEBESARAN) ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Trik Programmer • Jurus Kembalikan Ukuran Normal</div>
+          <div class="badge-time">⏱️ Menit ke 70–78</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Jurus Rahasia: <span>Tombol Reset</span> 🔄
+            </h2>
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 12px;">
+              "Kak! Beeby-ku diklik terus sampai badannya menutupi seluruh layar laptop! Gimana cara ngecilinnya lagi?"
+            </p>
+            <div class="block-stack">
+              <div class="scratch-block event">
+                🚩 when green flag clicked
+              </div>
+              <div class="scratch-block looks">
+                set size to <span class="block-input">50</span> %
+              </div>
+            </div>
+            <div class="concept-card" style="margin-top: 10px;">
+              <div class="concept-icon">💡</div>
+              <div class="concept-text">
+                <h4>Kunci Sukses:</h4>
+                <p>Pasang kode ini di Beeby! Kapan pun Beeby terlalu raksasa, cukup klik <strong>Bendera Hijau 🚩</strong>, dia langsung kembali imut ke 50%!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(239, 68, 68, 0.1); border: 2px dashed #f87171; border-radius: 16px; padding: 22px; text-align: center;">
+              <div style="font-size: 54px;">🐘 ➔ 🚩 ➔ 🐝</div>
+              <h4 style="font-family: 'Fredoka', cursive; font-size: 18px; color: #fca5a5; margin-top: 6px;">Dari Raksasa Jadi Imut!</h4>
+              <p style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">Bendera hijau berfungsi sebagai tombol restart permainan!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Konsep ini penting: Membedakan 'Change size by' vs 'Set size to'.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>8</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: KONSER MUSIK SHOWCASE KELAS ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Showcase Kelas • Konser Musik Beeby</div>
+          <div class="badge-time">⏱️ Menit ke 78–85</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Pesta Konser <span>Taman Musik</span> 🎷🎸
+            </h2>
+            <div class="concept-card">
+              <div class="concept-icon">🎧</div>
+              <div class="concept-text">
+                <h4>Mainkan Game Temanmu!</h4>
+                <p>Coba klik panggung laptop teman sebangkumu! Dengarkan suara seru apa yang mereka pasang pada bunganya!</p>
+              </div>
+            </div>
+            <div class="concept-card">
+              <div class="concept-icon">🏆</div>
+              <div class="concept-text">
+                <h4>Hebat! Kalian Resmi Menjadi Game Sound Designer!</h4>
+                <p>Kalian sekarang sudah bisa membuat game interaktif yang merespons sentuhan klik manusia!</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="text-align: center; background: linear-gradient(135deg, #d946ef, #9333ea); border-radius: 18px; padding: 24px; color: #fff;">
+              <div style="font-size: 54px;">🎉🎶👏</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 22px; margin-top: 6px;">KONSER SUKSES!</h3>
+              <p style="font-size: 13px; margin-top: 4px;">Karya kalian sangat mengagumkan!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 12px; background: #fff; color: #7e22ce; border: none; padding: 8px 18px; border-radius: 999px; font-weight: 800; cursor: pointer;">
+                🎊 Rayakan Bersama!
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ajak kelas bertepuk tangan berirama: 1-2-3 Prok-prok-prok!</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>9</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER SESI 04 ================= -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="badge-session">Sampai Jumpa di Sesi 04!</div>
+          <div class="badge-time">⏱️ Menit ke 85–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Misi Pekan Depan: <span>Kepakan Sayap Beeby</span>! 🪽🔄
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 18px; line-height: 1.5;">
+              Di pertemuan berikutnya (Sesi 04), kita akan belajar <strong>Perulangan Ajaib (Loops Forever)</strong> agar sayap Beeby mengepak terus menerus tanpa henti seperti lebah sungguhan!
+            </p>
+            <div class="concept-card">
+              <div class="concept-icon">💾</div>
+              <div class="concept-text">
+                <h4>Simpan Berkas:</h4>
+                <p>Klik <strong>File ➔ Save to your computer</strong> dengan nama <em>"Beeby-Pertemuan-03.sb3"</em>.</p>
+              </div>
+            </div>
+          </div>
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 24px; text-align: center;">
+              <div style="font-size: 54px;">🪽🐝💫</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #fbbf24; margin-top: 8px;">Beekoding Academy</h3>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">"Coding Today Leads to a Brighter Tomorrow!"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Ingatkan siswa untuk menutup laptop dengan hati-hati dan menyimpan mouse.</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>10</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()" disabled>&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Teacher / Speaker Notes Bottom Panel (Toggled via 'N' or Button) -->
+  <div class="teacher-notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div class="notes-title">
+        📝 CATATAN INSTRUKTUR / GURU &bull; <span id="notesTime" style="color:#e2e8f0; font-weight:600;"></span>
+      </div>
+      <button class="notes-close" onclick="toggleNotes()">✕</button>
+    </div>
+    <div class="notes-content" id="notesContent"></div>
+  </div>
+
+  <script>
+    // Audio Synthesizer (Web Audio API) for Interactive Simulator
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playSoundMagic() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      // Chime arpeggio notes
+      [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.35);
+      });
+    }
+
+    function playSoundPop() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+
+    function playSoundCoin() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      // 2-tone arcade coin: B5 then E6
+      const freqs = [987.77, 1318.51];
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+        gain.gain.setValueAtTime(0.1, now + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.09);
+        osc.stop(now + idx * 0.09 + 0.25);
+      });
+    }
+
+    // Simulator Interactive Logic
+    let beeScale = 1;
+    let clickCount = 0;
+
+    function clickBee3(e) {
+      playSoundMagic();
+      beeScale += 0.2;
+      const bee = document.getElementById('simBee3');
+      bee.style.transform = `scale(${beeScale})`;
+      createSparkle(e.clientX, e.clientY, '✨');
+      updateClickCount();
+      if (beeScale >= 1.8) {
+        triggerConfetti();
+      }
+    }
+
+    function clickFlower(e, type, emoji) {
+      if (type === 'coin') playSoundCoin();
+      else playSoundPop();
+
+      const el = e.currentTarget;
+      el.style.transform = 'scale(1.3) rotate(15deg)';
+      setTimeout(() => {
+        el.style.transform = 'scale(1) rotate(0deg)';
+      }, 200);
+
+      createSparkle(e.clientX, e.clientY, type === 'coin' ? '🪙' : '🫧');
+      updateClickCount();
+    }
+
+    function createSparkle(x, y, icon) {
+      const stage = document.getElementById('stage3');
+      const rect = stage.getBoundingClientRect();
+      const spark = document.createElement('div');
+      spark.className = 'sparkle-pop';
+      spark.innerText = icon;
+      spark.style.left = `${x - rect.left - 10}px`;
+      spark.style.top = `${y - rect.top - 20}px`;
+      stage.appendChild(spark);
+      setTimeout(() => spark.remove(), 600);
+    }
+
+    function updateClickCount() {
+      clickCount++;
+      document.getElementById('clickCount').innerText = `Klik: ${clickCount}x`;
+    }
+
+    function resetStage3() {
+      beeScale = 1;
+      clickCount = 0;
+      document.getElementById('simBee3').style.transform = 'scale(1)';
+      document.getElementById('clickCount').innerText = 'Klik: 0x';
+    }
+
+    // Teacher Speaker Notes Data for Session 03
+    const teacherNotesData = [
+      {
+        title: "Slide 1: Pembukaan Sesi 03",
+        time: "Menit 00–10 (Total 90 Menit)",
+        instructions: "Review 1 menit sesi lalu (gerak 50 langkah). Sampaikan bahwa hari ini karakter kita bisa merespons sentuhan klik mouse dan berbunyi!",
+        script: "Halo para programmer cilik! Pekan lalu Beeby sudah bisa jalan di taman. Tapi Beeby masih pendiam nih. Hari ini kita akan kasih mantra ajaib: kalau Beeby diklik pakai mouse, dia akan membesar dan bersuara sihir ting-ting-ting! Siapa yang mau coba?"
+      },
+      {
+        title: "Slide 2: Konsep Sebab & Akibat (Cause & Effect)",
+        time: "Menit 10–18",
+        instructions: "Berikan contoh konkret di kehidupan sehari-hari (bel rumah, saklar lampu, layar HP disentuh).",
+        script: "Siapa yang di rumahnya ada bel pintu? Kalau nggak ada orang yang pencet bel, belnya bunyi nggak? Nggak! Bel baru bunyi kalau dipencet. Nah, itu namanya SEBAB dan AKIBAT! Di koding, sebab itu namanya EVENT atau Pemicu!"
+      },
+      {
+        title: "Slide 3: Balok Topi Emas 'When This Sprite Clicked'",
+        time: "Menit 18–26",
+        instructions: "Minta anak membuka rak kuning Events dan memperhatikan bentuk balok yang melengkung seperti topi.",
+        script: "Coba buka rak warna kuning 'Events'. Ada balok bertopi namanya 'When this sprite clicked'. Kenapa bentuknya topi? Karena nggak bisa dipasang balok di atasnya! Balok ini adalah komandan yang menunggu mouse kalian mengeklik karakter!"
+      },
+      {
+        title: "Slide 4: Menambahkan Suara dari Tab Sounds",
+        time: "Menit 26–36",
+        instructions: "Bimbing anak berpindah dari tab Code ke tab Sounds di pojok kiri atas.",
+        script: "Sekarang kita ambil suaranya dulu! Di atas rak kode ada tulisan 'Sounds' dengan gambar speaker. Klik tombol biru di kiri bawah 'Choose a Sound'. Ketik di pencarian: M-A-G-I-C. Lalu klik suara Magic Spell!"
+      },
+      {
+        title: "Slide 5: Susun 3 Balok Spektakuler",
+        time: "Menit 36–48",
+        instructions: "Pandu merangkai: Balok kuning (Event) -> Balok ungu (change size by 20) -> Balok pink (start sound Magic Spell).",
+        script: "Sekarang susun seperti lego: Ambil balok kuning 'When this sprite clicked'. Di bawahnya tempel balok ungu Looks 'change size by 20'. Di bawahnya lagi tempel balok pink 'start sound Magic Spell'. Jangan terbalik ya!"
+      },
+      {
+        title: "Slide 6: Uji Coba Simulator di Layar",
+        time: "Menit 48–58",
+        instructions: "Guru mendemokan di proyektor dengan mengklik Beeby dan bunga-bunga di simulator slide.",
+        script: "Lihat layar di depan! Saat kakak klik Beeby: TING-TONG! Beeby membesar dan bersuara lonceng! Coba klik bunga mataharinya: KLING! Ada koin emas! Ayo sekarang giliran kalian coba di laptop masing-masing!"
+      },
+      {
+        title: "Slide 7: Tantangan 3 Bunga Musik",
+        time: "Menit 58–70",
+        instructions: "Tantangan mandiri: Anak menambahkan 3 sprite bunga berbeda dan memberi suara Pop, Coin, dan Boing.",
+        script: "Programmer hebat sekarang punya misi: Tambahkan 3 bunga berbeda di taman Beeby! Bunga 1 pasang suara Pop, bunga 2 pasang suara Coin, dan bunga 3 pasang suara Boing! Jadikan taman kalian seperti piano musik!"
+      },
+      {
+        title: "Slide 8: Jurus Reset Ukuran 50%",
+        time: "Menit 70–78",
+        instructions: "Ajarkan solusi jika Beeby terlalu gemuk karena diklik berkali-kali.",
+        script: "Ada yang Beeby-nya gemuk banget sampai menutupi layar? Tenang! Pasang kode penyelamat: 'When green flag clicked -> set size to 50%'. Jadi tiap kali bendera hijau diklik, Beeby langsung kurus dan imut lagi!"
+      },
+      {
+        title: "Slide 9: Konser Showcase Kelas",
+        time: "Menit 78–85",
+        instructions: "Ajak anak saling mengunjungi laptop teman untuk memainkan konser taman musiknya.",
+        script: "Ayo berdiri semuanya! Kunjungi laptop teman di sebelahmu dan klik bunga-bunganya! Dengarkan konser musik yang diciptakan teman kalian! Keren sekali! Beri tepuk koding untuk semua komposer cilik!"
+      },
+      {
+        title: "Slide 10: Simpan Berkas & Teaser Sesi 04",
+        time: "Menit 85–90",
+        instructions: "Bimbing File -> Save to your computer ('Beeby-03.sb3'). Teaser Sesi 04 (sayap mengepak loop forever).",
+        script: "Simpan proyek kalian ya: File -> Save to your computer. Di Sesi 04 pekan depan, kita akan bikin sayap Beeby mengepak terus menerus tanpa henti pakai balok Loop Forever! Sampai jumpa pekan depan, dadah!"
+      }
+    ];
+
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const notesPanel = document.getElementById('notesPanel');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlideIndex);
+      });
+
+      document.getElementById('currSlide').innerText = currentSlideIndex + 1;
+
+      document.querySelectorAll('.btn-nav').forEach((btn) => {
+        if (btn.innerText.includes('←') || btn.innerText.includes('larr')) {
+          btn.disabled = (currentSlideIndex === 0);
+        }
+        if (btn.innerText.includes('→') || btn.innerText.includes('rarr')) {
+          btn.disabled = (currentSlideIndex === totalSlides - 1);
+        }
+      });
+
+      const note = teacherNotesData[currentSlideIndex];
+      if (note) {
+        document.getElementById('notesTime').innerText = `${note.time}`;
+        document.getElementById('notesContent').innerHTML = `
+          <h4 style="color:#fbbf24; font-size:14px; margin-bottom:4px;">${note.title}</h4>
+          <p><strong>🎯 Panduan Aktivitas Guru:</strong> ${note.instructions}</p>
+          <div class="notes-script">
+            <strong>🗣️ Contoh Script Kata-Kata Guru:</strong><br>
+            "${note.script}"
+          </div>
+        `;
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < totalSlides - 1) {
+        currentSlideIndex++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesPanel.classList.toggle('open');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
