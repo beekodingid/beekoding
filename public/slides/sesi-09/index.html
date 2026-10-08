@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 09 - Labirin Sarang Lebah (Navigasi & Sensing Warna) | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #3b82f6;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Badges & Titles */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Media Viewport */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Scratch Code Blocks */
+    .scratch-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin: 4px 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      font-family: 'Fredoka', cursive;
+    }
+
+    .scratch-event { background: #d97706; border-left: 6px solid #b45309; }
+    .scratch-motion { background: #2563eb; border-left: 6px solid #1d4ed8; }
+    .scratch-sensing { background: #0284c7; border-left: 6px solid #0369a1; }
+    .scratch-control { background: #ea580c; border-left: 6px solid #c2410c; }
+    .scratch-sound { background: #c026d3; border-left: 6px solid #a21caf; }
+
+    .code-slot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Live Interactive Maze Simulator */
+    .maze-sim-container {
+      background: #0f172a;
+      border: 2px solid #3b82f6;
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .maze-board-wrap {
+      flex: 1;
+      height: 240px;
+      background: #020617;
+      border-radius: 14px;
+      border: 2px solid rgba(59, 130, 246, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .maze-wall {
+      position: absolute;
+      background: #2563eb;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.8);
+      border-radius: 4px;
+    }
+
+    .maze-player {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: top 0.1s linear, left 0.1s linear, transform 0.2s;
+      z-index: 10;
+    }
+
+    .maze-player.stuck-big {
+      width: 58px;
+      height: 58px;
+      font-size: 48px;
+    }
+
+    .maze-goal {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulseGoal 1s infinite alternate;
+      z-index: 5;
+    }
+
+    @keyframes pulseGoal {
+      from { transform: scale(1); filter: drop-shadow(0 0 4px #fbbf24); }
+      to { transform: scale(1.15); filter: drop-shadow(0 0 14px #f59e0b); }
+    }
+
+    .maze-controls-panel {
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .dpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 44px);
+      grid-template-rows: repeat(3, 44px);
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .btn-dpad {
+      background: #1e293b;
+      border: 1px solid #3b82f6;
+      color: #60a5fa;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .btn-dpad:hover {
+      background: #2563eb;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+    .btn-dpad:active {
+      transform: scale(0.95);
+    }
+
+    .btn-size-toggle {
+      width: 100%;
+      background: #1e293b;
+      border: 1px dashed #fbbf24;
+      color: #fbbf24;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-size-toggle.active-fix {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
+      color: #34d399;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #3b82f6;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #2563eb;
+      border-color: #1d4ed8;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #3b82f6;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #3b82f6;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #3b82f6;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>JUNIOR ARCADE GAME</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-08/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 08">⏪ Sesi 08</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-10/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 10" style="opacity: 0.5; pointer-events: none;">Sesi 10 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-blue">Sesi 09 • Arcade Mechanics</div>
+              <h1 class="slide-title">Labirin Sarang Lebah! 🎮🐝</h1>
+              <p class="slide-subtitle">Belajar Mengendalikan Karakter dengan <strong>4 Tombol Panah Keyboard</strong> dan Deteksi Tabrakan Tembok <strong>(Color Sensing)</strong>!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #60a5fa; font-weight: 700;">LEVEL BELAJAR</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Junior Explorer (6–9 Thn)</div>
+                </div>
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #fbbf24; font-weight: 700;">PROYEK GAME</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Honeycomb Maze Challenge</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-maze.jpg" alt="Beeby terbang di labirin neon sarang lebah">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ICE BREAKING -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-amber">Ice Breaking & Misi Game</div>
+          <h2 class="slide-title">Bantu Beeby Mencapai Sarang Madu! 🍯🚩</h2>
+          <p class="slide-subtitle">Dari cerita animasi dongeng, hari ini kita resmi menjadi Pembuat Game Arcade!</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🎮</div>
+              <h3 class="card-title">Apa itu Game Labirin?</h3>
+              <p class="card-desc">Game teka-teki lorong berliku. Pemain harus memandu karakter menuju garis finish tanpa menabrak dinding!</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">🧱</div>
+              <h3 class="card-title">Tembok Listrik Biru</h3>
+              <p class="card-desc">Jika Beeby menyentuh tembok warna biru, Beeby akan tersetrum lembut <em>"Ouch!"</em> dan terpental kembali ke titik awal!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🏆</div>
+              <h3 class="card-title">Misi Kemenangan</h3>
+              <p class="card-desc">Capai bunga matahari emas di ujung labirin untuk memenangkan piala kejuaraan kelas!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: KONSEP KOORDINAT X & Y -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-cyan">Konsep Matematika Cilik</div>
+          <h2 class="slide-title">Peta Ajaib Layar: Sumbu X dan Y 🗺️</h2>
+          <p class="slide-subtitle">Bagaimana komputer tahu arah kanan, kiri, atas, dan bawah?</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 28px;">↔️</span>
+                <h4 style="font-size: 18px; color: #38bdf8; font-family: 'Fredoka', cursive;">Sumbu X: Jalan Mendatar (Kiri / Kanan)</h4>
+              </div>
+              <p class="card-desc" style="margin-bottom: 8px;">• <strong>Kanan:</strong> Angka positif ➔ <code style="color: #60a5fa;">change x by (6)</code></p>
+              <p class="card-desc">• <strong>Kiri:</strong> Angka negatif ➔ <code style="color: #60a5fa;">change x by (-6)</code></p>
+            </div>
+
+            <div class="info-card">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 28px;">↕️</span>
+                <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive;">Sumbu Y: Jalan Tegak (Atas / Bawah)</h4>
+              </div>
+              <p class="card-desc" style="margin-bottom: 8px;">• <strong>Atas:</strong> Naik ke langit ➔ <code style="color: #fbbf24;">change y by (6)</code></p>
+              <p class="card-desc">• <strong>Bawah:</strong> Turun ke bumi ➔ <code style="color: #fbbf24;">change y by (-6)</code></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: KODE KONTROL 4 ARAH -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-blue">Bedah Kode Blok</div>
+          <h2 class="slide-title">Koding 4 Tombol Panah Keyboard ⌨️</h2>
+          <p class="slide-subtitle">Pasang di dalam loop <code style="color: #ea580c;">forever</code> agar lebah selalu siap digerakkan:</p>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div style="font-size: 13px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">⬆️ ATAS & ⬇️ BAWAH (SUMBU Y):</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-control">if &lt;<span class="code-slot">key up arrow pressed?</span>&gt; then</div>
+                <div class="scratch-block scratch-motion" style="margin-left: 14px;">change y by <span class="code-slot">6</span></div>
+                <div class="scratch-block scratch-control" style="margin-top: 6px;">if &lt;<span class="code-slot">key down arrow pressed?</span>&gt; then</div>
+                <div class="scratch-block scratch-motion" style="margin-left: 14px;">change y by <span class="code-slot">-6</span></div>
+              </div>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 13px; font-weight: 800; color: #38bdf8; margin-bottom: 8px;">➡️ KANAN & ⬅️ KIRI (SUMBU X):</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-control">if &lt;<span class="code-slot">key right arrow pressed?</span>&gt; then</div>
+                <div class="scratch-block scratch-motion" style="margin-left: 14px;">change x by <span class="code-slot">6</span></div>
+                <div class="scratch-block scratch-control" style="margin-top: 6px;">if &lt;<span class="code-slot">key left arrow pressed?</span>&gt; then</div>
+                <div class="scratch-block scratch-motion" style="margin-left: 14px;">change x by <span class="code-slot">-6</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: SENSOR WARNA TEMBOK -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-emerald">Sensor Pintar (Sensing)</div>
+          <h2 class="slide-title">Sensor Tabrakan Tembok (Color Sensing) 🧱🚨</h2>
+          <p class="slide-subtitle">Mata sensor ajaib komputer untuk mendeteksi batas dinding:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="font-size: 14px; font-weight: 800; color: #60a5fa; margin-bottom: 10px;">KODE SENSOR TABRAKAN:</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-control">if &lt;<span class="code-slot" style="background: #2563eb; color: white;">touching color [biru] ?</span>&gt; then</div>
+                <div class="scratch-block scratch-sound" style="margin-left: 14px;">start sound <span class="code-slot">Ouch ▾</span></div>
+                <div class="scratch-block scratch-motion" style="margin-left: 14px;">go to x: <span class="code-slot">-200</span> y: <span class="code-slot">140</span></div>
+              </div>
+              <p style="font-size: 13px; color: #cbd5e1; margin-top: 12px;">Begitu kumis lebah menyentuh garis warna biru, sistem langsung memindahkan posisi lebah kembali ke pintu awal labirin!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">👁️ Trik Pipet Warna (Eyedropper)</div>
+              <h4 class="card-title">Warna Harus Sama Persis!</h4>
+              <p class="card-desc">Jangan menebak warna secara sembarangan! Gunakan ikon <strong>Pipet Tetes (Eyedropper)</strong> di Scratch untuk mengklik warna tembok labirinmu agar kodenya bekerja 100% akurat!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE MAZE SIMULATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-blue">Simulator Game Langsung</div>
+          <h2 class="slide-title">Mainkan Mini Maze Beeby Sekarang! 🎮🕹️</h2>
+          <p class="slide-subtitle">Gunakan D-Pad atau tombol panah keyboard. Coba tabrak tembok untuk melihat efeknya!</p>
+
+          <div class="maze-sim-container">
+            <!-- Maze Board -->
+            <div class="maze-board-wrap" id="mazeBoard">
+              <!-- Walls -->
+              <div class="maze-wall" style="top: 0; left: 0; width: 100%; height: 8px;"></div>
+              <div class="maze-wall" style="bottom: 0; left: 0; width: 100%; height: 8px;"></div>
+              <div class="maze-wall" style="top: 0; left: 0; width: 8px; height: 100%;"></div>
+              <div class="maze-wall" style="top: 0; right: 0; width: 8px; height: 100%;"></div>
+
+              <!-- Inner maze walls -->
+              <div class="maze-wall" style="top: 50px; left: 60px; width: 8px; height: 130px;"></div>
+              <div class="maze-wall" style="top: 50px; left: 60px; width: 150px; height: 8px;"></div>
+              <div class="maze-wall" style="top: 120px; left: 130px; width: 140px; height: 8px;"></div>
+              <div class="maze-wall" style="top: 50px; left: 260px; width: 8px; height: 80px;"></div>
+              <div class="maze-wall" style="top: 170px; left: 190px; width: 140px; height: 8px;"></div>
+
+              <!-- Beeby Player -->
+              <div class="maze-player" id="mazePlayer" style="top: 18px; left: 18px;">🐝</div>
+
+              <!-- Goal -->
+              <div class="maze-goal" style="bottom: 16px; right: 20px;">🌻</div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="maze-controls-panel">
+              <div class="dpad-grid">
+                <div></div>
+                <button class="btn-dpad" id="btnUp">⬆️</button>
+                <div></div>
+                <button class="btn-dpad" id="btnLeft">⬅️</button>
+                <button class="btn-dpad" id="btnDown">⬇️</button>
+                <button class="btn-dpad" id="btnRight">➡️</button>
+              </div>
+
+              <button class="btn-size-toggle" id="btnSizeToggle">
+                🐝 Ukuran: 35% (Mungil & Pas!)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: LANGKAH MEMBUAT LABIRIN DI SCRATCH -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-cyan">Studio Desain Level</div>
+          <h2 class="slide-title">Menggambar Jalur Labirin Sendiri 🎨🧱</h2>
+          <p class="slide-subtitle">Instruksikan siswa menggambar arena permainan mereka di Backdrop Editor:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">1️⃣ Pilih Backdrop Paint</div>
+              <p class="card-desc">Arahkan mouse ke tombol panggung di kanan bawah -> klik ikon kuas lukis (Paint).</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">2️⃣ Kuas Tebal Warna Biru</div>
+              <p class="card-desc">Pilih alat Garis/Kuas, atur ketebalan garis ke <strong>15 atau 20</strong>, pilih satu warna biru pekat.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">3️⃣ Buat Lorong yang Cukup</div>
+              <p class="card-desc">Pastikan jarak antar lorong cukup lebar untuk dilalui lebah. Jangan buat lorong buntu yang terlalu sempit!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: DETEKTIF BUG LEBAH MACET -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <h2 class="slide-title">Common Bug: Lebah Macet di Tembok! 🕵️‍♂️🔍</h2>
+          <p class="slide-subtitle">Solusi cepat jika lebah terus-menerus menabrak tembok tanpa bisa lewat:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">🐝🐘</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Ukuran Sprite Terlalu Besar (100%)</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">Badan lebah terlalu gemuk sehingga sayapnya menyentuh tembok terus-menerus.</p>
+              <div style="background: rgba(15, 23, 42, 0.8); padding: 10px; border-radius: 8px; font-size: 13px; color: #34d399; font-weight: 700;">
+                💡 Solusi: Ganti kolom Size di Scratch dari 100 menjadi 35%!
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🎨❓</div>
+              <h4 style="color: #ef4444; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Warna Sensing Berbeda dari Tembok</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">Tembok berwarna biru muda, tapi balok sensing disetel ke biru tua.</p>
+              <div style="background: rgba(15, 23, 42, 0.8); padding: 10px; border-radius: 8px; font-size: 13px; color: #38bdf8; font-weight: 700;">
+                💡 Solusi: Selalu gunakan alat Pipet (Eyedropper) saat memilih warna!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: TANTANGAN KREATIF -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-blue">Tantangan Mandiri</div>
+          <h2 class="slide-title">Tantangan: "Jalur Rahasia & Suara Kemenangan" 🌟🏆</h2>
+          <p class="slide-subtitle">Uji kemampuan kodingmu dengan fitur tambahan keren:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #60a5fa; font-family: 'Fredoka', cursive; margin-bottom: 10px;">Misi Kamu Hari Ini:</h4>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #e2e8f0;">
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Buat labirin panggung dengan minimal 4 belokan.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Pasang 4 tombol panah keyboard lengkap (Atas, Bawah, Kanan, Kiri).
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Pasang sensor tabrakan warna tembok kembali ke start.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">⭐</span> <strong>Bonus:</strong> Letakkan sprite Bunga di ujung labirin. Saat disentuh, bunyikan suara Cheer/Menang!
+                </li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 54px; margin-bottom: 10px;">🧭🐝</div>
+              <h4 style="font-size: 20px; font-family: 'Fredoka', cursive; color: #fbbf24; margin-bottom: 6px;">Badge Spesial Sesi 09</h4>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 280px;">Siswa yang berhasil menyelesaikan game labirinnya berhak mendapatkan gelar <strong>"Junior Maze Navigator"</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: SHOWCASE & PENUTUP -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-amber">Showcase & Refleksi</div>
+          <h2 class="slide-title">Uji Coba Game Teman & Tepuk Koding! 👏🎉</h2>
+          <p class="slide-subtitle">Saling bertukar laptop dan coba selesaikan labirin buatan teman sebangkumu!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Rutinitas Game Tester Cilik:</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">1. Tukar laptop dengan teman di sebelahmu.</p>
+              <p class="card-desc" style="margin-bottom: 10px;">2. Coba selesaikan labirinnya tanpa menabrak tembok.</p>
+              <p class="card-desc" style="margin-bottom: 14px;">3. Berikan tos dan pujian atas jalur labirin yang menantang!</p>
+              
+              <button class="btn-dpad" id="btnConfettiCelebration" style="width: auto; padding: 10px 24px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-size: 14px;">
+                🎉 Rayakan Keberhasilan Labirin!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🍯 Misi Pertemuan Berikutnya (Sesi 10):</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #38bdf8; margin-bottom: 4px;">Sesi 10: Panen Madu & Variabel Skor (Variables System)</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Kita akan menaruh bunga-bunga nektar di dalam labirin! Setiap bunga diambil, skor bertambah +1 dan bunganya menghilang!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–05' (Pembuka & Pemanasan)",
+        text: "Buka kelas dengan antusias game arcade. Katakan bahwa hari ini kita naik level: dari membuat cerita kartun, sekarang kita menjadi pembuat game arcade sungguhan!",
+        script: "Halo para developer game cilik Beekoding! Siapa yang suka main game pakai tombol panah keyboard? Hari ini kita akan membuat game pertama kita: Petualangan Labirin Sarang Lebah!"
+      },
+      2: {
+        timing: "Menit 05–12' (Ice Breaking & Konsep Game)",
+        text: "Tunjukkan contoh game labirin (Pac-Man atau maze sederhana). Jelaskan aturan main: navigasi dari start ke finish tanpa menyentuh dinding.",
+        script: "Di game labirin ini, temboknya bukan tembok biasa, tapi tembok beraliran sensor! Kalau Beeby menyentuh tembok biru, dia akan bilang 'Ouch!' dan terpental balik ke garis start!"
+      },
+      3: {
+        timing: "Menit 12–22' (Konsep Koordinat X dan Y)",
+        text: "Ajarkan sumbu X dan Y dengan gerakan tubuh fisik. Minta anak merentangkan tangan ke samping (Sumbu X) dan mengangkat tangan ke atas-bawah (Sumbu Y).",
+        script: "Ayo kita senam koding sebentar! Rentangkan tangan ke kanan dan kiri: ini Sumbu X! Angkat tangan ke atas dan turunkan ke bawah: ini Sumbu Y! Ke atas berarti +Y, ke bawah berarti -Y!"
+      },
+      4: {
+        timing: "Menit 22–32' (Koding 4 Arah Panah)",
+        text: "Bimbing siswa menyusun blok 4 arah panah. Tekankan pentingnya memasukkan ke dalam loop 'forever' agar keyboard selalu responsif setiap saat.",
+        script: "Supaya komputer selalu mendengarkan jari kita menekan keyboard, kita kurung blok 'if' di dalam 'forever'. Jadi kapanpun kita pencet panah atas, Beeby langsung terbang naik!"
+      },
+      5: {
+        timing: "Menit 32–42' (Sensor Tabrakan Warna)",
+        text: "Tunjukkan blok sensing warna biru. Demokan cara menggunakan pipet eyedropper agar warna di blok sama persis dengan warna tembok di backdrop.",
+        script: "Lihat lingkaran warna di blok sensing ini. Jangan asal pilih biru ya! Klik ikon pipet ajaib, lalu arahkan ke tembok labirin kalian. Cling! Sekarang komputer tahu persis warna tembok kalian!"
+      },
+      6: {
+        timing: "Menit 42–55' (Uji Coba Simulator di Slide)",
+        text: "Gunakan simulator langsung di slide. Coba gerakkan Beeby pakai D-pad atau panah keyboard. Tunjukkan apa yang terjadi saat tabrak tembok. Demokan tombol ganti ukuran (100% vs 35%).",
+        script: "Yuk lihat layar depan! Ayo kita bantu Beeby lewat lorong. Ups, Beeby tabrak tembok dan balik ke start! Sekarang coba kita klik tombol ukuran 100%, wah Beeby nyangkut kegedean! Kita kecilkan ke 35%, lancar jaya!"
+      },
+      7: {
+        timing: "Menit 55–68' (Menggambar Arena Labirin)",
+        text: "Ajak anak masuk ke Backdrop Paint di Scratch. Instruksikan menggunakan kuas tebal (garis 20) dan jangan membuat lorong yang terlalu sempit.",
+        script: "Sekarang kalian jadi arsitek labirin! Buka Backdrop Paint. Pilih kuas tebal warna biru pekat. Gambar jalan berliku dari pojok kiri atas sampai pojok kanan bawah!"
+      },
+      8: {
+        timing: "Menit 68–76' (Detektif Bug: Lebah Nyangkut)",
+        text: "Ini adalah bug paling klasik di sesi ini. Ingatkan anak untuk mengecilkan sprite ke 35% jika lebah tidak bisa masuk ke lorong.",
+        script: "Ada yang lebahnya macet dan nggak bisa lewat lorong? Ingat trik sutradara koding: ganti Size di Scratch dari 100 jadi 35! Lebah kalian langsung ramping dan lincah!"
+      },
+      9: {
+        timing: "Menit 76–85' (Tantangan Mandiri)",
+        text: "Bagi anak yang sudah lancar, minta mereka menambahkan sprite Bunga di garis finish dengan deteksi 'touching Flower' -> play sound Cheer.",
+        script: "Yang labirinnya sudah selesai, letakkan setangkai bunga madu di ujung finish! Begitu lebah menyentuh bunga, buat panggung bersorak 'Hore!'!"
+      },
+      10: {
+        timing: "Menit 85–90' (Showcase & Penutup)",
+        text: "Minta siswa saling menukar laptop dengan teman sebangku untuk mencoba memainkan game labirin temannya. Tutup dengan tepuk koding dan preview Sesi 10.",
+        script: "Hebat sekali para pembuat game cilik Beekoding! Hari ini kalian berhasil membuat game labirin pertama kalian! Minggu depan kita akan panen madu dengan Variabel Skor! Tepuk koding untuk kita semua!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (currentSlide === 6) {
+        // Handle Maze Controls if on slide 6
+        if (e.key === 'ArrowUp') { moveMazePlayer(0, -12); e.preventDefault(); return; }
+        if (e.key === 'ArrowDown') { moveMazePlayer(0, 12); e.preventDefault(); return; }
+        if (e.key === 'ArrowLeft') { moveMazePlayer(-12, 0); e.preventDefault(); return; }
+        if (e.key === 'ArrowRight') { moveMazePlayer(12, 0); e.preventDefault(); return; }
+      }
+
+      if (e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#2563eb' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Confetti celebration
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 150,
+            spread: 90,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // ==========================================
+    // LIVE INTERACTIVE MAZE SIMULATOR LOGIC
+    // ==========================================
+    let playerX = 18;
+    let playerY = 18;
+    let isSmallSize = true;
+
+    const mazePlayer = document.getElementById('mazePlayer');
+    const btnSizeToggle = document.getElementById('btnSizeToggle');
+    const mazeBoard = document.getElementById('mazeBoard');
+
+    function checkWallCollision(x, y, w, h) {
+      const walls = document.querySelectorAll('.maze-wall');
+      const boardRect = mazeBoard.getBoundingClientRect();
+
+      for (let wall of walls) {
+        const wallLeft = wall.offsetLeft;
+        const wallTop = wall.offsetTop;
+        const wallWidth = wall.offsetWidth;
+        const wallHeight = wall.offsetHeight;
+
+        if (
+          x < wallLeft + wallWidth &&
+          x + w > wallLeft &&
+          y < wallTop + wallHeight &&
+          y + h > wallTop
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function checkGoalReached(x, y, w, h) {
+      // Goal is roughly at bottom-right (x: ~360, y: ~180 depending on board)
+      const boardW = mazeBoard.offsetWidth;
+      const boardH = mazeBoard.offsetHeight;
+      if (x + w > boardW - 55 && y + h > boardH - 55) {
+        return true;
+      }
+      return false;
+    }
+
+    function playBumpSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch (err) {}
+    }
+
+    function playWinSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.1 + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.1);
+          osc.stop(audioCtx.currentTime + idx * 0.1 + 0.3);
+        });
+      } catch (err) {}
+    }
+
+    function moveMazePlayer(dx, dy) {
+      const pSize = isSmallSize ? 28 : 50;
+      const targetX = playerX + dx;
+      const targetY = playerY + dy;
+
+      if (checkWallCollision(targetX, targetY, pSize, pSize)) {
+        // Bump! Reset to start
+        playBumpSound();
+        mazePlayer.style.transform = 'scale(0.8) rotate(20deg)';
+        setTimeout(() => {
+          playerX = 18;
+          playerY = 18;
+          mazePlayer.style.left = playerX + 'px';
+          mazePlayer.style.top = playerY + 'px';
+          mazePlayer.style.transform = 'scale(1) rotate(0deg)';
+        }, 150);
+        return;
+      }
+
+      playerX = targetX;
+      playerY = targetY;
+      mazePlayer.style.left = playerX + 'px';
+      mazePlayer.style.top = playerY + 'px';
+
+      if (checkGoalReached(playerX, playerY, pSize, pSize)) {
+        playWinSound();
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        }
+        setTimeout(() => {
+          playerX = 18;
+          playerY = 18;
+          mazePlayer.style.left = playerX + 'px';
+          mazePlayer.style.top = playerY + 'px';
+        }, 1500);
+      }
+    }
+
+    document.getElementById('btnUp').addEventListener('click', () => moveMazePlayer(0, -14));
+    document.getElementById('btnDown').addEventListener('click', () => moveMazePlayer(0, 14));
+    document.getElementById('btnLeft').addEventListener('click', () => moveMazePlayer(-14, 0));
+    document.getElementById('btnRight').addEventListener('click', () => moveMazePlayer(14, 0));
+
+    btnSizeToggle.addEventListener('click', () => {
+      isSmallSize = !isSmallSize;
+      if (isSmallSize) {
+        btnSizeToggle.textContent = "🐝 Ukuran: 35% (Mungil & Pas!)";
+        btnSizeToggle.classList.add('active-fix');
+        mazePlayer.classList.remove('stuck-big');
+      } else {
+        btnSizeToggle.textContent = "🐝 Ukuran: 100% (Raksasa / Macet!)";
+        btnSizeToggle.classList.remove('active-fix');
+        mazePlayer.classList.add('stuck-big');
+      }
+    });
+
+    // Initialize slide
+    updateSlide();
+  </script>
+</body>
+</html>
