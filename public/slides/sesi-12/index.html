@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 12 - Capstone Level 1 & Demo Day Cilik | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #fbbf24;
+    }
+
+    .brand-tag span {
+      background: #78350f;
+      color: #fef3c7;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid #d97706;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #d97706;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #b45309;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.2) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Badges & Titles */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-gold { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-purple { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4); }
+    .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Media Viewport */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Certificate Simulator Styling */
+    .cert-sim-container {
+      background: #0f172a;
+      border: 2px solid #f59e0b;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .cert-card-preview {
+      flex: 1;
+      background: radial-gradient(circle at 50% 30%, #fffbeb 0%, #fef3c7 100%);
+      border: 4px solid #d97706;
+      border-radius: 16px;
+      padding: 24px 30px;
+      color: #78350f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .cert-card-preview.celebrating {
+      animation: certGlow 0.8s infinite alternate;
+    }
+
+    @keyframes certGlow {
+      from { transform: scale(1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+      to { transform: scale(1.02); box-shadow: 0 0 35px rgba(245, 158, 11, 0.9); }
+    }
+
+    .cert-badge-ribbon {
+      font-size: 11px;
+      font-weight: 800;
+      color: #92400e;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #d97706;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    .cert-main-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 24px;
+      color: #b45309;
+      margin-bottom: 4px;
+    }
+
+    .cert-student-name {
+      font-family: 'Fredoka', cursive;
+      font-size: 28px;
+      color: #1e3a8a;
+      margin: 8px 0;
+      text-decoration: underline;
+      text-decoration-color: #d97706;
+    }
+
+    .cert-desc-text {
+      font-size: 12px;
+      color: #78350f;
+      line-height: 1.4;
+      max-width: 380px;
+    }
+
+    .cert-controls-panel {
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cert-input-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fbbf24;
+      text-transform: uppercase;
+    }
+
+    .cert-name-input {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+    }
+    .cert-name-input:focus {
+      border-color: #f59e0b;
+    }
+
+    .btn-cert-issue {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+      transition: transform 0.15s;
+    }
+    .btn-cert-issue:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-cert-print {
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #fbbf24;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #d97706;
+      border-color: #b45309;
+      color: #ffffff;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #fbbf24;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #fbbf24;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>CAPSTONE LEVEL 1 KELULUSAN</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-11/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 11">⏪ Sesi 11</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-13/index.html" class="btn-nav-sesi" title="Lanjut ke Level 2 (Sesi 13)" style="opacity: 0.5; pointer-events: none;">Level 2 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER CAPSTONE -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-gold">Puncak Sesi 12 • Demo Day Kelulusan</div>
+              <h1 class="slide-title">CAPSTONE LEVEL 1: Demo Day Cilik! 🎓🏆</h1>
+              <p class="slide-subtitle">Pameran Game Arcade Mandiri <strong>'Bee Honey Harvest'</strong>, Presentasi 2 Menit di Depan Kelas, dan Penganugerahan <strong>Sertifikat Resmi Kelulusan</strong>!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #fbbf24; font-weight: 700;">GELAR RESMI</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Junior Code Explorer Level 1</div>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #34d399; font-weight: 700;">TOTAL SESI</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">12 Pertemuan Tuntas!</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-graduation.jpg" alt="Beeby memakai toga wisuda memegang sertifikat kelulusan Level 1">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: KILAS BALIK 12 SESI -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-amber">Perjalanan Sang Juara</div>
+          <h2 class="slide-title">12 Langkah Hebat Menjadi Kreator Game 🌟🚀</h2>
+          <p class="slide-subtitle">Perjalanan luar biasa yang sudah kamu taklukkan bersama Beekoding Academy:</p>
+
+          <div class="grid-4">
+            <div class="info-card">
+              <h4 style="color: #fbbf24; font-size: 14px; margin-bottom: 4px;">Sesi 01–03</h4>
+              <p class="card-desc">Robot Manusia di lantai, menghidupkan aktor Sprite di panggung, dan event efek suara.</p>
+            </div>
+            <div class="info-card">
+              <h4 style="color: #22d3ee; font-size: 14px; margin-bottom: 4px;">Sesi 04–06</h4>
+              <p class="card-desc">Kepakan sayap loop forever, dialog bergantian dua tokoh, dan suara kecerdasan buatan AI TTS.</p>
+            </div>
+            <div class="info-card">
+              <h4 style="color: #c084fc; font-size: 14px; margin-bottom: 4px;">Sesi 07–09</h4>
+              <p class="card-desc">Merancang hero dengan AI prompt, buku cerita digital, dan navigasi labirin panah 4 arah.</p>
+            </div>
+            <div class="info-card highlight">
+              <h4 style="color: #34d399; font-size: 14px; margin-bottom: 4px;">Sesi 10–12</h4>
+              <p class="card-desc">Variabel panen skor madu, musuh laba-laba patroli, siaran game over, & Capstone Wisuda!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: ANATOMI GAME UTUH KITA -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-blue">Karya Puncak Mandiri</div>
+          <h2 class="slide-title">Anatomi Game 'Bee Honey Harvest' 🕹️🐝</h2>
+          <p class="slide-subtitle">Game arcade buatanmu sudah memiliki 6 teknologi koding setara game profesional:</p>
+
+          <div class="grid-6">
+            <div class="info-card">
+              <div style="font-size: 20px;">🗺️ 1. Peta Labirin</div>
+              <p class="card-desc">Arena berliku dengan sensor tabrakan warna biru pekat.</p>
+            </div>
+            <div class="info-card">
+              <div style="font-size: 20px;">⌨️ 2. Kontrol 4 Arah</div>
+              <p class="card-desc">Tombol panah keyboard dengan koordinat Sumbu X dan Y.</p>
+            </div>
+            <div class="info-card">
+              <div style="font-size: 20px;">🌸 3. Panen Nektar</div>
+              <p class="card-desc">6 Bunga madu yang menghilang saat disentuh Beeby.</p>
+            </div>
+            <div class="info-card highlight">
+              <div style="font-size: 20px;">📊 4. Variabel Skor</div>
+              <p class="card-desc">Pencatat poin otomatis yang direset ke 0 di awal game.</p>
+            </div>
+            <div class="info-card">
+              <div style="font-size: 20px;">🕷️ 5. Musuh Laba-Laba</div>
+              <p class="card-desc">AI musuh yang meluncur mondar-mandir dengan blok Glide.</p>
+            </div>
+            <div class="info-card highlight">
+              <div style="font-size: 20px;">🏁 6. Layar Kalah & Menang</div>
+              <p class="card-desc">Sistem siaran Broadcast Game Over dan You Win!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: FORMAT DEMO DAY 2 MENIT -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-purple">Panduan Public Speaking</div>
+          <h2 class="slide-title">Resep 4 Langkah Presentasi Cilik 🎤🌟</h2>
+          <p class="slide-subtitle">Hanya butuh 2 menit untuk memukau teman-teman dan guru di depan kelas:</p>
+
+          <div class="grid-4">
+            <div class="info-card">
+              <div style="font-size: 26px; margin-bottom: 6px;">👋 1. Salam Ceria</div>
+              <p class="card-desc">Sebutkan nama dan umurmu:<br><em>"Halo semuanya, namaku Budi, umur 8 tahun!"</em></p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 26px; margin-bottom: 6px;">🎮 2. Judul Game</div>
+              <p class="card-desc">Ceritakan judul gamemu:<br><em>"Hari ini aku membuat game Bee Honey Harvest!"</em></p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 26px; margin-bottom: 6px;">🕹️ 3. Mainkan Game</div>
+              <p class="card-desc">Mainkan langsung di layar proyektor. Tunjukkan caramu menghindari laba-laba!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 26px; margin-bottom: 6px;">❤️ 4. Fitur Favorit</div>
+              <p class="card-desc">Ceritakan bagian terfavorit:<br><em>"Bagian paling seru adalah saat skor bertambah ting!"</em></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: RUBRIK PENILAIAN CAPSTONE -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-gold">Rubrik Kelulusan Level 1</div>
+          <h2 class="slide-title">4 Bintang Emas Kelulusan Level 1 ⭐🏆</h2>
+          <p class="slide-subtitle">Setiap siswa yang menuntaskan 4 indikator ini berhak lulus:</p>
+
+          <div class="grid-4">
+            <div class="info-card">
+              <div style="font-size: 26px; color: #fbbf24;">⭐</div>
+              <h4 style="font-size: 15px; color: #ffffff; font-family: 'Fredoka', cursive;">Navigasi Lancar</h4>
+              <p class="card-desc">Beeby bergerak responsif dengan 4 tombol panah tanpa macet di tembok.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 26px; color: #fbbf24;">⭐⭐</div>
+              <h4 style="font-size: 15px; color: #ffffff; font-family: 'Fredoka', cursive;">Sistem Skor Rapi</h4>
+              <p class="card-desc">Bunga menghilang saat dipetik dan angka skor bertambah +1 secara akurat.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 26px; color: #fbbf24;">⭐⭐⭐</div>
+              <h4 style="font-size: 15px; color: #ffffff; font-family: 'Fredoka', cursive;">Musuh Patroli</h4>
+              <p class="card-desc">Laba-laba meluncur otomatis dan tabrakan memicu siaran Game Over.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 26px; color: #fbbf24;">⭐⭐⭐⭐</div>
+              <h4 style="font-size: 15px; color: #ffffff; font-family: 'Fredoka', cursive;">Penyelesaian Penuh</h4>
+              <p class="card-desc">Ada layar Game Over saat kalah dan layar You Win saat memanen semua madu!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE CERTIFICATE GENERATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-gold">Panggung Wisuda Digital</div>
+          <h2 class="slide-title">Generator Sertifikat Resmi Kelulusan 📜🎓</h2>
+          <p class="slide-subtitle">Ketik nama siswa dan klik tombol wisuda untuk menerbitkan piagam resmi:</p>
+
+          <div class="cert-sim-container">
+            <!-- Certificate Preview Card -->
+            <div class="cert-card-preview" id="certPreviewCard">
+              <div class="cert-badge-ribbon">BEEKODING ACADEMY • CERTIFICATE OF COMPLETION</div>
+              <div style="font-size: 36px; margin: 2px 0;">🐝🏆</div>
+              <h3 class="cert-main-title">Junior Code Explorer — Level 1</h3>
+              <p style="font-size: 11px; color: #78350f;">Diberikan dengan bangga kepada Sang Juara Koding Cilik:</p>
+              
+              <div class="cert-student-name" id="certStudentName">Budi Pratama</div>
+              
+              <p class="cert-desc-text">
+                Atas keberhasilan menuntaskan <strong>12 Sesi Pemrograman Scratch 3.0 & Computational Thinking</strong> dengan karya game mandiri <em>'Bee Honey Harvest Arcade Game'</em>.
+              </p>
+
+              <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 10px; font-size: 10px; font-weight: 800; color: #92400e; border-top: 1px dashed #d97706; padding-top: 6px;">
+                <span>ID: BK-LV1-2026-PASS</span>
+                <span>STATUS: LEVEL 1 GRADUATED ⭐</span>
+              </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="cert-controls-panel">
+              <span class="cert-input-label">Nama Lengkap Siswa:</span>
+              <input type="text" id="inputStudentName" class="cert-name-input" value="Budi Pratama" placeholder="Ketik nama di sini...">
+
+              <button class="btn-cert-issue" id="btnIssueCert">
+                <span>🎓</span> Terbitkan & Rayakan!
+              </button>
+
+              <button class="btn-cert-print" id="btnPrintCert">
+                <span>🖨️</span> Cetak Piagam (Print)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: SIKAP JUARA MENGAPRESIASI TEMAN -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-emerald">Karakter & Etika Juara</div>
+          <h2 class="slide-title">Karakter Hebat Seorang Coder Cilik 🤝💖</h2>
+          <p class="slide-subtitle">Koding bukan hanya tentang komputer, tapi tentang saling mendukung sesama teman:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">👂 1. Menyimak Penuh</div>
+              <p class="card-desc">Saat teman sedang demo di depan, letakkan tangan di atas meja dan dengarkan ceritanya dengan seksama.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">👏 2. Tepuk Koding Meriah</div>
+              <p class="card-desc">Berikan tepuk tangan paling bersemangat setiap kali teman selesai bermain, baik menang maupun kalah!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🌟 3. Puji Keunikannya</div>
+              <p class="card-desc">Sebutkan 1 hal yang paling kamu sukai dari game temanmu: <em>"Labirinmu belokannya keren sekali!"</em></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: REFLEKSI DIRI CILIK -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-purple">Refleksi Koding Cilik</div>
+          <h2 class="slide-title">Apa Jurus Koding Paling Keren Menurutmu? 🤔💭</h2>
+          <p class="slide-subtitle">Tanyakan kepada seluruh siswa dan dengarkan jawaban mereka:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 6px;">🎙️ Text-to-Speech AI</div>
+              <p class="card-desc"><em>"Aku paling suka saat Beeby bisa bicara suara squeak dan pak katak bersuara giant!"</em></p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 6px;">🎨 Karakter Hero AI</div>
+              <p class="card-desc"><em>"Aku suka membuat hero lebah astronot pakai prompt mantra bahasa Inggris!"</em></p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 6px;">📊 Variabel & Musuh</div>
+              <p class="card-desc"><em>"Aku bangga saat toples skor bertambah dan berhasil lolos dari sengatan laba-laba!"</em></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: PENGANUGERAHAN GELAR RESMI -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-gold">Penganugerahan Gelar</div>
+          <h2 class="slide-title">Selamat Kepada Para Lulusan Level 1! 👑⭐</h2>
+          <p class="slide-subtitle">Kalian resmi menyandang gelar kompetensi perdana di Beekoding Academy:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 64px; margin-bottom: 10px;">🏆✨</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 26px; color: #fbbf24; margin-bottom: 6px;">"Junior Code Explorer Level 1"</h3>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 320px;">Telah menguasai fondasi Algoritma, Computational Thinking, Scratch 3.0 Interactive Game Mechanics, & AI Integration!</p>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 64px; margin-bottom: 10px;">🎖️📦</div>
+              <h3 style="font-family: 'Fredoka', cursive; font-size: 24px; color: #34d399; margin-bottom: 6px;">Badge Master of Game Mechanics</h3>
+              <p style="font-size: 14px; color: #94a3b8; max-width: 320px;">Lencana digital yang disematkan langsung di akun profil siswa Beekoding untuk portofolio masa depan!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: PESTA WISUDA & PINTU LEVEL 2 -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-emerald">Pesta Wisuda & Masa Depan</div>
+          <h2 class="slide-title">Tepuk Koding Akbar & Selamat Datang di Level 2! 🚀🎉</h2>
+          <p class="slide-subtitle">Tutup pertemuan dengan perayaan konfeti terhebat dan intipan petualangan Level 2:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Tradisi Tepuk Koding Kelulusan:</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">(Prok prok prok) KODING!</p>
+              <p class="card-desc" style="margin-bottom: 10px;">(Prok prok prok) BEEKODING!</p>
+              <p class="card-desc" style="margin-bottom: 14px;">(Prok prok prok) JUARA LEVEL SATU! HOREEE! 🥳</p>
+              
+              <button class="btn-cert-issue" id="btnConfettiCelebration" style="width: auto; padding: 12px 28px; font-size: 15px;">
+                🎉 Pesta Konfeti Akbar Kelulusan!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🚀 Petualangan Baru Menanti: LEVEL 2 (Sesi 13–24)</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #60a5fa; margin-bottom: 4px;">Sesi 13: Game Tangkap Buah Apel Jatuh (Fisika Koordinat X & Y Dinamis)</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Buah-buah apel akan berjatuhan dari langit secara acak! Kita akan mengendalikan mangkuk penangkap dengan gerakan mouse!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–10' (Pembuka & Suasana Wisuda)",
+        text: "Ciptakan atmosfer yang sangat membanggakan dan meriah. Hari ini adalah hari puncak Demo Day Capstone Level 1. Sambut anak-anak sebagai 'Game Developer Resmi'.",
+        script: "Selamat datang para kreator hebat, orang tua, dan seluruh keluarga besar Beekoding Academy! Hari ini adalah hari yang sangat bersejarah. 12 minggu yang lalu kalian belum mengenal koding sama sekali, dan hari ini kalian berdiri di sini sebagai pencipta game arcade buatan tangan sendiri!"
+      },
+      2: {
+        timing: "Menit 10–20' (Kilas Balik 12 Sesi)",
+        text: "Tinjau perjalanan dari Sesi 01 hingga Sesi 11. Bangun rasa bangga dan percaya diri pada setiap siswa. Tunjukkan bahwa setiap langkah kecil telah menghasilkan mahakarya besar.",
+        script: "Ingatkah saat kita pertama kali main arah panah di karpet? Lalu kalian memberi sayap pada lebah, memberi suara AI, membuat cerita, hingga memasang sistem skor dan musuh laba-laba! Kalian sudah melalui perjalanan luar biasa!"
+      },
+      3: {
+        timing: "Menit 20–30' (Anatomi Game Lengkap)",
+        text: "Rangkum 6 mekanika utama game yang berhasil mereka bangun. Tekankan bahwa anak-anak usia 6–9 tahun sudah memahami logika pemrograman setara pembuat game nyata.",
+        script: "Game kalian bukan game sembarangan, ini adalah arcade game lengkap: ada arena labirin, kemudi keyboard, panen bunga, toples skor, musuh patroli, dan layar Game Over! Kalian adalah master mekanika game cilik!"
+      },
+      4: {
+        timing: "Menit 30–40' (Format Presentasi Demo Day)",
+        text: "Bimbing anak tentang struktur public speaking sederhana: Salam -> Nama game -> Mainkan game -> Bagikan fitur favorit. Tenangkan anak yang tampak gugup.",
+        script: "Di depan nanti, santai saja ya teman-teman. Cukup sebutkan nama, mainkan gamenya di layar proyektor, lalu ceritakan apa bagian koding yang paling kalian sukai. Seluruh kelas akan bersorak untuk kalian!"
+      },
+      5: {
+        timing: "Menit 40–50' (Rubrik Penilaian Bintang 4)",
+        text: "Jelaskan bahwa semua siswa yang sudah berusaha maksimal pasti meraih kelulusan. Bintang 4 adalah bentuk apresiasi atas ketekunan mereka.",
+        script: "Semua dari kalian hari ini adalah juara! Bintang emas ini adalah bukti kerja keras dan kreativitas kalian selama 12 pertemuan penuh kegembiraan!"
+      },
+      6: {
+        timing: "Menit 50–70' (Presentasi Siswa Bergantian & Generator Sertifikat)",
+        text: "Minta setiap anak maju bergantian mendemokan gamenya selama 2 menit. Gunakan generator sertifikat di slide ini: ketik nama anak, klik terbitkan, dan bunyikan fanfare kelulusan!",
+        script: "Sekarang giliran Budi maju ke depan! Ayo Budi, pamerkan game hebatmu! Dan inilah piagam resmi kelulusan Level 1 untuk Budi Pratama! Tepuk koding untuk Budi!"
+      },
+      7: {
+        timing: "Menit 70–78' (Sikap Saling Mengapresiasi)",
+        text: "Ajak siswa memberikan apresiasi positif kepada teman-temannya. Latih kemampuan sosial dan apresiasi karya orang lain sejak usia dini.",
+        script: "Kalian melihat betapa kreatifnya game teman-teman kalian? Ada yang labirinnya rumit, ada yang suaranya lucu! Itulah indahnya koding: setiap orang punya karya unik!"
+      },
+      8: {
+        timing: "Menit 78–83' (Refleksi Koding Cilik)",
+        text: "Tanyakan apa konsep yang paling berkesan bagi mereka. Catat testimoni anak untuk laporan kemajuan akademik ke orang tua.",
+        script: "Siapa yang paling suka saat Beeby bicara pakai AI? Siapa yang paling bangga saat berhasil melewati laba-laba? Kalian semua sudah merasakan asyiknya menyelesaikan masalah!"
+      },
+      9: {
+        timing: "Menit 83–88' (Penganugerahan Gelar Resmi)",
+        text: "Secara resmi umumkan kelulusan seluruh kelas sebagai 'Junior Code Explorer Level 1'. Bagikan piagam cetak dan trophy badge.",
+        script: "Dengan bangga Beekoding Academy menganugerahkan gelar resmi: Junior Code Explorer Level 1 kepada seluruh siswa di kelas ini! Kalian resmi lulus Level 1!"
+      },
+      10: {
+        timing: "Menit 88–90' (Pesta Wisuda & Pintu Level 2)",
+        text: "Pimpin Tepuk Koding Akbar penutup. Berikan sneak peek Level 2 (Game Tangkap Buah Apel Jatuh & Fisika Koordinat). Foto bersama seluruh kelas dengan piagam.",
+        script: "Mari kita tutup dengan Tepuk Koding paling menggelegar! Dan bersiaplah, karena di Level 2 kita akan membuat game buah apel berjatuhan dari langit! Selamat kepada para juara koding cilik Beekoding!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#d97706' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // ==========================================
+    // LIVE CERTIFICATE GENERATOR & AUDIO FANFARE
+    // ==========================================
+    const inputStudentName = document.getElementById('inputStudentName');
+    const certStudentName = document.getElementById('certStudentName');
+    const certPreviewCard = document.getElementById('certPreviewCard');
+    const btnIssueCert = document.getElementById('btnIssueCert');
+    const btnPrintCert = document.getElementById('btnPrintCert');
+
+    inputStudentName.addEventListener('input', (e) => {
+      certStudentName.textContent = e.target.value.trim() || 'Nama Murid Cilik';
+    });
+
+    function playGraduationFanfare() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Festive coronation fanfare chords: C4 -> E4 -> G4 -> C5 -> G5
+        const notes = [
+          { f: 523.25, t: 0, d: 0.2 },
+          { f: 659.25, t: 0.15, d: 0.2 },
+          { f: 783.99, t: 0.3, d: 0.2 },
+          { f: 1046.50, t: 0.45, d: 0.5 },
+          { f: 1318.51, t: 0.9, d: 0.7 }
+        ];
+
+        notes.forEach(n => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(n.f, audioCtx.currentTime + n.t);
+          gain.gain.setValueAtTime(0.35, audioCtx.currentTime + n.t);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + n.t + n.d);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + n.t);
+          osc.stop(audioCtx.currentTime + n.t + n.d);
+        });
+      } catch (err) {}
+    }
+
+    btnIssueCert.addEventListener('click', () => {
+      playGraduationFanfare();
+      certPreviewCard.classList.add('celebrating');
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 160,
+          spread: 100,
+          origin: { y: 0.6 }
+        });
+      }
+
+      setTimeout(() => {
+        certPreviewCard.classList.remove('celebrating');
+      }, 1500);
+    });
+
+    btnPrintCert.addEventListener('click', () => {
+      window.print();
+    });
+
+    // Confetti celebration button
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        playGraduationFanfare();
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 200,
+            spread: 120,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // Initialize slide
+    updateSlide();
+  </script>
+</body>
+</html>
