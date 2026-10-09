@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 11 - Musuh Laba-Laba Patroli & Game Over | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #ef4444;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #b91c1c;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(239, 68, 68, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Badges & Titles */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Media Viewport */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Scratch Code Blocks */
+    .scratch-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin: 4px 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      font-family: 'Fredoka', cursive;
+    }
+
+    .scratch-event { background: #d97706; border-left: 6px solid #b45309; }
+    .scratch-motion { background: #2563eb; border-left: 6px solid #1d4ed8; }
+    .scratch-control { background: #ea580c; border-left: 6px solid #c2410c; }
+    .scratch-sensing { background: #0284c7; border-left: 6px solid #0369a1; }
+    .scratch-looks { background: #9333ea; border-left: 6px solid #7e22ce; }
+    .scratch-sound { background: #c026d3; border-left: 6px solid #a21caf; }
+
+    .code-slot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Live Interactive Patrol & Broadcast Simulator */
+    .patrol-sim-container {
+      background: #0f172a;
+      border: 2px solid #ef4444;
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .patrol-arena-wrap {
+      flex: 1;
+      height: 240px;
+      background: #020617;
+      border-radius: 14px;
+      border: 2px solid rgba(239, 68, 68, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .arena-corridor-line {
+      position: absolute;
+      left: 170px;
+      top: 20px;
+      bottom: 20px;
+      width: 4px;
+      background: dashed rgba(239, 68, 68, 0.3);
+      border-left: 2px dashed #ef4444;
+    }
+
+    .patrol-spider {
+      position: absolute;
+      left: 154px;
+      font-size: 34px;
+      filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
+      transition: top 1.2s ease-in-out;
+      z-index: 10;
+    }
+
+    .patrol-player {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: top 0.1s linear, left 0.1s linear;
+      z-index: 12;
+    }
+
+    .patrol-nectar {
+      position: absolute;
+      font-size: 24px;
+      filter: drop-shadow(0 0 6px #fbbf24);
+      z-index: 5;
+      transition: transform 0.2s;
+    }
+
+    .patrol-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.92);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 50;
+      backdrop-filter: blur(4px);
+    }
+
+    .patrol-overlay.visible {
+      display: flex;
+    }
+
+    .overlay-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .overlay-title.lose { color: #ef4444; }
+    .overlay-title.win { color: #fbbf24; }
+
+    .btn-retry-arena {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+
+    .patrol-controls-panel {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .dpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 42px);
+      grid-template-rows: repeat(3, 42px);
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .btn-dpad {
+      background: #1e293b;
+      border: 1px solid #ef4444;
+      color: #f87171;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .btn-dpad:hover {
+      background: #dc2626;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+    .btn-dpad:active {
+      transform: scale(0.95);
+    }
+
+    .score-indicator-box {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #ef4444;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #dc2626;
+      border-color: #b91c1c;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #ef4444;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #ef4444;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #f87171;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #ef4444;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>JUNIOR ARCADE LEVEL 1</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-10/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 10">⏪ Sesi 10</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-12/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 12" style="opacity: 0.5; pointer-events: none;">Sesi 12 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-red">Sesi 11 • Enemy AI & Game Over</div>
+              <h1 class="slide-title">Laba-Laba Patroli & Game Over! 🕷️🚨</h1>
+              <p class="slide-subtitle">Belajar Gerak Meluncur Otomatis <strong>(Glide)</strong> dan Sistem Siaran Pesan <strong>(Broadcast Messaging)</strong> untuk Layar Kalah & Menang!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #f87171; font-weight: 700;">LEVEL BELAJAR</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Junior Explorer (6–9 Thn)</div>
+                </div>
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #fbbf24; font-weight: 700;">KEMAMPUAN UTAMA</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Broadcast Messaging System 📢</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-spider-patrol.jpg" alt="Beeby menghindari laba-laba patroli di labirin sarang lebah">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ICE BREAKING -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-amber">Ice Breaking & Adrenalin Game</div>
+          <h2 class="slide-title">Game Tanpa Musuh Itu Membosankan! 🎮💥</h2>
+          <p class="slide-subtitle">Mengapa game butuh rintangan dan ancaman bahaya?</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🥱</div>
+              <h3 class="card-title">Terlalu Mudah = Cepat Bosan</h3>
+              <p class="card-desc">Jika panen madu tanpa ada penjaga, pemain akan merasa game kurang seru dan tidak menantang.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">🕷️</div>
+              <h3 class="card-title">Hadirnya Laba-Laba Penjaga!</h3>
+              <p class="card-desc">Laba-laba mondar-mandir menjaga lorong. Pemain harus menunggu saat yang tepat untuk menyelinap lewat!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🏆</div>
+              <h3 class="card-title">Kemenangan Jadi Lebih Manis</h3>
+              <p class="card-desc">Saat berhasil melewati musuh dan mengumpulkan semua madu, rasa bangga pemain akan berlipat ganda!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: GERAK MELUNCUR GLIDE -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-blue">Mekanika Gerak Musuh</div>
+          <h2 class="slide-title">Meluncur Mulus dengan Blok Glide 🪁</h2>
+          <p class="slide-subtitle">Perbedaan antara gerak teleportasi mendadak vs meluncur halus:</p>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">⚡ Blok "Go to" (Teleportasi)</div>
+              <div class="scratch-block scratch-motion">
+                go to x: <span class="code-slot">0</span> y: <span class="code-slot">50</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;">Sprite langsung berpindah sekejap mata dalam 0 detik seperti pesulap. Kurang cocok untuk musuh patroli.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">🕷️ Blok "Glide" (Meluncur Halus)</div>
+              <div class="scratch-block scratch-motion">
+                glide <span class="code-slot">2</span> secs to x: <span class="code-slot">0</span> y: <span class="code-slot">50</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;">Sprite meluncur anggun selama 2 detik dari titik A ke titik B. Sangat pas untuk laba-laba yang menjaga lorong!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: BROADCAST MESSAGE -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-red">Konsep Koding Utama</div>
+          <h2 class="slide-title">Siaran Radio Rahasia: Broadcast Message 📢📻</h2>
+          <p class="slide-subtitle">Bagaimana Beeby memberi tahu layar panggung bahwa ia kalah?</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">📢 1. PENGIRIM (Siarkan Pesan)</div>
+              <div class="scratch-block scratch-event">
+                broadcast <span class="code-slot">Game Over ▾</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;">Saat Beeby menabrak laba-laba, Beeby berteriak ke mikrofon: <em>"Perhatian seluruh panggung, aku terkena laba-laba! Siarkan Game Over!"</em></p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">👂 2. PENERIMA (Merespons Pesan)</div>
+              <div class="scratch-block scratch-event">
+                when I receive <span class="code-slot">Game Over ▾</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;">Layar Backdrop mendengarkan siaran radio itu, lalu langsung mengganti tampilan menjadi layar gelap Game Over!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: KODING MUSUH & LAYAR AKHIR -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-amber">Bedah Kode Lengkap</div>
+          <h2 class="slide-title">Koding Tiga Tokoh: Laba-Laba, Beeby & Panggung 💻</h2>
+          <p class="slide-subtitle">Tiga kode yang saling bekerja sama menciptakan alur permainan yang utuh:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <h4 style="color: #f87171; font-weight: 800; font-size: 14px; margin-bottom: 6px;">🕷️ PADA SPIDER (Patroli):</h4>
+              <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
+                <div class="scratch-block scratch-event" style="font-size: 11px;">when 🏴 clicked</div>
+                <div class="scratch-block scratch-control" style="margin-left: 10px; font-size: 11px;">forever</div>
+                <div class="scratch-block scratch-motion" style="margin-left: 20px; font-size: 11px;">glide <span class="code-slot">2</span> secs to y: <span class="code-slot">60</span></div>
+                <div class="scratch-block scratch-motion" style="margin-left: 20px; font-size: 11px;">glide <span class="code-slot">2</span> secs to y: <span class="code-slot">-60</span></div>
+              </div>
+            </div>
+
+            <div class="info-card highlight">
+              <h4 style="color: #fbbf24; font-weight: 800; font-size: 14px; margin-bottom: 6px;">🐝 PADA BEEBY (Tabrakan):</h4>
+              <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
+                <div class="scratch-block scratch-control" style="font-size: 11px;">if &lt;<span class="code-slot">touching [Spider] ?</span>&gt; then</div>
+                <div class="scratch-block scratch-sound" style="margin-left: 10px; font-size: 11px;">start sound <span class="code-slot">Oops ▾</span></div>
+                <div class="scratch-block scratch-event" style="margin-left: 10px; font-size: 11px;">broadcast <span class="code-slot">Game Over ▾</span></div>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 style="color: #38bdf8; font-weight: 800; font-size: 14px; margin-bottom: 6px;">🎬 PADA STAGE (Layar Akhir):</h4>
+              <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
+                <div class="scratch-block scratch-event" style="font-size: 11px;">when I receive <span class="code-slot">Game Over ▾</span></div>
+                <div class="scratch-block scratch-looks" style="margin-left: 10px; font-size: 11px;">switch backdrop to <span class="code-slot">Game Over ▾</span></div>
+                <div class="scratch-block scratch-control" style="margin-left: 10px; font-size: 11px;">stop <span class="code-slot">all ▾</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE PATROL SIMULATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-red">Arena Simulator Langsung</div>
+          <h2 class="slide-title">Uji Keberanianmu: Lewati Laba-Laba! 🕷️🕹️</h2>
+          <p class="slide-subtitle">Pandu Beeby mengambil 3 madu di kanan. Jangan sampai tertabrak laba-laba yang berpatroli!</p>
+
+          <div class="patrol-sim-container">
+            <!-- Arena Box -->
+            <div class="patrol-arena-wrap" id="patrolArena">
+              <div class="arena-corridor-line"></div>
+
+              <!-- Patrol Spider -->
+              <div class="patrol-spider" id="patrolSpider" style="top: 25px;">🕷️</div>
+
+              <!-- Beeby Player -->
+              <div class="patrol-player" id="patrolPlayer" style="top: 100px; left: 24px;">🐝</div>
+
+              <!-- 3 Honey Drops -->
+              <div class="patrol-nectar" id="nec1" style="top: 40px; left: 240px;">🍯</div>
+              <div class="patrol-nectar" id="nec2" style="top: 105px; left: 240px;">🍯</div>
+              <div class="patrol-nectar" id="nec3" style="top: 170px; left: 240px;">🍯</div>
+
+              <!-- Overlay Screen (Game Over / You Win) -->
+              <div class="patrol-overlay" id="patrolOverlay">
+                <div class="overlay-title" id="overlayTitle">GAME OVER!</div>
+                <div style="font-size: 13px; color: #cbd5e1;" id="overlayDesc">Beeby tersengat laba-laba!</div>
+                <button class="btn-retry-arena" id="btnRetryArena">🔄 Main Lagi</button>
+              </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="patrol-controls-panel">
+              <div class="score-indicator-box">
+                <span>Madu Terkumpul:</span>
+                <span id="patrolScoreText">0 / 3</span>
+              </div>
+
+              <div class="dpad-grid">
+                <div></div>
+                <button class="btn-dpad" id="btnPUp">⬆️</button>
+                <div></div>
+                <button class="btn-dpad" id="btnPLeft">⬅️</button>
+                <button class="btn-dpad" id="btnPDown">⬇️</button>
+                <button class="btn-dpad" id="btnPRight">➡️</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: DESAIN 2 BACKDROP AKHIR -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-blue">Studio Desain Layar</div>
+          <h2 class="slide-title">Mendesain Layar Kalah & Layar Menang 🎨🏁</h2>
+          <p class="slide-subtitle">Buat 2 backdrop baru di Scratch menggunakan alat Teks:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">💀 1. Layar Kalah (Backdrop: Game Over)</div>
+              <p class="card-desc" style="margin-bottom: 8px;">• Latar belakang warna hitam / merah gelap pekat.</p>
+              <p class="card-desc" style="margin-bottom: 8px;">• Tuliskan teks besar berwarna merah: <strong>"GAME OVER"</strong>.</p>
+              <p class="card-desc">• Tambahkan teks kecil: <em>"Tekan Bendera Hijau untuk coba lagi!"</em></p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🏆 2. Layar Menang (Backdrop: You Win)</div>
+              <p class="card-desc" style="margin-bottom: 8px;">• Latar belakang warna kuning emas / biru cerah ceria.</p>
+              <p class="card-desc" style="margin-bottom: 8px;">• Tuliskan teks besar bercahaya: <strong>"YOU WIN!"</strong>.</p>
+              <p class="card-desc">• Tambahkan ikon piala atau bintang kemenangan.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: DETEKTIF BUG CILIK -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-red">Detektif Bug Cilik</div>
+          <h2 class="slide-title">3 Bug Paling Sering Terjadi pada Broadcast 🕵️‍♂️🔍</h2>
+          <p class="slide-subtitle">Solusi cerdas saat alur game over-mu macet:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🛑🕷️</div>
+              <h4 style="color: #ef4444; font-size: 15px; font-weight: 800; margin-bottom: 6px;">Laba-Laba Meluncur Sekali Lalu Mogok</h4>
+              <p class="card-desc">Lupa membungkus blok <code style="color: #2563eb;">glide</code> di dalam loop <strong>forever</strong>! Agar terus berpatroli, wajib ada loop selamanya.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">💀🚩</div>
+              <h4 style="color: #fbbf24; font-size: 15px; font-weight: 800; margin-bottom: 6px;">Game Baru Mulai Tapi Langsung Game Over</h4>
+              <p class="card-desc">Lupa mengatur backdrop awal! Pasang <code style="color: #9333ea;">switch backdrop to [Labirin]</code> di bawah bendera hijau panggung.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🏆❓</div>
+              <h4 style="color: #38bdf8; font-size: 15px; font-weight: 800; margin-bottom: 6px;">Skor Penuh Tapi Tidak Muncul Layar Menang</h4>
+              <p class="card-desc">Cek kondisi kemenangan: <code style="color: #ea580c;">if &lt;Skor = 6&gt; then [broadcast You Win]</code>. Pastikan angkanya sesuai jumlah bungamu!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: TANTANGAN KREATIF -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-amber">Tantangan Mandiri</div>
+          <h2 class="slide-title">Tantangan: "Dua Laba-Laba Kembar Beda Kecepatan!" ⚡🕷️</h2>
+          <p class="slide-subtitle">Tingkatkan adrenalin permainanmu dengan musuh ganda:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #f87171; font-family: 'Fredoka', cursive; margin-bottom: 10px;">Misi Kamu Hari Ini:</h4>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #e2e8f0;">
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Buat 1 musuh Spider yang berpatroli mondar-mandir otomatis dengan blok Glide.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Pasang deteksi tabrakan yang memicu siaran <code style="color: #ef4444;">broadcast [Game Over]</code>.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Desain layar Game Over dan pasang blok <code style="color: #ea580c;">stop all</code>.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">⭐</span> <strong>Bonus:</strong> Gandakan laba-laba menjadi 2 ekor dengan kecepatan berbeda (glide 3 detik vs glide 1 detik)!
+                </li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 54px; margin-bottom: 10px;">👑🚨</div>
+              <h4 style="font-size: 20px; font-family: 'Fredoka', cursive; color: #fbbf24; margin-bottom: 6px;">Badge Spesial Sesi 11</h4>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 280px;">Siswa yang berhasil membuat mekanika musuh & broadcast game over berhak atas lencana kehormatan <strong>"Junior AI Game Master"</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: SHOWCASE & PENUTUP -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-emerald">Showcase & Refleksi</div>
+          <h2 class="slide-title">Game Utuh Selesai & Tepuk Koding! 👏🎉</h2>
+          <p class="slide-subtitle">Selamat! Game arcade buatanmu kini sudah memiliki navigasi, skor, musuh, dan layar menang/kalah yang lengkap!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Uji Coba Game Sempurna:</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">1. Siswa mencoba menuntaskan gamenya dari awal hingga menang.</p>
+              <p class="card-desc" style="margin-bottom: 10px;">2. Rasakan ketegangan saat melewati laba-laba berpatroli.</p>
+              <p class="card-desc" style="margin-bottom: 14px;">3. Berikan tepuk tangan paling meriah bersama seluruh kelas!</p>
+              
+              <button class="btn-retry-arena" id="btnConfettiCelebration" style="background: linear-gradient(135deg, #10b981, #059669); color: white; width: auto; font-size: 14px; padding: 10px 24px;">
+                🎉 Rayakan Game Lengkap Pertama Kita!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🏆 Puncak Perayaan Level 1 (Sesi 12):</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-bottom: 4px;">Sesi 12: CAPSTONE LEVEL 1 — Bee Honey Harvest & Demo Day Cilik!</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Presentasi pameran di depan orang tua & teman, penganugerahan Sertifikat Resmi Kelulusan Level 1, dan wisuda modul perdana!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–05' (Pembuka & Pemanasan)",
+        text: "Buka sesi dengan musik bertempo seru. Katakan bahwa sarang lebah kita kedatangan musuh penjaga lorong! Hari ini adalah sesi terakhir sebelum pameran Demo Day Capstone minggu depan.",
+        script: "Halo para arsitek game Beekoding! Siap untuk tantangan paling menegangkan? Hari ini di sarang lebah ada laba-laba patroli yang mondar-mandir menjaga nektar! Kalau kita tersenggol... tet-tooot! Game Over! Siapa yang berani menaklukkan laba-laba ini?"
+      },
+      2: {
+        timing: "Menit 05–12' (Ice Breaking & Konsep Rintangan)",
+        text: "Jelaskan psikologi game: tanpa musuh dan resiko kalah, kemenangan tidak terasa berharga. Hadirnya Game Over membuat pemain lebih fokus dan tertantang.",
+        script: "Coba bayangkan kalau main game tapi nggak bisa kalah sama sekali, pasti bosan kan? Game yang seru itu yang bikin jantung kita deg-degan saat melewati musuh!"
+      },
+      3: {
+        timing: "Menit 12–20' (Gerak Meluncur Glide)",
+        text: "Demokan perbedaan antara blok 'go to' yang teleportasi instan dengan blok 'glide' yang meluncur halus selama beberapa detik.",
+        script: "Komputer punya trik keren namanya 'Glide'. Laba-laba kita meluncur anggun seperti naik sepatu roda dari atas ke bawah selama 2 detik. Jadi pemain bisa melihat jalurnya dan bersiap menyelinap!"
+      },
+      4: {
+        timing: "Menit 20–30' (Konsep Broadcast Message)",
+        text: "Gunakan analogi Toa Sekolah atau Walkie-talkie. Jelaskan bahwa 'broadcast' adalah cara satu sprite berteriak ke seluruh panggung untuk memicu peristiwa bersamaan.",
+        script: "Bayangkan Beeby punya walkie-talkie. Begitu Beeby menabrak laba-laba, Beeby berteriak ke walkie-talkie: 'Broadcast Game Over!'. Di ruang kontrol, layar panggung langsung mendengar dan mematikan lampu panggung!"
+      },
+      5: {
+        timing: "Menit 30–42' (Koding Tiga Tokoh)",
+        text: "Bimbing kode tiga bagian: (1) Laba-laba meluncur bolak-balik dalam forever, (2) Beeby mendeteksi tabrakan dan broadcast, (3) Panggung menerima pesan dan stop all.",
+        script: "Ayo kita pasang kodenya di 3 tempat: Di Laba-Laba kita pasang Glide. Di Beeby kita pasang sensor sentuh laba-laba dan Broadcast. Dan di Panggung kita pasang penerima pesan 'When I receive Game Over'!"
+      },
+      6: {
+        timing: "Menit 42–55' (Uji Coba Simulator di Slide)",
+        text: "Gunakan simulator arena langsung di slide. Tunjukkan bagaimana laba-laba bergerak otomatis. Coba tabrakkan Beeby untuk mendemokan efek Game Over. Lalu coba kumpulkan 3 madu untuk mendemokan You Win.",
+        script: "Yuk kita tes di simulator depan! Coba lihat laba-labanya meluncur naik-turun. Sekarang coba kita lewati... aww! Kena laba-laba! Layar merah Game Over muncul! Sekarang mari kita coba lagi dan kumpulkan semua madunya!"
+      },
+      7: {
+        timing: "Menit 55–65' (Desain 2 Layar Akhir)",
+        text: "Bimbing siswa mendesain 2 backdrop baru di Scratch: Backdrop 2 (Game Over latar gelap teks merah) dan Backdrop 3 (You Win latar cerah bertabur bintang).",
+        script: "Sekarang kita buat dua lukisan penutup: Satu lukisan seram bertuliskan 'Game Over' kalau kalah, dan satu lukisan meriah bertuliskan 'You Win' kalau berhasil memanen semua madu!"
+      },
+      8: {
+        timing: "Menit 65–75' (Detektif Bug Cilik)",
+        text: "Antisipasi bug utama: lupa reset backdrop awal ke Labirin saat green flag, atau laba-laba hanya meluncur sekali karena lupa loop forever.",
+        script: "Ada yang gamenya baru mulai tapi layarnya sudah Game Over? Ayo detektif koding, jangan lupa pasang 'Switch backdrop to Labirin' saat bendera hijau diklik ya!"
+      },
+      9: {
+        timing: "Menit 75–85' (Tantangan Mandiri)",
+        text: "Tantang siswa menggandakan laba-laba menjadi 2 ekor dengan kecepatan berbeda. Berikan bimbingan 1-on-1 bagi yang memerlukan.",
+        script: "Bagi yang sudah berhasil, coba buat 2 laba-laba kembar! Satu laba-laba santai meluncur 3 detik, dan satu laba-laba kilat meluncur 1 detik! Berani coba?"
+      },
+      10: {
+        timing: "Menit 85–90' (Showcase & Penutup)",
+        text: "Rayakan game utuh pertama siswa. Berikan apresiasi meriah dan umumkan Sesi 12 minggu depan: Capstone Level 1 Demo Day & Sertifikasi Resmi!",
+        script: "Selamat semuanya! Kalian sudah resmi menjadi Pembuat Game Utuh di Beekoding Academy! Minggu depan adalah hari yang paling dinanti: Demo Day Capstone Level 1! Kita akan pameran dan menerima Sertifikat Resmi! Beri tepuk koding paling dahsyat!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (currentSlide === 6) {
+        if (e.key === 'ArrowUp') { movePatrolPlayer(0, -14); e.preventDefault(); return; }
+        if (e.key === 'ArrowDown') { movePatrolPlayer(0, 14); e.preventDefault(); return; }
+        if (e.key === 'ArrowLeft') { movePatrolPlayer(-14, 0); e.preventDefault(); return; }
+        if (e.key === 'ArrowRight') { movePatrolPlayer(14, 0); e.preventDefault(); return; }
+      }
+
+      if (e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#dc2626' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Confetti celebration
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 150,
+            spread: 90,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // ==========================================
+    // LIVE PATROL & BROADCAST SIMULATOR LOGIC
+    // ==========================================
+    let playerPX = 24;
+    let playerPY = 100;
+    let patrolScore = 0;
+    let isGameOver = false;
+
+    const patrolPlayer = document.getElementById('patrolPlayer');
+    const patrolSpider = document.getElementById('patrolSpider');
+    const patrolOverlay = document.getElementById('patrolOverlay');
+    const overlayTitle = document.getElementById('overlayTitle');
+    const overlayDesc = document.getElementById('overlayDesc');
+    const btnRetryArena = document.getElementById('btnRetryArena');
+    const patrolScoreText = document.getElementById('patrolScoreText');
+
+    const nectars = [
+      { el: document.getElementById('nec1'), collected: false, x: 240, y: 40 },
+      { el: document.getElementById('nec2'), collected: false, x: 240, y: 105 },
+      { el: document.getElementById('nec3'), collected: false, x: 240, y: 170 }
+    ];
+
+    // Spider patrol animation loop
+    let spiderY = 25;
+    let spiderDirection = 1; // 1 = down, -1 = up
+
+    function updateSpiderPatrol() {
+      if (isGameOver) return;
+      spiderY += spiderDirection * 2.2;
+      if (spiderY > 185) {
+        spiderY = 185;
+        spiderDirection = -1;
+      } else if (spiderY < 20) {
+        spiderY = 20;
+        spiderDirection = 1;
+      }
+      patrolSpider.style.top = spiderY + 'px';
+
+      // Check collision with player
+      checkSpiderCollision();
+      requestAnimationFrame(updateSpiderPatrol);
+    }
+    requestAnimationFrame(updateSpiderPatrol);
+
+    function playSirenSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(140, audioCtx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    function playWinFanfare() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.12 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.12);
+          osc.stop(audioCtx.currentTime + idx * 0.12 + 0.35);
+        });
+      } catch (e) {}
+    }
+
+    function playNectarDing() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch (e) {}
+    }
+
+    function checkSpiderCollision() {
+      // Spider X is roughly 154, width ~34. Player X, Y
+      const spiderLeft = 145;
+      const spiderRight = 185;
+      const spiderTop = spiderY;
+      const spiderBottom = spiderY + 36;
+
+      if (
+        playerPX + 28 > spiderLeft &&
+        playerPX < spiderRight &&
+        playerPY + 28 > spiderTop &&
+        playerPY < spiderBottom
+      ) {
+        triggerGameOver();
+      }
+    }
+
+    function triggerGameOver() {
+      if (isGameOver) return;
+      isGameOver = true;
+      playSirenSound();
+      overlayTitle.textContent = "💀 GAME OVER!";
+      overlayTitle.className = "overlay-title lose";
+      overlayDesc.textContent = "Beeby tertabrak laba-laba penjaga!";
+      patrolOverlay.classList.add('visible');
+    }
+
+    function triggerYouWin() {
+      if (isGameOver) return;
+      isGameOver = true;
+      playWinFanfare();
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+      overlayTitle.textContent = "🏆 YOU WIN!";
+      overlayTitle.className = "overlay-title win";
+      overlayDesc.textContent = "Hore! Semua madu berhasil diselamatkan!";
+      patrolOverlay.classList.add('visible');
+    }
+
+    function movePatrolPlayer(dx, dy) {
+      if (isGameOver) return;
+      playerPX = Math.max(14, Math.min(270, playerPX + dx));
+      playerPY = Math.max(16, Math.min(195, playerPY + dy));
+
+      patrolPlayer.style.left = playerPX + 'px';
+      patrolPlayer.style.top = playerPY + 'px';
+
+      // Check Nectar collection
+      nectars.forEach(nec => {
+        if (!nec.collected) {
+          if (
+            Math.abs(playerPX - nec.x) < 26 &&
+            Math.abs(playerPY - nec.y) < 26
+          ) {
+            nec.collected = true;
+            nec.el.style.transform = 'scale(0)';
+            patrolScore += 1;
+            patrolScoreText.textContent = `${patrolScore} / 3`;
+            playNectarDing();
+
+            if (patrolScore === 3) {
+              setTimeout(triggerYouWin, 250);
+            }
+          }
+        }
+      });
+    }
+
+    document.getElementById('btnPUp').addEventListener('click', () => movePatrolPlayer(0, -16));
+    document.getElementById('btnPDown').addEventListener('click', () => movePatrolPlayer(0, 16));
+    document.getElementById('btnPLeft').addEventListener('click', () => movePatrolPlayer(-16, 0));
+    document.getElementById('btnPRight').addEventListener('click', () => movePatrolPlayer(16, 0));
+
+    btnRetryArena.addEventListener('click', () => {
+      isGameOver = false;
+      patrolOverlay.classList.remove('visible');
+      playerPX = 24;
+      playerPY = 100;
+      patrolPlayer.style.left = playerPX + 'px';
+      patrolPlayer.style.top = playerPY + 'px';
+      patrolScore = 0;
+      patrolScoreText.textContent = `0 / 3`;
+      nectars.forEach(nec => {
+        nec.collected = false;
+        nec.el.style.transform = 'scale(1)';
+      });
+      requestAnimationFrame(updateSpiderPatrol);
+    });
+
+    // Initialize slide
+    updateSlide();
+  </script>
+</body>
+</html>
