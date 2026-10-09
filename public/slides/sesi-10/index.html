@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 10 - Panen Madu & Variabel Skor | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: #f59e0b;
+    }
+
+    .brand-tag span {
+      background: #374151;
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .toggle-notes-btn {
+      background: #d97706;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .toggle-notes-btn:hover {
+      background: #b45309;
+    }
+
+    .btn-fullscreen {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #4b5563;
+    }
+
+    /* Main Presentation Container (16:9 Aspect Ratio) */
+    .presentation-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1140px;
+      aspect-ratio: 16 / 9;
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card {
+      position: absolute;
+      inset: 0;
+      padding: 44px 56px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
+    }
+
+    .slide-card.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Badges & Titles */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-orange { background: rgba(234, 88, 12, 0.2); color: #fb923c; border: 1px solid rgba(234, 88, 12, 0.4); }
+    .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.highlight {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 20px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Media Viewport */
+    .slide-media-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(245, 158, 11, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+      height: 100%;
+      max-height: 380px;
+      position: relative;
+    }
+
+    .slide-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Scratch Code Blocks */
+    .scratch-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      margin: 4px 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      font-family: 'Fredoka', cursive;
+    }
+
+    .scratch-event { background: #d97706; border-left: 6px solid #b45309; }
+    .scratch-variable { background: #ea580c; border-left: 6px solid #c2410c; }
+    .scratch-looks { background: #9333ea; border-left: 6px solid #7e22ce; }
+    .scratch-sound { background: #c026d3; border-left: 6px solid #a21caf; }
+    .scratch-control { background: #ea580c; border-left: 6px solid #c2410c; }
+    .scratch-sensing { background: #0284c7; border-left: 6px solid #0369a1; }
+
+    .code-slot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Live Harvest & Score Simulator */
+    .harvest-sim-container {
+      background: #0f172a;
+      border: 2px solid #f59e0b;
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .garden-stage-box {
+      background: radial-gradient(circle at 50% 40%, #1e3a1f 0%, #051408 100%);
+      border-radius: 14px;
+      border: 2px dashed rgba(245, 158, 11, 0.3);
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 20px;
+    }
+
+    .sim-score-counter {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #f59e0b;
+      padding: 6px 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fredoka', cursive;
+      font-size: 18px;
+      color: #fbbf24;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+    }
+
+    .sim-flower-item {
+      font-size: 44px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+      position: relative;
+    }
+
+    .sim-flower-item:hover {
+      transform: scale(1.25) rotate(10deg);
+    }
+
+    .sim-flower-item.collected {
+      transform: scale(0) rotate(180deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sim-bee-avatar {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      font-size: 40px;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+      pointer-events: none;
+    }
+
+    .harvest-controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      padding: 10px 16px;
+      border-radius: 12px;
+    }
+
+    .btn-reset-harvest {
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-reset-harvest:hover {
+      background: #475569;
+      border-color: #64748b;
+    }
+
+    .harvest-tip-text {
+      font-size: 13px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Step Checklist */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 18px;
+      border-radius: 12px;
+    }
+
+    .step-num {
+      background: #d97706;
+      color: #ffffff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #f59e0b;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #d97706;
+      border-color: #b45309;
+    }
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-drawer {
+      background: #090d16;
+      border-top: 2px solid #f59e0b;
+      padding: 20px 28px;
+      display: none;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      z-index: 90;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timing-badge {
+      background: #1e293b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .notes-script {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #f59e0b;
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <header class="top-toolbar">
+    <div class="brand-tag">
+      🐝 BEEKODING ACADEMY <span>JUNIOR ARCADE LEVEL 1</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-09/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 09">⏪ Sesi 09</a>
+      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
+        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+      </button>
+      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
+      <a href="/slides/sesi-11/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 11" style="opacity: 0.5; pointer-events: none;">Sesi 11 ⏩</a>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide-card active" data-slide="1">
+          <div class="grid-2">
+            <div>
+              <div class="slide-badge badge-amber">Sesi 10 • Variables & Score Mechanics</div>
+              <h1 class="slide-title">Panen Madu & Variabel Skor! 🍯📊</h1>
+              <p class="slide-subtitle">Mengenal <strong>Variabel</strong> sebagai Kotak Celengan Penyimpan Angka di Scratch 3.0 untuk Mencatat Setiap Poin Kemenangan!</p>
+              
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #fbbf24; font-weight: 700;">LEVEL BELAJAR</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Junior Explorer (6–9 Thn)</div>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px 16px;">
+                  <div style="font-size: 12px; color: #34d399; font-weight: 700;">PROYEK GAME</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #ffffff;">Sistem Skor Papan Peringkat</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-media-wrap">
+              <img src="beeby-score.jpg" alt="Beeby memegang toples madu di depan papan skor emas">
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ICE BREAKING -->
+        <section class="slide-card" data-slide="2">
+          <div class="slide-badge badge-orange">Ice Breaking & Curiositas</div>
+          <h2 class="slide-title">Bagaimana Game Mengingat Poin Kita? 🤔🎯</h2>
+          <p class="slide-subtitle">Pernahkah kamu bermain game dan melihat angka skor terus bertambah?</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🧠</div>
+              <h3 class="card-title">Memori Manusia</h3>
+              <p class="card-desc">Kita mengingat di dalam otak: <em>"Aku sudah makan 2 buah permen!"</em> Tapi komputer tidak punya otak biologi seperti kita.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">📦</div>
+              <h3 class="card-title">Memori Komputer</h3>
+              <p class="card-desc">Komputer menyiapkan <strong>Kotak Khusus</strong> di memorinya untuk menyimpan angka. Kotak inilah yang disebut <strong>Variabel</strong>!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🍯</div>
+              <h3 class="card-title">Celengan Madu Beeby</h3>
+              <p class="card-desc">Setiap Beeby memetik setangkai bunga nektar, angka di dalam celengan bertambah <strong>+1 poin</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: KONSEP KOTAK CELENGAN BERLABEL -->
+        <section class="slide-card" data-slide="3">
+          <div class="slide-badge badge-amber">Analogi Pedagogis</div>
+          <h2 class="slide-title">Analogi: Celengan Berlabel Nama 🏷️🐖</h2>
+          <p class="slide-subtitle">Tiga aturan penting tentang Variabel yang harus kamu ingat:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🏷️ 1. Punya Nama Jelas</div>
+              <h4 class="card-title">Beri Label Kotak</h4>
+              <p class="card-desc">Kotak harus diberi nama agar tidak tertukar. Hari ini kita buat kotak bernama <strong>"Skor"</strong>!</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 28px; margin-bottom: 8px;">🪙 2. Isinya Bisa Berubah</div>
+              <h4 class="card-title">Variabel = Bervariasi</h4>
+              <p class="card-desc">Nilai di dalamnya bisa bertambah (0 ➔ 1 ➔ 2) atau berkurang jika terkena rintangan.</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 28px; margin-bottom: 8px;">🧹 3. Wajib Dikosongkan</div>
+              <h4 class="card-title">Reset ke Nol!</h4>
+              <p class="card-desc">Saat game baru dimulai, celengan harus dikosongkan kembali menjadi <strong>0</strong> agar adil!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: DUA MANTRA UTAMA VARIABEL -->
+        <section class="slide-card" data-slide="4">
+          <div class="slide-badge badge-orange">Bedah Blok Scratch</div>
+          <h2 class="slide-title">Dua Blok Oranye Sakti Variabel 🧙‍♂️📦</h2>
+          <p class="slide-subtitle">Jangan sampai tertukar antara <em>SET</em> (atur) dan <em>CHANGE</em> (tambah):</p>
+
+          <div class="grid-2">
+            <div class="info-card">
+              <div style="font-size: 13px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">1. SET [Skor] TO (0) — Mengatur Ulang</div>
+              <div class="scratch-block scratch-variable">
+                set <span class="code-slot">Skor ▾</span> to <span class="code-slot">0</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;"><strong>Fungsi:</strong> Mengosongkan celengan skor kembali ke angka nol tepat saat bendera hijau diklik di awal permainan.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 13px; font-weight: 800; color: #34d399; margin-bottom: 8px;">2. CHANGE [Skor] BY (1) — Memasukkan Poin</div>
+              <div class="scratch-block scratch-variable">
+                change <span class="code-slot">Skor ▾</span> by <span class="code-slot">1</span>
+              </div>
+              <p class="card-desc" style="margin-top: 12px;"><strong>Fungsi:</strong> Menambahkan satu koin poin ke dalam celengan setiap kali Beeby berhasil memetik setangkai bunga nektar!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: KODING SPRITE BUNGA MADU -->
+        <section class="slide-card" data-slide="5">
+          <div class="slide-badge badge-emerald">Mekanika Panen Madu</div>
+          <h2 class="slide-title">Koding Bunga: Sentuh, Tambah Skor, & Hilang! 🌸✨</h2>
+          <p class="slide-subtitle">Susun blok ini pada Sprite Bunga di panggungmu:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <div style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-bottom: 10px;">PADA SPRITE BUNGA (Flower):</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="scratch-block scratch-event">when 🏴 clicked</div>
+                <div class="scratch-block scratch-looks" style="margin-left: 14px;">show</div>
+                <div class="scratch-block scratch-control" style="margin-left: 14px;">forever</div>
+                <div class="scratch-block scratch-control" style="margin-left: 28px;">if &lt;<span class="code-slot">touching [Bee] ?</span>&gt; then</div>
+                <div class="scratch-block scratch-sound" style="margin-left: 42px;">start sound <span class="code-slot">Coin ▾</span></div>
+                <div class="scratch-block scratch-variable" style="margin-left: 42px;">change <span class="code-slot">Skor ▾</span> by <span class="code-slot">1</span></div>
+                <div class="scratch-block scratch-looks" style="margin-left: 42px;">hide</div>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="card-title" style="color: #38bdf8;">Mengapa Harus Ada Blok "Hide"?</h4>
+              <p class="card-desc" style="margin-bottom: 12px;">Jika bunga tidak disembunyikan (<code style="color: #a855f7;">hide</code>), Beeby yang masih menyentuh bunga akan terus memicu skor bertambah ratusan poin dalam 1 detik!</p>
+              <div style="background: rgba(15, 23, 42, 0.8); padding: 12px; border-radius: 10px; border-left: 3px solid #10b981;">
+                <strong style="color: #34d399;">Aturan Pasangan:</strong> Setiap ada blok <code style="color: #a855f7;">hide</code>, wajib ada blok <code style="color: #a855f7;">show</code> di bawah bendera hijau agar bunga muncul lagi saat game diulang!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: LIVE INTERACTIVE HARVEST SIMULATOR -->
+        <section class="slide-card" data-slide="6">
+          <div class="slide-badge badge-amber">Demo Interaktif Langsung</div>
+          <h2 class="slide-title">Lab Simulasi Panen Madu & Skor 🍯🕹️</h2>
+          <p class="slide-subtitle">Klik bunga-bunga di padang rumput untuk memanen nektar dan lihat angka skor bertambah!</p>
+
+          <div class="harvest-sim-container">
+            <!-- Stage Box -->
+            <div class="garden-stage-box" id="gardenStage">
+              <!-- Score Counter -->
+              <div class="sim-score-counter">
+                <span>🍯 Skor:</span>
+                <span id="scoreDisplay">0</span> / 5
+              </div>
+
+              <!-- Beeby Avatar -->
+              <div class="sim-bee-avatar" id="simBee">🐝</div>
+
+              <!-- 5 Flowers -->
+              <div class="sim-flower-item" id="fl1" title="Klik untuk petik!">🌸</div>
+              <div class="sim-flower-item" id="fl2" title="Klik untuk petik!">🌻</div>
+              <div class="sim-flower-item" id="fl3" title="Klik untuk petik!">🌺</div>
+              <div class="sim-flower-item" id="fl4" title="Klik untuk petik!">🌼</div>
+              <div class="sim-flower-item" id="fl5" title="Klik untuk petik!">🌷</div>
+            </div>
+
+            <!-- Controls Bar -->
+            <div class="harvest-controls-bar">
+              <span class="harvest-tip-text">
+                💡 <em>Klik bunga satu per satu untuk mendengar bunyi Coin dan melihat nilainya bertambah!</em>
+              </span>
+
+              <button class="btn-reset-harvest" id="btnResetHarvest">
+                <span>🔄</span> Reset Game (Set Skor to 0 & Show)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: TRIK DUPLIKASI CEPAT -->
+        <section class="slide-card" data-slide="7">
+          <div class="slide-badge badge-blue">Trik Developer Cilik</div>
+          <h2 class="slide-title">Trik Menggandakan Bunga (Duplicate) 📋🌸</h2>
+          <p class="slide-subtitle">Tidak perlu menyusun kode blok dari awal untuk setiap bunga!</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div>
+                <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Selesaikan 1 Bunga Pertama</h4>
+                <p style="font-size: 13px; color: #94a3b8;">Pastikan bunga pertama sudah memiliki kode lengkap (Show, Touching Bee, Coin Sound, Change Skor, Hide).</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div>
+                <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Klik Kanan ➔ Pilih "Duplicate"</h4>
+                <p style="font-size: 13px; color: #94a3b8;">Di panel sprite pojok kanan bawah, klik kanan ikon bunga -> pilih <strong>Duplicate (Gandakan)</strong> sebanyak 5 sampai 6 kali.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div>
+                <h4 style="font-size: 16px; color: #ffffff; font-weight: 700;">Sebar Bunga ke Sudut-Sudut Labirin</h4>
+                <p style="font-size: 13px; color: #94a3b8;">Tarik bunga-bunga baru ke lorong-lorong labirin yang berbeda agar pemain tertantang menjelajah seluruh peta!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: DETEKTIF BUG CILIK -->
+        <section class="slide-card" data-slide="8">
+          <div class="slide-badge badge-orange">Detektif Bug Cilik</div>
+          <h2 class="slide-title">3 Bug Paling Sering Terjadi pada Variabel 🕵️‍♂️🔍</h2>
+          <p class="slide-subtitle">Solusi cerdas saat sistem skormu mengalami kendala:</p>
+
+          <div class="grid-3">
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">📈❓</div>
+              <h4 style="color: #ef4444; font-size: 15px; font-weight: 800; margin-bottom: 6px;">Skor Langsung 100 Poin</h4>
+              <p class="card-desc">Bunganya lupa di-<code style="color: #a855f7;">hide</code>! Pasang blok <strong>hide</strong> tepat setelah <code style="color: #ea580c;">change Skor by 1</code>.</p>
+            </div>
+
+            <div class="info-card highlight">
+              <div style="font-size: 32px; margin-bottom: 8px;">👻🌸</div>
+              <h4 style="color: #fbbf24; font-size: 15px; font-weight: 800; margin-bottom: 6px;">Bunga Lenyap Selamanya</h4>
+              <p class="card-desc">Saat bendera hijau ditekan lagi, bunganya tidak muncul? Lupa memasang blok <strong>show</strong> di awal bendera hijau!</p>
+            </div>
+
+            <div class="info-card">
+              <div style="font-size: 32px; margin-bottom: 8px;">🔄💯</div>
+              <h4 style="color: #38bdf8; font-size: 15px; font-weight: 800; margin-bottom: 6px;">Skor Tidak Kembali ke Nol</h4>
+              <p class="card-desc">Game baru mulai tapi skornya masih sisa kemarin? Pastikan ada blok <strong>set [Skor] to 0</strong> saat bendera hijau diklik!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: TANTANGAN KREATIF -->
+        <section class="slide-card" data-slide="9">
+          <div class="slide-badge badge-emerald">Misi Mandiri Kreatif</div>
+          <h2 class="slide-title">Tantangan: "Bunga Emas Raksasa (+5 Poin)!" 👑🌻</h2>
+          <p class="slide-subtitle">Beri kejutan spesial untuk pemain game labirinmu:</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 10px;">Misi Kamu Hari Ini:</h4>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #e2e8f0;">
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Buat variabel baru bernama <strong>Skor</strong> di Scratch.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Pasang minimal <strong>5 bunga biasa</strong> bernilai +1 poin di lorong labirin.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">✔</span> Pastikan skor kembali ke 0 saat bendera hijau ditekan.
+                </li>
+                <li style="display: flex; align-items: center; gap: 10px;">
+                  <span style="color: #10b981; font-weight: 900;">⭐</span> <strong>Bonus:</strong> Buat 1 Bunga Emas tersembunyi yang memberi bonus <strong>+5 poin</strong> dan suara kembang api!
+                </li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center;">
+              <div style="font-size: 54px; margin-bottom: 10px;">🏆📊</div>
+              <h4 style="font-size: 20px; font-family: 'Fredoka', cursive; color: #fbbf24; margin-bottom: 6px;">Badge Spesial Sesi 10</h4>
+              <p style="font-size: 14px; color: #cbd5e1; max-width: 280px;">Siswa yang berhasil membuat sistem skor mandiri berhak memakai lencana <strong>"Junior Score Architect"</strong>!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: SHOWCASE & PENUTUP -->
+        <section class="slide-card" data-slide="10">
+          <div class="slide-badge badge-amber">Showcase & Refleksi</div>
+          <h2 class="slide-title">Panen Akbar Skor Tertinggi & Tepuk Koding! 👏🎉</h2>
+          <p class="slide-subtitle">Pamerkan game panen madu buatanmu dan lihat siapa yang berhasil meraih skor sempurna!</p>
+
+          <div class="grid-2">
+            <div class="info-card highlight">
+              <h4 style="font-size: 18px; color: #ffffff; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🌟 Turnamen Panen Madu Cilik:</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">1. Siswa memainkan gamenya dan memamerkan toples skornya.</p>
+              <p class="card-desc" style="margin-bottom: 10px;">2. Pastikan semua bunga hilang saat dipetik dan muncul lagi saat diulang.</p>
+              <p class="card-desc" style="margin-bottom: 14px;">3. Rayakan keberhasilan seluruh kelas dengan Tepuk Koding!</p>
+              
+              <button class="btn-reset-harvest" id="btnConfettiCelebration" style="background: linear-gradient(135deg, #10b981, #059669); color: white; width: auto; font-size: 14px; padding: 10px 24px;">
+                🎉 Pesta Konfeti Panen Madu!
+              </button>
+            </div>
+
+            <div class="info-card">
+              <h4 style="font-size: 18px; color: #fbbf24; font-family: 'Fredoka', cursive; margin-bottom: 12px;">🕷️ Bahaya Mengintai di Sesi 11:</h4>
+              <div style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 14px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 14px; font-weight: 800; color: #ef4444; margin-bottom: 4px;">Sesi 11: Musuh Laba-Laba Patroli & Layar Game Over!</div>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Ada musuh laba-laba jahat yang berpatroli mondar-mandir otomatis di lorong labirin! Kita akan belajar glide patroli dan siaran pesan (Broadcast Game Over)!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Teacher Speaker Notes Drawer (Toggled with 'N') -->
+  <aside class="teacher-notes-drawer" id="teacherNotesDrawer">
+    <div class="notes-header">
+      <div class="notes-title">
+        <span>🎙️</span> Panduan & Skrip Instruktur Mengajar
+      </div>
+      <div class="timing-badge" id="slideTiming">Alokasi: Menit 00–10'</div>
+    </div>
+    <div class="notes-content" id="notesContentText">
+      <!-- Injected via JavaScript based on current slide -->
+    </div>
+  </aside>
+
+  <script>
+    // Speaker Notes Data per Slide
+    const teacherNotesData = {
+      1: {
+        timing: "Menit 00–05' (Pembuka & Pemanasan)",
+        text: "Sambut siswa dengan antusias panen madu. Tunjukkan bahwa game labirin minggu lalu akan kita buat jauh lebih seru dengan menambahkan misi mengumpulkan madu dan sistem skor poin!",
+        script: "Halo para master game cilik Beekoding! Minggu lalu labirin kita sudah jadi, tapi lorongnya masih sepi ya? Hari ini kita akan menanam bunga-bunga nektar manis di seluruh labirin! Setiap Beeby memetik bunga, papan skor kita akan berbunyi 'Ting!' dan bertambah!"
+      },
+      2: {
+        timing: "Menit 05–12' (Ice Breaking & Konsep Memori)",
+        text: "Tanyakan kepada anak-anak bagaimana game favorit mereka (Roblox, Mario, Subway Surfers) mengingat koin mereka. Kenalkan konsep memori komputer.",
+        script: "Kalau kita main game, di pojok atas ada angka koin kita kan? Komputer itu pintar, tapi dia butuh tempat catatan untuk menulis angka. Nah, tempat catatan itu namanya 'Variabel'!"
+      },
+      3: {
+        timing: "Menit 12–20' (Analogi Celengan Berlabel)",
+        text: "Gunakan analogi fisik 'Kotak Celengan Berlabel'. Anak usia 6–9 tahun sangat mudah memahami variabel sebagai celengan uang koin tempat memasukkan poin.",
+        script: "Bayangkan kalian punya celengan toples di rumah. Di depan toples kita tempel stiker tulisan 'SKOR'. Setiap Beeby memetik bunga, kita masukkan 1 koin ke dalam toples. Jadi isi toples bertambah terus!"
+      },
+      4: {
+        timing: "Menit 20–30' (Dua Mantra Utama Variabel)",
+        text: "Bedah perbedaan krusial antara 'set' dan 'change'. Ingatkan bahwa 'set to 0' adalah reset awal saat bendera hijau diklik, sedangkan 'change by 1' adalah saat memetik bunga.",
+        script: "Ingat ya teman-teman, ada dua blok oranye penting: 'Set Skor to 0' itu untuk mengosongkan toples saat game baru mulai. Sedangkan 'Change Skor by 1' itu untuk memasukkan koin saat dapat bunga! Jangan sampai terbalik ya!"
+      },
+      5: {
+        timing: "Menit 30–42' (Mekanika Bunga & Hide)",
+        text: "Jelaskan mengapa bunga harus di-'hide' begitu tersentuh lebah. Tekankan bahwa jika tidak di-hide, skor akan melompat ratusan poin karena sentuhan berulang dalam loop forever.",
+        script: "Kenapa bunganya harus hilang (hide) setelah dipetik? Karena kalau bunganya masih ada di panggung, Beeby akan memetiknya terus menerus tanpa henti sampai skornya 999! Jadi begitu dipetik, bunganya langsung kita sembunyikan!"
+      },
+      6: {
+        timing: "Menit 42–55' (Uji Coba Simulator di Slide)",
+        text: "Gunakan simulator langsung di slide. Minta salah satu anak menyebut bunga mana yang ingin dipetik. Klik bunga, dengarkan bunyi coin, dan tunjukkan angka skor bertambah di toples.",
+        script: "Ayo lihat layar depan! Siapa yang mau memetik bunga matahari? Klik! Dengar bunyi koinnya? Poin kita sekarang jadi 1! Ayo kita petik sampai 5 bunga semuanya!"
+      },
+      7: {
+        timing: "Menit 55–65' (Trik Duplikasi Sprite)",
+        text: "Ajarkan teknik efisiensi koding: 'Duplicate'. Anak tidak perlu mengulang koding untuk 6 bunga. Cukup buat 1 bunga sempurna, lalu klik kanan duplicate.",
+        script: "Kita tidak perlu bikin koding dari nol untuk 6 bunga lho! Cukup klik kanan bunga yang sudah jadi, lalu pilih 'Duplicate'. Cling! Bunganya langsung kembar dan punya koding lengkap!"
+      },
+      8: {
+        timing: "Menit 65–75' (Detektif Bug Cilik)",
+        text: "Antisipasi 3 bug paling umum: skor tidak kembali ke 0, bunga hilang selamanya saat game diulang (lupa 'show'), dan skor meledak (lupa 'hide').",
+        script: "Ada yang bunganya tidak mau muncul saat bendera hijau ditekan lagi? Ayo detektif koding, cek kodenya! Apakah sudah ada blok 'Show' di bawah bendera hijau? Bunga kita butuh dibangunkan lagi saat game baru!"
+      },
+      9: {
+        timing: "Menit 75–85' (Tantangan Mandiri)",
+        text: "Tantang siswa yang cepat selesai untuk membuat 1 Bunga Emas raksasa bernilai +5 poin dengan suara kemenangan kembang api.",
+        script: "Bagi master koding yang sudah selesai 5 bunga, buat 1 Bunga Emas raksasa di jalan buntu paling sulit! Beri bonus +5 poin untuk pemain yang berani mengambilnya!"
+      },
+      10: {
+        timing: "Menit 85–90' (Showcase & Penutup)",
+        text: "Pamerkan game karya siswa. Berikan tepuk koding meriah dan preview musuh laba-laba patroli di Sesi 11.",
+        script: "Luar biasa semuanya! Sekarang game labirin kalian sudah punya sistem panen skor seperti game arcade bioskop! Minggu depan bersiaplah, karena sarang lebah kita akan kedatangan musuh laba-laba berpatroli! Tepuk koding untuk kita semua!"
+      }
+    };
+
+    // State
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let isNotesOpen = false;
+
+    // Elements
+    const slideCards = document.querySelectorAll('.slide-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const teacherNotesDrawer = document.getElementById('teacherNotesDrawer');
+    const slideTiming = document.getElementById('slideTiming');
+    const notesContentText = document.getElementById('notesContentText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slideCards.forEach((card, idx) => {
+        card.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update speaker notes
+      const notes = teacherNotesData[currentSlide];
+      if (notes) {
+        slideTiming.textContent = `Alokasi: ${notes.timing}`;
+        notesContentText.innerHTML = `
+          <p>${notes.text}</p>
+          <div class="notes-script">
+            <strong>🗣️ Skrip Guru:</strong> "${notes.script}"
+          </div>
+        `;
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Notes Toggle
+    function toggleNotes() {
+      isNotesOpen = !isNotesOpen;
+      teacherNotesDrawer.classList.toggle('open', isNotesOpen);
+      toggleNotesBtn.style.background = isNotesOpen ? '#d97706' : '#1f2937';
+    }
+
+    toggleNotesBtn.addEventListener('click', toggleNotes);
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Confetti celebration
+    const confettiBtn = document.getElementById('btnConfettiCelebration');
+    if (confettiBtn) {
+      confettiBtn.addEventListener('click', () => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 150,
+            spread: 90,
+            origin: { y: 0.6 }
+          });
+        }
+      });
+    }
+
+    // ==========================================
+    // LIVE HARVEST & SCORE SIMULATOR LOGIC
+    // ==========================================
+    let currentScore = 0;
+    const maxScore = 5;
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const flowers = [
+      document.getElementById('fl1'),
+      document.getElementById('fl2'),
+      document.getElementById('fl3'),
+      document.getElementById('fl4'),
+      document.getElementById('fl5')
+    ];
+    const btnResetHarvest = document.getElementById('btnResetHarvest');
+
+    function playCoinSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // High 2-tone coin chime (B5 -> E6)
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(987.77, audioCtx.currentTime); // B5
+        gain1.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start();
+        osc1.stop(audioCtx.currentTime + 0.1);
+
+        setTimeout(() => {
+          const osc2 = audioCtx.createOscillator();
+          const gain2 = audioCtx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(1318.51, audioCtx.currentTime); // E6
+          gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+          osc2.connect(gain2);
+          gain2.connect(audioCtx.destination);
+          osc2.start();
+          osc2.stop(audioCtx.currentTime + 0.25);
+        }, 80);
+      } catch (e) {}
+    }
+
+    function playWinFanfare() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.12 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.12);
+          osc.stop(audioCtx.currentTime + idx * 0.12 + 0.35);
+        });
+      } catch (e) {}
+    }
+
+    flowers.forEach((flower, index) => {
+      flower.addEventListener('click', () => {
+        if (!flower.classList.contains('collected')) {
+          flower.classList.add('collected');
+          currentScore += 1;
+          scoreDisplay.textContent = currentScore;
+          playCoinSound();
+
+          // Check Win Condition
+          if (currentScore === maxScore) {
+            setTimeout(() => {
+              playWinFanfare();
+              if (typeof confetti === 'function') {
+                confetti({
+                  particleCount: 120,
+                  spread: 80,
+                  origin: { y: 0.6 }
+                });
+              }
+            }, 300);
+          }
+        }
+      });
+    });
+
+    btnResetHarvest.addEventListener('click', () => {
+      // Demonstrates: set [Skor] to 0 AND show all flowers
+      currentScore = 0;
+      scoreDisplay.textContent = currentScore;
+      flowers.forEach(flower => {
+        flower.classList.remove('collected');
+      });
+    });
+
+    // Initialize slide
+    updateSlide();
+  </script>
+</body>
+</html>
