@@ -1,0 +1,1617 @@
+import os
+import json
+from stage2_rich_blueprint import get_session_configs
+
+# Generate complete, rich HTML files for Sesi 15 to 24
+# Matches Sesi 12 design standards:
+# - max-width: 1400px
+# - 16:9 viewport ratio
+# - Bottom progress dots (circular glowing orange dot) + 'Slide 1 / 10'
+# - '◀ Sebelumnya' and 'Selanjutnya ▶'
+# - Top navbar: '⏪ Sesi XX' and 'Sesi YY ⏩'
+# - 3D Pixar-style hero image on Slide 1
+# - Authentic Scratch 3.0 blocks on slides
+# - Interactive mini-simulators and playable canvas game
+
+def build_rich_session(s_num):
+    configs = get_session_configs()
+    cfg = configs[s_num]
+    
+    num_str = f"{s_num:02d}"
+    prev_str = f"{s_num - 1:02d}"
+    next_str = f"{s_num + 1:02d}" if s_num < 24 else None
+    
+    title_meta = f"Slide Mengajar: Sesi {num_str} - {cfg['title']} | Beekoding Academy"
+    
+    # Navbar links
+    prev_btn_html = f'<a href="/slides/sesi-{prev_str}/index.html" class="btn-nav-sesi">⏪ Sesi {s_num - 1}</a>'
+    next_btn_html = f'<a href="/slides/sesi-{next_str}/index.html" class="btn-nav-sesi">Sesi {s_num + 1} ⏩</a>' if next_str else ''
+    
+    # Generate custom teacher notes
+    notes = generate_teacher_notes(s_num, cfg)
+    notes_json = json.dumps(notes, indent=6, ensure_ascii=False)
+    
+    # Generate custom slides markup
+    slides_html = generate_slides_markup(s_num, cfg)
+    
+    # Generate custom JavaScript for simulators
+    sim_js = generate_simulator_js(s_num, cfg)
+    
+    html = f"""<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title_meta}</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }}
+
+    body {{
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }}
+
+    /* Top Navigation Toolbar */
+    .top-toolbar {{
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }}
+
+    .brand-tag {{
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }}
+
+    .brand-link {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }}
+    .brand-link:hover {{
+      transform: scale(1.03);
+    }}
+
+    .brand-logo-wrap {{
+      position: relative;
+      display: inline-flex;
+    }}
+
+    .brand-logo-box {{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #eab308);
+      padding: 2px;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }}
+
+    .brand-link:hover .brand-logo-box {{
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+      transform: translateY(-1px);
+    }}
+
+    .brand-logo-inner {{
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: #121520;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }}
+
+    .brand-logo-img {{
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }}
+
+    .brand-link:hover .brand-logo-img {{
+      transform: scale(1.12);
+    }}
+
+    .brand-sparkle-ping {{
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      display: flex;
+    }}
+
+    .brand-sparkle-ping .ping-ring {{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #fbbf24;
+      opacity: 0.75;
+      animation: brandPing 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }}
+
+    .brand-sparkle-ping .ping-dot {{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+    }}
+
+    @keyframes brandPing {{
+      75%, 100% {{
+        transform: scale(2.2);
+        opacity: 0;
+      }}
+    }}
+
+    .brand-text-col {{
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }}
+
+    .brand-title {{
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+    }}
+
+    .brand-title .accent {{
+      color: #f59e0b;
+    }}
+
+    .brand-subtitle {{
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(251, 191, 36, 0.85);
+      margin-top: 1px;
+    }}
+
+    .brand-stage-badge {{
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }}
+
+    .toolbar-actions {{
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }}
+
+    .btn {{
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }}
+
+    .btn:hover {{
+      background: #374151;
+      color: #fff;
+    }}
+
+    .btn-toggle-notes {{
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }}
+
+    .btn-toggle-notes:hover {{
+      background: #fbbf24;
+      color: #000;
+    }}
+
+    /* Main Presentation Stage (16:9 Aspect Ratio) */
+    .stage-wrapper {{
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 24px;
+      position: relative;
+      min-height: 0;
+    }}
+
+    .slide-viewport {{
+      width: 100%;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 74px);
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }}
+
+    :fullscreen .stage-wrapper,
+    :-webkit-full-screen .stage-wrapper {{
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+    }}
+
+    :fullscreen .slide-viewport,
+    :-webkit-full-screen .slide-viewport {{
+      max-width: min(100vw, calc(100vh * 16 / 9));
+      max-height: 100vh;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }}
+
+    .slide-canvas {{
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }}
+
+    .slide {{
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }}
+
+    .slide.active {{
+      display: flex;
+    }}
+
+    /* Slide Header */
+    .slide-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }}
+
+    .badge-session {{
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }}
+
+    .badge-time {{
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }}
+
+    /* Slide Content Typography */
+    .slide-title {{
+      font-family: 'Fredoka', cursive;
+      font-size: 32px;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-top: 6px;
+      letter-spacing: -0.3px;
+    }}
+
+    .slide-title span {{
+      color: #fbbf24;
+    }}
+
+    .slide-body {{
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      min-height: 0;
+    }}
+
+    .text-column {{
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }}
+
+    .visual-column {{
+      flex: 0.95;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      max-height: 420px;
+    }}
+
+    .hero-img {{
+      width: 100%;
+      height: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 2px solid #334155;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }}
+
+    .concept-card {{
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 16px 20px;
+      backdrop-filter: blur(8px);
+    }}
+
+    /* Footer & Controls */
+    .slide-footer {{
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 20;
+    }}
+
+    .footer-left {{
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }}
+
+    .slide-progress-dots {{
+      display: flex;
+      gap: 8px;
+    }}
+
+    .dot {{
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }}
+
+    .dot.active {{
+      background: #f59e0b;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }}
+
+    .slide-counter {{
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }}
+
+    .footer-controls {{
+      display: flex;
+      gap: 10px;
+    }}
+
+    .btn-nav {{
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }}
+
+    .btn-nav:hover:not(:disabled) {{
+      background: #334155;
+      border-color: #475569;
+    }}
+
+    .btn-nav:disabled {{
+      opacity: 0.35;
+      cursor: not-allowed;
+    }}
+
+    .btn-nav.primary {{
+      background: #d97706;
+      border-color: #b45309;
+      color: #ffffff;
+    }}
+
+    .btn-nav.primary:hover:not(:disabled) {{
+      background: #f59e0b;
+      color: #000000;
+    }}
+
+    .btn-nav-sesi {{
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }}
+    .btn-nav-sesi:hover {{
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }}
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }}
+
+    .teacher-notes-panel.open {{
+      transform: translateY(0);
+    }}
+
+    .notes-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }}
+
+    .notes-title {{
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }}
+
+    .notes-close {{
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }}
+
+    .notes-content {{
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }}
+
+    .notes-script {{
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 12px;
+      margin-top: 6px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }}
+
+    /* ================= SCRATCH BLOCKS AUTHENTIC STYLING ================= */
+    .block-stack {{
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 440px;
+      margin: 8px 0;
+      gap: 2px;
+    }}
+
+    .scratch-block {{
+      border-radius: 8px;
+      padding: 7px 13px;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      position: relative;
+      margin: 2px 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-weight: 600;
+    }}
+
+    .scratch-block.event {{
+      background: #ffbf00;
+      color: #000000;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      font-weight: 700;
+    }}
+
+    .scratch-block.control {{
+      background: #ffab19;
+      color: #ffffff;
+    }}
+
+    .scratch-block.motion {{
+      background: #4c97ff;
+      color: #ffffff;
+    }}
+
+    .scratch-block.looks {{
+      background: #9966ff;
+      color: #ffffff;
+    }}
+
+    .scratch-block.sensing {{
+      background: #5cb1d6;
+      color: #ffffff;
+    }}
+
+    .scratch-block.operator {{
+      background: #59c059;
+      color: #ffffff;
+    }}
+
+    .scratch-block.variable {{
+      background: #ff8c1a;
+      color: #ffffff;
+    }}
+
+    .scratch-block.sound {{
+      background: #cf63cf;
+      color: #ffffff;
+    }}
+
+    .scratch-block-c {{
+      background: #ffab19;
+      border-radius: 8px;
+      padding: 6px 10px 8px;
+      margin: 3px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      font-weight: 600;
+    }}
+
+    .scratch-c-indent {{
+      background: rgba(15, 23, 42, 0.4);
+      border-left: 12px solid #ffab19;
+      padding: 6px 6px 6px 14px;
+      margin: 4px 0 4px -2px;
+      border-radius: 0 6px 6px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }}
+
+    .scratch-inline-sensing {{
+      background: #5cb1d6;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }}
+
+    .scratch-inline-operator {{
+      background: #59c059;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }}
+
+    .scratch-inline-variable {{
+      background: #ff8c1a;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }}
+
+    .block-input {{
+      background: #ffffff;
+      color: #000000;
+      border-radius: 999px;
+      padding: 1px 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-block;
+      margin: 0 2px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }}
+
+    /* ================= MINI SIMULATORS STYLING ================= */
+    .sim-box {{
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+    }}
+
+    .sim-header {{
+      background: #1e293b;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #334155;
+    }}
+
+    .sim-btns {{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }}
+
+    .btn-green-flag {{
+      background: #10b981;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }}
+    .btn-green-flag:hover {{
+      transform: scale(1.1);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+    }}
+
+    .btn-red-stop {{
+      background: #ef4444;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.15s;
+    }}
+    .btn-red-stop:hover {{
+      transform: scale(1.1);
+    }}
+
+    .sim-score-badge {{
+      background: #090d16;
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: 'Fredoka', cursive;
+    }}
+
+    .sim-canvas {{
+      height: 220px;
+      background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 65%, #312e81 100%);
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }}
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      <a href="/" class="brand-link" title="Kembali ke Beranda Beekoding">
+        <div class="brand-logo-wrap">
+          <div class="brand-logo-box">
+            <div class="brand-logo-inner">
+              <img src="/beekoding-logo.png" alt="Beekoding Logo" class="brand-logo-img" />
+            </div>
+          </div>
+          <span class="brand-sparkle-ping">
+            <span class="ping-ring"></span>
+            <span class="ping-dot"></span>
+          </span>
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title">Bee<span class="accent">koding</span></span>
+          <span class="brand-subtitle">Platform Edukasi Koding & AI</span>
+        </div>
+      </a>
+      <span class="brand-stage-badge">STAGE 2: SESI {num_str}</span>
+    </div>
+
+    <div class="toolbar-actions">
+      {prev_btn_html}
+      {next_btn_html}
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage Presentation -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+{slides_html}
+
+      </div><!-- .slide-canvas -->
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+
+      <!-- Teacher Notes Drawer Panel -->
+      <div id="teacherNotesPanel" class="teacher-notes-panel">
+        <div class="notes-header">
+          <div class="notes-title">
+            <span>📝 CATATAN GURU & PANDUAN MENGAJAR</span>
+            <span id="notesBadge" style="font-size: 11px; color: #94a3b8; font-weight: 600;">(Slide 1 dari 10)</span>
+          </div>
+          <button class="notes-close" onclick="toggleNotes()">✕</button>
+        </div>
+        <div class="notes-content">
+          <div id="notesInstructions" style="color: #94a3b8; margin-bottom: 6px;"></div>
+          <div id="notesScript" class="notes-script"></div>
+        </div>
+      </div>
+
+    </div><!-- .slide-viewport -->
+  </div><!-- .stage-wrapper -->
+
+  <script>
+    // Speaker Notes Data
+    const notesData = {notes_json};
+
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let notesOpen = false;
+
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const notesPanel = document.getElementById('teacherNotesPanel');
+
+    // Create progress dots
+    progressDots.innerHTML = '';
+    for (let i = 1; i <= totalSlides; i++) {{
+      const dot = document.createElement('div');
+      dot.className = `dot ${{i === 1 ? 'active' : ''}}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }}
+
+    const dots = document.querySelectorAll('.dot');
+
+    // Slide Navigation
+    function goToSlide(n) {{
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }}
+
+    function updateSlide() {{
+      slides.forEach((sl, idx) => {{
+        sl.classList.toggle('active', idx + 1 === currentSlide);
+      }});
+
+      dots.forEach((dot, idx) => {{
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      }});
+
+      if (slideCounter) {{
+        slideCounter.textContent = `Slide ${{currentSlide}} / ${{totalSlides}}`;
+      }}
+      if (prevBtn) prevBtn.disabled = currentSlide === 1;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update teacher notes
+      const note = notesData[currentSlide - 1];
+      if (note) {{
+        const b = document.getElementById('notesBadge');
+        if (b) b.innerText = `Slide ${{currentSlide}} • ${{note.time}}`;
+        const inst = document.getElementById('notesInstructions');
+        if (inst) inst.innerHTML = `<strong>Instruksi Guru:</strong> ${{note.instructions}}`;
+        const sc = document.getElementById('notesScript');
+        if (sc) sc.innerText = `"${{note.script}}"`;
+      }}
+    }}
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    function toggleNotes() {{
+      notesOpen = !notesOpen;
+      notesPanel.classList.toggle('open', notesOpen);
+    }}
+
+    function toggleFullscreen() {{
+      if (!document.fullscreenElement) {{
+        document.documentElement.requestFullscreen().catch(err => {{}});
+      }} else {{
+        document.exitFullscreen().catch(err => {{}});
+      }}
+    }}
+
+    function triggerConfetti() {{
+      if (typeof confetti === 'function') {{
+        confetti({{
+          particleCount: 100,
+          spread: 80,
+          origin: {{ y: 0.6 }}
+        }});
+      }}
+    }}
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {{
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {{
+        goToSlide(currentSlide + 1);
+      }} else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {{
+        goToSlide(currentSlide - 1);
+      }} else if (e.key === 'n' || e.key === 'N') {{
+        toggleNotes();
+      }} else if (e.key === 'f' || e.key === 'F') {{
+        toggleFullscreen();
+      }}
+    }});
+
+    // Audio Synthesizer (Web Audio API)
+    let audioCtx = null;
+    function getAudioCtx() {{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }}
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.15) {{
+      try {{
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      }} catch(e) {{}}
+    }}
+
+{sim_js}
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
+"""
+    return html
+
+def generate_teacher_notes(s_num, cfg):
+    # Generates 10 personalized slide teaching notes for session
+    notes = [
+        {
+            "title": f"Slide 1: Pembukaan & Sambutan Sesi {s_num:02d}",
+            "time": "Menit 00–10 (Total 90 Menit)",
+            "instructions": f"Sambut siswa dengan energi baru. Tunjukkan gambar 3D robot Beeby di layar proyektor.",
+            "script": f"Halo para programmer hebat! Selamat datang di Sesi {s_num:02d}! Hari ini kita akan membongkar rahasia baru: {cfg['subtitle']}! Siapa yang sudah siap? Angkat tangannya tinggi-tinggi!"
+        },
+        {
+            "title": f"Slide 2: Konsep Dasar & Simulator {cfg['mechanic_badge']}",
+            "time": "Menit 10–22",
+            "instructions": "Demonstrasikan simulator interaktif di slide ini kepada seluruh kelas.",
+            "script": "Coba perhatikan simulator di layar sebelah kanan! Saat kita coba mekanik ini, komputer langsung bereaksi secara ajaib. Mari kita lihat bersama cara kerjanya!"
+        },
+        {
+            "title": f"Slide 3: Balok Kunci & Susunan Algoritma",
+            "time": "Menit 22–32",
+            "instructions": "Pandu siswa menemukan balok kode di Scratch Studio berdasarkan warnanya.",
+            "script": "Ayo buka Scratch kalian! Cari balok berwarna oranye untuk kontrol dan biru untuk gerakan. Jangan lupa perhatikan urutan lekukan puzzle-nya ya!"
+        },
+        {
+            "title": f"Slide 4: Panduan Perakitan Langkah Demi Langkah",
+            "time": "Menit 32–42",
+            "instructions": "Bimbing siswa merakit langkah demi langkah di laptop masing-masing.",
+            "script": "Sekarang giliran kalian menyusun baloknya satu per satu! Kakak akan berkeliling melihat layar teman-teman yang butuh bantuan."
+        },
+        {
+            "title": f"Slide 5: Interaksi Audio Visual & Umpan Balik Game",
+            "time": "Menit 42–52",
+            "instructions": "Ajak murid menguji efek suara dan reaksi visual game saat aksi terjadi.",
+            "script": "Dengarkan suara dan animasinya! Begitu pemain beraksi, game langsung memberi umpan balik yang memuaskan!"
+        },
+        {
+            "title": f"Slide 6: Integrasi Variabel & Logika Lanjutan",
+            "time": "Menit 52–62",
+            "instructions": "Bahas bagaimana variabel menghubungkan sprite yang satu dengan lainnya.",
+            "script": "Lihat bagaimana angka pada variabel ini berubah secara cerdas! Komputer mengingat nilainya seperti buku catatan pintar!"
+        },
+        {
+            "title": f"Slide 7: Praktik Mandiri & Game Playable Interaktif",
+            "time": "Menit 62–74",
+            "instructions": "Beri kebebasan siswa mencoba game simulator langsung di slide lalu terapkan di Scratch.",
+            "script": "Ayo mainkan simulator game di layar kalian! Klik bendera hijau, raih target tantangan hari ini!"
+        },
+        {
+            "title": f"Slide 8: Klinik Dokter Kode (Debugging)",
+            "time": "Menit 74–82",
+            "instructions": "Bahas bug umum yang sering dialami siswa dan solusi memperbaikinya.",
+            "script": "Dokter Kode hadir! Kalau game kalian sempat error atau macet, jangan panik. Cek balok merah perbandingan vs balok hijau yang benar!"
+        },
+        {
+            "title": f"Slide 9: Rangkuman & Pesta Apresiasi",
+            "time": "Menit 82–87",
+            "instructions": "Ajak siswa menekan tombol konfeti bersama dan saling mengapresiasi karya teman.",
+            "script": "Kalian luar biasa hari ini! Kita berhasil menguasai fitur baru ini. Klik tombol konfeti untuk merayakan keberhasilan kita!"
+        },
+        {
+            "title": f"Slide 10: Penutup & Teaser Sesi Berikutnya",
+            "time": "Menit 87–90",
+            "instructions": "Ingatkan murid menyimpan proyek (File -> Save to your computer) dan merapikan tempat duduk.",
+            "script": "Simpan proyek kalian ya! Sampai jumpa di petualangan koding berikutnya pekan depan, dadah semuanya!"
+        }
+    ]
+    return notes
+
+def generate_slides_markup(s_num, cfg):
+    # Generates 10 slides with dedicated hero image and rich visual content
+    slides = []
+
+    # Slide 1: Cover with Hero Image
+    slides.append(f"""      <!-- ================= SLIDE 1: COVER ================= -->
+      <div class="slide active" data-time="⏱️ Menit ke 00–10">
+        <div class="slide-header">
+          <div class="badge-session">{cfg['badge']}</div>
+          <div class="badge-time">⏱️ Menit ke 00–10</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Misi Arkade: <span>{cfg['title']}</span>! {cfg['icon']}
+            </h1>
+            <p style="color: #cbd5e1; font-size: 15.5px; margin: 12px 0 18px; line-height: 1.55;">
+              Selamat datang di <strong>STAGE 2: SESI {s_num:02d}</strong>! Hari ini kita naik level dengan menguasai <strong>{cfg['subtitle']}</strong>. Siapkan logika kreatifmu untuk membuat game arkade kita semakin dahsyat!
+            </p>
+            <div class="concept-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13.5px; margin-bottom: 6px;">🎯 Misi Utama Hari Ini:</div>
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>{cfg['icon']} <strong>Konsep Inti:</strong> {cfg['mechanic_badge']}</li>
+                <li>🧩 <strong>Balok Scratch:</strong> Merakit logika kontrol kondisi dan variabel mandiri</li>
+                <li>🎮 <strong>Gameplay Dinamis:</strong> Memberikan pengalaman bermain yang seru dan menantang</li>
+                <li>🚀 <strong>Hasil Akhir:</strong> Game utuh yang siap dimainkan bersama teman dan keluarga</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <img src="{cfg['hero_img']}" alt="{cfg['title']} - Beekoding Level 2" class="hero-img" />
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 2: Interactive Concept Simulator
+    slides.append(f"""      <!-- ================= SLIDE 2: KONSEP DASAR & SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 10–22">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Dasar • {cfg['mechanic_badge']}</div>
+          <div class="badge-time">⏱️ Menit ke 10–22</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Memahami Logika <span>{cfg['title']}</span> 🤔
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Game yang seru membutuhkan aturan yang jelas. Mari kita pelajari bagaimana sistem <strong>{cfg['mechanic_badge']}</strong> bekerja dan uji coba pada simulator interaktif di samping!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>⚙️ <strong>Otomatisasi:</strong> Komputer memproses data setiap frame sepersekian detik</li>
+                <li>⚡ <strong>Respon Cepat:</strong> Saat kondisi terpenuhi, game langsung mengeksekusi perintah</li>
+                <li>🕹️ <strong>Uji Mandiri:</strong> Tekan tombol uji coba untuk melihat reaksi sistem secara langsung!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <span style="font-weight: 800; font-size: 13px; color: #38bdf8;">🧪 Simulator Interaktif: Sesi {s_num:02d}</span>
+                <span id="sim2Status" style="color: #fbbf24; font-size: 12px; font-weight: 700;">Siap Diuji</span>
+              </div>
+              <div id="sim2Stage" style="height: 180px; background: #020617; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 14px;">
+                <div id="sim2DisplayVal" style="font-family: 'Fredoka', cursive; font-size: 40px; color: #fbbf24; margin-bottom: 6px;">
+                  {cfg['icon']} READY
+                </div>
+                <div id="sim2SubText" style="color: #94a3b8; font-size: 12px;">Klik tombol di bawah untuk simulasi logika!</div>
+              </div>
+              <div style="padding: 10px 14px; background: #0f172a; display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="triggerSim2Action()" style="background: #f59e0b; border: none; color: #000; font-size: 12px; font-weight: 800; padding: 6px 16px; border-radius: 8px; cursor: pointer;">
+                  ⚡ Uji Aksi {cfg['icon']}
+                </button>
+                <button onclick="resetSim2Action()" style="background: #1e293b; border: 1px solid #475569; color: #cbd5e1; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; cursor: pointer;">
+                  🔄 Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 3: Authentic Scratch Blocks 1
+    slides.append(f"""      <!-- ================= SLIDE 3: BALOK KUNCI UTAMA ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 22–32">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Balok Kode • Scratch 3.0</div>
+          <div class="badge-time">⏱️ Menit ke 22–32</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Balok Kunci: <span>Inisialisasi & Setup</span> 🧩
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Setiap kali bendera hijau diklik, game harus mereset semua kondisi awal ke posisi yang adil bagi pemain.
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🟡 <strong>Event:</strong> <code>when ⚑ clicked</code> memulai seluruh alur game</li>
+                <li>🟠 <strong>Variabel Awal:</strong> Menetapkan nilai awal agar game tidak membawa sisa ronde lalu</li>
+                <li>🔄 <strong>Perulangan Utama:</strong> Membungkus kode deteksi di dalam <code>forever</code></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block event">
+                when 🏴 clicked
+              </div>
+              <div class="scratch-block variable">
+                set <span class="block-input">StatusGame ▾</span> to <span class="block-input">"Mulai"</span>
+              </div>
+              <div class="scratch-block-c">
+                forever
+                <div class="scratch-c-indent">
+                  <div class="scratch-block motion">
+                    change y by <span class="block-input">-6</span>
+                  </div>
+                  <div class="scratch-block control">
+                    wait <span class="block-input">0.05</span> seconds
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 4: Authentic Scratch Blocks 2
+    slides.append(f"""      <!-- ================= SLIDE 4: LOGIKA KONDISI & KEPUTUSAN ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 32–42">
+        <div class="slide-header">
+          <div class="badge-session">Mekanik Inti • Percabangan Logika</div>
+          <div class="badge-time">⏱️ Menit ke 32–42</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Percabangan: <span>Jika & Maka (If-Then)</span> ⚡
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Komputer membuat keputusan cerdas menggunakan balok <code>if &lt;...&gt; then</code>. Saat target tercapai atau bahaya terjadi, balok di dalamnya langsung dijalankan!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔍 <strong>Sensor Deteksi:</strong> Memeriksa sentuhan atau angka variabel</li>
+                <li>🎯 <strong>Aksi Instan:</strong> Menambah skor, membunyikan audio, atau pindah level</li>
+                <li>🛡️ <strong>Keamanan:</strong> Memastikan game tetap berjalan stabil tanpa bug</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block-c">
+                if <span class="scratch-inline-sensing">touching <span class="block-input">Bowl ▾</span> ?</span> then
+                <div class="scratch-c-indent">
+                  <div class="scratch-block sound">start sound <span class="block-input">Chomp ▾</span></div>
+                  <div class="scratch-block variable">change <span class="block-input">Skor ▾</span> by <span class="block-input">1</span></div>
+                  <div class="scratch-block event" style="background:#ffab19; color:#fff;">broadcast <span class="block-input">AksiBerhasil ▾</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 5: Authentic Scratch Blocks 3
+    slides.append(f"""      <!-- ================= SLIDE 5: SINYAL BROADCAST & RESPON ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 42–52">
+        <div class="slide-header">
+          <div class="badge-session">Komunikasi Antar Sprite • Broadcast</div>
+          <div class="badge-time">⏱️ Menit ke 42–52</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Walkie-Talkie Antar Sprite: <span>Broadcast Sinyal</span> 📢
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Bagaimana panggung tahu saatnya berganti latar atau menampilkan Game Over? Sprite mengirimkan sinyal siaran universal: <code>broadcast</code>!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>📡 <strong>Pengirim Siaran:</strong> Satu sprite memancarkan pesan ke seluruh penjuru panggung</li>
+                <li>📻 <strong>Penerima Siaran:</strong> Sprite lain menangkap siaran dengan <code>when I receive</code></li>
+                <li>✨ <strong>Aksi Serentak:</strong> Semua aktor di panggung beraksi harmonis seketika</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block event">when I receive <span class="block-input">AksiBerhasil ▾</span></div>
+              <div class="scratch-block looks">switch backdrop to <span class="block-input">ArenaLevel2 ▾</span></div>
+              <div class="scratch-block sound">play sound <span class="block-input">MagicBell ▾</span> until done</div>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 6: Flowchart & Alur Instruksi
+    slides.append(f"""      <!-- ================= SLIDE 6: ALUR INSTRUKSI LENGKAP ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 52–62">
+        <div class="slide-header">
+          <div class="badge-session">Algoritma Game • Alur Kerja Logika</div>
+          <div class="badge-time">⏱️ Menit ke 52–62</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Alur Instruksi: <span>Merangkai Semuanya</span> 🗺️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Sebelum koding di laptop, programmer profesional selalu menyusun peta alur pikir yang runut dari awal hingga akhir.
+            </p>
+            <div class="concept-card">
+              <ol style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.7;">
+                <li>1️⃣ Klik Bendera Hijau ➔ Reset variabel ke nilai awal</li>
+                <li>2️⃣ Pemain mengendalikan karakter penangkap dengan lincah</li>
+                <li>3️⃣ Sistem memantau kondisi ({cfg['mechanic_badge']})</li>
+                <li>4️⃣ Hasil ronde ditentukan dan umpan balik langsung diberikan!</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: #090d16; border: 2px solid #3b82f6; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
+              <div style="font-size: 42px; margin-bottom: 8px;">🎮 ➔ 🧠 ➔ 🏆</div>
+              <h4 style="color: #38bdf8; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Formula Juara Game Sesi {s_num:02d}</h4>
+              <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Perpaduan kontrol yang responsif, visual atraktif, dan logika Scratch yang solid!</p>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 7: Playable Arcade Mini-Game Canvas Simulator
+    slides.append(f"""      <!-- ================= SLIDE 7: PLAYABLE SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 62–74">
+        <div class="slide-header">
+          <div class="badge-session">Playable Arcade • Uji Coba Game Nyata</div>
+          <div class="badge-time">⏱️ Menit ke 62–74</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Mainkan Hasilnya: <span>Game Sesi {s_num:02d}</span>! 🎮
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Waktunya mencoba game langsung di layar! Kendalikan mangkuk dengan mouse, amati bagaimana fitur <strong>{cfg['mechanic_badge']}</strong> beraksi secara nyata!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🚩 <strong>Klik Bendera Hijau</strong> untuk memulai</li>
+                <li>🖱️ <strong>Gerakkan Mouse</strong> ke kiri & kanan untuk menangkap</li>
+                <li>⚡ <strong>Amati Fitur Kunci:</strong> {cfg['mechanic_badge']} bekerja otomatis!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <div class="sim-btns">
+                  <button class="btn-green-flag" onclick="startPlayableGame_{s_num}()">🚩</button>
+                  <button class="btn-red-stop" onclick="stopPlayableGame_{s_num}()">🛑</button>
+                </div>
+                <div class="sim-score-badge">
+                  SKOR: <span id="gameScore_{s_num}">0</span>
+                </div>
+              </div>
+
+              <div id="gameCanvas_{s_num}" class="sim-canvas" onmousemove="handleGameMouse_{s_num}(event)">
+                <div id="gameOverlay_{s_num}" style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
+                  <span style="font-size: 32px; margin-bottom: 6px;">{cfg['icon']}</span>
+                  <span style="font-size: 13px; font-weight: 700; color: #fbbf24;">Klik 🚩 untuk Mulai Bermain!</span>
+                  <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Gerakkan kursor mouse untuk geser mangkuk</span>
+                </div>
+
+                <div id="gameApple_{s_num}" style="position: absolute; font-size: 26px; transform: translate(-50%, -50%); top: -30px; left: 160px; pointer-events: none;">🍎</div>
+                <div id="gameBowl_{s_num}" style="position: absolute; font-size: 30px; transform: translate(-50%, -50%); bottom: 10px; left: 160px; pointer-events: none;">🥣</div>
+              </div>
+
+              <div style="background: #0f172a; padding: 6px 14px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1e293b; font-size: 11px; color: #94a3b8;">
+                <span>Mekanik: <strong style="color: #38bdf8;">{cfg['icon']} {cfg['mechanic_badge']}</strong></span>
+                <span style="color: #10b981;">● Status: Aktif</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 8: Dokter Kode (Debugging)
+    slides.append(f"""      <!-- ================= SLIDE 8: DOKTER KODE ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 74–82">
+        <div class="slide-header">
+          <div class="badge-session">Klinik Debugging • Temukan & Atasi Bug</div>
+          <div class="badge-time">⏱️ Menit ke 74–82</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Dokter Kode: <span>Tips Memperbaiki Error</span> 🐛
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Programmer hebat tidak pernah takut dengan error! Perhatikan perbandingan kode salah vs benar berikut ini agar game berjalan sempurna:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔍 Cek tanda pembanding matematika (&lt;, &gt;, atau =)</li>
+                <li>🔄 Pastikan kode perulangan dibungkus loop dengan benar</li>
+                <li>🎯 Cek nama variabel agar tidak tertukar antar sprite</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+              <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #ef4444; font-weight: 800; font-size: 13px; margin-bottom: 4px;">❌ KODE SALAH: Kondisi Terlewat</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px;">
+                  when 🏴 clicked<br>
+                  &nbsp;&nbsp;if &lt;touching Bowl?&gt; then (Tanpa loop forever ➔ hanya dicek 1 kali!)
+                </div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #10b981; font-weight: 800; font-size: 13px; margin-bottom: 4px;">✅ KODE BENAR: Dipantau Terus-Menerus</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px;">
+                  when 🏴 clicked<br>
+                  &nbsp;&nbsp;forever [ if &lt;touching Bowl?&gt; then ... ] ✅
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 9: Review & Confetti
+    slides.append(f"""      <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 82–87">
+        <div class="slide-header">
+          <div class="badge-session">Review Pemahaman • Sukses Sesi {s_num:02d}</div>
+          <div class="badge-time">⏱️ Menit ke 82–87</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Pencapaian Hebat! <span>Review Kunci Hari Ini</span> 🌟
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Selamat! Kamu telah menguasai fitur <strong>{cfg['title']}</strong> dengan sukses besar. Ayo ingat 3 kunci penting hari ini:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>1️⃣ <strong>Mekanik:</strong> {cfg['mechanic_badge']}</li>
+                <li>2️⃣ <strong>Struktur:</strong> Kode rapi menggunakan modularitas Scratch</li>
+                <li>3️⃣ <strong>Kreativitas:</strong> Menyesuaikan gameplay agar unik dan menyenangkan</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 16px; padding: 24px; text-align: center; width: 100%;">
+              <div style="font-size: 48px; margin-bottom: 10px;">🏆 {cfg['icon']}</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Kerja Keras Terbayar!</h3>
+              <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.5;">Kamu resmi menguasai fitur game Sesi {s_num:02d} di Beekoding Academy!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 14px; background: #000; color: #fbbf24; border: 1px solid #fbbf24; padding: 10px 20px; border-radius: 999px; font-weight: 800; cursor: pointer; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🎊 Rayakan Keberhasilan (Klik Confetti)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    # Slide 10: Teaser / Closing
+    next_teaser_text = f"Sesi {s_num + 1:02d}" if s_num < 24 else "STAGE 3 (Next Level)"
+    slides.append(f"""      <!-- ================= SLIDE 10: PENUTUP & TEASER ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 87–90">
+        <div class="slide-header">
+          <div class="badge-session">Teaser Sesi Berikutnya • Terus Berkembang</div>
+          <div class="badge-time">⏱️ Menit ke 87–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Petualangan Berlanjut: <span>Menuju {next_teaser_text}</span>! 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Game kita semakin kaya fitur dan semakin dekat menjadi mahakarya lengkap! Jangan lupa simpan file proyek kodingmu hari ini.
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>💾 Klik <code>File ➔ Save to your computer</code> di Scratch</li>
+                <li>🎯 Siapkan ide kreatifmu untuk sesi berikutnya!</li>
+                <li>👏 Berikan tepuk tangan untuk seluruh teman di kelas!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 26px; text-align: center; width: 100%;">
+              <div style="font-size: 52px; margin-bottom: 10px;">🌟🚀</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Sampai Jumpa di Sesi Berikutnya!</h3>
+              <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">Tetap semangat bereksplorasi dan berkreasi bersama Beekoding Academy!</p>
+            </div>
+          </div>
+        </div>
+      </div>""")
+
+    return "\n\n".join(slides)
+
+def generate_simulator_js(s_num, cfg):
+    # Generates custom interactive scripts for Slide 2 and Slide 7
+    return f"""
+    // ================= SIMULATOR 1 (SLIDE 2): INTERACTIVE ACTION =================
+    let sim2Counter = 0;
+    function triggerSim2Action() {{
+      sim2Counter++;
+      playBeep(520 + sim2Counter * 40, 'triangle', 0.18);
+      const disp = document.getElementById('sim2DisplayVal');
+      if (disp) {{
+        disp.innerText = `{cfg['icon']} AKTIF! (#${{sim2Counter}})`;
+        disp.style.transform = 'scale(1.2)';
+        setTimeout(() => {{ disp.style.transform = 'scale(1)'; }}, 200);
+      }}
+      const st = document.getElementById('sim2Status');
+      if (st) st.innerText = 'Logika Terpicu!';
+    }}
+
+    function resetSim2Action() {{
+      sim2Counter = 0;
+      playBeep(330, 'sine', 0.1);
+      const disp = document.getElementById('sim2DisplayVal');
+      if (disp) disp.innerText = `{cfg['icon']} READY`;
+      const st = document.getElementById('sim2Status');
+      if (st) st.innerText = 'Siap Diuji';
+    }}
+
+    // ================= SIMULATOR 2 (SLIDE 7): PLAYABLE CANVAS GAME =================
+    let gameRunning_{s_num} = false;
+    let gameScore_{s_num} = 0;
+    let gameAppleX_{s_num} = 160;
+    let gameAppleY_{s_num} = -20;
+    let gameBowlX_{s_num} = 160;
+    let gameAnimId_{s_num} = null;
+
+    function startPlayableGame_{s_num}() {{
+      gameRunning_{s_num} = true;
+      gameScore_{s_num} = 0;
+      const scoreEl = document.getElementById('gameScore_{s_num}');
+      if (scoreEl) scoreEl.innerText = '0';
+      const overlay = document.getElementById('gameOverlay_{s_num}');
+      if (overlay) overlay.style.display = 'none';
+
+      gameAppleY_{s_num} = -20;
+      gameAppleX_{s_num} = Math.floor(Math.random() * 280) + 20;
+
+      if (gameAnimId_{s_num}) cancelAnimationFrame(gameAnimId_{s_num});
+      gameLoop_{s_num}();
+    }}
+
+    function stopPlayableGame_{s_num}() {{
+      gameRunning_{s_num} = false;
+      if (gameAnimId_{s_num}) cancelAnimationFrame(gameAnimId_{s_num});
+      const overlay = document.getElementById('gameOverlay_{s_num}');
+      if (overlay) overlay.style.display = 'flex';
+    }}
+
+    function handleGameMouse_{s_num}(e) {{
+      if (!gameRunning_{s_num}) return;
+      const stage = document.getElementById('gameCanvas_{s_num}');
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      let mouseX = e.clientX - rect.left;
+      mouseX = Math.max(25, Math.min(rect.width - 25, mouseX));
+      gameBowlX_{s_num} = mouseX;
+
+      const bowlEl = document.getElementById('gameBowl_{s_num}');
+      if (bowlEl) bowlEl.style.left = `${{gameBowlX_{s_num}}}px`;
+    }}
+
+    function gameLoop_{s_num}() {{
+      if (!gameRunning_{s_num}) return;
+
+      gameAppleY_{s_num} += 4.5;
+      const stage = document.getElementById('gameCanvas_{s_num}');
+      const stageH = stage ? stage.clientHeight : 220;
+      const bowlTop = stageH - 35;
+
+      // Collision Check
+      if (gameAppleY_{s_num} >= bowlTop - 20 && gameAppleY_{s_num} <= bowlTop + 15) {{
+        if (Math.abs(gameAppleX_{s_num} - gameBowlX_{s_num}) < 40) {{
+          // Caught!
+          gameScore_{s_num}++;
+          const scoreEl = document.getElementById('gameScore_{s_num}');
+          if (scoreEl) scoreEl.innerText = gameScore_{s_num};
+          playBeep(660, 'triangle', 0.15);
+
+          // Reset apple
+          gameAppleY_{s_num} = -25;
+          gameAppleX_{s_num} = Math.floor(Math.random() * (stage.clientWidth - 50)) + 25;
+        }}
+      }}
+
+      // Missed
+      if (gameAppleY_{s_num} > stageH + 20) {{
+        gameAppleY_{s_num} = -25;
+        gameAppleX_{s_num} = Math.floor(Math.random() * (stage.clientWidth - 50)) + 25;
+      }}
+
+      const appleEl = document.getElementById('gameApple_{s_num}');
+      if (appleEl) {{
+        appleEl.style.left = `${{gameAppleX_{s_num}}}px`;
+        appleEl.style.top = `${{gameAppleY_{s_num}}}px`;
+      }}
+
+      gameAnimId_{s_num} = requestAnimationFrame(gameLoop_{s_num});
+    }}
+"""
+
+def generate_all():
+    base_dir = r"c:\Users\devop\Documents\MyWork\Projects\2026\beekoding\public\slides"
+    for s_num in range(15, 25):
+        html = build_rich_session(s_num)
+        num_str = f"{s_num:02d}"
+        target_path = os.path.join(base_dir, f"sesi-{num_str}", "index.html")
+        with open(target_path, "w", encoding="utf-8") as f:
+            f.write(html)
+        print(f"Successfully generated rich Sesi {num_str}: {target_path} ({len(html)} bytes)")
+
+if __name__ == "__main__":
+    generate_all()
