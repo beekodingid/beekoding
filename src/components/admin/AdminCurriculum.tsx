@@ -251,6 +251,17 @@ export const AdminCurriculum: React.FC<AdminCurriculumProps> = ({ isDark = false
             <span>Dokumen Silabus Cetak / PDF</span>
           </button>
 
+          <a
+            href="/slides/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2 shadow-sm transition-all"
+            title="Buka Katalog & Portal Slide Presentasi Interaktif"
+          >
+            <Presentation className="w-4 h-4" />
+            <span>Portal Slide Presentasi</span>
+          </a>
+
           <button
             onClick={handleOpenAdd}
             className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 flex items-center space-x-2 shadow-sm transition-all"

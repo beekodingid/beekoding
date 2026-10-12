@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Katalog Slide Presentasi Interaktif • Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/beekoding-logo.png" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(245, 158, 11, 0.35);
+      --amber-main: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.35);
+      --amber-light: #fbbf24;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 10% 15%, rgba(245, 158, 11, 0.08) 0px, transparent 40%),
+        radial-gradient(at 90% 85%, rgba(56, 189, 248, 0.07) 0px, transparent 45%),
+        radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.04) 0px, transparent 55%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header Nav */
+    .portal-header {
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 28px;
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+
+    .brand-name span {
+      color: var(--amber-main);
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 24px 24px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--amber-light);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-family: 'Fredoka', cursive;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      line-height: 1.2;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 720px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    /* Container */
+    .main-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* STEP 1: TIER BUTTONS */
+    .tier-selector-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tier-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .tier-btn {
+      background: rgba(15, 23, 42, 0.65);
+      border: 2px solid var(--border-color);
+      border-radius: 18px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .tier-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .tier-btn:hover {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .tier-btn.active {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+      border-color: var(--amber-main);
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3), 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+
+    .tier-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+
+    .tier-btn.active .tier-icon-box {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      transform: scale(1.08);
+    }
+
+    .tier-text-wrap {
+      flex: 1;
+    }
+
+    .tier-name {
+      font-family: 'Fredoka', cursive;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .tier-btn.active .tier-name {
+      color: #fbbf24;
+    }
+
+    .tier-age {
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 4px;
+    }
+
+    .tier-desc {
+      font-size: 11.5px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* STEP 2: STAGE BOXES (KOTAK-KOTAK) */
+    .stage-section-wrapper {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .stage-section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 22px;
+    }
+
+    .stage-section-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stage-section-desc {
+      font-size: 13.5px;
+      color: #94a3b8;
+    }
+
+    .stage-grid-boxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* Kotak-kotak Stage Button */
+    .stage-box-btn {
+      background: rgba(11, 15, 25, 0.7);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 22px 18px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      text-align: left;
+    }
+
+    .stage-box-btn:hover {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .stage-box-btn.active {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border-color: #f59e0b;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+    }
+
+    .stage-badge-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      letter-spacing: 0.05em;
+    }
+
+    .stage-box-btn.active .stage-badge-tag {
+      background: #f59e0b;
+      color: #000000;
+      font-weight: 900;
+    }
+
+    .stage-box-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    .stage-box-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .stage-box-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .stage-status-ready {
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stage-status-coming {
+      color: #facc15;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* STEP 3: SESSION LIST INSIDE STAGE */
+    .session-list-wrapper {
+      margin-top: 36px;
+    }
+
+    .session-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .session-count-info {
+      font-size: 14px;
+      color: #cbd5e1;
+      font-weight: 700;
+    }
+
+    .session-search-box {
+      display: flex;
+      align-items: center;
+      background: rgba(11, 15, 25, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px 14px;
+      gap: 8px;
+      min-width: 260px;
+    }
+
+    .session-search-input {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    .session-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .session-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+    .session-card:hover {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(245, 158, 11, 0.5);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.4), 0 0 20px rgba(245, 158, 11, 0.15);
+    }
+
+    .session-card-top {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .session-num-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      letter-spacing: 0.04em;
+    }
+
+    .session-duration {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .session-card-body {
+      padding: 18px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .session-card-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.35;
+    }
+
+    .session-card-desc {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .session-tag-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .session-chip {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .session-card-footer {
+      padding: 14px 20px;
+      background: rgba(11, 15, 25, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-launch-slide {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000000;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-launch-slide:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-disabled {
+      background: #1e293b;
+      color: #64748b;
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    /* Footer */
+    .portal-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 24px;
+      text-align: center;
+      font-size: 12.5px;
+      color: #64748b;
+      background: rgba(11, 15, 25, 0.8);
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .stage-grid-boxes {
+        grid-template-columns: 1fr;
+      }
+      .session-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Nav -->
+  <header class="portal-header">
+    <div class="header-container">
+      <a href="/" class="brand-group">
+        <img src="/beekoding-logo.png" alt="Beekoding Logo" class="brand-logo-img" />
+        <div class="brand-title-wrap">
+          <span class="brand-name">Bee<span>koding</span></span>
+          <span class="brand-sub">Platform Presentasi Pengajaran Interaktif</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <a href="/" class="btn-home">
+          <span>🏠 Beranda Beekoding</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-section">
+    <div class="hero-badge">
+      <span>🐝 Portal Modul Slide Presentasi 2026</span>
+    </div>
+    <h1 class="hero-title">
+      Pilih Jenjang, Pilih <span>Stage</span> & Buka Slide Presentasi! 🚀
+    </h1>
+    <p class="hero-desc">
+      Akses seluruh slide presentasi interaktif standar Scratch 3.0, Computational Thinking, dan Game Engineering yang telah diselaraskan dengan standar internasional CSTA & Kurikulum Merdeka.
+    </p>
+
+    <!-- STEP 1: PILIH JENJANG USIA (TIER BUTTONS) -->
+    <div class="tier-selector-label">
+      <span>1️⃣ Langkah Pertama: Pilih Jenjang Belajar</span>
+    </div>
+
+    <div class="tier-buttons-grid">
+      <!-- Junior Explorer -->
+      <button class="tier-btn active" id="btnTierJunior" onclick="selectTier('junior')">
+        <div class="tier-icon-box">🐝</div>
+        <div class="tier-text-wrap">
+          <div class="tier-name">Junior Explorer</div>
+          <div class="tier-age">Usia 6–9 Tahun • TK B – SD 3</div>
+          <div class="tier-desc">Computational Thinking, Animasi Scratch 3.0 & Arkade Game Cilik</div>
+        </div>
+      </button>
+
+      <!-- Intermediate Coder -->
+      <button class="tier-btn" id="btnTierIntermediate" onclick="selectTier('intermediate')">
+        <div class="tier-icon-box">⚡</div>
+        <div class="tier-text-wrap">
+          <div class="tier-name">Intermediate Coder</div>
+          <div class="tier-age">Usia 10–12 Tahun • SD 4 – SD 6</div>
+          <div class="tier-desc">Block-to-Text Transition, Python Arcade & Mobile Apps Logic</div>
+        </div>
+      </button>
+
+      <!-- Teens Innovator -->
+      <button class="tier-btn" id="btnTierTeens" onclick="selectTier('teens')">
+        <div class="tier-icon-box">🚀</div>
+        <div class="tier-text-wrap">
+          <div class="tier-name">Teens Innovator</div>
+          <div class="tier-age">Usia 13–17 Tahun • SMP – SMA</div>
+          <div class="tier-desc">Fullstack Web App, Machine Learning AI & Software Studio</div>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-content">
+    
+    <!-- STEP 2: STAGE BOXES (KOTAK-KOTAK UNTUK MEMILIH STAGE) -->
+    <div class="stage-section-wrapper">
+      <div class="stage-section-header">
+        <h2 class="stage-section-title">
+          <span>2️⃣ Langkah Kedua: Pilih STAGE Pembelajaran (Kotak Stage)</span>
+        </h2>
+        <p class="stage-section-desc" id="tierStageDesc">
+          Pilih salah satu kotak stage di bawah ini untuk melihat daftar slide sesi presentasi.
+        </p>
+      </div>
+
+      <div class="stage-grid-boxes" id="stageBoxesContainer">
+        <!-- Injected via JavaScript based on Selected Tier -->
+      </div>
+    </div>
+
+    <!-- STEP 3: SESSION LIST INSIDE STAGE -->
+    <div class="session-list-wrapper" id="sessionListSection">
+      <div class="session-header-bar">
+        <div>
+          <h3 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #ffffff;" id="activeStageTitle">
+            Daftar Sesi Pembelajaran
+          </h3>
+          <div class="session-count-info" id="activeStageSubtitle">
+            Memuat modul sesi...
+          </div>
+        </div>
+        <div class="session-search-box">
+          <span>🔍</span>
+          <input 
+            type="text" 
+            id="sessionSearchInput" 
+            class="session-search-input" 
+            placeholder="Cari materi atau nomor sesi..." 
+            oninput="handleSearch(this.value)"
+          />
+        </div>
+      </div>
+
+      <!-- Grid Sesi Cards -->
+      <div class="session-grid" id="sessionGridContainer">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <p>&copy; 2026 Beekoding Academy Indonesia • Inovasi Pendidikan Coding & AI Anak Terdepan.</p>
+  </footer>
+
+  <script>
+    // Data Kurikulum Sesi Lengkap
+    const curriculumData = {
+      junior: {
+        name: "Junior Explorer",
+        stages: [
+          {
+            id: "stage-1",
+            stageNum: 1,
+            title: "STAGE 1: Fondasi Kreatif & Scratch 3.0",
+            range: "Sesi 01 – Sesi 12",
+            desc: "Computational thinking unplugged, algoritma labirin dasar, animasi gerak mandiri, AI Text-to-Speech, studio gambar pop-up, dan game sarang lebah.",
+            status: "ready",
+            badge: "🟢 12 Sesi Siap Ajar",
+            sessions: [
+              {
+                id: 1,
+                num: "SESI 01",
+                title: "Petualangan Robot Lebah Cilik",
+                desc: "Pengenalan Computational Thinking, Algoritma Langkah Presisi & Mini Labirin Madu.",
+                duration: "90 Menit",
+                tags: ["CT Dasar", "Algoritma Sekuensial", "Unplugged Labirin"],
+                url: "/slides/sesi-01/index.html"
+              },
+              {
+                id: 2,
+                num: "SESI 02",
+                title: "Menghidupkan Karakter di Scratch",
+                desc: "Mengenal Interface Scratch 3.0, Balok Gerak (Motion), Koordinat Dasar & Kostum Sprite.",
+                duration: "90 Menit",
+                tags: ["Scratch UI", "Motion", "Animasi Kostum"],
+                url: "/slides/sesi-02/index.html"
+              },
+              {
+                id: 3,
+                num: "SESI 03",
+                title: "Pemicu Peristiwa & Efek Suara",
+                desc: "Event-Driven Programming: when flag clicked, key pressed & integrasi efek audio.",
+                duration: "90 Menit",
+                tags: ["Events", "Sound FX", "Interaktivitas"],
+                url: "/slides/sesi-03/index.html"
+              },
+              {
+                id: 4,
+                num: "SESI 04",
+                title: "Kepakan Sayap Beeby (Looping Forever)",
+                desc: "Konsep Perulangan Mandiri: Menghidupkan animasi kepakan sayap tanpa henti.",
+                duration: "90 Menit",
+                tags: ["Control", "Forever Loop", "Animasi Siklus"],
+                url: "/slides/sesi-04/index.html"
+              },
+              {
+                id: 5,
+                num: "SESI 05",
+                title: "Percakapan Dua Karakter Interaktif",
+                desc: "Sinkronisasi Timing Dialog: Balok Say, Wait, dan Percakapan Antar-Sprite.",
+                duration: "90 Menit",
+                tags: ["Looks", "Timing", "Storytelling"],
+                url: "/slides/sesi-05/index.html"
+              },
+              {
+                id: 6,
+                num: "SESI 06",
+                title: "Karakter Berbicara Nyata! (AI Text-to-Speech)",
+                desc: "Pemanfaatan Ekstensi AI Text-to-Speech agar Karakter Bisa Bersuara Bahasa Indonesia.",
+                duration: "90 Menit",
+                tags: ["AI TTS", "Voice Synth", "Ekstensi Scratch"],
+                url: "/slides/sesi-06/index.html"
+              },
+              {
+                id: 7,
+                num: "SESI 07",
+                title: "Studio Gambar Ajaib (AI Image Generation)",
+                desc: "Eksplorasi Prompt Kreatif untuk Kostum Fantasi & Latar Panggung Ajaib.",
+                duration: "90 Menit",
+                tags: ["Generative AI", "Sprite Studio", "Desain Aset"],
+                url: "/slides/sesi-07/index.html"
+              },
+              {
+                id: 8,
+                num: "SESI 08",
+                title: "Buku Cerita Digital Bergerak",
+                desc: "Storybook Interaktif: Tombol Next Page, Transisi Latar & Alur Cerita Bergambar.",
+                duration: "90 Menit",
+                tags: ["Multi-Backdrop", "Storybook", "Transisi Layar"],
+                url: "/slides/sesi-08/index.html"
+              },
+              {
+                id: 9,
+                num: "SESI 09",
+                title: "Labirin Sarang Lebah (Deteksi Rintangan)",
+                desc: "Mekanik Deteksi Dinding: Sensing Sentuhan Warna & Logika Reset Posisi.",
+                duration: "90 Menit",
+                tags: ["Sensing", "Deteksi Warna", "Logika Maze"],
+                url: "/slides/sesi-09/index.html"
+              },
+              {
+                id: 10,
+                num: "SESI 10",
+                title: "Panen Madu & Papan Skor Mandiri",
+                desc: "Pengenalan Konsep Variabel: Menyimpan Skor Koin Madu & Menampilkan di Layar.",
+                duration: "90 Menit",
+                tags: ["Variabel", "Score Counter", "HUD Display"],
+                url: "/slides/sesi-10/index.html"
+              },
+              {
+                id: 11,
+                num: "SESI 11",
+                title: "Musuh Berpatroli di Sarang",
+                desc: "AI Patroli Sederhana: Gerakan Laba-laba Otomatis, Deteksi Tabrakan & Game Over.",
+                duration: "90 Menit",
+                tags: ["Enemy AI", "Sensor Tabrakan", "Game Over"],
+                url: "/slides/sesi-11/index.html"
+              },
+              {
+                id: 12,
+                num: "SESI 12",
+                title: "Grand Showcase Level 1 & Wisuda",
+                desc: "Presentasi Karya Mandiri, Refleksi Algoritma & Sertifikasi Developer Cilik Level 1.",
+                duration: "90 Menit",
+                tags: ["Showcase", "Wisuda Level 1", "Sertifikasi"],
+                url: "/slides/sesi-12/index.html"
+              }
+            ]
+          },
+          {
+            id: "stage-2",
+            stageNum: 2,
+            title: "STAGE 2: Arkade Game & Logika Variabel",
+            range: "Sesi 13 – Sesi 24",
+            desc: "Game tangkap apel jatuh, efek game juice dan kloning partikel, countdown timer 30 detik, sistem 3 nyawa, multi-level switching, dan rekor skor tertinggi.",
+            status: "ready",
+            badge: "🟢 12 Sesi Siap Ajar",
+            sessions: [
+              {
+                id: 13,
+                num: "SESI 13",
+                title: "Game Tangkap Apel Jatuh",
+                desc: "Mekanik Gravitasi, Random X-Positioning, Kontrol Keranjang & Skor Tangkapan.",
+                duration: "90 Menit",
+                tags: ["Gravity", "Random Spawn", "Arcade Catcher"],
+                url: "/slides/sesi-13/index.html"
+              },
+              {
+                id: 14,
+                num: "SESI 14",
+                title: "Game Juice & Partikel Kloning",
+                desc: "Memberi Efek Memuaskan: Partikel Bintang Clones, Screen Shake & SFX Juiciness.",
+                duration: "90 Menit",
+                tags: ["Cloning", "Game Juice", "Partikel Bintang"],
+                url: "/slides/sesi-14/index.html"
+              },
+              {
+                id: 15,
+                num: "SESI 15",
+                title: "Sistem Timer Hitung Mundur & Alarm",
+                desc: "Adrenalin Waktu: Variabel Timer 30 Detik, Broadcast Alarm & Layar Game Over Waktu Habis.",
+                duration: "90 Menit",
+                tags: ["Countdown Timer", "Broadcast", "Time Attack"],
+                url: "/slides/sesi-15/index.html"
+              },
+              {
+                id: 16,
+                num: "SESI 16",
+                title: "Logika Nyawa (Health Heart) & Apel Racun",
+                desc: "Sistem 3 Hati (Health Points), Buah Beracun Pengurang Nyawa & Game Over.",
+                duration: "90 Menit",
+                tags: ["Health 3 HP", "Kondisi Kalah", "Hazard Obstacle"],
+                url: "/slides/sesi-16/index.html"
+              },
+              {
+                id: 17,
+                num: "SESI 17",
+                title: "Multi-Level Switching & Hutan Badai",
+                desc: "Pindah Stage Otomatis Saat Skor 50: Ganti Backdrop, Kecepatan Ekstra & Efek Badai.",
+                duration: "90 Menit",
+                tags: ["Stage Switching", "Tingkat Kesulitan", "Backdrop Transisi"],
+                url: "/slides/sesi-17/index.html"
+              },
+              {
+                id: 18,
+                num: "SESI 18",
+                title: "Sistem Skor Tertinggi (High Score)",
+                desc: "Logika Rekor Juara: Membandingkan Skor vs High Score & Mahkota Pemain Terbaik.",
+                duration: "90 Menit",
+                tags: ["High Score", "Komparasi Logika", "Rekor Juara"],
+                url: "/slides/sesi-18/index.html"
+              },
+              {
+                id: 19,
+                num: "SESI 19",
+                title: "Kontrol Keyboard Multi-Arah vs Mouse",
+                desc: "Opsi Kendali Gamer: Panah Keyboard, Tombol WASD, Akselerasi & Navigasi Mouse.",
+                duration: "90 Menit",
+                tags: ["Keyboard Controls", "WASD", "Smooth Motion"],
+                url: "/slides/sesi-19/index.html"
+              },
+              {
+                id: 20,
+                num: "SESI 20",
+                title: "Power-Up Ajaib: Magnet Buah & Booster",
+                desc: "Item Spesial: Magnet Penyedot Koin Madu & Keranjang Raksasa Durasi Sementara.",
+                duration: "90 Menit",
+                tags: ["Power-Ups", "Magnet Logic", "Timed Buff"],
+                url: "/slides/sesi-20/index.html"
+              },
+              {
+                id: 21,
+                num: "SESI 21",
+                title: "Musuh Bergerak: Laba-Laba Patroli AI",
+                desc: "Musuh Pencuri Apel: Patroli Horizontal, Deteksi Titik Tabrakan & Menangkis Musuh.",
+                duration: "90 Menit",
+                tags: ["Smart Patrol", "Enemy Collision", "Dynamic Threat"],
+                url: "/slides/sesi-21/index.html"
+              },
+              {
+                id: 22,
+                num: "SESI 22",
+                title: "Kustomisasi Toko Karakter (Skin Shop)",
+                desc: "Sistem Toko Kostum: Tukar Madu dengan Skin Topi Astronot & Efek Jejak Partikel.",
+                duration: "90 Menit",
+                tags: ["Skin Shop", "Ekonomi Game", "Kustomisasi"],
+                url: "/slides/sesi-22/index.html"
+              },
+              {
+                id: 23,
+                num: "SESI 23",
+                title: "Game Balancing & Orkestrasi Audio",
+                desc: "Menyetel Ritme Arkade: Balancing Drop Rate, Background Music Loop & Polish Akhir.",
+                duration: "90 Menit",
+                tags: ["Game Balancing", "Soundtrack Loop", "QA Testing"],
+                url: "/slides/sesi-23/index.html"
+              },
+              {
+                id: 24,
+                num: "SESI 24",
+                title: "Grand Showcase Stage 2 & Wisuda Level 2",
+                desc: "Pameran Game Lengkap, Uji Coba Multi-Pemain & Penganugerahan Sertifikat Level 2.",
+                duration: "90 Menit",
+                tags: ["Showcase", "Wisuda Level 2", "Sertifikasi"],
+                url: "/slides/sesi-24/index.html"
+              }
+            ]
+          },
+          {
+            id: "stage-3",
+            stageNum: 3,
+            title: "STAGE 3: Fisika Game & Kecerdasan Buatan Cilik",
+            range: "Sesi 25 – Sesi 36",
+            desc: "Simulasi fisika platformer gravitasi, lompatan kinetik, proyektil, kecerdasan musuh cerdas, dan interaksi kamera hand-tracking.",
+            status: "coming",
+            badge: "🟡 Modul Mendatang",
+            sessions: []
+          },
+          {
+            id: "stage-4",
+            stageNum: 4,
+            title: "STAGE 4: Studio Game Multipemain & Capstone",
+            range: "Sesi 37 – Sesi 48",
+            desc: "Pengembangan game multipemain lokal, pertarungan giliran (turn-based), orkestrasi game lengkap, dan pameran publik.",
+            status: "coming",
+            badge: "🟡 Modul Mendatang",
+            sessions: []
+          }
+        ]
+      },
+      intermediate: {
+        name: "Intermediate Coder",
+        stages: [
+          {
+            id: "stage-1-inter",
+            stageNum: 1,
+            title: "STAGE 1: Mobile App Inventor & Desain Algoritma",
+            range: "Sesi 01 – Sesi 12",
+            desc: "Membangun aplikasi Android interaktif dengan MIT App Inventor: sensor akselerometer, speech recognizer, dan database lokal TinyDB.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          },
+          {
+            id: "stage-2-inter",
+            stageNum: 2,
+            title: "STAGE 2: Python Arcade & Pygame 2D Engine",
+            range: "Sesi 13 – Sesi 24",
+            desc: "Transisi balok ke teks Python: sintaksis dasar, perulangan for/while, struktur data list & pembuatan game 2D Pygame.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          },
+          {
+            id: "stage-3-inter",
+            stageNum: 3,
+            title: "STAGE 3: Data Science & Web Dasar HTML/CSS",
+            range: "Sesi 25 – Sesi 36",
+            desc: "Visualisasi data sederhana dengan Python Matplotlib, manipulasi teks, dan perkenalan fondasi website HTML5 & CSS3.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          },
+          {
+            id: "stage-4-inter",
+            stageNum: 4,
+            title: "STAGE 4: IoT, Micro:bit & Robotika Cerdas",
+            range: "Sesi 37 – Sesi 48",
+            desc: "Pemrograman mikrokontroler BBC micro:bit, pembacaan sensor fisik, sinyal radio komunikasi, dan proyek otomatisasi rumah.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          }
+        ]
+      },
+      teens: {
+        name: "Teens Innovator",
+        stages: [
+          {
+            id: "stage-1-teens",
+            stageNum: 1,
+            title: "STAGE 1: Modern Web & JavaScript DOM Engine",
+            range: "Sesi 01 – Sesi 12",
+            desc: "Arsitektur frontend modern: Semantik HTML5, styling responsive Tailwind CSS, dan pemrograman logika algoritma JavaScript modern.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          },
+          {
+            id: "stage-2-teens",
+            stageNum: 2,
+            title: "STAGE 2: Fullstack React, Tailwind & Cloud API",
+            range: "Sesi 13 – Sesi 24",
+            desc: "Komponen React.js interaktif, state management hooks, konsumsi RESTful API, otentikasi Supabase, dan deployment cloud Vercel.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          },
+          {
+            id: "stage-3-teens",
+            stageNum: 3,
+            title: "STAGE 3: AI Engineering & Python Deep Learning",
+            range: "Sesi 25 – Sesi 36",
+            desc: "Pengenalan Neural Networks, integrasi LLM Prompt Engineering, Computer Vision OpenCV & pembuatan asisten AI terintegrasi web.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          },
+          {
+            id: "stage-4-teens",
+            stageNum: 4,
+            title: "STAGE 4: Software Engineering Studio & Startup Capstone",
+            range: "Sesi 37 – Sesi 48",
+            desc: "Metodologi Agile/Scrum, kolaborasi Git & GitHub, perancangan arsitektur basis data, pitch deck dan Demo Day pameran investor.",
+            status: "coming",
+            badge: "🟡 Terjadwal",
+            sessions: []
+          }
+        ]
+      }
+    };
+
+    let currentTier = "junior";
+    let currentStageIndex = 0;
+    let searchQuery = "";
+
+    function selectTier(tierKey) {
+      currentTier = tierKey;
+      currentStageIndex = 0;
+      searchQuery = "";
+      document.getElementById("sessionSearchInput").value = "";
+
+      // Update Tier buttons UI
+      document.getElementById("btnTierJunior").classList.toggle("active", tierKey === "junior");
+      document.getElementById("btnTierIntermediate").classList.toggle("active", tierKey === "intermediate");
+      document.getElementById("btnTierTeens").classList.toggle("active", tierKey === "teens");
+
+      renderStageBoxes();
+      renderSessions();
+    }
+
+    function selectStage(index) {
+      currentStageIndex = index;
+      renderStageBoxes();
+      renderSessions();
+
+      // Scroll smoothly to sessions
+      const sessionSection = document.getElementById("sessionListSection");
+      if (sessionSection) {
+        sessionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function renderStageBoxes() {
+      const container = document.getElementById("stageBoxesContainer");
+      const tierObj = curriculumData[currentTier];
+      const descEl = document.getElementById("tierStageDesc");
+
+      descEl.textContent = `Pilih stage di jenjang ${tierObj.name} untuk melihat materi presentasi yang tersedia.`;
+
+      container.innerHTML = "";
+
+      tierObj.stages.forEach((st, idx) => {
+        const isActive = idx === currentStageIndex;
+        const box = document.createElement("div");
+        box.className = `stage-box-btn ${isActive ? 'active' : ''}`;
+        box.onclick = () => selectStage(idx);
+
+        const statusHtml = st.status === 'ready' 
+          ? `<span class="stage-status-ready">🟢 ${st.sessions.length} Sesi Aktif</span>`
+          : `<span class="stage-status-coming">🟡 ${st.badge}</span>`;
+
+        box.innerHTML = `
+          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <span class="stage-badge-tag">STAGE ${st.stageNum}</span>
+            <span style="font-size: 11px; font-weight: 700; color: #94a3b8;">${st.range}</span>
+          </div>
+          <div class="stage-box-title">${st.title.replace(/^STAGE \d+:\s*/, '')}</div>
+          <div class="stage-box-subtitle">${st.desc}</div>
+          <div class="stage-box-footer">
+            ${statusHtml}
+            <span style="color: ${isActive ? '#f59e0b' : '#64748b'}; font-size: 13px;">${isActive ? 'Sedang Dibuka ▾' : 'Pilih Stage ➔'}</span>
+          </div>
+        `;
+
+        container.appendChild(box);
+      });
+    }
+
+    function renderSessions() {
+      const tierObj = curriculumData[currentTier];
+      const activeStage = tierObj.stages[currentStageIndex];
+      const titleEl = document.getElementById("activeStageTitle");
+      const subtitleEl = document.getElementById("activeStageSubtitle");
+      const gridEl = document.getElementById("sessionGridContainer");
+
+      if (!activeStage) return;
+
+      titleEl.textContent = `${activeStage.title} (${activeStage.range})`;
+
+      const allSessions = activeStage.sessions || [];
+      const filtered = allSessions.filter(s => {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        return (
+          s.title.toLowerCase().includes(q) ||
+          s.num.toLowerCase().includes(q) ||
+          s.desc.toLowerCase().includes(q) ||
+          s.tags.some(t => t.toLowerCase().includes(q))
+        );
+      });
+
+      subtitleEl.textContent = allSessions.length > 0 
+        ? `Menampilkan ${filtered.length} dari total ${allSessions.length} sesi slide siap ajar di stage ini.`
+        : `Materi untuk stage ini sedang dalam penyusunan kurikulum lanjutan.`;
+
+      gridEl.innerHTML = "";
+
+      if (allSessions.length === 0) {
+        gridEl.innerHTML = `
+          <div style="grid-column: 1 / -1; background: rgba(15, 23, 42, 0.5); border: 2px dashed rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 48px; text-align: center;">
+            <div style="font-size: 54px; margin-bottom: 12px;">🚧🛠️</div>
+            <h4 style="font-family: 'Fredoka', cursive; font-size: 20px; color: #fbbf24; margin-bottom: 8px;">Modul Segera Hadir</h4>
+            <p style="color: #94a3b8; font-size: 14px; max-width: 520px; margin: 0 auto;">
+              Slide presentasi interaktif untuk <strong>${activeStage.title}</strong> sedang dalam tahap finalisasi dan akan segera aktif. Cek STAGE 1 dan STAGE 2 untuk modul yang sudah 100% siap digunakan!
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      if (filtered.length === 0) {
+        gridEl.innerHTML = `
+          <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: #94a3b8;">
+            Tidak ditemukan sesi yang cocok dengan kata kunci "<strong>${searchQuery}</strong>".
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(session => {
+        const card = document.createElement("div");
+        card.className = "session-card";
+
+        const tagsHtml = session.tags.map(t => `<span class="session-chip">#${t}</span>`).join("");
+
+        card.innerHTML = `
+          <div class="session-card-top">
+            <span class="session-num-badge">${session.num}</span>
+            <span class="session-duration">⏱️ ${session.duration}</span>
+          </div>
+          <div class="session-card-body">
+            <h4 class="session-card-title">${session.title}</h4>
+            <p class="session-card-desc">${session.desc}</p>
+            <div class="session-tag-chips">${tagsHtml}</div>
+          </div>
+          <div class="session-card-footer">
+            <a href="${session.url}" class="btn-launch-slide" target="_blank" rel="noopener">
+              <span>Buka Slide Presentasi 🚀</span>
+            </a>
+          </div>
+        `;
+
+        gridEl.appendChild(card);
+      });
+    }
+
+    function handleSearch(val) {
+      searchQuery = val.trim();
+      renderSessions();
+    }
+
+    // Inisialisasi awal saat halaman dimuat
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cek apakah ada query parameter ?tier=...&stage=...
+      const urlParams = new URLSearchParams(window.location.search);
+      const tierParam = urlParams.get("tier");
+      const stageParam = urlParams.get("stage");
+
+      if (tierParam && curriculumData[tierParam]) {
+        currentTier = tierParam;
+      }
+      if (stageParam && !isNaN(parseInt(stageParam))) {
+        currentStageIndex = Math.max(0, parseInt(stageParam) - 1);
+      }
+
+      selectTier(currentTier);
+      if (stageParam) {
+        selectStage(currentStageIndex);
+      }
+    });
+  </script>
+</body>
+</html>
