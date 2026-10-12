@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=Space+Grotesk:wght@700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -334,14 +334,15 @@
     }
 
     .text-column {
-      flex: 1.2;
+      flex: 1.15;
     }
 
     .visual-column {
-      flex: 1;
+      flex: 1.05;
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 100%;
     }
 
     .hero-img {
@@ -538,6 +539,335 @@
       border-radius: 0 8px 8px 0;
       font-style: italic;
     }
+
+    /* ================= SCRATCH BLOCKS AUTHENTIC STYLING ================= */
+    .block-stack {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 440px;
+      margin: 8px 0;
+      gap: 2px;
+    }
+
+    .scratch-block {
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-family: 'Fredoka', cursive;
+      font-size: 14.5px;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      position: relative;
+      margin: 2px 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-weight: 600;
+    }
+
+    .scratch-block.event {
+      background: #ffbf00;
+      color: #000000;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      font-weight: 700;
+    }
+
+    .scratch-block.control {
+      background: #ffab19;
+      color: #ffffff;
+    }
+
+    .scratch-block.motion {
+      background: #4c97ff;
+      color: #ffffff;
+    }
+
+    .scratch-block.sensing {
+      background: #5cb1d6;
+      color: #ffffff;
+    }
+
+    .scratch-block.operator {
+      background: #59c059;
+      color: #ffffff;
+    }
+
+    .scratch-block.variable {
+      background: #ff8c1a;
+      color: #ffffff;
+    }
+
+    .scratch-block.sound {
+      background: #cf63cf;
+      color: #ffffff;
+    }
+
+    .scratch-block-c {
+      background: #ffab19;
+      border-radius: 8px;
+      padding: 6px 10px 8px;
+      margin: 3px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .scratch-c-indent {
+      background: rgba(15, 23, 42, 0.4);
+      border-left: 12px solid #ffab19;
+      padding: 6px 6px 6px 14px;
+      margin: 4px 0 4px -2px;
+      border-radius: 0 6px 6px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .scratch-inline-sensing {
+      background: #5cb1d6;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .scratch-inline-operator {
+      background: #59c059;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .scratch-inline-variable {
+      background: #ff8c1a;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .block-input {
+      background: #ffffff;
+      color: #000000;
+      border-radius: 999px;
+      padding: 1px 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-block;
+      margin: 0 2px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    /* ================= MINI SIMULATORS STYLING ================= */
+    .sim-box {
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sim-header {
+      background: #1e293b;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #334155;
+    }
+
+    .sim-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-green-flag {
+      background: #10b981;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+    .btn-green-flag:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+    }
+
+    .btn-red-stop {
+      background: #ef4444;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.15s;
+    }
+    .btn-red-stop:hover {
+      transform: scale(1.1);
+    }
+
+    .sim-score-badge {
+      background: #090d16;
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: 'Fredoka', cursive;
+    }
+
+    .sim-canvas {
+      height: 220px;
+      background: linear-gradient(180deg, #0284c7 0%, #38bdf8 65%, #22c55e 65%, #15803d 100%);
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    .sim-apple {
+      position: absolute;
+      font-size: 32px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .sim-bowl {
+      position: absolute;
+      bottom: 10px;
+      font-size: 40px;
+      width: 52px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      pointer-events: none;
+      transition: left 0.04s ease-out;
+    }
+
+    /* Interactive Coordinate Pad */
+    .coord-grid-box {
+      background: #0f172a;
+      border: 2px solid #3b82f6;
+      border-radius: 16px;
+      padding: 16px;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .coord-display-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+    }
+
+    .coord-stage-area {
+      height: 180px;
+      background: #020617;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      position: relative;
+      cursor: crosshair;
+      overflow: hidden;
+    }
+
+    .coord-axis-x {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(56, 189, 248, 0.4);
+    }
+
+    .coord-axis-y {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(245, 158, 11, 0.4);
+    }
+
+    .coord-pointer-apple {
+      position: absolute;
+      font-size: 28px;
+      transform: translate(-50%, -50%);
+      transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+
+    .coord-preset-btns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-coord-pill {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-coord-pill:hover {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
   </style>
 </head>
 <body>
@@ -582,44 +912,39 @@
     <div class="slide-viewport">
       <div class="slide-canvas">
 
-      <!-- ================= SLIDE 1: Pengantar & Goal Sesi 13 ================= -->
+      <!-- ================= SLIDE 1: COVER (HERO IMAGE BEEBY APPLE CATCH) ================= -->
       <div class="slide active" data-time="⏱️ Menit ke 00–10">
         <div class="slide-header">
-          <div class="badge-session">Pengantar & Goal Sesi 13</div>
+          <div class="badge-session">Sesi 13 • Game Mechanics Level 2</div>
           <div class="badge-time">⏱️ Menit ke 00–10</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
-            <h2 class="slide-title">
-              Misi Arkade Baru: <span>Game Tangkap Apel Jatuh</span>! 🍎
-            </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Selamat datang di <strong>Stage 2 (Level 2)</strong>! Hari ini kita memulai petualangan baru: merakit game arkade seru di mana buah apel lezat berjatuhan dari langit dan kita harus menangkapnya menggunakan mangkuk ajaib!
+            <h1 class="slide-title">
+              Petualangan Arkade: <span>Game Tangkap Apel</span>! 🍎🥣
+            </h1>
+            <p style="color: #cbd5e1; font-size: 15.5px; margin: 12px 0 18px; line-height: 1.55;">
+              Selamat datang di <strong>STAGE 2 (LEVEL 2)</strong>! Hari ini kita naik kelas menjadi arsitek game arkade sesungguhnya. Kita akan merakit game seru di mana buah apel lezat berjatuhan dari langit dan kita menangkapnya memakai mangkuk interaktif!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🎯 Memahami arah pergerakan layar komputer (Sumbu X & Y)</li><li style="margin-bottom: 8px; line-height: 1.5;">🍎 Membuat apel jatuh terus-menerus dengan gravitasi</li><li style="margin-bottom: 8px; line-height: 1.5;">🥣 Menggerakkan mangkuk penangkap seirama kursor mouse</li><li style="margin-bottom: 8px; line-height: 1.5;">✨ Menangkap apel dan mendengar efek suara 'Chomp!'</li>
+            <div class="concept-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13.5px; margin-bottom: 6px;">🎯 Misi Utama Hari Ini:</div>
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🧭 <strong>Koordinat X & Y:</strong> Memahami peta panggung layar komputer Scratch</li>
+                <li>⬇️ <strong>Gravitasi Jatuh:</strong> Membuat apel turun terus-menerus dengan <code>change y by (-6)</code></li>
+                <li>🥣 <strong>Kontrol Mouse:</strong> Menggerakkan mangkuk penangkap seirama kursor pemain</li>
+                <li>🔊 <strong>Skor & Suara:</strong> Mendeteksi tabrakan mangkuk dan suara <em>Chomp!</em> renyah</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(15, 23, 42, 0.85); border: 2px solid #334155; border-radius: 16px; padding: 24px; text-align: center; width: 100%;">
-                    <div style="font-size: 56px; margin-bottom: 12px;">🍎 🥣</div>
-                    <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Target Proyek Hari Ini</h3>
-                    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.5;">Game tangkap apel mandiri: apel jatuh dari langit secara acak, mangkuk dikontrol kursor, dan menghasilkan skor!</p>
-                    <div style="margin-top: 14px; display: inline-flex; gap: 8px; background: rgba(245, 158, 11, 0.15); padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 700; font-size: 13px;">
-                        🕹️ Platform: Scratch 3.0 Studio
-                    </div>
-                </div>
-                
+            <img src="beeby-apple-catch.jpg" alt="Game Tangkap Apel Jatuh - Beekoding Level 2" class="hero-img" />
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Pengantar & Goal Sesi 13</div>
+          <div class="footer-hints">Panduan Guru: Sapa murid dengan antusias karena telah resmi masuk ke Stage 2!</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>1</span> / 10</div>
@@ -628,49 +953,63 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 2: Konsep Fundamental ================= -->
+      <!-- ================= SLIDE 2: PETA KOORDINAT X & Y (INTERACTIVE COORDINATE SIMULATOR) ================= -->
       <div class="slide" data-time="⏱️ Menit ke 10–22">
         <div class="slide-header">
-          <div class="badge-session">Konsep Fundamental</div>
+          <div class="badge-session">Konsep Dasar • Peta Layar Panggung</div>
           <div class="badge-time">⏱️ Menit ke 10–22</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
             <h2 class="slide-title">
-              Peta Layar Komputer: <span>Koordinat X & Y</span> 🗺️
+              Peta Rahasia Layar: <span>Koordinat X & Y</span> 🗺️
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Di dalam panggung Scratch, setiap posisi memiliki alamat rahasia yang disebut <strong>Koordinat</strong>! Sama seperti alamat rumah, koordinat memberi tahu sprite harus berada di mana.
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Di dalam Scratch, setiap posisi memiliki alamat angka yang disebut <strong>Koordinat</strong>. Seperti alamat rumah, koordinat memberi tahu apel dan mangkuk harus berada di mana!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">↔️ <strong>Sumbu X (Horizontal):</strong> Kiri (-240) sampai Kanan (+240)</li><li style="margin-bottom: 8px; line-height: 1.5;">↕️ <strong>Sumbu Y (Vertikal):</strong> Bawah (-180) sampai Atas (+180)</li><li style="margin-bottom: 8px; line-height: 1.5;">🎯 <strong>Titik Pusat (0, 0):</strong> Tepat di tengah layar panggung!</li><li style="margin-bottom: 8px; line-height: 1.5;">💡 Ingat: Ke ATAS nilainya POSITIF (+), ke BAWAH nilainya NEGATIF (-)</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>↔️ <strong>Sumbu X (Horizontal):</strong> Bergerak ke Kiri (-240) sampai Kanan (+240)</li>
+                <li>↕️ <strong>Sumbu Y (Vertikal):</strong> Bergerak ke Bawah (-180) sampai Atas (+180)</li>
+                <li>🎯 <strong>Titik Pusat (0, 0):</strong> Tepat di tengah-tengah panggung panggung</li>
+                <li>💡 <strong>Rumus Ingatan:</strong> Naik = Positif (+), Turun = Negatif (-)</li>
               </ul>
             </div>
+            <p style="font-size: 12.5px; color: #38bdf8; margin-top: 10px;">
+              👉 <em>Coba klik tombol preset atau klik di bidang kotak samping untuk memindahkan Apel secara langsung!</em>
+            </p>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: #090d16; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; text-align: center;">
-                    <div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 12px; font-weight: 700; margin-bottom: 4px;">
-                        <span>Y = +180 (Langit Atas)</span>
-                    </div>
-                    <div style="height: 140px; position: relative; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        <div style="position: absolute; width: 100%; height: 2px; background: rgba(59, 130, 246, 0.4);"></div>
-                        <div style="position: absolute; height: 100%; width: 2px; background: rgba(245, 158, 11, 0.4);"></div>
-                        <div style="background: #1e293b; border: 2px solid #fbbf24; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; color: #fbbf24; z-index: 2;">Pusat (0, 0)</div>
-                        <div style="position: absolute; left: 10px; color: #38bdf8; font-size: 11px; font-weight: 700;">X = -240 (Kiri)</div>
-                        <div style="position: absolute; right: 10px; color: #38bdf8; font-size: 11px; font-weight: 700;">X = +240 (Kanan)</div>
-                    </div>
-                    <div style="color: #94a3b8; font-size: 12px; font-weight: 700; margin-top: 6px;">Y = -180 (Dasar Tanah)</div>
-                </div>
-                
+            <!-- Interactive Coordinate Pad Simulator -->
+            <div class="coord-grid-box">
+              <div class="coord-display-bar">
+                <span style="color:#38bdf8;">📍 Posisi X: <strong id="lblCoordX">0</strong></span>
+                <span style="color:#f59e0b;">📍 Posisi Y: <strong id="lblCoordY">120</strong></span>
+                <span id="lblCoordRegion" style="color:#10b981; font-size:12px;">Langit Atas</span>
+              </div>
+              <div class="coord-stage-area" id="coordStage" onclick="handleCoordClick(event)">
+                <div class="coord-axis-x"></div>
+                <div class="coord-axis-y"></div>
+                <div class="coord-pointer-apple" id="coordApple" style="left: 50%; top: 22%;">🍎</div>
+                <div style="position: absolute; right: 8px; top: 6px; font-size: 10px; color: #64748b; font-weight: 700;">+180 (Langit)</div>
+                <div style="position: absolute; right: 8px; bottom: 6px; font-size: 10px; color: #64748b; font-weight: 700;">-180 (Dasar)</div>
+                <div style="position: absolute; left: 8px; top: 52%; font-size: 10px; color: #64748b; font-weight: 700;">-240</div>
+                <div style="position: absolute; right: 8px; top: 52%; font-size: 10px; color: #64748b; font-weight: 700;">+240</div>
+              </div>
+              <div class="coord-preset-btns">
+                <button class="btn-coord-pill" onclick="moveCoordApple(0, 140, 'Langit Tengah')">☁️ Langit (0, 140)</button>
+                <button class="btn-coord-pill" onclick="moveCoordApple(0, 0, 'Titik Pusat')">🎯 Pusat (0, 0)</button>
+                <button class="btn-coord-pill" onclick="moveCoordApple(-160, -120, 'Kiri Bawah')">↙️ Kiri Bawah (-160, -120)</button>
+                <button class="btn-coord-pill" onclick="moveCoordApple(160, 130, 'Kanan Atas')">↗️ Kanan Atas (160, 130)</button>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Konsep Fundamental</div>
+          <div class="footer-hints">Panduan Guru: Minta anak menunjuk arah atas (+Y) dan bawah (-Y) dengan tangan mereka.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>2</span> / 10</div>
@@ -679,46 +1018,59 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 3: Mekanik Inti 1 ================= -->
+      <!-- ================= SLIDE 3: LOGIKA APEL JATUH (SCRATCH BLOCKS) ================= -->
       <div class="slide" data-time="⏱️ Menit ke 22–32">
         <div class="slide-header">
-          <div class="badge-session">Mekanik Inti 1</div>
+          <div class="badge-session">Mekanik 1 • Gravitasi Jatuh ke Bawah</div>
           <div class="badge-time">⏱️ Menit ke 22–32</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
             <h2 class="slide-title">
-              Logika Apel Jatuh: <span>Mengurangi Nilai Y</span> ⬇️
+              Gravitasi: <span>Mengurangi Nilai Y</span> ⬇️
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Bagaimana cara membuat apel jatuh ke bawah secara terus-menerus? Kuncinya adalah mengurangi nilai posisi Y apel sedikit demi sedikit dalam perulangan selamanya!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Bagaimana cara membuat apel meluncur jatuh dari langit? Kita gunakan balok motion <code>change y by (-6)</code> yang dibungkus dalam perulangan selamanya (<code>forever</code>)!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🔄 Gunakan blok <code>forever</code> (selamanya)</li><li style="margin-bottom: 8px; line-height: 1.5;">📉 Masukkan perintah <code>change y by (-6)</code></li><li style="margin-bottom: 8px; line-height: 1.5;">⚡ Semakin besar angka negatif (misal: -10), semakin cepat apel jatuh!</li><li style="margin-bottom: 8px; line-height: 1.5;">🤔 Tapi apa yang terjadi jika apel menyentuh batas paling bawah panggung?</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔄 <strong>Forever:</strong> Menjalankan perintah berulang-ulang tanpa henti</li>
+                <li>📉 <strong>Change Y by (-6):</strong> Setiap frame, posisi apel turun 6 langkah ke bawah</li>
+                <li>⚡ <strong>Variasi Kecepatan:</strong> -3 = lambat melayang, -12 = jatuh secepat meteor!</li>
+                <li>🛑 <strong>Masalah Baru:</strong> Jika dibiarkan, apel akan macet di dasar layar!</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #10b981; border-radius: 16px; padding: 20px; width: 100%;">
-                    <div style="color: #10b981; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">📦 Kode Blok Scratch Apel:</div>
-                    <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e2e8f0; line-height: 1.8;">
-                        <span style="color: #fbbf24;">when 🏴 clicked</span><br>
-                        <span style="color: #f59e0b;">forever</span> {<br>
-                        &nbsp;&nbsp;<span style="color: #38bdf8;">change y by (-6)</span><br>
-                        }
-                    </div>
-                    <p style="color: #94a3b8; font-size: 12px; margin-top: 10px;">💡 Setiap sepersekian detik, posisi apel turun 6 langkah ke bawah!</p>
+            <!-- Scratch Blocks Display: Falling Apple -->
+            <div style="background: rgba(15, 23, 42, 0.9); border: 2px solid #10b981; border-radius: 16px; padding: 20px; width: 100%; max-width: 440px;">
+              <div style="color: #10b981; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <span>🍎 Balok Kode: Apel Meluncur Jatuh</span>
+              </div>
+              <div class="block-stack">
+                <div class="scratch-block event">
+                  ketika 🏴 diklik
                 </div>
-                
+                <div class="scratch-block-c">
+                  selamanya
+                  <div class="scratch-c-indent">
+                    <div class="scratch-block motion">
+                      ubah y sebesar <span class="block-input">-6</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 12px; background: rgba(16, 185, 129, 0.1); border: 1px dashed #10b981; padding: 10px; border-radius: 10px; font-size: 12.5px; color: #a7f3d0;">
+                💡 <em>Tanda minus (-) sangat penting! Jika kamu menulis 6 tanpa minus, apel justru akan terbang ke atas menembus atap!</em>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Mekanik Inti 1</div>
+          <div class="footer-hints">Panduan Guru: Tanyakan ke murid: 'Apa yang terjadi jika angka -6 diubah jadi -15?'</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>3</span> / 10</div>
@@ -727,10 +1079,10 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 4: Mekanik Inti 2 ================= -->
+      <!-- ================= SLIDE 4: TELEPORTASI APEL (SCRATCH BLOCKS) ================= -->
       <div class="slide" data-time="⏱️ Menit ke 32–42">
         <div class="slide-header">
-          <div class="badge-session">Mekanik Inti 2</div>
+          <div class="badge-session">Mekanik 2 • Teleportasi ke Langit</div>
           <div class="badge-time">⏱️ Menit ke 32–42</div>
         </div>
 
@@ -739,32 +1091,46 @@
             <h2 class="slide-title">
               Kembali ke Langit: <span>Teleportasi Apel</span> 🔄
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Jika apel dibiarkan jatuh, ia akan tersangkut di dasar layar. Kita butuh logika deteksi: jika apel sudah sampai paling bawah, pindahkan kembali ke atas di posisi acak!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Agar apel tidak pernah habis, saat apel sudah menyentuh dasar layar (Y &lt; -160), kita teleportasikan apel kembali ke langit atas dengan posisi horizontal (X) yang diacak!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🔍 Deteksi batas bawah: <code>if &lt;y position &lt; -160&gt;</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🚀 Teleportasi ke langit atas: <code>y: 170</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🎲 Posisi horizontal acak: <code>x: (pick random -200 to 200)</code></li><li style="margin-bottom: 8px; line-height: 1.5;">✨ Hasilnya: apel seolah-olah tidak pernah habis berjatuhan!</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔍 <strong>Sensor Batas Bawah:</strong> Deteksi jika <code>&lt;posisi y &lt; -160&gt;</code></li>
+                <li>🚀 <strong>Reset Posisi Y:</strong> Pindahkan ke langit di <code>y: 170</code></li>
+                <li>🎲 <strong>Pick Random:</strong> Acak posisi X dari <code>-200</code> sampai <code>200</code></li>
+                <li>✨ <strong>Hasil Ajaib:</strong> Apel muncul di titik yang tidak terduga pemain!</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%;">
-                    <div style="color: #f59e0b; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">📦 Kode Teleportasi Apel:</div>
-                    <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e2e8f0; line-height: 1.8;">
-                        <span style="color: #a855f7;">if</span> &lt;<span style="color: #38bdf8;">y position</span> &lt; <span style="color: #ec4899;">-160</span>&gt; <span style="color: #a855f7;">then</span><br>
-                        &nbsp;&nbsp;<span style="color: #38bdf8;">go to x: (pick random -200 to 200)</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #38bdf8;">y: (170)</span>
+            <!-- Scratch Blocks Display: Teleportation -->
+            <div style="background: rgba(15, 23, 42, 0.9); border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 440px;">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">
+                🔄 Balok Kode: Teleportasi Apel
+              </div>
+              <div class="block-stack">
+                <div class="scratch-block-c">
+                  jika &lt;<span class="scratch-inline-operator">posisi y &lt; <span class="block-input">-160</span></span>&gt; maka
+                  <div class="scratch-c-indent">
+                    <div class="scratch-block motion">
+                      pergi ke x: <span class="scratch-inline-operator">pilih acak <span class="block-input">-200</span> hingga <span class="block-input">200</span></span> y: <span class="block-input">170</span>
                     </div>
+                  </div>
                 </div>
-                
+              </div>
+              <div style="margin-top: 14px; text-align: center;">
+                <button onclick="triggerConfetti()" style="background: #1e293b; color: #fbbf24; border: 1px solid #f59e0b; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer;">
+                  🎲 Simulasi: Acak Posisi X Baru
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Mekanik Inti 2</div>
+          <div class="footer-hints">Panduan Guru: Jelaskan analogi air terjun yang dialirkan pipa kembali ke atas gunung.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>4</span> / 10</div>
@@ -773,46 +1139,62 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 5: Kontrol Pemain ================= -->
+      <!-- ================= SLIDE 5: KONTROL MANGKUK MOUSE (SCRATCH BLOCKS) ================= -->
       <div class="slide" data-time="⏱️ Menit ke 42–52">
         <div class="slide-header">
-          <div class="badge-session">Kontrol Pemain</div>
+          <div class="badge-session">Kontrol Pemain • Mangkuk Penampung</div>
           <div class="badge-time">⏱️ Menit ke 42–52</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
             <h2 class="slide-title">
-              Mangkuk Penangkap: <span>Mengikuti Mouse X</span> 🥣
+              Mangkuk Lincah: <span>Mengikuti Mouse</span> 🥣
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Sekarang giliran mangkuk penangkap! Kita ingin pemain bisa menggeser mangkuk ke kiri dan kanan dengan sangat halus dan responsif mengikuti kursor mouse.
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Pemain mengendalikan mangkuk penangkap dengan kursor mouse. Mangkuk harus bergerak ke kiri-kanan dengan sangat halus, tapi <strong>TIDAK BOLEH</strong> terbang ke atas langit!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🖱️ Mangkuk hanya bergerak ke samping (Horizontal), tidak boleh terbang ke atas!</li><li style="margin-bottom: 8px; line-height: 1.5;">🔒 Kunci posisi Y di dasar layar: misal <code>y = -140</code></li><li style="margin-bottom: 8px; line-height: 1.5;">⚡ Hubungkan nilai X dengan sensor mouse: <code>set x to (mouse x)</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🎮 Rasakan kendali yang sangat instan dan akurat!</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔒 <strong>Kunci Sumbu Y:</strong> Pasang mangkuk di dasar layar pada <code>set y to (-140)</code></li>
+                <li>🖱️ <strong>Sensor Mouse X:</strong> Hubungkan posisi X mangkuk ke <code>mouse x</code></li>
+                <li>⚡ <strong>Respon Instan:</strong> Mangkuk langsung menempel lincah ke kursor mouse</li>
+                <li>🎮 <strong>Mudah Dimainkan:</strong> Sangat ramah untuk anak-anak tanpa perlu menekan tombol</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #38bdf8; border-radius: 16px; padding: 20px; width: 100%;">
-                    <div style="color: #38bdf8; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">🥣 Kode Sprite Mangkuk (Bowl):</div>
-                    <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e2e8f0; line-height: 1.8;">
-                        <span style="color: #fbbf24;">when 🏴 clicked</span><br>
-                        <span style="color: #38bdf8;">set y to (-140)</span><br>
-                        <span style="color: #f59e0b;">forever</span> {<br>
-                        &nbsp;&nbsp;<span style="color: #38bdf8;">set x to (mouse x)</span><br>
-                        }
-                    </div>
+            <!-- Scratch Blocks Display: Bowl Mouse Follow -->
+            <div style="background: rgba(15, 23, 42, 0.9); border: 2px solid #38bdf8; border-radius: 16px; padding: 20px; width: 100%; max-width: 440px;">
+              <div style="color: #38bdf8; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">
+                🥣 Balok Kode: Sprite Mangkuk (Bowl)
+              </div>
+              <div class="block-stack">
+                <div class="scratch-block event">
+                  ketika 🏴 diklik
                 </div>
-                
+                <div class="scratch-block motion">
+                  atur y ke <span class="block-input">-140</span>
+                </div>
+                <div class="scratch-block-c">
+                  selamanya
+                  <div class="scratch-c-indent">
+                    <div class="scratch-block motion">
+                      atur x ke <span class="scratch-inline-sensing">x mouse</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 12px; background: rgba(56, 189, 248, 0.1); border: 1px dashed #38bdf8; padding: 10px; border-radius: 10px; font-size: 12.5px; color: #bae6fd;">
+                ⚠️ <em>Jangan pakai "pergi ke mouse-pointer"! Karena jika dipakai, mangkukmu bisa ikut terbang ke langit saat mouse diangkat!</em>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Kontrol Pemain</div>
+          <div class="footer-hints">Panduan Guru: Ingatkan perbedaan sumbu X (kiri-kanan) dan Y (atas-bawah).</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>5</span> / 10</div>
@@ -821,45 +1203,64 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 6: Interaksi & Skor ================= -->
+      <!-- ================= SLIDE 6: DETEKSI TANGKAPAN & SUARA (SCRATCH BLOCKS) ================= -->
       <div class="slide" data-time="⏱️ Menit ke 52–62">
         <div class="slide-header">
-          <div class="badge-session">Interaksi & Skor</div>
+          <div class="badge-session">Interaksi & Skor • Suara Chomp</div>
           <div class="badge-time">⏱️ Menit ke 52–62</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
             <h2 class="slide-title">
-              Hap! <span>Deteksi Tabrakan & Suara Makan</span> 🔊
+              Hap! <span>Sentuhan Mangkuk & Skor</span> 🔊
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Saat apel menyentuh mangkuk, game harus tahu bahwa pemain berhasil menangkapnya! Kita buat apel memainkan suara 'Chomp' lalu kembali ke atas sambil menambah skor!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Saat apel berhasil masuk ke dalam mangkuk, game harus mengenali keberhasilan pemain! Apel membunyikan suara <em>Chomp</em>, menambah skor +1, lalu melesat kembali ke langit.
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🤝 Deteksi sentuhan: <code>if touching [Bowl] then</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🎵 Mainkan efek suara renyah: <code>start sound [Chomp]</code></li><li style="margin-bottom: 8px; line-height: 1.5;">➕ Tambah skor pemain: <code>change [Skor] by (1)</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🚀 Lempar apel kembali ke atas: <code>go to x: random y: 170</code></li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🤝 <strong>Sensing Tabrakan:</strong> Blok <code>&lt;menyentuh [Bowl]?&gt;</code></li>
+                <li>🎵 <strong>Efek Audio:</strong> Mainkan suara renyah <code>start sound [Chomp]</code></li>
+                <li>➕ <strong>Variabel Skor:</strong> Tambahkan poin dengan <code>change [Skor] by (1)</code></li>
+                <li>🚀 <strong>Reset Langsung:</strong> Pindahkan apel kembali ke langit agar siap ronde berikutnya</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #a855f7; border-radius: 16px; padding: 20px; width: 100%;">
-                    <div style="color: #a855f7; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">📦 Kode Lengkap Tangkap Apel:</div>
-                    <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #e2e8f0; line-height: 1.7;">
-                        <span style="color: #a855f7;">if</span> &lt;<span style="color: #38bdf8;">touching [Bowl]?</span>&gt; <span style="color: #a855f7;">then</span><br>
-                        &nbsp;&nbsp;<span style="color: #ec4899;">start sound [Chomp]</span><br>
-                        &nbsp;&nbsp;<span style="color: #f59e0b;">change [Skor] by (1)</span><br>
-                        &nbsp;&nbsp;<span style="color: #38bdf8;">go to x: (pick random -200 to 200) y: (170)</span>
+            <!-- Scratch Blocks Display: Catch Detection -->
+            <div style="background: rgba(15, 23, 42, 0.9); border: 2px solid #a855f7; border-radius: 16px; padding: 20px; width: 100%; max-width: 440px;">
+              <div style="color: #c084fc; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">
+                ⭐ Balok Kode: Menangkap Apel & Skor
+              </div>
+              <div class="block-stack">
+                <div class="scratch-block-c">
+                  jika &lt;<span class="scratch-inline-sensing">menyentuh [Bowl]?</span>&gt; maka
+                  <div class="scratch-c-indent">
+                    <div class="scratch-block sound">
+                      mulai suara <span class="block-input">Chomp 🔊</span>
                     </div>
+                    <div class="scratch-block variable">
+                      ubah <span class="scratch-inline-variable">Skor</span> sebesar <span class="block-input">1</span>
+                    </div>
+                    <div class="scratch-block motion">
+                      pergi ke x: <span class="scratch-inline-operator">pilih acak <span class="block-input">-200</span> hingga <span class="block-input">200</span></span> y: <span class="block-input">170</span>
+                    </div>
+                  </div>
                 </div>
-                
+              </div>
+              <div style="margin-top: 14px; text-align: center;">
+                <button onclick="playChompAudio()" style="background: #a855f7; color: #fff; border: none; padding: 8px 18px; border-radius: 999px; font-weight: 800; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                  🔊 Uji Suara Chomp (Klik Disini)
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Interaksi & Skor</div>
+          <div class="footer-hints">Panduan Guru: Bimbing murid membuat variabel Skor di panel Variables Scratch.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>6</span> / 10</div>
@@ -868,51 +1269,68 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 7: Latihan Praktik Mandiri ================= -->
+      <!-- ================= SLIDE 7: LIVE PLAYABLE SCRATCH SIMULATOR ================= -->
       <div class="slide" data-time="⏱️ Menit ke 62–74">
         <div class="slide-header">
-          <div class="badge-session">Latihan Praktik Mandiri</div>
+          <div class="badge-session">Simulasi Interaktif • Live Scratch Player</div>
           <div class="badge-time">⏱️ Menit ke 62–74</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
             <h2 class="slide-title">
-              Tantangan Koding Cilik: <span>2 Apel Sekaligus!</span> 🎮
+              Simulasi Langsung: <span>Uji Coba Game!</span> 🎮
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Satu apel terasa terlalu mudah? Ayo kita gandakan tantangannya menjadi dua apel atau lebih dengan kecepatan berbeda!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 8px 0 12px; line-height: 1.5;">
+              Ayo uji coba logika game kita secara nyata di simulator Scratch berikut! Klik bendera hijau 🏴 lalu gerakkan kursor mouse ke kanan dan kiri untuk menangkap apel yang jatuh!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🍎 <strong>Apel Merah:</strong> Kecepatan normal (-5), skor +1</li><li style="margin-bottom: 8px; line-height: 1.5;">🍏 <strong>Apel Hijau Kilat:</strong> Kecepatan super cepat (-9), skor +2!</li><li style="margin-bottom: 8px; line-height: 1.5;">🎨 Cara mudah: Klik kanan sprite Apple -> pilih <em>Duplicate</em></li><li style="margin-bottom: 8px; line-height: 1.5;">⚡ Ubah warna kostum di Costume Editor menjadi hijau cerah!</li>
-              </ul>
+            <div class="concept-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13px; margin-bottom: 4px;">🎮 Cara Menguji Simulator:</div>
+              <ol style="padding-left: 18px; color: #e2e8f0; font-size: 12.5px; line-height: 1.6;">
+                <li>Klik tombol <strong>Bendera Hijau 🏴</strong> untuk memulai game</li>
+                <li>Gerakkan mouse di area layar untuk memandu mangkuk 🥣</li>
+                <li>Tangkap apel 🍎 sebanyak-banyaknya hingga skor bertambah!</li>
+                <li>Klik tombol <strong>Stop 🛑</strong> untuk mereset skor</li>
+              </ol>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(15, 23, 42, 0.85); border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; text-align: center;">
-                    <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 14px;">
-                        <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 12px; padding: 14px; width: 120px;">
-                            <div style="font-size: 32px;">🍎</div>
-                            <div style="color: #ef4444; font-weight: 800; font-size: 13px;">Apel Merah</div>
-                            <div style="color: #cbd5e1; font-size: 11px;">Speed: -5 | +1</div>
-                        </div>
-                        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 12px; padding: 14px; width: 120px;">
-                            <div style="font-size: 32px;">🍏</div>
-                            <div style="color: #10b981; font-weight: 800; font-size: 13px;">Apel Hijau</div>
-                            <div style="color: #cbd5e1; font-size: 11px;">Speed: -9 | +2</div>
-                        </div>
-                    </div>
-                    <p style="color: #fbbf24; font-size: 13px; font-weight: 700;">Tantangan: Siapa yang bisa mencapai 20 poin dalam 1 menit?</p>
+            <!-- Full Playable Mini Scratch Simulator Box -->
+            <div class="sim-box">
+              <div class="sim-header">
+                <div class="sim-btns">
+                  <button class="btn-green-flag" title="Mulai Permainan (Start)" onclick="startSimGame()">🏴</button>
+                  <button class="btn-red-stop" title="Hentikan Permainan (Stop)" onclick="stopSimGame()">🛑</button>
                 </div>
-                
+                <div class="sim-score-badge">
+                  🏆 Skor: <span id="simScoreVal">0</span>
+                </div>
+              </div>
+              <div class="sim-canvas" id="simStageArea" onmousemove="handleSimMouseMove(event)">
+                <!-- Background decor clouds -->
+                <div style="position: absolute; top: 12px; left: 16px; font-size: 20px; opacity: 0.8;">☁️</div>
+                <div style="position: absolute; top: 24px; right: 28px; font-size: 24px; opacity: 0.8;">☁️</div>
+                <!-- Interactive Apple -->
+                <div class="sim-apple" id="simAppleEl" style="left: 190px; top: -40px;">🍎</div>
+                <!-- Interactive Bowl -->
+                <div class="sim-bowl" id="simBowlEl" style="left: 180px;">🥣</div>
+                <!-- Start Overlay hint -->
+                <div id="simHintOverlay" style="position: absolute; inset: 0; background: rgba(15, 23, 42, 0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-family: 'Fredoka', cursive; font-size: 16px; gap: 8px;">
+                  <span style="font-size: 32px;">🕹️</span>
+                  <span>Klik Bendera Hijau 🏴 untuk Main!</span>
+                </div>
+              </div>
+              <div style="background: #1e293b; padding: 6px 12px; display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8;">
+                <span>Mouse X: <strong id="simMouseXText" style="color:#38bdf8;">0</strong></span>
+                <span>Apel Y: <strong id="simAppleYText" style="color:#fbbf24;">170</strong></span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Latihan Praktik Mandiri</div>
+          <div class="footer-hints">Panduan Guru: Biarkan 2 murid mencoba bermain di proyektor kelas, lalu minta semua anak mencoba di Scratch mereka.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>7</span> / 10</div>
@@ -921,40 +1339,50 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 8: Klinik Debugging ================= -->
+      <!-- ================= SLIDE 8: KLINIK DEBUGGING ================= -->
       <div class="slide" data-time="⏱️ Menit ke 74–82">
         <div class="slide-header">
-          <div class="badge-session">Klinik Debugging</div>
+          <div class="badge-session">Klinik Debugging • Dokter Kode</div>
           <div class="badge-time">⏱️ Menit ke 74–82</div>
         </div>
 
         <div class="slide-body">
           <div class="text-column">
             <h2 class="slide-title">
-              Dokter Kode: <span>Tips Memperbaiki Bug</span> 🐛
+              Dokter Kode: <span>Tips Mengatasi Bug</span> 🐛
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Saat membuat game, programmer hebat tidak pernah takut dengan error. Mari kita pelajari 2 masalah umum dan solusinya!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Saat membuat game, programmer hebat tidak pernah takut dengan error. Mari kita pelajari 2 masalah umum yang sering muncul dan cara memperbaikinya!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">🐛 <strong>Bug 1: Apel berhenti di bawah layar dan tidak naik lagi.</strong><br><em>Solusi:</em> Cek tanda pembanding. Pastikan tandanya &lt; (kurang dari -160).</li><li style="margin-bottom: 8px; line-height: 1.5;">🐛 <strong>Bug 2: Mangkuk bisa melayang ke atas langit.</strong><br><em>Solusi:</em> Jangan gunakan <code>go to mouse-pointer</code>! Kunci Y dengan <code>set x to mouse x</code>.</li><li style="margin-bottom: 8px; line-height: 1.5;">🐛 <strong>Bug 3: Skor bertambah 10 kali dalam satu tangkapan.</strong><br><em>Solusi:</em> Langsung pindahkan apel ke langit segera setelah touching mangkuk!</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🐛 <strong>Bug 1: Apel berhenti di bawah layar dan tidak naik lagi.</strong><br><em>Solusi:</em> Cek tanda pembanding. Pastikan tandanya &lt; (kurang dari -160).</li>
+                <li>🐛 <strong>Bug 2: Mangkuk bisa melayang ke atas langit.</strong><br><em>Solusi:</em> Jangan gunakan <code>go to mouse-pointer</code>! Kunci Y dengan <code>set x to mouse x</code>.</li>
+                <li>🐛 <strong>Bug 3: Skor bertambah 10 kali dalam satu tangkapan.</strong><br><em>Solusi:</em> Langsung pindahkan apel ke langit segera setelah touching mangkuk!</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(239, 68, 68, 0.08); border: 2px solid #ef4444; border-radius: 16px; padding: 20px; width: 100%;">
-                    <div style="color: #ef4444; font-size: 16px; font-weight: 800; margin-bottom: 8px;">🛡️ Resep Rahasia Bebas Bug:</div>
-                    <p style="color: #e2e8f0; font-size: 13px; line-height: 1.5;">Selalu letakkan blok <strong>Teleportasi</strong> di dalam kondisi touching mangkuk, sehingga apel langsung menghilang dari area kontak mangkuk!</p>
-                </div>
-                
+            <!-- Bug vs Fix Card -->
+            <div style="background: rgba(239, 68, 68, 0.08); border: 2px solid #ef4444; border-radius: 16px; padding: 20px; width: 100%; max-width: 440px;">
+              <div style="color: #ef4444; font-size: 15px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <span>❌ KODE SALAH VS ✔️ KODE BENAR:</span>
+              </div>
+              <div style="background: rgba(239, 68, 68, 0.15); border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 12.5px; color: #fca5a5;">
+                ❌ <strong>Salah:</strong> <code>pergi ke [mouse-pointer]</code><br>
+                <em>Akibat: Mangkuk ikut terbang ke langit saat kursor diangkat!</em>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.15); border-radius: 8px; padding: 10px; font-size: 12.5px; color: #86efac;">
+                ✔️ <strong>Benar:</strong> <code>atur x ke [x mouse]</code><br>
+                <em>Hasil: Mangkuk terkunci rapi di lantai dan hanya geser ke samping!</em>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Klinik Debugging</div>
+          <div class="footer-hints">Panduan Guru: Tunjukkan sikap tenang dan jadikan bug sebagai sarana mengasah analisa berpikir kritis.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>8</span> / 10</div>
@@ -963,10 +1391,10 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 9: Review Pemahaman ================= -->
+      <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
       <div class="slide" data-time="⏱️ Menit ke 82–87">
         <div class="slide-header">
-          <div class="badge-session">Review Pemahaman</div>
+          <div class="badge-session">Review Pemahaman • Pesta Apresiasi</div>
           <div class="badge-time">⏱️ Menit ke 82–87</div>
         </div>
 
@@ -975,32 +1403,33 @@
             <h2 class="slide-title">
               Rangkuman Keren <span>Sesi 13</span> 🌟
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Luar biasa! Hari ini kita berhasil membuat satu game arkade utuh dengan logika matematika koordinat nyata!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Luar biasa! Hari ini kalian telah resmi menyelesaikan game arkade pertama di Stage 2 dengan konsep matematika dan logika yang sangat hebat!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">1️⃣ <strong>Sumbu Y:</strong> Mengatur gerakan jatuh (Nilai Negatif) dan naik (Nilai Positif)</li><li style="margin-bottom: 8px; line-height: 1.5;">2️⃣ <strong>Sumbu X:</strong> Mengatur posisi mangkuk dan letak jatuh apel secara horizontal</li><li style="margin-bottom: 8px; line-height: 1.5;">3️⃣ <strong>Pick Random:</strong> Menghadirkan kejutan posisi agar game tidak membosankan</li><li style="margin-bottom: 8px; line-height: 1.5;">4️⃣ <strong>Mouse Sensing:</strong> Mengontrol karakter dengan kepekaan kursor mouse</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>1️⃣ <strong>Sumbu Y:</strong> Mengatur ketinggian jatuh apel (-Y) dan langit (+Y)</li>
+                <li>2️⃣ <strong>Sumbu X:</strong> Mengatur pergerakan horizontal mangkuk mengikuti kursor</li>
+                <li>3️⃣ <strong>Pick Random:</strong> Menghadirkan kejutan posisi jatuh agar game menantang</li>
+                <li>4️⃣ <strong>Collision Sensing:</strong> Menghubungkan sentuhan mangkuk dengan skor dan audio</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
-                    <div style="font-size: 40px; margin-bottom: 8px;">🎉🏆</div>
-                    <h3 style="color: #fbbf24; font-size: 18px; font-weight: 800; margin-bottom: 6px;">Selamat, Programmer Cilik!</h3>
-                    <p style="color: #cbd5e1; font-size: 13px;">Game Tangkap Apel buatanmu sudah siap dimainkan bersama keluarga!</p>
-                    <button onclick="triggerConfetti()" style="margin-top: 12px; background: #000; color: #fbbf24; border: 1px solid #fbbf24; padding: 8px 18px; border-radius: 999px; font-weight: 800; cursor: pointer;">
-                        🎊 Rayakan Keberhasilan (Klik Confetti)
-                    </button>
-                </div>
-                
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 16px; padding: 24px; width: 100%; text-align: center; max-width: 440px;">
+              <div style="font-size: 50px; margin-bottom: 8px;">🎉🏆🍎</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Selamat, Programmer Cilik!</h3>
+              <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.5;">Game Tangkap Apel buatanmu sudah siap dimainkan dan dipamerkan bersama keluarga!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 14px; background: #d97706; color: #ffffff; border: none; padding: 10px 22px; border-radius: 999px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);">
+                🎊 Rayakan Keberhasilan (Klik Confetti)
+              </button>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Review Pemahaman</div>
+          <div class="footer-hints">Panduan Guru: Beri apresiasi dan puji kemandirian murid menyelesaikan proyek game hari ini.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>9</span> / 10</div>
@@ -1009,10 +1438,10 @@
         </div>
       </div>
 
-      <!-- ================= SLIDE 10: Teaser Sesi Berikutnya ================= -->
+      <!-- ================= SLIDE 10: TEASER SESI 14 ================= -->
       <div class="slide" data-time="⏱️ Menit ke 87–90">
         <div class="slide-header">
-          <div class="badge-session">Teaser Sesi Berikutnya</div>
+          <div class="badge-session">Teaser & Misi Selanjutnya</div>
           <div class="badge-time">⏱️ Menit ke 87–90</div>
         </div>
 
@@ -1021,37 +1450,37 @@
             <h2 class="slide-title">
               Misi Pekan Depan: <span>Sesi 14</span>! 🚀
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
-              Di pertemuan berikutnya, kita akan menambahkan efek visual spektakuler ke game apel kita!
+            <p style="color: #cbd5e1; font-size: 14.5px; margin: 10px 0 14px; line-height: 1.5;">
+              Di pertemuan berikutnya, kita akan menambahkan efek visual spektakuler (Game Juice) yang membuat game kita berkilau seperti game di smartphone!
             </p>
-            <div class="concept-card" style="padding: 16px 20px;">
-              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
-                <li style="margin-bottom: 8px; line-height: 1.5;">✨ <strong>Efek Partikel Kilau:</strong> Saat apel ditangkap, muncul percikan bintang!</li><li style="margin-bottom: 8px; line-height: 1.5;">🎈 <strong>Animasi Skor Terapung:</strong> Angka +1 melayang ke atas lalu menghilang!</li><li style="margin-bottom: 8px; line-height: 1.5;">🧬 <strong>Ilmu Kloning Sprite:</strong> Membuat duplikat ajaib tanpa membuat sprite baru!</li><li style="margin-bottom: 8px; line-height: 1.5;">🎮 Game kita akan terasa seperti game komersial profesional!</li>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>✨ <strong>Efek Partikel Kilau:</strong> Saat apel ditangkap, muncul percikan bintang ajaib!</li>
+                <li>🎈 <strong>Animasi Skor Terapung:</strong> Teks '+1' meluncur naik sambil memudar lembut</li>
+                <li>🧬 <strong>Ilmu Kloning Sprite:</strong> Menggandakan sprite secara dinamis dengan <code>create clone</code></li>
+                <li>🎮 <strong>Game Feel Profesional:</strong> Sensasi bermain yang sangat memuaskan</li>
               </ul>
             </div>
           </div>
 
           <div class="visual-column">
-            
-                <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 24px; text-align: center; width: 100%;">
-                    <div style="font-size: 48px; margin-bottom: 10px;">✨🔮</div>
-                    <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Sesi 14: Game Juice & Partikel Kloning</h3>
-                    <p style="color: #94a3b8; font-size: 13px;">Siapkan imajinasi terkerenmu untuk membuat game kita berkilau!</p>
-                </div>
-                
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 26px; text-align: center; width: 100%; max-width: 440px;">
+              <div style="font-size: 52px; margin-bottom: 10px;">✨🔮🎮</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Sesi 14: Efek Partikel & Game Juice</h3>
+              <p style="color: #94a3b8; font-size: 13px; line-height: 1.5;">Jangan lupa simpan proyek kodingmu hari ini (File -> Save to computer)! Sampai jumpa pekan depan!</p>
+            </div>
           </div>
         </div>
 
         <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Teaser Sesi Berikutnya</div>
+          <div class="footer-hints">Panduan Guru: Ingatkan murid menyimpan file Scratch (.sb3) di laptop masing-masing.</div>
           <div class="nav-buttons">
             <button class="btn-nav" onclick="prevSlide()">&larr;</button>
             <div class="slide-counter"><span>10</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+            <button class="btn-nav" onclick="nextSlide()" disabled>&rarr;</button>
           </div>
         </div>
       </div>
-
 
       </div> <!-- /.slide-canvas -->
 
@@ -1086,66 +1515,66 @@
     // Presenter Notes Database for Session 13
     const teacherNotesData = [
       {
-            "title": "Slide 1: Pembukaan & Sambutan Stage 2",
-            "time": "Menit 00–10 (Total 90 Menit)",
-            "instructions": "Sambut siswa dengan energi baru karena mereka resmi masuk ke Stage 2! Ajak mereka memamerkan antusiasme.",
-            "script": "Halo teman-teman hebat! Selamat datang di Stage 2 Beekoding! Di level baru ini, game yang kita buat akan jauh lebih keren, lebih cepat, dan mirip game di smartphone! Siapa yang siap bikin Game Tangkap Apel hari ini? Angkat tangannya tinggi-tinggi!"
+        "title": "Slide 1: Pembukaan & Sambutan Stage 2",
+        "time": "Menit 00–10 (Total 90 Menit)",
+        "instructions": "Sambut siswa dengan energi baru karena mereka resmi masuk ke Stage 2! Ajak mereka memamerkan antusiasme.",
+        "script": "Halo teman-teman hebat! Selamat datang di Stage 2 Beekoding! Di level baru ini, game yang kita buat akan jauh lebih keren, lebih cepat, dan mirip game di smartphone! Siapa yang siap bikin Game Tangkap Apel hari ini? Angkat tangannya tinggi-tinggi!"
       },
       {
-            "title": "Slide 2: Konsep Sumbu Koordinat X dan Y",
-            "time": "Menit 10–22",
-            "instructions": "Gunakan analogi lantai dan lift. Sumbu X adalah berjalan ke samping kanan-kiri, sumbu Y adalah naik-turun lift.",
-            "script": "Coba perhatikan layar! Komputer punya peta rahasia namanya X dan Y. Kalau kamu mau jalan ke kanan atau kiri, kamu pakai X. Tapi kalau mau naik ke langit atau jatuh ke jurang, kamu pakai Y! Ke atas itu plus (+), ke bawah itu minus (-). Gampang kan?"
+        "title": "Slide 2: Konsep Sumbu Koordinat X dan Y",
+        "time": "Menit 10–22",
+        "instructions": "Gunakan analogi lantai dan lift. Sumbu X adalah berjalan ke samping kanan-kiri, sumbu Y adalah naik-turun lift. Demonstrasikan pad simulator koordinat.",
+        "script": "Coba perhatikan layar! Komputer punya peta rahasia namanya X dan Y. Kalau kamu mau jalan ke kanan atau kiri, kamu pakai X. Tapi kalau mau naik ke langit atau jatuh ke jurang, kamu pakai Y! Ke atas itu plus (+), ke bawah itu minus (-). Coba lihat apel di kotak ini saat kakak geser!"
       },
       {
-            "title": "Slide 3: Logika Jatuh Berkelanjutan",
-            "time": "Menit 22–32",
-            "instructions": "Ajak murid menebak apa yang terjadi jika angka -6 diubah jadi -1 atau -15.",
-            "script": "Kenapa apel jatuh ke bawah? Karena kita kurangi posisi Y-nya terus menerus dengan blok change y by (-6). Coba bayangkan gravitasi bumi yang menarik apel ke bawah. Kalau angkanya kita ganti jadi -20, apelnya bakal jatuh secepat kilat!"
+        "title": "Slide 3: Logika Jatuh Berkelanjutan",
+        "time": "Menit 22–32",
+        "instructions": "Ajak murid menebak apa yang terjadi jika angka -6 diubah jadi -1 atau -15.",
+        "script": "Kenapa apel jatuh ke bawah? Karena kita kurangi posisi Y-nya terus menerus dengan blok change y by (-6). Coba bayangkan gravitasi bumi yang menarik apel ke bawah. Kalau angkanya kita ganti jadi -20, apelnya bakal jatuh secepat kilat!"
       },
       {
-            "title": "Slide 4: Logika Teleportasi Balik ke Langit",
-            "time": "Menit 32–42",
-            "instructions": "Tekankan fungsi blok pick random agar game tidak mudah ditebak.",
-            "script": "Kalau apelnya jatuh sampai bawah terus hilang ke mana? Nah, kita pasang penjaga: kalau Y lebih kecil dari -160, apel langsung teleportasi balik ke langit di Y: 170! Dan hebatnya, posisi X-nya kita acak pakai pick random, jadi pemain tidak tahu apel bakal muncul di mana!"
+        "title": "Slide 4: Logika Teleportasi Balik ke Langit",
+        "time": "Menit 32–42",
+        "instructions": "Tekankan fungsi blok pick random agar game tidak mudah ditebak.",
+        "script": "Kalau apelnya jatuh sampai bawah terus hilang ke mana? Nah, kita pasang penjaga: kalau Y lebih kecil dari -160, apel langsung teleportasi balik ke langit di Y: 170! Dan hebatnya, posisi X-nya kita acak pakai pick random, jadi pemain tidak tahu apel bakal muncul di mana!"
       },
       {
-            "title": "Slide 5: Kontrol Mangkuk Mengikuti Mouse",
-            "time": "Menit 42–52",
-            "instructions": "Jelaskan mengapa kita mengunci Y dan hanya mengubah X.",
-            "script": "Sekarang kita buat mangkuknya! Mangkuk kita tidak boleh melayang ke atas kan? Makanya Y-nya kita kunci di bawah (-140). Lalu X-nya kita tempelkan ke kursor mouse: set x to mouse x. Ke mana pun mouse kamu geser, mangkuk langsung ikut seketika!"
+        "title": "Slide 5: Kontrol Mangkuk Mengikuti Mouse",
+        "time": "Menit 42–52",
+        "instructions": "Jelaskan mengapa kita mengunci Y dan hanya mengubah X.",
+        "script": "Sekarang kita buat mangkuknya! Mangkuk kita tidak boleh melayang ke atas kan? Makanya Y-nya kita kunci di bawah (-140). Lalu X-nya kita tempelkan ke kursor mouse: set x to mouse x. Ke mana pun mouse kamu geser, mangkuk langsung ikut seketika!"
       },
       {
-            "title": "Slide 6: Deteksi Tangkapan & Suara Chomp",
-            "time": "Menit 52–62",
-            "instructions": "Bimbing murid memilih suara yang lucu di Sound Library Scratch.",
-            "script": "Hap! Saat apel menyentuh mangkuk, bunyi Chomp! Skor langsung bertambah 1! Dan jangan lupa, apelnya harus langsung terbang lagi ke langit agar siap ditangkap ronde berikutnya!"
+        "title": "Slide 6: Deteksi Tangkapan & Suara Chomp",
+        "time": "Menit 52–62",
+        "instructions": "Bimbing murid memilih suara yang lucu di Sound Library Scratch dan klik tombol uji suara Chomp.",
+        "script": "Hap! Saat apel menyentuh mangkuk, bunyi Chomp! Skor langsung bertambah 1! Dan jangan lupa, apelnya harus langsung terbang lagi ke langit agar siap ditangkap ronde berikutnya!"
       },
       {
-            "title": "Slide 7: Praktik Mandiri Gandakan Apel",
-            "time": "Menit 62–74",
-            "instructions": "Beri kebebasan murid berkreasi menggandakan sprite dan mengubah kostum warnanya.",
-            "script": "Ayo sekarang coba tantangan mandiri! Duplikat sprite apelmu, ganti warnanya jadi apel emas atau apel hijau! Beri apel kedua kecepatan yang lebih tinggi dan skor yang lebih banyak!"
+        "title": "Slide 7: Simulator Game Tangkap Apel Playable",
+        "time": "Menit 62–74",
+        "instructions": "Ajak murid mencoba memainkan simulator di layar proyektor lalu mulai merakit di akun Scratch masing-masing.",
+        "script": "Ayo kita coba mainkan game ini di simulator depan! Klik bendera hijau, lalu gerakkan mouse kalian! Siapa yang bisa menangkap 10 apel berturut-turut tanpa jatuh?"
       },
       {
-            "title": "Slide 8: Klinik Debugging & Mengatasi Error",
-            "time": "Menit 74–82",
-            "instructions": "Tunjukkan sikap tenang saat menemukan bug. Ajak seluruh kelas menganalisis penyebab bug.",
-            "script": "Kalau ada apel yang nyangkut di bawah, jangan panik! Itu tandanya kita jadi Dokter Kode. Cek blok perbandingannya: apakah tanda panahnya sudah benar menghadap ke kiri (< -160)?"
+        "title": "Slide 8: Klinik Debugging & Mengatasi Error",
+        "time": "Menit 74–82",
+        "instructions": "Tunjukkan sikap tenang saat menemukan bug. Ajak seluruh kelas menganalisis penyebab bug.",
+        "script": "Kalau ada apel yang nyangkut di bawah, jangan panik! Itu tandanya kita jadi Dokter Kode. Cek blok perbandingannya: apakah tanda panahnya sudah benar menghadap ke kiri (< -160)?"
       },
       {
-            "title": "Slide 9: Rangkuman & Pesta Apresiasi",
-            "time": "Menit 82–87",
-            "instructions": "Ucapkan selamat dan minta setiap anak mencoba memainkan game buatan teman di sebelahnya.",
-            "script": "Keren sekali semuanya! Hari ini kalian sudah belajar koordinat X-Y, deteksi tabrakan, dan sensor mouse. Ayo klik tombol kembang api untuk merayakan game pertama di Stage 2!"
+        "title": "Slide 9: Rangkuman & Pesta Apresiasi",
+        "time": "Menit 82–87",
+        "instructions": "Ucapkan selamat dan minta setiap anak mencoba memainkan game buatan teman di sebelahnya.",
+        "script": "Keren sekali semuanya! Hari ini kalian sudah belajar koordinat X-Y, deteksi tabrakan, dan sensor mouse. Ayo klik tombol kembang api untuk merayakan game pertama di Stage 2!"
       },
       {
-            "title": "Slide 10: Penutup & Teaser Sesi 14",
-            "time": "Menit 87–90",
-            "instructions": "Ajak siswa menyimpan file proyek (Save to Computer) dan rapikan laptop.",
-            "script": "Simpan proyek kalian ya! Pekan depan kita akan tambahkan efek bintang kilau dan tulisan +1 yang melayang ajaib. Sampai jumpa pekan depan, salam programmer cilik!"
+        "title": "Slide 10: Penutup & Teaser Sesi 14",
+        "time": "Menit 87–90",
+        "instructions": "Ajak siswa menyimpan file proyek (Save to Computer) dan rapikan laptop.",
+        "script": "Simpan proyek kalian ya! Pekan depan kita akan tambahkan efek bintang kilau dan tulisan +1 yang melayang ajaib. Sampai jumpa pekan depan, salam programmer cilik!"
       }
-];
+    ];
 
     let currentSlide = 1;
     const slides = document.querySelectorAll('.slide');
@@ -1231,6 +1660,171 @@
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // ================= AUDIO SYNTHESIZER =================
+    function playChompAudio() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(340, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.35, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.12);
+      } catch(e) {}
+    }
+
+    // ================= SIMULATOR 1: COORDINATE PAD =================
+    function handleCoordClick(e) {
+      const stage = document.getElementById('coordStage');
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const pctX = (clickX / rect.width) * 100;
+      const pctY = (clickY / rect.height) * 100;
+
+      // Map to scratch coordinates (-240..240, -180..180)
+      const scratchX = Math.round(((clickX / rect.width) - 0.5) * 480);
+      const scratchY = Math.round((0.5 - (clickY / rect.height)) * 360);
+
+      const apple = document.getElementById('coordApple');
+      if (apple) {
+        apple.style.left = `${pctX}%`;
+        apple.style.top = `${pctY}%`;
+      }
+
+      document.getElementById('lblCoordX').innerText = scratchX;
+      document.getElementById('lblCoordY').innerText = scratchY;
+
+      let reg = "Pusat";
+      if (scratchY > 40) reg = scratchX > 0 ? "Langit Kanan Atas" : "Langit Kiri Atas";
+      else if (scratchY < -40) reg = scratchX > 0 ? "Dasar Kanan Bawah" : "Dasar Kiri Bawah";
+      else reg = scratchX > 0 ? "Kanan Tengah" : "Kiri Tengah";
+      document.getElementById('lblCoordRegion').innerText = reg;
+    }
+
+    function moveCoordApple(targetX, targetY, desc) {
+      const pctX = ((targetX / 480) + 0.5) * 100;
+      const pctY = (0.5 - (targetY / 360)) * 100;
+
+      const apple = document.getElementById('coordApple');
+      if (apple) {
+        apple.style.left = `${pctX}%`;
+        apple.style.top = `${pctY}%`;
+      }
+
+      document.getElementById('lblCoordX').innerText = targetX;
+      document.getElementById('lblCoordY').innerText = targetY;
+      document.getElementById('lblCoordRegion').innerText = desc;
+    }
+
+    // ================= SIMULATOR 2: PLAYABLE APPLE CATCH GAME =================
+    let simRunning = false;
+    let simScore = 0;
+    let simAppleX = 180;
+    let simAppleY = 10;
+    let simBowlX = 180;
+    let simAnimId = null;
+
+    function startSimGame() {
+      simRunning = true;
+      simScore = 0;
+      document.getElementById('simScoreVal').innerText = simScore;
+      document.getElementById('simHintOverlay').style.display = 'none';
+
+      simAppleY = 0;
+      simAppleX = Math.floor(Math.random() * 320) + 20;
+      updateSimPositions();
+
+      if (simAnimId) cancelAnimationFrame(simAnimId);
+      simLoop();
+    }
+
+    function stopSimGame() {
+      simRunning = false;
+      if (simAnimId) cancelAnimationFrame(simAnimId);
+      document.getElementById('simHintOverlay').style.display = 'flex';
+      simAppleY = -40;
+      updateSimPositions();
+    }
+
+    function handleSimMouseMove(e) {
+      if (!simRunning) return;
+      const stage = document.getElementById('simStageArea');
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      let mouseX = e.clientX - rect.left - 25; // center bowl
+      mouseX = Math.max(10, Math.min(rect.width - 60, mouseX));
+      simBowlX = mouseX;
+
+      const bowlEl = document.getElementById('simBowlEl');
+      if (bowlEl) bowlEl.style.left = `${simBowlX}px`;
+
+      const mappedMouseX = Math.round(((mouseX / rect.width) - 0.5) * 480);
+      document.getElementById('simMouseXText').innerText = mappedMouseX;
+    }
+
+    function simLoop() {
+      if (!simRunning) return;
+
+      // Fall speed
+      simAppleY += 4.5;
+      const stage = document.getElementById('simStageArea');
+      const stageHeight = stage ? stage.clientHeight : 220;
+
+      // Collision detection with bowl
+      const bowlTop = stageHeight - 45;
+      if (simAppleY >= bowlTop - 25 && simAppleY <= bowlTop + 15) {
+        if (Math.abs(simAppleX - simBowlX) < 42) {
+          // Caught!
+          simScore++;
+          document.getElementById('simScoreVal').innerText = simScore;
+          playChompAudio();
+          triggerMiniBurst(simAppleX, simAppleY);
+
+          // Reset apple to top
+          simAppleY = -20;
+          simAppleX = Math.floor(Math.random() * (stage.clientWidth - 50)) + 15;
+        }
+      }
+
+      // Missed / reached bottom
+      if (simAppleY > stageHeight + 10) {
+        simAppleY = -20;
+        simAppleX = Math.floor(Math.random() * (stage.clientWidth - 50)) + 15;
+      }
+
+      updateSimPositions();
+      simAnimId = requestAnimationFrame(simLoop);
+    }
+
+    function updateSimPositions() {
+      const appleEl = document.getElementById('simAppleEl');
+      if (appleEl) {
+        appleEl.style.left = `${simAppleX}px`;
+        appleEl.style.top = `${simAppleY}px`;
+      }
+      const mappedAppleY = Math.round((1 - (simAppleY / 220)) * 360 - 180);
+      document.getElementById('simAppleYText').innerText = mappedAppleY;
+    }
+
+    function triggerMiniBurst(x, y) {
+      // Little visual burst using confetti if on stage
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 20,
+          spread: 40,
+          origin: { y: 0.7 }
         });
       }
     }
