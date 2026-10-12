@@ -367,7 +367,7 @@
       display: none !important;
     }
 
-    /* Bottom Controller & Navigation */
+    /* Footer & Controls */
     .slide-footer {
       background: #0f172a;
       border-top: 1px solid #1e293b;
@@ -388,62 +388,56 @@
     .slide-progress-dots {
       display: flex;
       gap: 8px;
-      align-items: center;
     }
 
-    .slide-progress-dots .dot {
+    .dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #374151;
+      background: #334155;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .slide-progress-dots .dot:hover {
-      background: #9ca3af;
-    }
-
-    .slide-progress-dots .dot.active {
+    .dot.active {
       background: #f59e0b;
-      width: 24px;
-      border-radius: 4px;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
     }
 
     .slide-counter {
-      color: #94a3b8;
       font-size: 13px;
       font-weight: 700;
+      color: #94a3b8;
     }
 
     .footer-controls {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn-nav {
-      background: #1f2937;
-      color: #e5e7eb;
-      border: 1px solid #374151;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
       font-weight: 700;
+      font-size: 13px;
       cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
     }
 
     .btn-nav:hover:not(:disabled) {
-      background: #374151;
-      color: #ffffff;
-      border-color: #4b5563;
+      background: #334155;
+      border-color: #475569;
     }
 
     .btn-nav:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
     }
 
@@ -896,10 +890,10 @@
     </div>
 
     <div class="toolbar-actions">
-      <a href="/slides/sesi-12/index.html" class="btn-nav-sesi">← Sesi 12</a>
-      <a href="/slides/sesi-14/index.html" class="btn-nav-sesi">Sesi 14 →</a>
+      <a href="/slides/sesi-12/index.html" class="btn-nav-sesi">⏪ Sesi 12</a>
+      <a href="/slides/sesi-14/index.html" class="btn-nav-sesi">Sesi 14 ⏩</a>
       <button class="btn btn-toggle-notes" onclick="toggleNotes()">
-        📋 Catatan Guru (N)
+        📝 Catatan Guru (N)
       </button>
       <button class="btn" onclick="toggleFullscreen()">
         ⛶ Layar Penuh (F)
@@ -940,15 +934,6 @@
 
           <div class="visual-column">
             <img src="beeby-apple-catch.jpg" alt="Game Tangkap Apel Jatuh - Beekoding Level 2" class="hero-img" />
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Sapa murid dengan antusias karena telah resmi masuk ke Stage 2!</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>1</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -1007,15 +992,6 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Minta anak menunjuk arah atas (+Y) dan bawah (-Y) dengan tangan mereka.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>2</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 3: LOGIKA APEL JATUH (SCRATCH BLOCKS) ================= -->
@@ -1068,15 +1044,6 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Tanyakan ke murid: 'Apa yang terjadi jika angka -6 diubah jadi -15?'</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>3</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 4: TELEPORTASI APEL (SCRATCH BLOCKS) ================= -->
@@ -1126,15 +1093,6 @@
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Jelaskan analogi air terjun yang dialirkan pipa kembali ke atas gunung.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>4</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -1192,15 +1150,6 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Ingatkan perbedaan sumbu X (kiri-kanan) dan Y (atas-bawah).</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>5</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 6: DETEKSI TANGKAPAN & SUARA (SCRATCH BLOCKS) ================= -->
@@ -1256,15 +1205,6 @@
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Bimbing murid membuat variabel Skor di panel Variables Scratch.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>6</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -1328,15 +1268,6 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Biarkan 2 murid mencoba bermain di proyektor kelas, lalu minta semua anak mencoba di Scratch mereka.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>7</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 8: KLINIK DEBUGGING ================= -->
@@ -1380,15 +1311,6 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Tunjukkan sikap tenang dan jadikan bug sebagai sarana mengasah analisa berpikir kritis.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>8</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
@@ -1427,15 +1349,6 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Beri apresiasi dan puji kemandirian murid menyelesaikan proyek game hari ini.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>9</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 10: TEASER SESI 14 ================= -->
@@ -1471,20 +1384,11 @@
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Ingatkan murid menyimpan file Scratch (.sb3) di laptop masing-masing.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>10</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()" disabled>&rarr;</button>
-          </div>
-        </div>
       </div>
 
       </div> <!-- /.slide-canvas -->
 
-      <!-- Slide Footer Bar -->
+            <!-- Slide Footer Bar -->
       <footer class="slide-footer">
         <div class="footer-left">
           <div class="slide-progress-dots" id="progressDots"></div>
@@ -1585,7 +1489,8 @@
     const progressDots = document.getElementById('progressDots');
     const notesPanel = document.getElementById('notesPanel');
 
-    // Create progress dots
+        // Create progress dots
+    progressDots.innerHTML = '';
     for (let i = 1; i <= totalSlides; i++) {
       const dot = document.createElement('div');
       dot.className = `dot ${i === 1 ? 'active' : ''}`;

@@ -12,8 +12,8 @@ def generate_slide_deck_html(session_data):
     title_meta = f"Slide Mengajar: Sesi {num_str} - {session_data['title']} | Beekoding Academy"
     
     # Navigation toolbar links
-    prev_btn_html = f'<a href="/slides/sesi-{prev_str}/index.html" class="btn-nav-sesi">← Sesi {prev_str}</a>'
-    next_btn_html = f'<a href="/slides/sesi-{next_str}/index.html" class="btn-nav-sesi">Sesi {next_str} →</a>' if next_str else ''
+    prev_btn_html = f'<a href="/slides/sesi-{prev_str}/index.html" class="btn-nav-sesi">⏪ Sesi {s_num - 1}</a>'
+    next_btn_html = f'<a href="/slides/sesi-{next_str}/index.html" class="btn-nav-sesi">Sesi {s_num + 1} ⏩</a>' if next_str else ''
 
     # Slides HTML
     slides_html_list = []
@@ -45,15 +45,6 @@ def generate_slide_deck_html(session_data):
 
           <div class="visual-column">
             {slide['visual_html']}
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: {slide['badge']}</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>{idx}</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -454,26 +445,21 @@ def generate_slide_deck_html(session_data):
     .slide-progress-dots {{
       display: flex;
       gap: 8px;
-      align-items: center;
     }}
 
-    .slide-progress-dots .dot {{
+    .dot {{
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #374151;
+      background: #334155;
       cursor: pointer;
       transition: all 0.2s;
     }}
 
-    .slide-progress-dots .dot:hover {{
-      background: #9ca3af;
-    }}
-
-    .slide-progress-dots .dot.active {{
+    .dot.active {{
       background: #f59e0b;
-      width: 24px;
-      border-radius: 4px;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
     }}
 
     .slide-counter {{
@@ -636,7 +622,7 @@ def generate_slide_deck_html(session_data):
       {prev_btn_html}
       {next_btn_html}
       <button class="btn btn-toggle-notes" onclick="toggleNotes()">
-        📋 Catatan Guru (N)
+        📝 Catatan Guru (N)
       </button>
       <button class="btn" onclick="toggleFullscreen()">
         ⛶ Layar Penuh (F)

@@ -694,6 +694,9 @@ def main():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public", "slides"))
     
     for s in sessions:
+        if s['num'] in [13, 14]:
+            print(f"Preserving custom Sesi {s['num']:02d} (already enriched with simulators & hero images)")
+            continue
         num_str = f"{s['num']:02d}"
         session_dir = os.path.join(base_dir, f"sesi-{num_str}")
         os.makedirs(session_dir, exist_ok=True)

@@ -428,54 +428,73 @@ def build_sesi_14_html():
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }}
 
+    /* Footer & Controls */
     .slide-footer {{
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 20;
     }}
 
-    .footer-hints {{
-      color: #64748b;
-      font-size: 12.5px;
-      font-style: italic;
-    }}
-
-    .nav-buttons {{
+    .footer-left {{
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
+    }}
+
+    .slide-progress-dots {{
+      display: flex;
+      gap: 8px;
+    }}
+
+    .dot {{
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }}
+
+    .dot.active {{
+      background: #f59e0b;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
     }}
 
     .slide-counter {{
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
-      color: #cbd5e1;
-      min-width: 60px;
-      text-align: center;
+      color: #94a3b8;
+    }}
+
+    .footer-controls {{
+      display: flex;
+      gap: 10px;
     }}
 
     .btn-nav {{
       background: #1e293b;
+      color: #ffffff;
       border: 1px solid #334155;
-      color: #cbd5e1;
-      width: 36px;
-      height: 36px;
+      padding: 8px 18px;
       border-radius: 10px;
-      font-size: 16px;
+      font-weight: 700;
+      font-size: 13px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
       transition: all 0.2s;
     }}
 
     .btn-nav:hover:not(:disabled) {{
       background: #334155;
       border-color: #475569;
-      color: #ffffff;
     }}
 
     .btn-nav:disabled {{
@@ -483,7 +502,17 @@ def build_sesi_14_html():
       cursor: not-allowed;
     }}
 
-    /* Teacher Notes Drawer */
+    .btn-nav.primary {{
+      background: #d97706;
+      border-color: #b45309;
+      color: #ffffff;
+    }}
+
+    .btn-nav.primary:hover:not(:disabled) {{
+      background: #f59e0b;
+      color: #000000;
+    }}
+/* Teacher Notes Drawer */
     .teacher-notes-panel {{
       position: absolute;
       bottom: 0;
@@ -829,10 +858,10 @@ def build_sesi_14_html():
     </div>
 
     <div class="toolbar-actions">
-      <a href="/slides/sesi-13/index.html" class="btn-nav-sesi">← Sesi 13</a>
-      <a href="/slides/sesi-15/index.html" class="btn-nav-sesi">Sesi 15 →</a>
+      <a href="/slides/sesi-13/index.html" class="btn-nav-sesi">⏪ Sesi 13</a>
+      <a href="/slides/sesi-15/index.html" class="btn-nav-sesi">Sesi 15 ⏩</a>
       <button class="btn btn-toggle-notes" onclick="toggleNotes()">
-        📋 Catatan Guru (N)
+        📝 Catatan Guru (N)
       </button>
       <button class="btn" onclick="toggleFullscreen()">
         ⛶ Layar Penuh (F)
@@ -873,15 +902,6 @@ def build_sesi_14_html():
 
           <div class="visual-column">
             <img src="beeby-game-juice.jpg" alt="Game Juice & Partikel Kloning - Beekoding Level 2" class="hero-img" />
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Buka sesi dengan semangat tinggi dan tunjukkan hero image Beeby Game Juice!</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>1</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -943,15 +963,6 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Ajak siswa merasakan perbedaan drastis antara Mode Hambar vs Mode Full Juice!</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>2</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 3: SPRITE CLONING (AUTENTIK SCRATCH BLOK) ================= -->
@@ -1008,15 +1019,6 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Tekankan analogi fotokopi. Klon lahir, beraksi sesaat, lalu dihancurkan.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>3</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 4: EFEK GHOST & TEKS SKOR MELAYANG ================= -->
@@ -1068,15 +1070,6 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Ajak siswa menggeser slider Ghost agar paham arti matematis 0 sampai 100.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>4</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 5: LEDAKAN BINTANG PARTIKEL (STAR BURST) ================= -->
@@ -1120,15 +1113,6 @@ def build_sesi_14_html():
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Jelaskan konsep lingkaran 360 derajat yang dipakai untuk menyebarkan partikel.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>5</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -1181,15 +1165,6 @@ def build_sesi_14_html():
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Tekankan bahwa broadcast membuat kode rapi karena tiap sprite fokus pada tugasnya.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>6</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
           </div>
         </div>
       </div>
@@ -1250,15 +1225,6 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Bimbing murid yang mencoba game simulator untuk memperhatikan detail animasinya.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>7</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 8: DOKTER KODE & CLINIC DEBUGGING ================= -->
@@ -1314,15 +1280,6 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Ingatkan siswa untuk selalu mengecek keberadaan blok merah 'delete this clone'.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>8</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
@@ -1361,15 +1318,6 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Berikan pujian personal kepada siswa atas usahanya hari ini!</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>9</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
       <!-- ================= SLIDE 10: PENUTUP & TEASER SESI 15 ================= -->
@@ -1405,18 +1353,22 @@ def build_sesi_14_html():
             </div>
           </div>
         </div>
-
-        <div class="slide-footer">
-          <div class="footer-hints">Panduan Guru: Ingatkan seluruh murid menyimpan file Scratch mereka ke laptop sebelum pulang.</div>
-          <div class="nav-buttons">
-            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
-            <div class="slide-counter"><span>10</span> / 10</div>
-            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
-          </div>
-        </div>
       </div>
 
+      
       </div><!-- .slide-canvas -->
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
 
       <!-- Teacher Notes Drawer Panel -->
       <div id="teacherNotesPanel" class="teacher-notes-panel">
@@ -1495,44 +1447,58 @@ def build_sesi_14_html():
       }} catch(e) {{}}
     }}
 
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+
+    // Create progress dots
+    progressDots.innerHTML = '';
+    for (let i = 1; i <= totalSlides; i++) {{
+      const dot = document.createElement('div');
+      dot.className = `dot ${{i === 1 ? 'active' : ''}}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }}
+
+    const dots = document.querySelectorAll('.dot');
+
     // Slide Navigation
     function goToSlide(n) {{
-      if (n < 1 || n > totalSlides) return;
-      currentSlide = n;
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
       updateSlide();
     }}
 
-    function prevSlide() {{
-      if (currentSlide > 1) goToSlide(currentSlide - 1);
-    }}
-
-    function nextSlide() {{
-      if (currentSlide < totalSlides) goToSlide(currentSlide + 1);
-    }}
-
     function updateSlide() {{
-      const slides = document.querySelectorAll('.slide');
       slides.forEach((sl, idx) => {{
-        if (idx + 1 === currentSlide) {{
-          sl.classList.add('active');
-        }} else {{
-          sl.classList.remove('active');
-        }}
+        sl.classList.toggle('active', idx + 1 === currentSlide);
       }});
 
-      // Update counters
-      document.querySelectorAll('.slide-counter span').forEach(el => {{
-        el.innerText = currentSlide;
+      dots.forEach((dot, idx) => {{
+        dot.classList.toggle('active', idx + 1 === currentSlide);
       }});
+
+      if (slideCounter) {{
+        slideCounter.textContent = `Slide ${{currentSlide}} / ${{totalSlides}}`;
+      }}
+      if (prevBtn) prevBtn.disabled = currentSlide === 1;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides;
 
       // Update teacher notes
       const note = notesData[currentSlide - 1];
       if (note) {{
-        document.getElementById('notesBadge').innerText = `Slide ${{currentSlide}} • ${{note.time}}`;
-        document.getElementById('notesInstructions').innerHTML = `<strong>Instruksi Guru:</strong> ${{note.instructions}}`;
-        document.getElementById('notesScript').innerText = `"${{note.script}}"`;
+        const b = document.getElementById('notesBadge');
+        if (b) b.innerText = `Slide ${{currentSlide}} • ${{note.time}}`;
+        const inst = document.getElementById('notesInstructions');
+        if (inst) inst.innerHTML = `<strong>Instruksi Guru:</strong> ${{note.instructions}}`;
+        const sc = document.getElementById('notesScript');
+        if (sc) sc.innerText = `"${{note.script}}"`;
       }}
     }}
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
 
     function toggleNotes() {{
       const panel = document.getElementById('teacherNotesPanel');
