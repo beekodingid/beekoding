@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 20 - Papan Peringkat Sederhana (High Score System) | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Navigation Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .brand-logo-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #eab308);
+      padding: 2px;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-link:hover .brand-logo-box {
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .brand-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: #121520;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .brand-link:hover .brand-logo-img {
+      transform: scale(1.12);
+    }
+
+    .brand-sparkle-ping {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      display: flex;
+    }
+
+    .brand-sparkle-ping .ping-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #fbbf24;
+      opacity: 0.75;
+      animation: brandPing 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .brand-sparkle-ping .ping-dot {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+    }
+
+    @keyframes brandPing {
+      75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-title .accent {
+      color: #f59e0b;
+    }
+
+    .brand-subtitle {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(251, 191, 36, 0.85);
+      margin-top: 1px;
+    }
+
+    .brand-stage-badge {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .brand-subtitle {
+        display: none;
+      }
+      .brand-stage-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+      }
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
+    }
+
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Main Presentation Stage (16:9 Aspect Ratio) */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 24px;
+      position: relative;
+      min-height: 0;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 74px);
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+
+    :fullscreen .stage-wrapper,
+    :-webkit-full-screen .stage-wrapper {
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    :fullscreen .slide-viewport,
+    :-webkit-full-screen .slide-viewport {
+      max-width: min(100vw, calc(100vh * 16 / 9));
+      max-height: 100vh;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-session {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Slide Content Typography */
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 34px;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-top: 8px;
+    }
+
+    .slide-title span {
+      color: #fbbf24;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin: 18px 0;
+    }
+
+    .text-column {
+      flex: 1.2;
+    }
+
+    .visual-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .concept-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 10px;
+    }
+
+    .slide .slide-footer {
+      display: none !important;
+    }
+
+    /* Bottom Controller & Navigation */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 20;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .slide-progress-dots .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #374151;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .slide-progress-dots .dot:hover {
+      background: #9ca3af;
+    }
+
+    .slide-progress-dots .dot.active {
+      background: #f59e0b;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .slide-counter {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #d97706;
+      border-color: #b45309;
+      color: #ffffff;
+    }
+
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #000000;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-panel.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notes-title {
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notes-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .notes-script {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 12px;
+      margin-top: 6px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      <a href="/" class="brand-link" title="Kembali ke Beranda Beekoding">
+        <div class="brand-logo-wrap">
+          <div class="brand-logo-box">
+            <div class="brand-logo-inner">
+              <img src="/beekoding-logo.png" alt="Beekoding Logo" class="brand-logo-img" />
+            </div>
+          </div>
+          <span class="brand-sparkle-ping">
+            <span class="ping-ring"></span>
+            <span class="ping-dot"></span>
+          </span>
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title">Bee<span class="accent">koding</span></span>
+          <span class="brand-subtitle">Platform Edukasi Koding & AI</span>
+        </div>
+      </a>
+      <span class="brand-stage-badge">STAGE 2: SESI 20</span>
+    </div>
+
+    <div class="toolbar-actions">
+      <a href="/slides/sesi-19/index.html" class="btn-nav-sesi">← Sesi 19</a>
+      <a href="/slides/sesi-21/index.html" class="btn-nav-sesi">Sesi 21 →</a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📋 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage Presentation -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+      <!-- ================= SLIDE 1: Pengantar & Goal Sesi 20 ================= -->
+      <div class="slide active" data-time="⏱️ Menit ke 00–10">
+        <div class="slide-header">
+          <div class="badge-session">Pengantar & Goal Sesi 20</div>
+          <div class="badge-time">⏱️ Menit ke 00–10</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Misi Baru: <span>Pecahkan Rekormu: High Score System!</span> 🏆
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Selamat datang di <strong>STAGE 2: SESI 20</strong>! Hari ini kita akan mempelajari papan peringkat sederhana (high score system) untuk membawa game kita ke level berikutnya!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🎯 <strong>Tujuan Utama:</strong> Membangun sistem pembanding skor tertinggi yang memotivasi pemain untuk terus menantang dirinya sendiri.</li><li style="margin-bottom: 8px; line-height: 1.5;">🧩 <strong>Balok Kunci:</strong> <code>if <Skor > HighScore> then</code></li><li style="margin-bottom: 8px; line-height: 1.5;">💡 <strong>Konsep Baru:</strong> Data Comparison Operators</li><li style="margin-bottom: 8px; line-height: 1.5;">🚀 <strong>Hasil Akhir:</strong> Proyek interaktif yang siap dimainkan dan dipamerkan!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(15, 23, 42, 0.85); border: 2px solid #334155; border-radius: 16px; padding: 24px; text-align: center; width: 100%;">
+                <div style="font-size: 56px; margin-bottom: 12px;">🏆 🎮</div>
+                <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Target Sesi 20</h3>
+                <p style="color: #cbd5e1; font-size: 14px; line-height: 1.5;">Menyimpan Rekor Skor Tertinggi & Memotivasi Pemain Menang</p>
+                <div style="margin-top: 14px; display: inline-flex; gap: 8px; background: rgba(245, 158, 11, 0.15); padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 700; font-size: 13px;">
+                    🕹️ Platform: Scratch 3.0 Studio
+                </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Pengantar & Goal Sesi 20</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>1</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: Analogi & Logika Dasar ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 10–22">
+        <div class="slide-header">
+          <div class="badge-session">Analogi & Logika Dasar</div>
+          <div class="badge-time">⏱️ Menit ke 10–22</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Mengapa Kita Butuh <span>Sistem Rekor Tertinggi</span>? 🤔
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Mengapa kita ingin main lagi setelah kalah? Karena ada rekor angka tertinggi yang ingin kita kalahkan! Itulah kekuatan psikologi High Score!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">📊 Variabel 1: <code>Skor Sekarang</code> (Reset ke 0 setiap ronde)</li><li style="margin-bottom: 8px; line-height: 1.5;">🏆 Variabel 2: <code>Rekor Tertinggi</code> (Menyimpan nilai terbaik)</li><li style="margin-bottom: 8px; line-height: 1.5;">⚖️ Operator <code>&gt;</code> (Lebih Besar): Mengecek apakah skor baru melampaui rekor lama</li><li style="margin-bottom: 8px; line-height: 1.5;">🎉 Selebrasi instan saat rekor baru berhasil dipecahkan!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: #090d16; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; text-align: center;">
+                <div style="font-size: 44px; margin-bottom: 10px;">💡 🧠</div>
+                <h4 style="color: #38bdf8; font-size: 16px; font-weight: 800; margin-bottom: 8px;">Analogi Dunia Nyata:</h4>
+                <p style="color: #e2e8f0; font-size: 13.5px; line-height: 1.5;">Seperti mistar lompat tinggi: setiap kali ada atlet melompat lebih tinggi, mistar dinaikkan ke rekor yang baru!</p>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Analogi & Logika Dasar</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>2</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: Bedah Balok Kode ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 22–32">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Balok Kode</div>
+          <div class="badge-time">⏱️ Menit ke 22–32</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Mengenal Balok Kunci: <span>Rumus Emas Pembanding Rekor</span> 🧩
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Untuk mengaktifkan logika ini di Scratch, kita menggunakan rangkaian balok khusus berikut ini:
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🟡 <strong>Event:</strong> Mulai saat bendera hijau diklik</li><li style="margin-bottom: 8px; line-height: 1.5;">🔵 <strong>Motion / Logika:</strong> <code>if <Skor > HighScore> then</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🟣 <strong>Kondisi:</strong> <code>set [HighScore] to (Skor)</code></li><li style="margin-bottom: 8px; line-height: 1.5;">🔄 <strong>Loop:</strong> Membungkus kode dalam perulangan agar berjalan terus-menerus</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #10b981; border-radius: 16px; padding: 20px; width: 100%;">
+                <div style="color: #10b981; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">📦 Kode Blok Utama Scratch:</div>
+                <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #e2e8f0; line-height: 1.8;">
+                    <span style="color:#a855f7;">if &lt;Skor &gt; HighScore&gt; then</span><br>&nbsp;&nbsp;<span style="color:#f59e0b;">set [HighScore] to (Skor)</span><br>&nbsp;&nbsp;<span style="color:#ec4899;">broadcast [Rekor Baru]</span><br>&nbsp;&nbsp;<span style="color:#ec4899;">start sound [Cheer Applause]</span>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Bedah Balok Kode</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>3</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: Langkah Demi Langkah ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 32–42">
+        <div class="slide-header">
+          <div class="badge-session">Langkah Demi Langkah</div>
+          <div class="badge-time">⏱️ Menit ke 32–42</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Langkah Perakitan: <span>Menampilkan Papan Skor di Layar</span> 🛠️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Sekarang kita rangkai langkah-langkah praktiknya satu per satu di Scratch Studio kita!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">1️⃣ Buat dua variabel: <code>Skor</code> dan <code>HighScore</code></li><li style="margin-bottom: 8px; line-height: 1.5;">2️⃣ Jangan pernah me-reset HighScore ke 0 saat bendera hijau diklik!</li><li style="margin-bottom: 8px; line-height: 1.5;">3️⃣ Cek pembanding skor di akhir permainan atau setiap kali mendapat poin</li><li style="margin-bottom: 8px; line-height: 1.5;">4️⃣ Tampilkan banner bertuliskan 'REKOR BARU TERCIPTA!'</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%;">
+                <div style="color: #f59e0b; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">⚙️ Alur Instruksi:</div>
+                <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #e2e8f0; line-height: 1.8;">
+                    <span style="color:#fbbf24;">when 🏴 clicked</span><br><span style="color:#f59e0b;">set [Skor] to (0)</span><br><span style="color:#64748b;">// HighScore dibiarkan menyimpan nilai rekor sesi!</span>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Langkah Demi Langkah</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>4</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: Interaksi & Efek ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 42–52">
+        <div class="slide-header">
+          <div class="badge-session">Interaksi & Efek</div>
+          <div class="badge-time">⏱️ Menit ke 42–52</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Respons Permainan: <span>Animasi Trofi Emas Bercahaya</span> ⚡
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Game terasa hidup jika merespons aksi pemain secara instan dengan efek suara dan perubahan visual!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🔊 <strong>Efek Audio:</strong> Tepuk tangan meriah dan suara terompet selebrasi</li><li style="margin-bottom: 8px; line-height: 1.5;">🎨 <strong>Animasi Visual:</strong> Ikon trofi emas melompat-lompat di samping angka High Score</li><li style="margin-bottom: 8px; line-height: 1.5;">⚡ <strong>Umpan Balik Instan:</strong> Pemain langsung tahu aksi mereka berhasil</li><li style="margin-bottom: 8px; line-height: 1.5;">🎮 <strong>Kenyamanan Bermain:</strong> Gameplay terasa halus dan memuaskan</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #38bdf8; border-radius: 16px; padding: 20px; width: 100%; text-align: center;">
+                <div style="font-size: 40px; margin-bottom: 8px;">🔊 ✨</div>
+                <h4 style="color: #38bdf8; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Umpan Balik Pemain:</h4>
+                <p style="color: #cbd5e1; font-size: 13px;">Pemain merasa sangat bangga dan ingin mengulang bermain untuk memecahkan rekornya lagi!</p>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Interaksi & Efek</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>5</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: Fitur Ekstra & Variasi ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 52–62">
+        <div class="slide-header">
+          <div class="badge-session">Fitur Ekstra & Variasi</div>
+          <div class="badge-time">⏱️ Menit ke 52–62</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Fitur Tingkat Lanjut: <span>Kategori Peringkat Bintang</span> 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Tampilkan medali perunggu (Skor 5), perak (Skor 15), atau emas (Skor 25) sesuai pencapaian akhir pemain!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🥉 Skor 5–14: Medali Perunggu Cilik</li><li style="margin-bottom: 8px; line-height: 1.5;">🥈 Skor 15–24: Medali Perak Hebat</li><li style="margin-bottom: 8px; line-height: 1.5;">🥇 Skor 25+: Trofi Emas Grand Master</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #a855f7; border-radius: 16px; padding: 20px; width: 100%;">
+                <div style="color: #a855f7; font-weight: 800; font-size: 13px; text-transform: uppercase; margin-bottom: 10px;">🌟 Fitur Tambahan:</div>
+                <div style="background: #0f172a; border-radius: 10px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #e2e8f0; line-height: 1.8;">
+                    <span style="color:#a855f7;">if &lt;Skor &gt; 25&gt; then</span><br>&nbsp;&nbsp;<span style="color:#a855f7;">switch costume to [Trofi Emas]</span><br><span style="color:#a855f7;">else if &lt;Skor &gt; 15&gt; then</span><br>&nbsp;&nbsp;<span style="color:#a855f7;">switch costume to [Medali Perak]</span>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Fitur Ekstra & Variasi</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>6</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: Eksplorasi Kreatif ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 62–74">
+        <div class="slide-header">
+          <div class="badge-session">Eksplorasi Kreatif</div>
+          <div class="badge-time">⏱️ Menit ke 62–74</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tantangan Mandiri: <span>Papan Rekor Kelas</span> 🏆
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Saatnya menguji kreativitasmu! Tambahkan sentuhan personal pada proyek game buatanmu!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🏆 Tantang teman sebangku untuk mencoba memecahkan High Score di komputermu</li><li style="margin-bottom: 8px; line-height: 1.5;">📝 Tuliskan nama pemegang rekor di layar permainan</li><li style="margin-bottom: 8px; line-height: 1.5;">⭐ Buat tombol Reset High Score khusus instruktur dengan kode rahasia</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(15, 23, 42, 0.85); border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 10px;">🎯 ⭐</div>
+                <h4 style="color: #fbbf24; font-size: 17px; font-weight: 800; margin-bottom: 6px;">Target Skor Tantangan:</h4>
+                <p style="color: #cbd5e1; font-size: 13.5px;">Sistem High Score otomatis yang memperbarui rekor tertinggi secara akurat!</p>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Eksplorasi Kreatif</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>7</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: Klinik Debugging ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 74–82">
+        <div class="slide-header">
+          <div class="badge-session">Klinik Debugging</div>
+          <div class="badge-time">⏱️ Menit ke 74–82</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Dokter Kode: <span>Tips Mengatasi Bug</span> 🐛
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Setiap programmer pasti pernah menemui bug. Mari pelajari cara menemukan dan memperbaikinya!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🐛 <strong>Bug: High Score selalu kembali ke 0 setiap kali game dimulai ulang.</strong><br><em>Solusi:</em> Hapus blok <code>set [HighScore] to (0)</code> dari bawah bendera hijau!</li><li style="margin-bottom: 8px; line-height: 1.5;">🐛 <strong>Bug: Rekor baru tidak terpicu meski skor sudah lebih tinggi.</strong><br><em>Solusi:</em> Pastikan menggunakan operator tanda lebih besar (<code>&gt;</code>), bukan lebih kecil (<code>&lt;</code>).</li><li style="margin-bottom: 8px; line-height: 1.5;">🐛 <strong>Bug: Suara tepuk tangan berbunyi berulang-ulang tanpa henti.</strong><br><em>Solusi:</em> Pasang syarat penanda agar suara hanya berbunyi 1 kali saat rekor pecah.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(239, 68, 68, 0.08); border: 2px solid #ef4444; border-radius: 16px; padding: 20px; width: 100%;">
+                <div style="color: #ef4444; font-size: 16px; font-weight: 800; margin-bottom: 8px;">🛡️ Tips Dokter Kode:</div>
+                <p style="color: #e2e8f0; font-size: 13px; line-height: 1.5;">Memori variabel yang tidak di-reset saat start adalah cara Scratch menyimpan data sementara antar ronde permainan!</p>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Klinik Debugging</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>8</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: Review Pemahaman ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 82–87">
+        <div class="slide-header">
+          <div class="badge-session">Review Pemahaman</div>
+          <div class="badge-time">⏱️ Menit ke 82–87</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Rangkuman Keren <span>Sesi 20</span> 🌟
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Hebat sekali! Kalian berhasil menaklukkan tantangan Sesi 20 dengan penuh semangat!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">1️⃣ <strong>Operator > :</strong> Membandingkan dua nilai numerik secara logis</li><li style="margin-bottom: 8px; line-height: 1.5;">2️⃣ <strong>High Score Logic:</strong> Menyimpan nilai puncak permainan</li><li style="margin-bottom: 8px; line-height: 1.5;">3️⃣ <strong>Penyimpanan Sesi:</strong> Menjaga rekor tetap tersimpan selama proyek terbuka</li><li style="margin-bottom: 8px; line-height: 1.5;">4️⃣ <strong>Gamifikasi:</strong> Memotivasi pemain dengan target yang terukur</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
+                <div style="font-size: 40px; margin-bottom: 8px;">🎉🏆</div>
+                <h3 style="color: #fbbf24; font-size: 18px; font-weight: 800; margin-bottom: 6px;">Selamat, Programmer Cilik!</h3>
+                <p style="color: #cbd5e1; font-size: 13px;">Proyek Sesi 20 milikmu telah berhasil diselesaikan!</p>
+                <button onclick="triggerConfetti()" style="margin-top: 12px; background: #000; color: #fbbf24; border: 1px solid #fbbf24; padding: 8px 18px; border-radius: 999px; font-weight: 800; cursor: pointer;">
+                    🎊 Rayakan Keberhasilan (Klik Confetti)
+                </button>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Review Pemahaman</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>9</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: Teaser & Penutup ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 87–90">
+        <div class="slide-header">
+          <div class="badge-session">Teaser & Penutup</div>
+          <div class="badge-time">⏱️ Menit ke 87–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Misi Selanjutnya: <span>Sesi 21: Musik Game Dinamis & Tombol Mute UI! 🎵</span> 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 12px 0 16px; line-height: 1.55;">
+              Petualangan Stage 2 masih berlanjut! Di pertemuan berikutnya, tantangan yang lebih spektakuler menanti kita!
+            </p>
+            <div class="concept-card" style="padding: 16px 20px;">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13.5px;">
+                <li style="margin-bottom: 8px; line-height: 1.5;">🎵 <strong>Background Music (BGM):</strong> Memutar lagu latar yang seru sepanjang permainan</li><li style="margin-bottom: 8px; line-height: 1.5;">🔇 <strong>Tombol Mute UI:</strong> Tombol interaktif untuk mematikan/menyalakan suara</li><li style="margin-bottom: 8px; line-height: 1.5;">🎛️ <strong>Kontrol Volume:</strong> Mengatur volume suara agar nyaman di telinga</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 24px; text-align: center; width: 100%;">
+                <div style="font-size: 48px; margin-bottom: 10px;">✨🔮</div>
+                <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Sesi 21: Musik Game Dinamis & Tombol Mute UI! 🎵</h3>
+                <p style="color: #94a3b8; font-size: 13px;">Pastikan menyimpan file proyekmu dan sampai jumpa di sesi berikutnya!</p>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="footer-hints">Panduan Guru: Teaser & Penutup</div>
+          <div class="nav-buttons">
+            <button class="btn-nav" onclick="prevSlide()">&larr;</button>
+            <div class="slide-counter"><span>10</span> / 10</div>
+            <button class="btn-nav" onclick="nextSlide()">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+
+      </div> <!-- /.slide-canvas -->
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Teacher / Speaker Notes Bottom Panel (Toggled via 'N' or Button) -->
+  <div class="teacher-notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div class="notes-title">
+        📝 CATATAN INSTRUKTUR / GURU &bull; <span id="notesTime" style="color:#e2e8f0; font-weight:600;"></span>
+      </div>
+      <button class="notes-close" onclick="toggleNotes()">✕</button>
+    </div>
+    <div class="notes-content" id="notesContent">
+      <!-- Injected dynamically via JS based on current slide -->
+    </div>
+  </div>
+
+  <script>
+    // Presenter Notes Database for Session 20
+    const teacherNotesData = [
+      {
+            "title": "Slide 1: Pembukaan Sesi 20",
+            "time": "Menit 00–10 (Total 90 Menit)",
+            "instructions": "Sambut siswa dengan semangat, jelaskan target seru hari ini (Papan Peringkat Sederhana (High Score System)).",
+            "script": "Halo programmer cilik! Selamat datang di Sesi 20! Hari ini kita akan membikin game kita semakin hebat dengan papan peringkat sederhana (high score system)! Siapa yang sudah siap? Ayo buka Scratch-nya!"
+      },
+      {
+            "title": "Slide 2: Konsep Sistem Rekor Tertinggi",
+            "time": "Menit 10–22",
+            "instructions": "Gunakan peragaan fisik atau pertanyaan pemantik kepada siswa.",
+            "script": "Coba bayangkan: Seperti mistar lompat tinggi: setiap kali ada atlet melompat lebih tinggi, mistar dinaikkan ke rekor yang baru!. Di komputer, cara kerjanya persis seperti itu! Keren banget kan?"
+      },
+      {
+            "title": "Slide 3: Bedah Balok Kode",
+            "time": "Menit 22–32",
+            "instructions": "Pandu siswa menemukan balok di panel palet Scratch sesuai warnanya.",
+            "script": "Ayo cari balok warna kuning untuk event dan balok warna biru/oranye. Jangan sampai terbalik urutannya ya!"
+      },
+      {
+            "title": "Slide 4: Panduan Perakitan Langkah Demi Langkah",
+            "time": "Menit 32–42",
+            "instructions": "Demonstrasikan di layar proyektor lalu berkeliling melihat layar laptop siswa.",
+            "script": "Lihat layar kakak di depan dulu ya. Setelah kakak contohkan, giliran kalian menyusun baloknya di laptop masing-masing!"
+      },
+      {
+            "title": "Slide 5: Respon & Audio Game",
+            "time": "Menit 42–52",
+            "instructions": "Ajak murid memilih efek suara favorit dari pustaka audio Scratch.",
+            "script": "Coba dengarkan suaranya saat karakter kita beraksi! Suara membuat game kita terasa 10 kali lebih seru!"
+      },
+      {
+            "title": "Slide 6: Fitur Tingkat Lanjut",
+            "time": "Menit 52–62",
+            "instructions": "Beri tantangan kepada murid yang sudah selesai lebih awal.",
+            "script": "Siapa yang kodenya sudah jalan? Hebat! Sekarang coba tantangan level up ini: tambahkan variasi baru!"
+      },
+      {
+            "title": "Slide 7: Praktik Mandiri",
+            "time": "Menit 62–74",
+            "instructions": "Beri kebebasan berekspresi kepada murid dan apresiasi ide-ide unik mereka.",
+            "script": "Silakan atur warna, kostum, dan skor sesuai selera kalian! Tunjukkan hasil karya unikmu!"
+      },
+      {
+            "title": "Slide 8: Klinik Debugging",
+            "time": "Menit 74–82",
+            "instructions": "Ajak murid membaca urutan kode langkah demi langkah saat menemui error.",
+            "script": "Ingat prinsip kita: Error itu wajar! Cek satu per satu baloknya seperti detektif yang mencari petunjuk!"
+      },
+      {
+            "title": "Slide 9: Rangkuman Sesi 20",
+            "time": "Menit 82–87",
+            "instructions": "Review 3 poin utama dan beri tepuk tangan untuk seluruh murid.",
+            "script": "Semuanya hebat hari ini! Kalian resmi menguasai papan peringkat sederhana (high score system)! Ayo kita rayakan bersama!"
+      },
+      {
+            "title": "Slide 10: Penutup & Teaser",
+            "time": "Menit 87–90",
+            "instructions": "Ingatkan murid menyimpan proyek (File -> Save to your computer) dan merapikan tempat belajar.",
+            "script": "Simpan proyek kalian ya! Minggu depan kita akan lanjutkan dengan fitur yang semakin seru. Sampai jumpa teman-teman!"
+      }
+];
+
+    let currentSlide = 1;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const notesPanel = document.getElementById('notesPanel');
+
+    // Create progress dots
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      if (slideCounter) {
+        slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      }
+      if (prevBtn) prevBtn.disabled = currentSlide === 1;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update Teacher Notes
+      const note = teacherNotesData[currentSlide - 1];
+      if (note) {
+        const timeEl = document.getElementById('notesTime');
+        if (timeEl) timeEl.innerText = `${note.time}`;
+        const contentEl = document.getElementById('notesContent');
+        if (contentEl) {
+          contentEl.innerHTML = `
+            <h4 style="color:#fbbf24; font-size:14px; margin-bottom:4px;">${note.title}</h4>
+            <p><strong>🎯 Panduan Aktivitas Guru:</strong> ${note.instructions}</p>
+            <div class="notes-script">
+              <strong>🗣️ Contoh Script Kata-Kata Guru:</strong><br>
+              "${note.script}"
+            </div>
+          `;
+        }
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    function toggleNotes() {
+      if (notesPanel) notesPanel.classList.toggle('open');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
