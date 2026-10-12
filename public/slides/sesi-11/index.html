@@ -210,11 +210,11 @@
       border-color: #4b5563;
     }
 
-    .toggle-notes-btn {
-      background: #dc2626;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
@@ -224,23 +224,21 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    .toggle-notes-btn:hover {
-      background: #b91c1c;
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
     }
 
-    .btn-fullscreen {
-      background: #374151;
-      color: #e5e7eb;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
     }
-    .btn-fullscreen:hover {
-      background: #4b5563;
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
     }
 
     /* Main Presentation Container (16:9 Aspect Ratio) */
@@ -297,19 +295,32 @@
       padding: 38px 50px;
       display: none;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
       background: radial-gradient(circle at 85% 15%, rgba(239, 68, 68, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
     }
 
     .slide-card.active {
       display: flex;
-      opacity: 1;
-      transform: translateY(0);
+      
     }
 
     /* Badges & Titles */
+        /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .slide-badge {
       display: inline-flex;
       align-items: center;
@@ -320,7 +331,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       width: fit-content;
     }
 
@@ -763,18 +774,17 @@
           <span class="brand-subtitle">Next-Gen Coding & AI Learning</span>
         </div>
       </a>
-      <span class="brand-stage-badge">JUNIOR ARCADE LEVEL 1</span>
+      <span class="brand-stage-badge">STAGE 1: SESI 11</span>
     </div>
-    <div class="toolbar-actions">
-      <a href="/slides/sesi-10/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 10">⏪ Sesi 10</a>
-      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
-        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+        <div class="toolbar-actions">
+      <a href="/slides/sesi-10/index.html" class="btn-nav-sesi">⏪ Sesi 10</a>
+      <a href="/slides/sesi-12/index.html" class="btn-nav-sesi">Sesi 12 ⏩</a>
+      <button class="btn btn-toggle-notes" id="toggleNotesBtn">
+        📝 Catatan Guru (N)
       </button>
-      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
-      <a href="/slides/sesi-12/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 12" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; color: #fbbf24;">Sesi 12 ⏩</a>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Layar Penuh (F)
+      </button>
     </div>
   </header>
 
@@ -785,9 +795,12 @@
 
         <!-- SLIDE 1: COVER -->
         <section class="slide-card active" data-slide="1">
+          <div class="slide-header">
+            <div class="slide-badge badge-red">Sesi 11 • Enemy AI & Game Over</div>
+            <div class="badge-time">⏱️ 00–05 Menit Pertama</div>
+          </div>
           <div class="grid-2">
             <div>
-              <div class="slide-badge badge-red">Sesi 11 • Enemy AI & Game Over</div>
               <h1 class="slide-title">Laba-Laba Patroli & Game Over! 🕷️🚨</h1>
               <p class="slide-subtitle">Belajar Gerak Meluncur Otomatis <strong>(Glide)</strong> dan Sistem Siaran Pesan <strong>(Broadcast Messaging)</strong> untuk Layar Kalah & Menang!</p>
               
@@ -811,7 +824,10 @@
 
         <!-- SLIDE 2: ICE BREAKING -->
         <section class="slide-card" data-slide="2">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Ice Breaking & Adrenalin Game</div>
+          <div class="badge-time">⏱️ Menit 05–12</div>
+        </div>
           <h2 class="slide-title">Game Tanpa Musuh Itu Membosankan! 🎮💥</h2>
           <p class="slide-subtitle">Mengapa game butuh rintangan dan ancaman bahaya?</p>
 
@@ -838,7 +854,10 @@
 
         <!-- SLIDE 3: GERAK MELUNCUR GLIDE -->
         <section class="slide-card" data-slide="3">
+          <div class="slide-header">
           <div class="slide-badge badge-blue">Mekanika Gerak Musuh</div>
+          <div class="badge-time">⏱️ Menit 12–20</div>
+        </div>
           <h2 class="slide-title">Meluncur Mulus dengan Blok Glide 🪁</h2>
           <p class="slide-subtitle">Perbedaan antara gerak teleportasi mendadak vs meluncur halus:</p>
 
@@ -863,7 +882,10 @@
 
         <!-- SLIDE 4: BROADCAST MESSAGE -->
         <section class="slide-card" data-slide="4">
+          <div class="slide-header">
           <div class="slide-badge badge-red">Konsep Koding Utama</div>
+          <div class="badge-time">⏱️ Menit 20–30</div>
+        </div>
           <h2 class="slide-title">Siaran Radio Rahasia: Broadcast Message 📢📻</h2>
           <p class="slide-subtitle">Bagaimana Beeby memberi tahu layar panggung bahwa ia kalah?</p>
 
@@ -888,7 +910,10 @@
 
         <!-- SLIDE 5: KODING MUSUH & LAYAR AKHIR -->
         <section class="slide-card" data-slide="5">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Bedah Kode Lengkap</div>
+          <div class="badge-time">⏱️ Menit 30–42</div>
+        </div>
           <h2 class="slide-title">Koding Tiga Tokoh: Laba-Laba, Beeby & Panggung 💻</h2>
           <p class="slide-subtitle">Tiga kode yang saling bekerja sama menciptakan alur permainan yang utuh:</p>
 
@@ -925,7 +950,10 @@
 
         <!-- SLIDE 6: LIVE INTERACTIVE PATROL SIMULATOR -->
         <section class="slide-card" data-slide="6">
+          <div class="slide-header">
           <div class="slide-badge badge-red">Arena Simulator Langsung</div>
+          <div class="badge-time">⏱️ Menit 42–55</div>
+        </div>
           <h2 class="slide-title">Uji Keberanianmu: Lewati Laba-Laba! 🕷️🕹️</h2>
           <p class="slide-subtitle">Pandu Beeby mengambil 3 madu di kanan. Jangan sampai tertabrak laba-laba yang berpatroli!</p>
 
@@ -974,7 +1002,10 @@
 
         <!-- SLIDE 7: DESAIN 2 BACKDROP AKHIR -->
         <section class="slide-card" data-slide="7">
+          <div class="slide-header">
           <div class="slide-badge badge-blue">Studio Desain Layar</div>
+          <div class="badge-time">⏱️ Menit 55–65</div>
+        </div>
           <h2 class="slide-title">Mendesain Layar Kalah & Layar Menang 🎨🏁</h2>
           <p class="slide-subtitle">Buat 2 backdrop baru di Scratch menggunakan alat Teks:</p>
 
@@ -997,7 +1028,10 @@
 
         <!-- SLIDE 8: DETEKTIF BUG CILIK -->
         <section class="slide-card" data-slide="8">
+          <div class="slide-header">
           <div class="slide-badge badge-red">Detektif Bug Cilik</div>
+          <div class="badge-time">⏱️ Menit 65–75</div>
+        </div>
           <h2 class="slide-title">3 Bug Paling Sering Terjadi pada Broadcast 🕵️‍♂️🔍</h2>
           <p class="slide-subtitle">Solusi cerdas saat alur game over-mu macet:</p>
 
@@ -1024,7 +1058,10 @@
 
         <!-- SLIDE 9: TANTANGAN KREATIF -->
         <section class="slide-card" data-slide="9">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Tantangan Mandiri</div>
+          <div class="badge-time">⏱️ Menit 75–85</div>
+        </div>
           <h2 class="slide-title">Tantangan: "Dua Laba-Laba Kembar Beda Kecepatan!" ⚡🕷️</h2>
           <p class="slide-subtitle">Tingkatkan adrenalin permainanmu dengan musuh ganda:</p>
 
@@ -1057,7 +1094,10 @@
 
         <!-- SLIDE 10: SHOWCASE & PENUTUP -->
         <section class="slide-card" data-slide="10">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Showcase & Refleksi</div>
+          <div class="badge-time">⏱️ Menit 85–90</div>
+        </div>
           <h2 class="slide-title">Game Utuh Selesai & Tepuk Koding! 👏🎉</h2>
           <p class="slide-subtitle">Selamat! Game arcade buatanmu kini sudah memiliki navigasi, skor, musuh, dan layar menang/kalah yang lengkap!</p>
 
@@ -1252,7 +1292,7 @@
     function toggleNotes() {
       isNotesOpen = !isNotesOpen;
       teacherNotesDrawer.classList.toggle('open', isNotesOpen);
-      toggleNotesBtn.style.background = isNotesOpen ? '#dc2626' : '#1f2937';
+      
     }
 
     toggleNotesBtn.addEventListener('click', toggleNotes);

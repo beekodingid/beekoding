@@ -274,11 +274,7 @@
     .slide {
       position: absolute;
       inset: 0;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: translateX(30px);
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: space-between;
       padding: 30px 48px;
@@ -286,9 +282,7 @@
     }
 
     .slide.active {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(0);
+      display: flex;
     }
 
     /* Header */
@@ -752,18 +746,15 @@
       </a>
       <span class="brand-stage-badge">STAGE 1: SESI 05</span>
     </div>
-    <div class="toolbar-actions">
+        <div class="toolbar-actions">
       <a href="/slides/sesi-04/index.html" class="btn-nav-sesi">⏪ Sesi 04</a>
-      <a href="/slides/sesi-06/index.html" class="btn-nav-sesi" style="background: rgba(6, 182, 212, 0.2); border-color: #06b6d4; color: #22d3ee;">Sesi 06 ⏩</a>
+      <a href="/slides/sesi-06/index.html" class="btn-nav-sesi">Sesi 06 ⏩</a>
       <button class="btn btn-toggle-notes" onclick="toggleNotes()">
         📝 Catatan Guru (N)
       </button>
       <button class="btn" onclick="toggleFullscreen()">
         ⛶ Layar Penuh (F)
       </button>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
     </div>
   </div>
 

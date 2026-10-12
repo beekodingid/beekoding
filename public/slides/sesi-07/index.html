@@ -210,11 +210,11 @@
       border-color: #4b5563;
     }
 
-    .toggle-notes-btn {
-      background: #be185d;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
@@ -224,23 +224,21 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    .toggle-notes-btn:hover {
-      background: #db2777;
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
     }
 
-    .btn-fullscreen {
-      background: #374151;
-      color: #e5e7eb;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
     }
-    .btn-fullscreen:hover {
-      background: #4b5563;
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
     }
 
     /* Main Presentation Container (16:9 Aspect Ratio) */
@@ -297,19 +295,32 @@
       padding: 38px 50px;
       display: none;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
       background: radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.15) 0%, rgba(30, 41, 59, 0) 65%);
     }
 
     .slide-card.active {
       display: flex;
-      opacity: 1;
-      transform: translateY(0);
+      
     }
 
     /* Badges & Titles */
+        /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .slide-badge {
       display: inline-flex;
       align-items: center;
@@ -320,7 +331,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       width: fit-content;
     }
 
@@ -796,18 +807,17 @@
           <span class="brand-subtitle">Next-Gen Coding & AI Learning</span>
         </div>
       </a>
-      <span class="brand-stage-badge">JUNIOR AI GENERATOR</span>
+      <span class="brand-stage-badge">STAGE 1: SESI 07</span>
     </div>
-    <div class="toolbar-actions">
-      <a href="/slides/sesi-06/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 06">⏪ Sesi 06</a>
-      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
-        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+        <div class="toolbar-actions">
+      <a href="/slides/sesi-06/index.html" class="btn-nav-sesi">⏪ Sesi 06</a>
+      <a href="/slides/sesi-08/index.html" class="btn-nav-sesi">Sesi 08 ⏩</a>
+      <button class="btn btn-toggle-notes" id="toggleNotesBtn">
+        📝 Catatan Guru (N)
       </button>
-      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
-      <a href="/slides/sesi-08/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 08" style="background: rgba(139, 92, 246, 0.2); border-color: #8b5cf6; color: #c084fc;">Sesi 08 ⏩</a>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Layar Penuh (F)
+      </button>
     </div>
   </header>
 
@@ -818,9 +828,12 @@
 
         <!-- SLIDE 1: COVER -->
         <section class="slide-card active" data-slide="1">
+          <div class="slide-header">
+            <div class="slide-badge badge-pink">Sesi 07 • Generative AI for Kids</div>
+            <div class="badge-time">⏱️ 00–05 Menit Pertama</div>
+          </div>
           <div class="grid-2">
             <div>
-              <div class="slide-badge badge-pink">Sesi 07 • Generative AI for Kids</div>
               <h1 class="slide-title">Merancang Hero Bersama AI! 🎨🚀</h1>
               <p class="slide-subtitle">Belajar Menulis <strong>Prompt Gambar Ramah Anak</strong> & Menjadikannya Sprite Karakter Sendiri di Scratch 3.0!</p>
               
@@ -844,7 +857,10 @@
 
         <!-- SLIDE 2: ICE BREAKING -->
         <section class="slide-card" data-slide="2">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Ice Breaking & Curiositas</div>
+          <div class="badge-time">⏱️ Menit 05–12</div>
+        </div>
           <h2 class="slide-title">Pernahkah Kamu Membayangkan Pahlawan Impian? 🦸✨</h2>
           <p class="slide-subtitle">Bagaimana jika robot pelukis AI bisa melukis karakter impianmu hanya dalam 5 detik?</p>
 
@@ -871,7 +887,10 @@
 
         <!-- SLIDE 3: RUMUS RAHASIA PROMPT 4 ELEMEN -->
         <section class="slide-card" data-slide="3">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Konsep Utama: Prompt Engineering</div>
+          <div class="badge-time">⏱️ Menit 12–22</div>
+        </div>
           <h2 class="slide-title">Rumus Rahasia 4 Elemen Mantra AI 📜</h2>
           <p class="slide-subtitle">Agar AI melukis persis seperti yang kamu mau, gunakan formula ini:</p>
 
@@ -904,7 +923,10 @@
 
         <!-- SLIDE 4: KATA KUNCI BAHASA INGGRIS -->
         <section class="slide-card" data-slide="4">
+          <div class="slide-header">
           <div class="slide-badge badge-cyan">Kamus Sutradara Cilik</div>
+          <div class="badge-time">⏱️ Menit 22–30</div>
+        </div>
           <h2 class="slide-title">Kata Kunci Ajaib Favorit AI 📖</h2>
           <p class="slide-subtitle">AI memahami Bahasa Inggris lebih akurat. Yuk kenali kata-kata kuncinya:</p>
 
@@ -931,7 +953,10 @@
 
         <!-- SLIDE 5: BEDAH CONTOH MANTRA PROMPT -->
         <section class="slide-card" data-slide="5">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Contoh Nyata Mantra</div>
+          <div class="badge-time">⏱️ Menit 30–40</div>
+        </div>
           <h2 class="slide-title">Mantra Beeby Si Lebah Astronot 🐝🚀</h2>
           <p class="slide-subtitle">Mari kita gabungkan 4 elemen tadi menjadi 1 kalimat prompt utuh:</p>
 
@@ -960,7 +985,10 @@
 
         <!-- SLIDE 6: LIVE INTERACTIVE PROMPT BUILDER SIMULATOR -->
         <section class="slide-card" data-slide="6">
+          <div class="slide-header">
           <div class="slide-badge badge-pink">Studio Simulator Langsung</div>
+          <div class="badge-time">⏱️ Menit 40–55</div>
+        </div>
           <h2 class="slide-title">Lab Sutradara Prompt Hero Cilik 🧪✨</h2>
           <p class="slide-subtitle">Pilih resep hero impianmu di bawah dan lihat mantra prompt-nya tercipta otomatis!</p>
 
@@ -1009,7 +1037,10 @@
 
         <!-- SLIDE 7: 3 LANGKAH KE SCRATCH -->
         <section class="slide-card" data-slide="7">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Alur Produksi Digital</div>
+          <div class="badge-time">⏱️ Menit 55–70</div>
+        </div>
           <h2 class="slide-title">Membawa Karakter AI ke Scratch 💻</h2>
           <p class="slide-subtitle">Tiga langkah mudah untuk memasukkan karakter ke game koding:</p>
 
@@ -1042,7 +1073,10 @@
 
         <!-- SLIDE 8: COMMON BUG & DEBUGGING -->
         <section class="slide-card" data-slide="8">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <div class="badge-time">⏱️ Menit 70–78</div>
+        </div>
           <h2 class="slide-title">Detektif Bug Gambar Hero 🕵️‍♂️🔍</h2>
           <p class="slide-subtitle">Solusi cepat jika ada masalah saat memasukkan sprite AI:</p>
 
@@ -1069,7 +1103,10 @@
 
         <!-- SLIDE 9: TANTANGAN KREATIF -->
         <section class="slide-card" data-slide="9">
+          <div class="slide-header">
           <div class="slide-badge badge-pink">Misi Mandiri Kreatif</div>
+          <div class="badge-time">⏱️ Menit 78–85</div>
+        </div>
           <h2 class="slide-title">Tantangan: "Pahlawan Super Galaksi" 🌌⭐</h2>
           <p class="slide-subtitle">Kreasikan pahlawan unikmu dan berikan kekuatan koding di Scratch!</p>
 
@@ -1102,7 +1139,10 @@
 
         <!-- SLIDE 10: SHOWCASE & PENUTUP -->
         <section class="slide-card" data-slide="10">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Showcase & Perayaan</div>
+          <div class="badge-time">⏱️ Menit 85–90</div>
+        </div>
           <h2 class="slide-title">Parade Pahlawan AI & Tepuk Koding! 👏🎉</h2>
           <p class="slide-subtitle">Tunjukkan karakter hero buatanmu dan perkenalkan kekuatannya ke teman-teman!</p>
 
@@ -1291,7 +1331,7 @@
     function toggleNotes() {
       isNotesOpen = !isNotesOpen;
       teacherNotesDrawer.classList.toggle('open', isNotesOpen);
-      toggleNotesBtn.style.background = isNotesOpen ? '#be185d' : '#1f2937';
+      
     }
 
     toggleNotesBtn.addEventListener('click', toggleNotes);

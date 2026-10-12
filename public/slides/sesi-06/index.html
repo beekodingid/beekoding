@@ -210,11 +210,11 @@
       border-color: #4b5563;
     }
 
-    .toggle-notes-btn {
-      background: #0e7490;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
@@ -224,23 +224,21 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    .toggle-notes-btn:hover {
-      background: #0891b2;
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
     }
 
-    .btn-fullscreen {
-      background: #374151;
-      color: #e5e7eb;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
     }
-    .btn-fullscreen:hover {
-      background: #4b5563;
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
     }
 
     /* Main Presentation Container (16:9 Aspect Ratio) */
@@ -297,19 +295,32 @@
       padding: 38px 50px;
       display: none;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
       background: radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.15) 0%, rgba(30, 41, 59, 0) 65%);
     }
 
     .slide-card.active {
       display: flex;
-      opacity: 1;
-      transform: translateY(0);
+      
     }
 
     /* Typography & Badges */
+        /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .slide-badge {
       display: inline-flex;
       align-items: center;
@@ -320,7 +331,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       width: fit-content;
     }
 
@@ -819,18 +830,17 @@
           <span class="brand-subtitle">Next-Gen Coding & AI Learning</span>
         </div>
       </a>
-      <span class="brand-stage-badge">JUNIOR EXPLORER</span>
+      <span class="brand-stage-badge">STAGE 1: SESI 06</span>
     </div>
-    <div class="toolbar-actions">
-      <a href="/slides/sesi-05/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 05">⏪ Sesi 05</a>
-      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
-        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+        <div class="toolbar-actions">
+      <a href="/slides/sesi-05/index.html" class="btn-nav-sesi">⏪ Sesi 05</a>
+      <a href="/slides/sesi-07/index.html" class="btn-nav-sesi">Sesi 07 ⏩</a>
+      <button class="btn btn-toggle-notes" id="toggleNotesBtn">
+        📝 Catatan Guru (N)
       </button>
-      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
-      <a href="/slides/sesi-07/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 07" style="background: rgba(236, 72, 153, 0.2); border-color: #ec4899; color: #f472b6;">Sesi 07 ⏩</a>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Layar Penuh (F)
+      </button>
     </div>
   </header>
 
@@ -841,9 +851,12 @@
 
         <!-- SLIDE 1: COVER -->
         <section class="slide-card active" data-slide="1">
+          <div class="slide-header">
+            <div class="slide-badge badge-cyan">Sesi 06 • Modul Junior AI</div>
+            <div class="badge-time">⏱️ 00–05 Menit Pertama</div>
+          </div>
           <div class="grid-2">
             <div>
-              <div class="slide-badge badge-cyan">Sesi 06 • Modul Junior AI</div>
               <h1 class="slide-title">Karakter Berbicara Nyata! 🗣️✨</h1>
               <p class="slide-subtitle">Memanfaatkan Keajaiban <strong>Ekstensi AI Text-to-Speech</strong> di Scratch 3.0 agar Karakter Bisa Bicara Bahasa Indonesia!</p>
               
@@ -867,7 +880,10 @@
 
         <!-- SLIDE 2: ICE BREAKING -->
         <section class="slide-card" data-slide="2">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Ice Breaking & Curiositas</div>
+          <div class="badge-time">⏱️ Menit 05–12</div>
+        </div>
           <h2 class="slide-title">Pernah Dengar Robot Berbicara? 🤖💬</h2>
           <p class="slide-subtitle">Bagaimana komputer bisa tahu cara mengucapkan kata-kata seperti manusia?</p>
 
@@ -894,7 +910,10 @@
 
         <!-- SLIDE 3: KONSEP & ANALOGI -->
         <section class="slide-card" data-slide="3">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Konsep Koding & Analogi</div>
+          <div class="badge-time">⏱️ Menit 12–20</div>
+        </div>
           <h2 class="slide-title">Analogi: Pita Suara Ajaib Sang Robot 🎙️</h2>
           <p class="slide-subtitle">Perbedaan blok <em>Say</em> biasa vs blok <em>Speak AI</em>.</p>
 
@@ -921,7 +940,10 @@
 
         <!-- SLIDE 4: CARA MEMBUKA EXTENSION -->
         <section class="slide-card" data-slide="4">
+          <div class="slide-header">
           <div class="slide-badge badge-cyan">Langkah Praktik 1</div>
+          <div class="badge-time">⏱️ Menit 20–30</div>
+        </div>
           <h2 class="slide-title">Membuka Menu Extension di Scratch 🧩</h2>
           <p class="slide-subtitle">Tombol rahasia di pojok kiri bawah untuk membuka kekuatan tersembunyi Scratch!</p>
 
@@ -962,7 +984,10 @@
 
         <!-- SLIDE 5: 3 BLOK KUNCI -->
         <section class="slide-card" data-slide="5">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Bedah Kode Blok</div>
+          <div class="badge-time">⏱️ Menit 30–42</div>
+        </div>
           <h2 class="slide-title">Trio Blok Sakti Text-to-Speech 🧙‍♂️</h2>
           <p class="slide-subtitle">Tiga blok penting yang wajib dipasang berurutan:</p>
 
@@ -998,7 +1023,10 @@
 
         <!-- SLIDE 6: LIVE INTERACTIVE SIMULATOR -->
         <section class="slide-card" data-slide="6">
+          <div class="slide-header">
           <div class="slide-badge badge-cyan">Demo Langsung Bersuara</div>
+          <div class="badge-time">⏱️ Menit 42–55</div>
+        </div>
           <h2 class="slide-title">Uji Coba Suara AI di Sini! 🔊</h2>
           <p class="slide-subtitle">Pilih karakter, atur jenis suara, ketik kalimat, dan dengarkan suaranya nyata!</p>
 
@@ -1049,7 +1077,10 @@
 
         <!-- SLIDE 7: LIVE CODING STEP-BY-STEP -->
         <section class="slide-card" data-slide="7">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Panduan Praktik Siswa</div>
+          <div class="badge-time">⏱️ Menit 55–70</div>
+        </div>
           <h2 class="slide-title">Menyusun Skrip Kode Karakter 💻</h2>
           <p class="slide-subtitle">Instruksikan siswa menyusun blok ini di komputer masing-masing:</p>
 
@@ -1090,7 +1121,10 @@
 
         <!-- SLIDE 8: COMMON BUG & DEBUGGING -->
         <section class="slide-card" data-slide="8">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <div class="badge-time">⏱️ Menit 70–78</div>
+        </div>
           <h2 class="slide-title">Mengapa Suaranya Tidak Muncul? 🕵️‍♂️🔍</h2>
           <p class="slide-subtitle">3 hal utama yang harus dicek saat suara tidak terdengar:</p>
 
@@ -1117,7 +1151,10 @@
 
         <!-- SLIDE 9: TANTANGAN KREATIF -->
         <section class="slide-card" data-slide="9">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Tantangan Mandiri</div>
+          <div class="badge-time">⏱️ Menit 78–85</div>
+        </div>
           <h2 class="slide-title">Tantangan: "Paduan Suara Hutan Fantasi" 🌳🎶</h2>
           <p class="slide-subtitle">Uji kreativitasmu dengan menambahkan karakter hewan lain!</p>
 
@@ -1150,7 +1187,10 @@
 
         <!-- SLIDE 10: SHOWCASE & PENUTUP -->
         <section class="slide-card" data-slide="10">
+          <div class="slide-header">
           <div class="slide-badge badge-cyan">Showcase & Refleksi</div>
+          <div class="badge-time">⏱️ Menit 85–90</div>
+        </div>
           <h2 class="slide-title">Panggung Karya Cilik & Tepuk Koding! 👏🎉</h2>
           <p class="slide-subtitle">Waktunya menunjukkan proyek karakter bicaramu ke teman-teman sekelas!</p>
 
@@ -1339,7 +1379,7 @@
     function toggleNotes() {
       isNotesOpen = !isNotesOpen;
       teacherNotesDrawer.classList.toggle('open', isNotesOpen);
-      toggleNotesBtn.style.background = isNotesOpen ? '#0891b2' : '#1f2937';
+      
     }
 
     toggleNotesBtn.addEventListener('click', toggleNotes);

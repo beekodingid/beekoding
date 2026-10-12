@@ -210,11 +210,11 @@
       border-color: #4b5563;
     }
 
-    .toggle-notes-btn {
-      background: #d97706;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
@@ -224,23 +224,21 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    .toggle-notes-btn:hover {
-      background: #b45309;
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
     }
 
-    .btn-fullscreen {
-      background: #374151;
-      color: #e5e7eb;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
     }
-    .btn-fullscreen:hover {
-      background: #4b5563;
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
     }
 
     /* Main Presentation Container (16:9 Aspect Ratio) */
@@ -297,19 +295,32 @@
       padding: 38px 50px;
       display: none;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
       background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
     }
 
     .slide-card.active {
       display: flex;
-      opacity: 1;
-      transform: translateY(0);
+      
     }
 
     /* Badges & Titles */
+        /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .slide-badge {
       display: inline-flex;
       align-items: center;
@@ -320,7 +331,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       width: fit-content;
     }
 
@@ -747,18 +758,17 @@
           <span class="brand-subtitle">Next-Gen Coding & AI Learning</span>
         </div>
       </a>
-      <span class="brand-stage-badge">JUNIOR ARCADE LEVEL 1</span>
+      <span class="brand-stage-badge">STAGE 1: SESI 10</span>
     </div>
-    <div class="toolbar-actions">
-      <a href="/slides/sesi-09/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 09">⏪ Sesi 09</a>
-      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
-        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+        <div class="toolbar-actions">
+      <a href="/slides/sesi-09/index.html" class="btn-nav-sesi">⏪ Sesi 09</a>
+      <a href="/slides/sesi-11/index.html" class="btn-nav-sesi">Sesi 11 ⏩</a>
+      <button class="btn btn-toggle-notes" id="toggleNotesBtn">
+        📝 Catatan Guru (N)
       </button>
-      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
-      <a href="/slides/sesi-11/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 11" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #f87171;">Sesi 11 ⏩</a>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Layar Penuh (F)
+      </button>
     </div>
   </header>
 
@@ -769,9 +779,12 @@
 
         <!-- SLIDE 1: COVER -->
         <section class="slide-card active" data-slide="1">
+          <div class="slide-header">
+            <div class="slide-badge badge-amber">Sesi 10 • Variables & Score Mechanics</div>
+            <div class="badge-time">⏱️ 00–05 Menit Pertama</div>
+          </div>
           <div class="grid-2">
             <div>
-              <div class="slide-badge badge-amber">Sesi 10 • Variables & Score Mechanics</div>
               <h1 class="slide-title">Panen Madu & Variabel Skor! 🍯📊</h1>
               <p class="slide-subtitle">Mengenal <strong>Variabel</strong> sebagai Kotak Celengan Penyimpan Angka di Scratch 3.0 untuk Mencatat Setiap Poin Kemenangan!</p>
               
@@ -795,7 +808,10 @@
 
         <!-- SLIDE 2: ICE BREAKING -->
         <section class="slide-card" data-slide="2">
+          <div class="slide-header">
           <div class="slide-badge badge-orange">Ice Breaking & Curiositas</div>
+          <div class="badge-time">⏱️ Menit 05–12</div>
+        </div>
           <h2 class="slide-title">Bagaimana Game Mengingat Poin Kita? 🤔🎯</h2>
           <p class="slide-subtitle">Pernahkah kamu bermain game dan melihat angka skor terus bertambah?</p>
 
@@ -822,7 +838,10 @@
 
         <!-- SLIDE 3: KONSEP KOTAK CELENGAN BERLABEL -->
         <section class="slide-card" data-slide="3">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Analogi Pedagogis</div>
+          <div class="badge-time">⏱️ Menit 12–20</div>
+        </div>
           <h2 class="slide-title">Analogi: Celengan Berlabel Nama 🏷️🐖</h2>
           <p class="slide-subtitle">Tiga aturan penting tentang Variabel yang harus kamu ingat:</p>
 
@@ -849,7 +868,10 @@
 
         <!-- SLIDE 4: DUA MANTRA UTAMA VARIABEL -->
         <section class="slide-card" data-slide="4">
+          <div class="slide-header">
           <div class="slide-badge badge-orange">Bedah Blok Scratch</div>
+          <div class="badge-time">⏱️ Menit 20–30</div>
+        </div>
           <h2 class="slide-title">Dua Blok Oranye Sakti Variabel 🧙‍♂️📦</h2>
           <p class="slide-subtitle">Jangan sampai tertukar antara <em>SET</em> (atur) dan <em>CHANGE</em> (tambah):</p>
 
@@ -874,7 +896,10 @@
 
         <!-- SLIDE 5: KODING SPRITE BUNGA MADU -->
         <section class="slide-card" data-slide="5">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Mekanika Panen Madu</div>
+          <div class="badge-time">⏱️ Menit 30–42</div>
+        </div>
           <h2 class="slide-title">Koding Bunga: Sentuh, Tambah Skor, & Hilang! 🌸✨</h2>
           <p class="slide-subtitle">Susun blok ini pada Sprite Bunga di panggungmu:</p>
 
@@ -904,7 +929,10 @@
 
         <!-- SLIDE 6: LIVE INTERACTIVE HARVEST SIMULATOR -->
         <section class="slide-card" data-slide="6">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Demo Interaktif Langsung</div>
+          <div class="badge-time">⏱️ Menit 42–55</div>
+        </div>
           <h2 class="slide-title">Lab Simulasi Panen Madu & Skor 🍯🕹️</h2>
           <p class="slide-subtitle">Klik bunga-bunga di padang rumput untuk memanen nektar dan lihat angka skor bertambah!</p>
 
@@ -943,7 +971,10 @@
 
         <!-- SLIDE 7: TRIK DUPLIKASI CEPAT -->
         <section class="slide-card" data-slide="7">
+          <div class="slide-header">
           <div class="slide-badge badge-blue">Trik Developer Cilik</div>
+          <div class="badge-time">⏱️ Menit 55–65</div>
+        </div>
           <h2 class="slide-title">Trik Menggandakan Bunga (Duplicate) 📋🌸</h2>
           <p class="slide-subtitle">Tidak perlu menyusun kode blok dari awal untuk setiap bunga!</p>
 
@@ -976,7 +1007,10 @@
 
         <!-- SLIDE 8: DETEKTIF BUG CILIK -->
         <section class="slide-card" data-slide="8">
+          <div class="slide-header">
           <div class="slide-badge badge-orange">Detektif Bug Cilik</div>
+          <div class="badge-time">⏱️ Menit 65–75</div>
+        </div>
           <h2 class="slide-title">3 Bug Paling Sering Terjadi pada Variabel 🕵️‍♂️🔍</h2>
           <p class="slide-subtitle">Solusi cerdas saat sistem skormu mengalami kendala:</p>
 
@@ -1003,7 +1037,10 @@
 
         <!-- SLIDE 9: TANTANGAN KREATIF -->
         <section class="slide-card" data-slide="9">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Misi Mandiri Kreatif</div>
+          <div class="badge-time">⏱️ Menit 75–85</div>
+        </div>
           <h2 class="slide-title">Tantangan: "Bunga Emas Raksasa (+5 Poin)!" 👑🌻</h2>
           <p class="slide-subtitle">Beri kejutan spesial untuk pemain game labirinmu:</p>
 
@@ -1036,7 +1073,10 @@
 
         <!-- SLIDE 10: SHOWCASE & PENUTUP -->
         <section class="slide-card" data-slide="10">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Showcase & Refleksi</div>
+          <div class="badge-time">⏱️ Menit 85–90</div>
+        </div>
           <h2 class="slide-title">Panen Akbar Skor Tertinggi & Tepuk Koding! 👏🎉</h2>
           <p class="slide-subtitle">Pamerkan game panen madu buatanmu dan lihat siapa yang berhasil meraih skor sempurna!</p>
 
@@ -1224,7 +1264,7 @@
     function toggleNotes() {
       isNotesOpen = !isNotesOpen;
       teacherNotesDrawer.classList.toggle('open', isNotesOpen);
-      toggleNotesBtn.style.background = isNotesOpen ? '#d97706' : '#1f2937';
+      
     }
 
     toggleNotesBtn.addEventListener('click', toggleNotes);

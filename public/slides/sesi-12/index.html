@@ -210,11 +210,11 @@
       border-color: #4b5563;
     }
 
-    .toggle-notes-btn {
-      background: #d97706;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
@@ -224,23 +224,21 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    .toggle-notes-btn:hover {
-      background: #b45309;
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
     }
 
-    .btn-fullscreen {
-      background: #374151;
-      color: #e5e7eb;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
     }
-    .btn-fullscreen:hover {
-      background: #4b5563;
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
     }
 
     /* Main Presentation Container (16:9 Aspect Ratio) */
@@ -297,19 +295,32 @@
       padding: 38px 50px;
       display: none;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
       background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.2) 0%, rgba(30, 41, 59, 0) 65%);
     }
 
     .slide-card.active {
       display: flex;
-      opacity: 1;
-      transform: translateY(0);
+      
     }
 
     /* Badges & Titles */
+        /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .slide-badge {
       display: inline-flex;
       align-items: center;
@@ -320,7 +331,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       width: fit-content;
     }
 
@@ -722,18 +733,16 @@
           <span class="brand-subtitle">Next-Gen Coding & AI Learning</span>
         </div>
       </a>
-      <span class="brand-stage-badge">CAPSTONE LEVEL 1 KELULUSAN</span>
+      <span class="brand-stage-badge">STAGE 1: SESI 12</span>
     </div>
-    <div class="toolbar-actions">
-      <a href="/slides/sesi-11/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 11">⏪ Sesi 11</a>
-      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
-        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+        <div class="toolbar-actions">
+      <a href="/slides/sesi-11/index.html" class="btn-nav-sesi">⏪ Sesi 11</a>
+      <button class="btn btn-toggle-notes" id="toggleNotesBtn">
+        📝 Catatan Guru (N)
       </button>
-      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
-      <a href="/slides/sesi-13/index.html" class="btn-nav-sesi" title="Lanjut ke Level 2 (Sesi 13)" style="opacity: 0.5; pointer-events: none;">Level 2 ⏩</a>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Layar Penuh (F)
+      </button>
     </div>
   </header>
 
@@ -744,9 +753,12 @@
 
         <!-- SLIDE 1: COVER CAPSTONE -->
         <section class="slide-card active" data-slide="1">
+          <div class="slide-header">
+            <div class="slide-badge badge-gold">Puncak Sesi 12 • Demo Day Kelulusan</div>
+            <div class="badge-time">⏱️ 00–10 Menit Pertama</div>
+          </div>
           <div class="grid-2">
             <div>
-              <div class="slide-badge badge-gold">Puncak Sesi 12 • Demo Day Kelulusan</div>
               <h1 class="slide-title">CAPSTONE LEVEL 1: Demo Day Cilik! 🎓🏆</h1>
               <p class="slide-subtitle">Pameran Game Arcade Mandiri <strong>'Bee Honey Harvest'</strong>, Presentasi 2 Menit di Depan Kelas, dan Penganugerahan <strong>Sertifikat Resmi Kelulusan</strong>!</p>
               
@@ -770,7 +782,10 @@
 
         <!-- SLIDE 2: KILAS BALIK 12 SESI -->
         <section class="slide-card" data-slide="2">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Perjalanan Sang Juara</div>
+          <div class="badge-time">⏱️ Menit 10–20</div>
+        </div>
           <h2 class="slide-title">12 Langkah Hebat Menjadi Kreator Game 🌟🚀</h2>
           <p class="slide-subtitle">Perjalanan luar biasa yang sudah kamu taklukkan bersama Beekoding Academy:</p>
 
@@ -796,7 +811,10 @@
 
         <!-- SLIDE 3: ANATOMI GAME UTUH KITA -->
         <section class="slide-card" data-slide="3">
+          <div class="slide-header">
           <div class="slide-badge badge-blue">Karya Puncak Mandiri</div>
+          <div class="badge-time">⏱️ Menit 20–30</div>
+        </div>
           <h2 class="slide-title">Anatomi Game 'Bee Honey Harvest' 🕹️🐝</h2>
           <p class="slide-subtitle">Game arcade buatanmu sudah memiliki 6 teknologi koding setara game profesional:</p>
 
@@ -830,7 +848,10 @@
 
         <!-- SLIDE 4: FORMAT DEMO DAY 2 MENIT -->
         <section class="slide-card" data-slide="4">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Panduan Public Speaking</div>
+          <div class="badge-time">⏱️ Menit 30–40</div>
+        </div>
           <h2 class="slide-title">Resep 4 Langkah Presentasi Cilik 🎤🌟</h2>
           <p class="slide-subtitle">Hanya butuh 2 menit untuk memukau teman-teman dan guru di depan kelas:</p>
 
@@ -859,7 +880,10 @@
 
         <!-- SLIDE 5: RUBRIK PENILAIAN CAPSTONE -->
         <section class="slide-card" data-slide="5">
+          <div class="slide-header">
           <div class="slide-badge badge-gold">Rubrik Kelulusan Level 1</div>
+          <div class="badge-time">⏱️ Menit 40–50</div>
+        </div>
           <h2 class="slide-title">4 Bintang Emas Kelulusan Level 1 ⭐🏆</h2>
           <p class="slide-subtitle">Setiap siswa yang menuntaskan 4 indikator ini berhak lulus:</p>
 
@@ -892,7 +916,10 @@
 
         <!-- SLIDE 6: LIVE INTERACTIVE CERTIFICATE GENERATOR -->
         <section class="slide-card" data-slide="6">
+          <div class="slide-header">
           <div class="slide-badge badge-gold">Panggung Wisuda Digital</div>
+          <div class="badge-time">⏱️ Menit 50–70</div>
+        </div>
           <h2 class="slide-title">Generator Sertifikat Resmi Kelulusan 📜🎓</h2>
           <p class="slide-subtitle">Ketik nama siswa dan klik tombol wisuda untuk menerbitkan piagam resmi:</p>
 
@@ -934,7 +961,10 @@
 
         <!-- SLIDE 7: SIKAP JUARA MENGAPRESIASI TEMAN -->
         <section class="slide-card" data-slide="7">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Karakter & Etika Juara</div>
+          <div class="badge-time">⏱️ Menit 70–78</div>
+        </div>
           <h2 class="slide-title">Karakter Hebat Seorang Coder Cilik 🤝💖</h2>
           <p class="slide-subtitle">Koding bukan hanya tentang komputer, tapi tentang saling mendukung sesama teman:</p>
 
@@ -958,7 +988,10 @@
 
         <!-- SLIDE 8: REFLEKSI DIRI CILIK -->
         <section class="slide-card" data-slide="8">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Refleksi Koding Cilik</div>
+          <div class="badge-time">⏱️ Menit 78–83</div>
+        </div>
           <h2 class="slide-title">Apa Jurus Koding Paling Keren Menurutmu? 🤔💭</h2>
           <p class="slide-subtitle">Tanyakan kepada seluruh siswa dan dengarkan jawaban mereka:</p>
 
@@ -982,7 +1015,10 @@
 
         <!-- SLIDE 9: PENGANUGERAHAN GELAR RESMI -->
         <section class="slide-card" data-slide="9">
+          <div class="slide-header">
           <div class="slide-badge badge-gold">Penganugerahan Gelar</div>
+          <div class="badge-time">⏱️ Menit 83–88</div>
+        </div>
           <h2 class="slide-title">Selamat Kepada Para Lulusan Level 1! 👑⭐</h2>
           <p class="slide-subtitle">Kalian resmi menyandang gelar kompetensi perdana di Beekoding Academy:</p>
 
@@ -1003,7 +1039,10 @@
 
         <!-- SLIDE 10: PESTA WISUDA & PINTU LEVEL 2 -->
         <section class="slide-card" data-slide="10">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Pesta Wisuda & Masa Depan</div>
+          <div class="badge-time">⏱️ Menit 88–90</div>
+        </div>
           <h2 class="slide-title">Tepuk Koding Akbar & Selamat Datang di Level 2! 🚀🎉</h2>
           <p class="slide-subtitle">Tutup pertemuan dengan perayaan konfeti terhebat dan intipan petualangan Level 2:</p>
 
@@ -1192,7 +1231,7 @@
     function toggleNotes() {
       isNotesOpen = !isNotesOpen;
       teacherNotesDrawer.classList.toggle('open', isNotesOpen);
-      toggleNotesBtn.style.background = isNotesOpen ? '#d97706' : '#1f2937';
+      
     }
 
     toggleNotesBtn.addEventListener('click', toggleNotes);

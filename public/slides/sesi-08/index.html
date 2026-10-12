@@ -210,11 +210,11 @@
       border-color: #4b5563;
     }
 
-    .toggle-notes-btn {
-      background: #7c3aed;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
@@ -224,23 +224,21 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    .toggle-notes-btn:hover {
-      background: #6d28d9;
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
     }
 
-    .btn-fullscreen {
-      background: #374151;
-      color: #e5e7eb;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
     }
-    .btn-fullscreen:hover {
-      background: #4b5563;
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
     }
 
     /* Main Presentation Container (16:9 Aspect Ratio) */
@@ -297,19 +295,32 @@
       padding: 38px 50px;
       display: none;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
       background: radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.18) 0%, rgba(30, 41, 59, 0) 65%);
     }
 
     .slide-card.active {
       display: flex;
-      opacity: 1;
-      transform: translateY(0);
+      
     }
 
     /* Badges & Titles */
+        /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .slide-badge {
       display: inline-flex;
       align-items: center;
@@ -320,7 +331,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       width: fit-content;
     }
 
@@ -788,18 +799,17 @@
           <span class="brand-subtitle">Next-Gen Coding & AI Learning</span>
         </div>
       </a>
-      <span class="brand-stage-badge">MINI PROYEK 1 • CAPSTONE</span>
+      <span class="brand-stage-badge">STAGE 1: SESI 08</span>
     </div>
-    <div class="toolbar-actions">
-      <a href="/slides/sesi-07/index.html" class="btn-nav-sesi" title="Kembali ke Sesi 07">⏪ Sesi 07</a>
-      <button class="toggle-notes-btn" id="toggleNotesBtn" title="Shortcut keyboard: N">
-        🎙️ Catatan Guru <kbd style="background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 11px;">N</kbd>
+        <div class="toolbar-actions">
+      <a href="/slides/sesi-07/index.html" class="btn-nav-sesi">⏪ Sesi 07</a>
+      <a href="/slides/sesi-09/index.html" class="btn-nav-sesi">Sesi 09 ⏩</a>
+      <button class="btn btn-toggle-notes" id="toggleNotesBtn">
+        📝 Catatan Guru (N)
       </button>
-      <button class="btn-fullscreen" id="fullscreenBtn" title="Shortcut: F">⛶ Fullscreen</button>
-      <a href="/slides/sesi-09/index.html" class="btn-nav-sesi" title="Lanjut ke Sesi 09" style="background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; color: #60a5fa;">Sesi 09 ⏩</a>
-      <a href="/brosur-ekskul.html" class="btn-nav-sesi" style="background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.4);">
-        📄 Brosur A4
-      </a>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Layar Penuh (F)
+      </button>
     </div>
   </header>
 
@@ -810,9 +820,12 @@
 
         <!-- SLIDE 1: COVER -->
         <section class="slide-card active" data-slide="1">
+          <div class="slide-header">
+            <div class="slide-badge badge-purple">Sesi 08 • Evaluasi Mini Proyek 1</div>
+            <div class="badge-time">⏱️ 00–05 Menit Pertama</div>
+          </div>
           <div class="grid-2">
             <div>
-              <div class="slide-badge badge-purple">Sesi 08 • Evaluasi Mini Proyek 1</div>
               <h1 class="slide-title">Buku Cerita Animasi Interaktif! 📖✨</h1>
               <p class="slide-subtitle">Menggabungkan <strong>Karakter Hero AI</strong>, <strong>Suara Nyata Text-to-Speech</strong>, dan <strong>Tombol Pembalik Halaman</strong> menjadi E-Book Digital Pertama!</p>
               
@@ -836,7 +849,10 @@
 
         <!-- SLIDE 2: KILAS BALIK PERJALANAN KITA -->
         <section class="slide-card" data-slide="2">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Kilas Balik Petualangan</div>
+          <div class="badge-time">⏱️ Menit 05–12</div>
+        </div>
           <h2 class="slide-title">Lihat Seberapa Jauh Kita Melangkah! 🚀🌟</h2>
           <p class="slide-subtitle">Dari bermain arah panah fisik di lantai, sekarang kita sudah bisa membuat film animasi bersuara:</p>
 
@@ -869,7 +885,10 @@
 
         <!-- SLIDE 3: 3 PILAR BUKU CERITA DIGITAL -->
         <section class="slide-card" data-slide="3">
+          <div class="slide-header">
           <div class="slide-badge badge-cyan">Anatomi Karya Digital</div>
+          <div class="badge-time">⏱️ Menit 12–20</div>
+        </div>
           <h2 class="slide-title">Tiga Bahan Rahasia Buku Cerita Ajaib 🪄📚</h2>
           <p class="slide-subtitle">Sebuah buku cerita animasi interaktif membutuhkan 3 elemen kunci:</p>
 
@@ -896,7 +915,10 @@
 
         <!-- SLIDE 4: KODE TOMBOL PEMBALIK HALAMAN -->
         <section class="slide-card" data-slide="4">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Logika Koding Baru</div>
+          <div class="badge-time">⏱️ Menit 20–30</div>
+        </div>
           <h2 class="slide-title">Koding Tombol Pembalik Halaman ⏩📖</h2>
           <p class="slide-subtitle">Bagaimana cara berpindah dari Halaman 1 ke Halaman 2 saat tombol diklik?</p>
 
@@ -924,7 +946,10 @@
 
         <!-- SLIDE 5: RUBRIK PENILAIAN 4 BINTANG -->
         <section class="slide-card" data-slide="5">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Rubrik Kelulusan Proyek</div>
+          <div class="badge-time">⏱️ Menit 30–40</div>
+        </div>
           <h2 class="slide-title">Misi Meraih 4 Bintang Emas! ⭐🏆</h2>
           <p class="slide-subtitle">Periksa apakah buku cerita kodingmu sudah memiliki semua syarat ini:</p>
 
@@ -957,7 +982,10 @@
 
         <!-- SLIDE 6: LIVE INTERACTIVE STORYBOOK SIMULATOR -->
         <section class="slide-card" data-slide="6">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Simulasi E-Book Nyata</div>
+          <div class="badge-time">⏱️ Menit 40–55</div>
+        </div>
           <h2 class="slide-title">Uji Coba Simulator Buku Cerita Ajaib 📖🔊</h2>
           <p class="slide-subtitle">Klik tombol pembalik halaman dan dengarkan cerita bersuara secara langsung:</p>
 
@@ -1000,7 +1028,10 @@
 
         <!-- SLIDE 7: TIPS MERAPIKAN ALUR CERITA -->
         <section class="slide-card" data-slide="7">
+          <div class="slide-header">
           <div class="slide-badge badge-emerald">Bimbingan Storyboard Cilik</div>
+          <div class="badge-time">⏱️ Menit 55–65</div>
+        </div>
           <h2 class="slide-title">Resep 3 Babak Cerita yang Menarik 🎬</h2>
           <p class="slide-subtitle">Bantu anak-anak menyusun cerita dongeng sederhana dengan alur 3 babak:</p>
 
@@ -1027,7 +1058,10 @@
 
         <!-- SLIDE 8: DETEKTIF BUG & CHECKLIST -->
         <section class="slide-card" data-slide="8">
+          <div class="slide-header">
           <div class="slide-badge badge-purple">Detektif Bug Cilik</div>
+          <div class="badge-time">⏱️ Menit 65–75</div>
+        </div>
           <h2 class="slide-title">Mengatasi 2 Bug Paling Sering Terjadi 🕵️‍♂️🔍</h2>
           <p class="slide-subtitle">Periksa jika cerita dongeng digital anak mengalami kendala ini:</p>
 
@@ -1057,7 +1091,10 @@
 
         <!-- SLIDE 9: PRODUKSI MANDIRI & POLES KARYA -->
         <section class="slide-card" data-slide="9">
+          <div class="slide-header">
           <div class="slide-badge badge-cyan">Studio Koding Mandiri</div>
+          <div class="badge-time">⏱️ Menit 75–85</div>
+        </div>
           <h2 class="slide-title">Waktunya Memoles Karya Impianmu! 🎨💻</h2>
           <p class="slide-subtitle">Instruktur akan mendampingi setiap siswa merapikan detail proyeknya:</p>
 
@@ -1090,7 +1127,10 @@
 
         <!-- SLIDE 10: SHOWCASE AKBAR & PENUTUP -->
         <section class="slide-card" data-slide="10">
+          <div class="slide-header">
           <div class="slide-badge badge-amber">Showcase & Perayaan</div>
+          <div class="badge-time">⏱️ Menit 85–90</div>
+        </div>
           <h2 class="slide-title">Panggung Cerita Cilik & Tepuk Koding! 👏🎉</h2>
           <p class="slide-subtitle">Selamat! Kamu berhasil menuntaskan 8 sesi pertama dengan karya dongeng yang luar biasa!</p>
 
@@ -1278,7 +1318,7 @@
     function toggleNotes() {
       isNotesOpen = !isNotesOpen;
       teacherNotesDrawer.classList.toggle('open', isNotesOpen);
-      toggleNotesBtn.style.background = isNotesOpen ? '#7c3aed' : '#1f2937';
+      
     }
 
     toggleNotesBtn.addEventListener('click', toggleNotes);
