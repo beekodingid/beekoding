@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 33 - Jam Tangan Pintar Penghitung Langkah (Smart Pedometer) | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Navigation Toolbar */
+    .top-toolbar {
+      background: #111827;
+      border-bottom: 2px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .brand-tag {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .brand-link:hover {
+      transform: scale(1.03);
+    }
+
+    .brand-logo-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .brand-logo-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #eab308);
+      padding: 2px;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-link:hover .brand-logo-box {
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .brand-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: #121520;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-logo-img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .brand-link:hover .brand-logo-img {
+      transform: scale(1.12);
+    }
+
+    .brand-sparkle-ping {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      display: flex;
+    }
+
+    .brand-sparkle-ping .ping-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #fbbf24;
+      opacity: 0.75;
+      animation: brandPing 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .brand-sparkle-ping .ping-dot {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+    }
+
+    @keyframes brandPing {
+      75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-title .accent {
+      color: #f59e0b;
+    }
+
+    .brand-subtitle {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(251, 191, 36, 0.85);
+      margin-top: 1px;
+    }
+
+    .brand-stage-badge {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #374151;
+      color: #fff;
+    }
+
+    .btn-toggle-notes {
+      background: #f59e0b;
+      color: #000;
+      border-color: #d97706;
+    }
+
+    .btn-toggle-notes:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Main Presentation Stage (16:9 Aspect Ratio) */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 24px;
+      position: relative;
+      min-height: 0;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 74px);
+      background: #1e293b;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+    }
+
+    :fullscreen .stage-wrapper,
+    :-webkit-full-screen .stage-wrapper {
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    :fullscreen .slide-viewport,
+    :-webkit-full-screen .slide-viewport {
+      max-width: min(100vw, calc(100vh * 16 / 9));
+      max-height: 100vh;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }
+
+    .slide-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 48px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-session {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-time {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Slide Content Typography */
+    .slide-title {
+      font-family: 'Fredoka', cursive;
+      font-size: 32px;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-top: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .slide-title span {
+      color: #fbbf24;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      min-height: 0;
+    }
+
+    .text-column {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .visual-column {
+      flex: 0.95;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      max-height: 420px;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 2px solid #334155;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .concept-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 16px 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 20;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #f59e0b;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.primary {
+      background: #d97706;
+      border-color: #b45309;
+      color: #ffffff;
+    }
+
+    .btn-nav.primary:hover:not(:disabled) {
+      background: #f59e0b;
+      color: #000000;
+    }
+
+    .btn-nav-sesi {
+      background: #1f2937;
+      color: #d1d5db;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav-sesi:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
+    }
+
+    /* Teacher Speaker Notes Drawer */
+    .teacher-notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #090d16;
+      border-top: 3px solid #f59e0b;
+      padding: 16px 28px;
+      box-shadow: 0 -15px 30px rgba(0,0,0,0.6);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 200;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .teacher-notes-panel.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notes-title {
+      color: #fbbf24;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notes-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .notes-script {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid #f59e0b;
+      padding: 8px 12px;
+      margin-top: 6px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    /* ================= SCRATCH BLOCKS AUTHENTIC STYLING ================= */
+    .block-stack {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 440px;
+      margin: 8px 0;
+      gap: 2px;
+    }
+
+    .scratch-block {
+      border-radius: 8px;
+      padding: 7px 13px;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      position: relative;
+      margin: 2px 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-weight: 600;
+    }
+
+    .scratch-block.event {
+      background: #ffbf00;
+      color: #000000;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      font-weight: 700;
+    }
+
+    .scratch-block.control {
+      background: #ffab19;
+      color: #ffffff;
+    }
+
+    .scratch-block.motion {
+      background: #4c97ff;
+      color: #ffffff;
+    }
+
+    .scratch-block.looks {
+      background: #9966ff;
+      color: #ffffff;
+    }
+
+    .scratch-block.sensing {
+      background: #5cb1d6;
+      color: #ffffff;
+    }
+
+    .scratch-block.operator {
+      background: #59c059;
+      color: #ffffff;
+    }
+
+    .scratch-block.variable {
+      background: #ff8c1a;
+      color: #ffffff;
+    }
+
+    .scratch-block.sound {
+      background: #cf63cf;
+      color: #ffffff;
+    }
+
+    .scratch-block-c {
+      background: #ffab19;
+      border-radius: 8px;
+      padding: 6px 10px 8px;
+      margin: 3px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .scratch-c-indent {
+      background: rgba(15, 23, 42, 0.4);
+      border-left: 12px solid #ffab19;
+      padding: 6px 6px 6px 14px;
+      margin: 4px 0 4px -2px;
+      border-radius: 0 6px 6px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .scratch-inline-sensing {
+      background: #5cb1d6;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .scratch-inline-operator {
+      background: #59c059;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .scratch-inline-variable {
+      background: #ff8c1a;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .block-input {
+      background: #ffffff;
+      color: #000000;
+      border-radius: 999px;
+      padding: 1px 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-block;
+      margin: 0 2px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    /* ================= MINI SIMULATORS STYLING ================= */
+    .sim-box {
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sim-header {
+      background: #1e293b;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #334155;
+    }
+
+    .sim-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-green-flag {
+      background: #10b981;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+    .btn-green-flag:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+    }
+
+    .btn-red-stop {
+      background: #ef4444;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.15s;
+    }
+    .btn-red-stop:hover {
+      transform: scale(1.1);
+    }
+
+    .sim-score-badge {
+      background: #090d16;
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: 'Fredoka', cursive;
+    }
+
+    .sim-canvas {
+      height: 220px;
+      background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 65%, #312e81 100%);
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+  
+    /* Beeby Uniform Mascot Card Styling */
+    .beeby-hero-card {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+      border: 2px solid rgba(245, 158, 11, 0.35);
+      border-radius: 24px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(245, 158, 11, 0.15);
+      max-width: 440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .beeby-glow-ring {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.08) 50%, transparent 75%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: beebyPulse 3s ease-in-out infinite;
+    }
+    .beeby-mascot-img {
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6));
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .beeby-hero-card:hover .beeby-mascot-img {
+      transform: scale(1.08) translateY(-4px);
+    }
+    .beeby-mascot-label {
+      position: relative;
+      z-index: 2;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 3px;
+    }
+    .beeby-name {
+      font-family: 'Fredoka', cursive;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 999px;
+      padding: 4px 14px;
+    }
+    .beeby-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    @keyframes beebyPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      <a href="/" class="brand-link" title="Kembali ke Beranda Beekoding">
+        <div class="brand-logo-wrap">
+          <div class="brand-logo-box">
+            <div class="brand-logo-inner">
+              <img src="/beekoding-logo.png" alt="Beekoding Logo" class="brand-logo-img" />
+            </div>
+          </div>
+          <span class="brand-sparkle-ping">
+            <span class="ping-ring"></span>
+            <span class="ping-dot"></span>
+          </span>
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title">Bee<span class="accent">koding</span></span>
+          <span class="brand-subtitle">Platform Edukasi Koding &amp; AI</span>
+        </div>
+      </a>
+      <span class="brand-stage-badge">STAGE 3: SESI 33</span>
+    </div>
+
+    <div class="toolbar-actions">
+      <a href="/slides/index.html" class="btn-nav-sesi" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800;" title="Buka Portal Semua Sesi & Stage">🗂️ Semua Sesi</a>
+      <a href="/slides/sesi-32/index.html" class="btn-nav-sesi">⏪ Sesi 32</a>
+      <a href="/slides/sesi-34/index.html" class="btn-nav-sesi">Sesi 34 ⏩</a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage Presentation -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+      <!-- ================= SLIDE 1: COVER ================= -->
+      <div class="slide active" data-time="⏱️ Menit ke 00–10">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 33 • Smart Pedometer</div>
+          <div class="badge-time">⏱️ Menit ke 00–10</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Eksperimen Cilik: <span>Jam Tangan Pintar Penghitung Langkah (Smart Pedometer)</span>! ⌚
+            </h1>
+            <p style="color: #cbd5e1; font-size: 15.5px; margin: 12px 0 18px; line-height: 1.55;">
+              Selamat datang di <strong>STAGE 3: SESI 33</strong>! Hari ini kita melangkah ke dunia <em>Sensory &amp; Physical Computing</em> dengan menguasai <strong>Merancang Smartwatch Olahraga Cilik untuk Menghitung Langkah Kaki, Kalori, dan Target Harian</strong>.
+            </p>
+            <div class="concept-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13.5px; margin-bottom: 6px;">🎯 Misi Utama Hari Ini:</div>
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>⌚ <strong>Teknologi Inti:</strong> Step Counter Algorithm & Fitness Goal</li>
+                <li>🧩 <strong>Ekstensi Scratch:</strong> Merakit balok sensor perangkat keras &amp; logika kondisi</li>
+                <li>⚡ <strong>Interaksi Fisik:</strong> Mengubah sentuhan, gerak, dan suara menjadi aksi digital</li>
+                <li>🚀 <strong>Karya Nyata:</strong> Proyek interaktif yang siap dipamerkan!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <img src="beeby-pedometer.jpg" alt="Jam Tangan Pintar Penghitung Langkah (Smart Pedometer) - Beekoding Stage 3" class="hero-img" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: KONSEP DASAR & SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 10–22">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Dasar • Step Counter Algorithm & Fitness Goal</div>
+          <div class="badge-time">⏱️ Menit ke 10–22</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Cara Kerja <span>Jam Tangan Pintar Penghitung Langkah (Smart Pedometer)</span> 🤔
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Dalam <em>Physical Computing</em>, komputer tidak hanya diam di meja—ia bisa merasakan dunia sekitar! Mari uji coba bagaimana sistem <strong>Step Counter Algorithm & Fitness Goal</strong> merespons aksi kita pada simulator di samping!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>📡 <strong>Input Sensor:</strong> Alat menangkap sinyal fisik (sentuhan, guncangan, suara, suhu)</li>
+                <li>🧠 <strong>Proses Koding:</strong> Scratch menerjemahkan sinyal sensor menjadi nilai variabel</li>
+                <li>💡 <strong>Output Nyata:</strong> Layar LED menyala dan karakter Beeby beraksi!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <span style="font-weight: 800; font-size: 13px; color: #34d399;">🧪 Simulator Smartwatch Pedometer: Sesi 33</span>
+                <span id="sim2Status" style="color: #fbbf24; font-size: 12px; font-weight: 700;">Sensor Siaga</span>
+              </div>
+              <div id="sim2Stage" style="height: 180px; background: #020617; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 14px;">
+                <div id="sim2DisplayVal" style="font-family: 'Fredoka', cursive; font-size: 36px; color: #34d399; margin-bottom: 6px; transition: transform 0.2s;">
+                  ⌚ READY
+                </div>
+                <div id="sim2SubText" style="color: #94a3b8; font-size: 12px; text-align: center;">Klik tombol aksi di bawah untuk mengirim sinyal ke sensor!</div>
+              </div>
+              <div style="padding: 10px 14px; background: #0f172a; display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="triggerSim2Action()" style="background: #10b981; border: none; color: #000; font-size: 12px; font-weight: 800; padding: 7px 16px; border-radius: 8px; cursor: pointer;">
+                  👟 Ayunkan Langkah (+1)
+                </button>
+                <button onclick="resetSim2Action()" style="background: #1e293b; border: 1px solid #475569; color: #cbd5e1; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; cursor: pointer;">
+                  🔄 Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: BALOK KUNCI UTAMA ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 22–32">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Balok Kode • Ekstensi Scratch 3.0</div>
+          <div class="badge-time">⏱️ Menit ke 22–32</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Balok Kunci: <span>Pemicu &amp; Inisialisasi Sensor</span> 🧩
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Kita menggunakan balok ekstensi khusus berwarna hijau zamrud untuk membaca sinyal perangkat keras dan menyiapkan variabel awal saat program dijalankan.
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🟢 <strong>Hat Block Hardware:</strong> Memantau sinyal dari papan sirkuit secara otomatis</li>
+                <li>🟠 <strong>Variabel Data:</strong> Menyimpan nilai pembacaan sensor agar mudah diolah</li>
+                <li>🔊 <strong>Umpan Balik Awal:</strong> Memberi tanda bahwa perangkat sudah aktif terhubung</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              
+              <div class="scratch-block event">
+                when 🏴 clicked
+              </div>
+              <div class="scratch-block variable">
+                set <span class="block-input">JumlahLangkah ▾</span> to <span class="block-input">0</span>
+              </div>
+              <div class="scratch-block variable">
+                set <span class="block-input">TargetSehat ▾</span> to <span class="block-input">20</span>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: LOGIKA KONDISI & KEPUTUSAN ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 32–42">
+        <div class="slide-header">
+          <div class="badge-session">Mekanik Inti • Logika Sensor &amp; Aksi</div>
+          <div class="badge-time">⏱️ Menit ke 32–42</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Merakit Respon: <span>Dari Sensor ke Layar</span> ⚡
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Ketika sensor mendeteksi perubahan (tombol ditekan, alat digoyang, atau nilai melewati batas), balok kondisi akan langsung menggerakkan karakter di panggung!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔍 <strong>Pembacaan Akurat:</strong> Memeriksa status sensor setiap sepersekian detik</li>
+                <li>🎯 <strong>Aksi Langsung:</strong> Mengubah posisi X/Y, kostum, atau menampilkan ikon LED</li>
+                <li>🎵 <strong>Efek Suara:</strong> Menambah keseruan setiap kali sensor berhasil dipicu</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              
+              <div class="scratch-block event" style="background:#0fbd8c; color:#fff;">
+                📟 when <span class="block-input">shaken ▾</span>
+              </div>
+              <div class="scratch-block variable">
+                change <span class="block-input">JumlahLangkah ▾</span> by <span class="block-input">1</span>
+              </div>
+              <div class="scratch-block control" style="background:#0fbd8c; color:#fff;">
+                📟 display text <span class="scratch-inline-variable">JumlahLangkah</span>
+              </div>
+              <div class="scratch-block motion">
+                move <span class="block-input">10</span> steps
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: SINYAL BROADCAST & RESPON ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 42–52">
+        <div class="slide-header">
+          <div class="badge-session">Sinkronisasi Output • Layar &amp; Perangkat</div>
+          <div class="badge-time">⏱️ Menit ke 42–52</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Komunikasi Dua Arah: <span>Sinkronisasi Output</span> 📢
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Tidak hanya alat yang mengendalikan layar, panggung Scratch juga bisa mengirim balik perintah untuk menyalakan matriks LED atau memicu perayaan kemenangan!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>📡 <strong>Sinyal Broadcast:</strong> Menghubungkan kejadian di game dengan layar matriks LED</li>
+                <li>💡 <strong>Tampilan Visual:</strong> Menampilkan teks atau simbol kemenangan pada alat</li>
+                <li>✨ <strong>Harmoni Hardware-Software:</strong> Dunia fisik dan layar digital bekerja serentak</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              
+              <div class="scratch-block-c">
+                if <span class="scratch-inline-operator"><span class="scratch-inline-variable">JumlahLangkah</span> = <span class="scratch-inline-variable">TargetSehat</span></span> then
+                <div class="scratch-c-indent">
+                  <div class="scratch-block event" style="background:#ffab19; color:#fff;">broadcast <span class="block-input">TargetTercapai ▾</span></div>
+                  <div class="scratch-block sound">play sound <span class="block-input">VictoryMedal ▾</span> until done</div>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: ALUR INSTRUKSI LENGKAP ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 52–62">
+        <div class="slide-header">
+          <div class="badge-session">Arsitektur Sistem • Input ➔ Process ➔ Output</div>
+          <div class="badge-time">⏱️ Menit ke 52–62</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Alur Sistem: <span>Input ➔ Process ➔ Output</span> 🗺️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Setiap gadget pintar di dunia nyata—mulai dari jam tangan pintar hingga mobil otonom—selalu bekerja mengikuti 4 tahapan sistematis ini:
+            </p>
+            <div class="concept-card">
+              <ol style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.7;">
+                <li>1️⃣ <strong>Inisialisasi:</strong> Sambungkan perangkat &amp; reset variabel ke nilai awal</li>
+                <li>2️⃣ <strong>Input Fisik:</strong> Sensor membaca aksi tangan, gerak, atau lingkungan</li>
+                <li>3️⃣ <strong>Proses Logika:</strong> Scratch mengecek syarat (Step Counter Algorithm & Fitness Goal)</li>
+                <li>4️⃣ <strong>Output Ganda:</strong> Animasi panggung &amp; indikator LED menyala bersama!</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: #090d16; border: 2px solid #10b981; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
+              <div style="font-size: 42px; margin-bottom: 8px;">⌚ ➔ 🧠 ➔ 💻</div>
+              <h4 style="color: #34d399; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Arsitektur Gadget Sesi 33</h4>
+              <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Integrasi mulus antara sensor perangkat keras dan logika pemrograman visual Scratch 3.0!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: PLAYABLE SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 62–74">
+        <div class="slide-header">
+          <div class="badge-session">Playable Lab • Uji Coba Proyek Interaktif</div>
+          <div class="badge-time">⏱️ Menit ke 62–74</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Uji Coba Langsung: <span>Proyek Sesi 33</span>! 🎮
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Mari kita uji proyek interaktif kita! Klik bendera hijau dan gerakkan kursor/sensor untuk menangkap target sambil mengamati respons <strong>Step Counter Algorithm & Fitness Goal</strong>!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🚩 <strong>Klik Bendera Hijau</strong> untuk mengaktifkan simulasi sensor</li>
+                <li>🖱️ <strong>Gerakkan Kontroler</strong> ke kiri &amp; kanan untuk menangkap sinyal/madu</li>
+                <li>⚡ <strong>Indikator LED:</strong> Perhatikan matriks status yang menyala setiap skor bertambah!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <div class="sim-btns">
+                  <button class="btn-green-flag" onclick="startPlayableGame_33()">🚩</button>
+                  <button class="btn-red-stop" onclick="stopPlayableGame_33()">🛑</button>
+                </div>
+                <div class="sim-score-badge">
+                  SKOR SENSOR: <span id="gameScore_33">0</span>
+                </div>
+              </div>
+
+              <div id="gameCanvas_33" class="sim-canvas" onmousemove="handleGameMouse_33(event)">
+                <div id="gameOverlay_33" style="position: absolute; inset: 0; background: rgba(0,0,0,0.72); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
+                  <span style="font-size: 34px; margin-bottom: 6px;">⌚</span>
+                  <span style="font-size: 13px; font-weight: 700; color: #34d399;">Klik 🚩 untuk Mulai Simulasi Hardware!</span>
+                  <span style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Gerakkan kursor mouse untuk mengemudikan papan sensor Beeby</span>
+                </div>
+
+                <div id="gameApple_33" style="position: absolute; font-size: 26px; transform: translate(-50%, -50%); top: -30px; left: 160px; pointer-events: none;">⌚</div>
+                <div id="gameBowl_33" style="position: absolute; font-size: 30px; transform: translate(-50%, -50%); bottom: 10px; left: 160px; pointer-events: none;">📟</div>
+              </div>
+
+              <div style="background: #0f172a; padding: 6px 14px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1e293b; font-size: 11px; color: #94a3b8;">
+                <span>Modul: <strong style="color: #34d399;">⌚ Step Counter Algorithm & Fitness Goal</strong></span>
+                <span style="color: #10b981;">● Sensor Terhubung</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: DOKTER KODE ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 74–82">
+        <div class="slide-header">
+          <div class="badge-session">Klinik Debugging • Solusi Hardware &amp; Koding</div>
+          <div class="badge-time">⏱️ Menit ke 74–82</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Dokter Kode: <span>Mengatasi Kendala Sensor</span> 🐛
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Saat merakit perangkat keras dan koding, ketelitian adalah kunci utama! Yuk perhatikan perbandingan kesalahan umum dan solusinya berikut ini:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔌 Cek koneksi kabel USB / baterai / jepitan buaya dengan teliti</li>
+                <li>🔄 Pastikan nilai kalibrasi sensor sesuai dengan kondisi ruangan</li>
+                <li>🎯 Periksa kembali urutan balok di dalam loop <code>forever</code></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+              <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #ef4444; font-weight: 800; font-size: 13px; margin-bottom: 4px;">❌ KESALAHAN UMUM:</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px; line-height: 1.45;">
+                  Lupa mereset JumlahLangkah ke 0 saat bendera hijau diklik sehingga langkah dari sesi olahraga kemarin ikut terhitung.
+                </div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #10b981; font-weight: 800; font-size: 13px; margin-bottom: 4px;">✅ SOLUSI TEPAT:</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px; line-height: 1.45;">
+                  Selalu pasang set JumlahLangkah to 0 di bawah when green flag clicked sebagai inisialisasi awal ✅
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 82–87">
+        <div class="slide-header">
+          <div class="badge-session">Review Pemahaman • Sukses Sesi 33</div>
+          <div class="badge-time">⏱️ Menit ke 82–87</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Penemu Hebat! <span>Review Kunci Hari Ini</span> 🌟
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Selamat! Kamu telah menguasai eksperimen <strong>Jam Tangan Pintar Penghitung Langkah (Smart Pedometer)</strong> di Stage 3. Mari kita ingat 3 poin terpenting hari ini:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>1️⃣ <strong>Teknologi:</strong> Step Counter Algorithm & Fitness Goal</li>
+                <li>2️⃣ <strong>Alur Sistem:</strong> Input Sensor ➔ Proses Scratch ➔ Output Nyata</li>
+                <li>3️⃣ <strong>Inovasi:</strong> Menggabungkan dunia fisik dengan imajinasi digital</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 16px; padding: 24px; text-align: center; width: 100%;">
+              <div style="font-size: 48px; margin-bottom: 10px;">🏆 ⌚</div>
+              <h3 style="color: #34d399; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Eksperimen Berhasil!</h3>
+              <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.5;">Kamu resmi menguasai modul Physical Computing Sesi 33 di Beekoding Academy!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 14px; background: #000; color: #34d399; border: 1px solid #34d399; padding: 10px 20px; border-radius: 999px; font-weight: 800; cursor: pointer; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🎊 Rayakan Keberhasilan (Klik Confetti)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 87–90">
+        <div class="slide-header">
+          <div class="badge-session">Teaser Sesi Berikutnya • Terus Bereksperimen</div>
+          <div class="badge-time">⏱️ Menit ke 87–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Petualangan Berlanjut: <span>Menuju Sesi 34</span>! 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Karya gadget interaktifmu semakin canggih! Jangan lupa simpan proyek Scratch-mu dan rapikan kembali peralatan elektronik ke tempatnya.
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>💾 Klik <code>File ➔ Save to your computer</code> di Scratch</li>
+                <li>📦 Rapikan board mikrokontroler, baterai, dan kabel penjepit buaya</li>
+                <li>👏 Berikan tepuk tangan meriah untuk seluruh penemu cilik di kelas!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 26px; text-align: center; width: 100%;">
+              <div style="font-size: 52px; margin-bottom: 10px;">🌟🚀</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Sampai Jumpa di Sesi Berikutnya!</h3>
+              <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">Tetap semangat bereksplorasi dan mencipta teknologi masa depan bersama Beekoding Academy!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      </div><!-- .slide-canvas -->
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+
+      <!-- Teacher Notes Drawer Panel -->
+      <div id="teacherNotesPanel" class="teacher-notes-panel">
+        <div class="notes-header">
+          <div class="notes-title">
+            <span>📝 CATATAN GURU &amp; PANDUAN MENGAJAR</span>
+            <span id="notesBadge" style="font-size: 11px; color: #94a3b8; font-weight: 600;">(Slide 1 dari 10)</span>
+          </div>
+          <button class="notes-close" onclick="toggleNotes()">✕</button>
+        </div>
+        <div class="notes-content">
+          <div id="notesInstructions" style="color: #94a3b8; margin-bottom: 6px;"></div>
+          <div id="notesScript" class="notes-script"></div>
+        </div>
+      </div>
+
+    </div><!-- .slide-viewport -->
+  </div><!-- .stage-wrapper -->
+
+  <script>
+    // Speaker Notes Data
+    const notesData = [
+      {
+            "title": "Slide 1: Pembukaan & Sambutan Sesi 33",
+            "time": "Menit 00–10 (Total 90 Menit)",
+            "instructions": "Sambut siswa dengan antusias! Tunjukkan papan mikrokontroler / alat sensor dan ilustrasi 3D Beeby di layar proyektor.",
+            "script": "Halo para penemu cilik Beekoding! Selamat datang di STAGE 3: Sesi 33! Hari ini kita akan bereksperimen dengan Jam Tangan Pintar Penghitung Langkah (Smart Pedometer)! Siapa yang siap menghubungkan koding layar ke dunia nyata?"
+      },
+      {
+            "title": "Slide 2: Konsep Dasar & Simulator Step Counter Algorithm & Fitness Goal",
+            "time": "Menit 10–22",
+            "instructions": "Demonstrasikan simulator interaktif di slide ini dan jelaskan cara sensor bekerja menerima input fisik.",
+            "script": "Coba lihat simulator Simulator Smartwatch Pedometer di sebelah kanan! Saat kita berikan sinyal fisik, komputer langsung menangkap datanya dan bereaksi seketika!"
+      },
+      {
+            "title": "Slide 3: Balok Kunci & Inisialisasi Hardware",
+            "time": "Menit 22–32",
+            "instructions": "Bimbing siswa membuka menu Add Extension di Scratch (pojok kiri bawah) dan memilih ekstensi Micro:bit / Makey Makey / Sensing.",
+            "script": "Ayo klik tombol biru di pojok kiri bawah Scratch untuk membuka ekstensi perangkat keras kita! Perhatikan balok berwarna hijau zamrud yang baru muncul!"
+      },
+      {
+            "title": "Slide 4: Logika Sensor & Respon Layar",
+            "time": "Menit 32–42",
+            "instructions": "Pandu siswa merakit balok pemicu sensor dengan aksi gerak dan suara pada karakter Beeby.",
+            "script": "Sekarang kita pasangkan balok sensornya! Begitu alat mendeteksi aksi kita, karakter Beeby di layar akan langsung bergerak dan bersuara!"
+      },
+      {
+            "title": "Slide 5: Integrasi Lanjutan & Umpan Balik LED/Audio",
+            "time": "Menit 42–52",
+            "instructions": "Ajak siswa menguji komunikasi dua arah antara panggung Scratch dan tampilan LED / efek suara.",
+            "script": "Keren sekali! Bukan cuma layar yang bergerak, tapi alat di tangan kita juga bisa menyalakan lampu LED dan membunyikan nada kemenangan!"
+      },
+      {
+            "title": "Slide 6: Alur Algoritma Input -> Process -> Output",
+            "time": "Menit 52–62",
+            "instructions": "Jelaskan alur kerja sistem fisik: Sensor membaca aksi (Input) -> Scratch mengolah logika (Process) -> Layar & LED bereaksi (Output).",
+            "script": "Ingat rumus rahasia penemu teknologi: Input dari sensor tangan kita, diproses oleh otak koding Scratch, lalu menghasilkan Output yang memukau!"
+      },
+      {
+            "title": "Slide 7: Uji Coba Game Interaktif & Kalibrasi",
+            "time": "Menit 62–74",
+            "instructions": "Beri waktu siswa mencoba langsung simulator playable di slide dan mempraktikkan proyek mereka secara mandiri.",
+            "script": "Waktunya uji coba penuh! Klik bendera hijau, gerakkan karaktermu dan raih skor tertinggi menggunakan mekanik sensor hari ini!"
+      },
+      {
+            "title": "Slide 8: Klinik Dokter Kode & Hardware (Debugging)",
+            "time": "Menit 74–82",
+            "instructions": "Bahas kendala teknis yang sering muncul pada rangkaian/kode sensor dan cara mengatasinya dengan tenang.",
+            "script": "Dokter Kode hadir! Kalau sensor kalian belum merespons, jangan panik. Mari kita periksa koneksi dan perbandingan kode salah vs benar di layar!"
+      },
+      {
+            "title": "Slide 9: Rangkuman & Pesta Apresiasi Penemu Cilik",
+            "time": "Menit 82–87",
+            "instructions": "Rayakan keberhasilan eksperimen hari ini dengan menekan tombol konfeti dan memberi apresiasi ke seluruh siswa.",
+            "script": "Luar biasa! Kalian semua resmi menguasai teknologi Sesi ini. Ayo kita klik tombol konfeti dan beri tepuk tangan paling meriah!"
+      },
+      {
+            "title": "Slide 10: Penutup, Rapikan Alat & Teaser Berikutnya",
+            "time": "Menit 87–90",
+            "instructions": "Ingatkan siswa menyimpan file proyek (.sb3) dan merapikan kembali papan micro:bit / kabel penjepit buaya ke kotaknya.",
+            "script": "Jangan lupa simpan proyek kalian dan rapikan kembali alat elektronik ke dalam kotak dengan hati-hati. Sampai jumpa di petualangan Stage 3 berikutnya!"
+      }
+];
+
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let notesOpen = false;
+
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const notesPanel = document.getElementById('teacherNotesPanel');
+
+    // Create progress dots
+    progressDots.innerHTML = '';
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `dot ${i === 1 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.dot');
+
+    // Slide Navigation
+    function goToSlide(n) {
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }
+
+    function updateSlide() {
+      slides.forEach((sl, idx) => {
+        sl.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      if (slideCounter) {
+        slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      }
+      if (prevBtn) prevBtn.disabled = currentSlide === 1;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update teacher notes
+      const note = notesData[currentSlide - 1];
+      if (note) {
+        const b = document.getElementById('notesBadge');
+        if (b) b.innerText = `Slide ${currentSlide} • ${note.time}`;
+        const inst = document.getElementById('notesInstructions');
+        if (inst) inst.innerHTML = `<strong>Instruksi Guru:</strong> ${note.instructions}`;
+        const sc = document.getElementById('notesScript');
+        if (sc) sc.innerText = `"${note.script}"`;
+      }
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    function toggleNotes() {
+      notesOpen = !notesOpen;
+      notesPanel.classList.toggle('open', notesOpen);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        document.exitFullscreen().catch(err => {});
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Audio Synthesizer (Web Audio API)
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.15) {
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e) {}
+    }
+
+
+    // ================= SIMULATOR 1 (SLIDE 2): INTERACTIVE SENSOR ACTION =================
+    let sim2Counter = 0;
+    function triggerSim2Action() {
+      sim2Counter++;
+      playBeep(540 + (sim2Counter % 6) * 55, 'triangle', 0.18);
+      const disp = document.getElementById('sim2DisplayVal');
+      const sub = document.getElementById('sim2SubText');
+      if (disp) {
+        disp.innerText = `⌚ SINYAL #${sim2Counter} AKTIF!`;
+        disp.style.transform = 'scale(1.18)';
+        setTimeout(() => { disp.style.transform = 'scale(1)'; }, 200);
+      }
+      if (sub) {
+        sub.innerText = `Input fisik diterima oleh Scratch -> Output LED & Suara menyala!`;
+      }
+      const st = document.getElementById('sim2Status');
+      if (st) st.innerText = 'Sinyal Terdeteksi!';
+    }
+
+    function resetSim2Action() {
+      sim2Counter = 0;
+      playBeep(330, 'sine', 0.1);
+      const disp = document.getElementById('sim2DisplayVal');
+      if (disp) disp.innerText = `⌚ READY`;
+      const sub = document.getElementById('sim2SubText');
+      if (sub) sub.innerText = 'Klik tombol aksi di bawah untuk mengirim sinyal ke sensor!';
+      const st = document.getElementById('sim2Status');
+      if (st) st.innerText = 'Sensor Siaga';
+    }
+
+    // ================= SIMULATOR 2 (SLIDE 7): PLAYABLE SENSOR GAME =================
+    let gameRunning_33 = false;
+    let gameScore_33 = 0;
+    let gameAppleX_33 = 160;
+    let gameAppleY_33 = -20;
+    let gameBowlX_33 = 160;
+    let gameAnimId_33 = null;
+
+    function startPlayableGame_33() {
+      gameRunning_33 = true;
+      gameScore_33 = 0;
+      const scoreEl = document.getElementById('gameScore_33');
+      if (scoreEl) scoreEl.innerText = '0';
+      const overlay = document.getElementById('gameOverlay_33');
+      if (overlay) overlay.style.display = 'none';
+
+      gameAppleY_33 = -20;
+      gameAppleX_33 = Math.floor(Math.random() * 280) + 20;
+
+      if (gameAnimId_33) cancelAnimationFrame(gameAnimId_33);
+      gameLoop_33();
+    }
+
+    function stopPlayableGame_33() {
+      gameRunning_33 = false;
+      if (gameAnimId_33) cancelAnimationFrame(gameAnimId_33);
+      const overlay = document.getElementById('gameOverlay_33');
+      if (overlay) overlay.style.display = 'flex';
+    }
+
+    function handleGameMouse_33(e) {
+      if (!gameRunning_33) return;
+      const stage = document.getElementById('gameCanvas_33');
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      let mouseX = e.clientX - rect.left;
+      mouseX = Math.max(25, Math.min(rect.width - 25, mouseX));
+      gameBowlX_33 = mouseX;
+
+      const bowlEl = document.getElementById('gameBowl_33');
+      if (bowlEl) bowlEl.style.left = `${gameBowlX_33}px`;
+    }
+
+    function gameLoop_33() {
+      if (!gameRunning_33) return;
+
+      gameAppleY_33 += 4.5;
+      const stage = document.getElementById('gameCanvas_33');
+      const stageH = stage ? stage.clientHeight : 220;
+      const bowlTop = stageH - 35;
+
+      // Collision Check
+      if (gameAppleY_33 >= bowlTop - 20 && gameAppleY_33 <= bowlTop + 15) {
+        if (Math.abs(gameAppleX_33 - gameBowlX_33) < 40) {
+          gameScore_33++;
+          const scoreEl = document.getElementById('gameScore_33');
+          if (scoreEl) scoreEl.innerText = gameScore_33;
+          playBeep(680, 'triangle', 0.15);
+
+          gameAppleY_33 = -25;
+          gameAppleX_33 = Math.floor(Math.random() * (stage.clientWidth - 50)) + 25;
+        }
+      }
+
+      // Missed
+      if (gameAppleY_33 > stageH + 20) {
+        gameAppleY_33 = -25;
+        gameAppleX_33 = Math.floor(Math.random() * (stage.clientWidth - 50)) + 25;
+      }
+
+      const appleEl = document.getElementById('gameApple_33');
+      if (appleEl) {
+        appleEl.style.left = `${gameAppleX_33}px`;
+        appleEl.style.top = `${gameAppleY_33}px`;
+      }
+
+      gameAnimId_33 = requestAnimationFrame(gameLoop_33);
+    }
+
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
