@@ -1515,7 +1515,7 @@
     // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
         goToSlide(currentSlide + 1);
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         goToSlide(currentSlide - 1);
@@ -1523,6 +1523,25 @@
         toggleNotes();
       } else if (e.key === 'f' || e.key === 'F') {
         toggleFullscreen();
+      } else if (e.code === 'Space' || e.key === ' ') {
+        // Tombol Spasi khusus simulator Slide 2 & arcade game Slide 7 (Beeby Jump)
+        const slides = document.querySelectorAll('.slide');
+        const slide2 = slides[1];
+        const slide7 = slides[6];
+        if (slide2 && slide2.classList.contains('active')) {
+          e.preventDefault();
+          triggerSim2Jump();
+        } else if (slide7 && slide7.classList.contains('active')) {
+          e.preventDefault();
+          if (!gameRunning_18) {
+            startPlayableGame_18();
+          } else {
+            triggerGameJump_18();
+          }
+        } else {
+          // Cegah spasi berpindah slide di slide lainnya
+          e.preventDefault();
+        }
       }
     });
 
@@ -1769,17 +1788,6 @@
         }
       }, 25);
     }
-
-    // Keyboard listener SPASI untuk lompat
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' || e.key === ' ') {
-        const slide7 = document.querySelectorAll('.slide')[6];
-        if (slide7 && slide7.classList.contains('active')) {
-          e.preventDefault();
-          triggerGameJump_18();
-        }
-      }
-    });
 
     function gameLoop_18() {
       if (!gameRunning_18) return;

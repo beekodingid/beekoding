@@ -742,17 +742,6 @@ def build_sesi19():
       }
     }
 
-    // Keyboard listener SPASI
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' || e.key === ' ') {
-        const slide7 = document.querySelectorAll('.slide')[6];
-        if (slide7 && slide7.classList.contains('active')) {
-          e.preventDefault();
-          triggerGameFlap_19();
-        }
-      }
-    });
-
     function gameLoop_19() {
       if (!gameRunning_19) return;
 
@@ -1018,7 +1007,7 @@ def build_sesi19():
     // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {{
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {{
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {{
         goToSlide(currentSlide + 1);
       }} else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {{
         goToSlide(currentSlide - 1);
@@ -1026,6 +1015,25 @@ def build_sesi19():
         toggleNotes();
       }} else if (e.key === 'f' || e.key === 'F') {{
         toggleFullscreen();
+      }} else if (e.code === 'Space' || e.key === ' ') {{
+        // Tombol Spasi khusus simulator Slide 2 & arcade game Slide 7 (Flappy Bee)
+        const slides = document.querySelectorAll('.slide');
+        const slide2 = slides[1];
+        const slide7 = slides[6];
+        if (slide2 && slide2.classList.contains('active')) {{
+          e.preventDefault();
+          triggerSim2Flap();
+        }} else if (slide7 && slide7.classList.contains('active')) {{
+          e.preventDefault();
+          if (!gameRunning_19) {{
+            startPlayableGame_19();
+          }} else {{
+            triggerGameFlap_19();
+          }}
+        }} else {{
+          // Cegah spasi berpindah slide di slide lainnya
+          e.preventDefault();
+        }}
       }}
     }});
 
