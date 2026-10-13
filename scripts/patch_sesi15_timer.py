@@ -1,0 +1,1090 @@
+import os
+import sys
+import json
+from pathlib import Path
+
+sys.stdout.reconfigure(encoding='utf-8')
+
+SESI15_HTML_PATH = Path(r"c:\Users\devop\Documents\MyWork\Projects\2026\beekoding\public\slides\sesi-15\index.html")
+
+def build_sesi15():
+    # Read existing styling to keep 100% exact styling
+    existing_html = SESI15_HTML_PATH.read_text(encoding="utf-8")
+    style_start = existing_html.find("<style>")
+    style_end = existing_html.find("</style>") + len("</style>")
+    style_block = existing_html[style_start:style_end]
+
+    notes = [
+        {
+            "title": "Slide 1: Pembukaan & Sambutan Sesi 15",
+            "time": "Menit 00–10 (Total 90 Menit)",
+            "instructions": "Sambut siswa dengan antusiasme timer hitung mundur. Jelaskan bahwa hari ini kita akan membuat game yang menegangkan dengan batas waktu 30 detik!",
+            "script": "Halo para programmer hebat! Selamat datang di Sesi 15! Hari ini kita akan membongkar rahasia baru: Sistem Timer Hitung Mundur 30 Detik dan Alarm Kemenangan! Siapa yang siap merasakan ketegangan batas waktu? Angkat tangannya tinggi-tinggi!"
+        },
+        {
+            "title": "Slide 2: Konsep Dasar & Analogi Jam Pasir",
+            "time": "Menit 10–22",
+            "instructions": "Jelaskan analogi JAM PASIR yang butirannya jatuh satu per satu setiap detik. Demonstrasikan simulator jam pasir interaktif di slide ini.",
+            "script": "Coba perhatikan simulator di layar sebelah kanan! Bayangkan jam pasir: butiran pasirnya jatuh satu per satu setiap satu detik. Di koding, kita punya variabel Waktu yang dimulai dari angka 30, lalu setiap detik berkurang 1 butir (change Waktu by -1) sampai habis di angka 0!"
+        },
+        {
+            "title": "Slide 3: Balok Kunci & Inisialisasi Variabel Waktu",
+            "time": "Menit 22–32",
+            "instructions": "Bimbing siswa membuat variabel baru bernama 'Waktu' di Scratch dan mengatur nilainya ke 30 saat bendera hijau diklik.",
+            "script": "Ayo buka menu Variabel di Scratch kalian! Buat variabel baru bernama Waktu. Setiap kali bendera hijau diklik, kita set Waktu to 30 agar jam pasir kita terisi penuh kembali!"
+        },
+        {
+            "title": "Slide 4: Logika Countdown: repeat until [wait 1 secs -> change Waktu by -1]",
+            "time": "Menit 32–42",
+            "instructions": "Pandu siswa merakit balok repeat until <Waktu = 0> dan meletakkan wait 1 seconds serta change Waktu by (-1) di dalamnya.",
+            "script": "Inilah jantung kode timer kita! Gunakan balok repeat until Waktu = 0. Di dalamnya, kita pasang wait 1 seconds lalu change Waktu by (-1). Jangan sampai lupa wait 1 detiknya ya, agar butiran pasirnya tidak tumpah sekaligus!"
+        },
+        {
+            "title": "Slide 5: Sinyal Waktu Habis & Alarm Kemenangan",
+            "time": "Menit 42–52",
+            "instructions": "Ajak siswa menghubungkan siaran broadcast WaktuHabis dengan efek suara alarm kemenangan dan penghentian permainan.",
+            "script": "Ketika Waktu menyentuh angka 0, loop langsung berhenti dan memancarkan sinyal: broadcast WaktuHabis! Begitu sinyal diterima, game menyalakan alarm kemenangan dan mengunci skor akhir pemain!"
+        },
+        {
+            "title": "Slide 6: Alur Algoritma Jam Pasir & Pemicu Alarm",
+            "time": "Menit 52–62",
+            "instructions": "Jelaskan alur 4 langkah: Set Awal 30 -> Jeda 1 Detik -> Kurangi -1 -> Ulangi sampai 0 -> Alarm Bunyi.",
+            "script": "Mari kita lihat alur kerja jam pasir digital kita: mulai dari 30, detak 1 detik, kurangi 1 angka, cek apakah sudah nol, lalu bunyikan alarm perayaan!"
+        },
+        {
+            "title": "Slide 7: Playable Arcade: Game Tangkap Apel Tantangan 30 Detik",
+            "time": "Menit 62–74",
+            "instructions": "Beri kebebasan siswa mencoba langsung simulator game tangkap apel 30 detik di slide dan bertanding meraih skor tertinggi sebelum alarm berbunyi.",
+            "script": "Waktunya bertanding! Klik bendera hijau dan tangkap apel sebanyak mungkin! Perhatikan timer yang menghitung mundur dari 30 ke 0. Saat waktu habis, dengarkan alarm kemenangannya!"
+        },
+        {
+            "title": "Slide 8: Klinik Dokter Kode: Mengatasi Bug Timer",
+            "time": "Menit 74–82",
+            "instructions": "Bahas 2 kesalahan umum: lupa blok wait 1 detik sehingga waktu habis sekejap mata, dan salah menulis +1 bukannya -1.",
+            "script": "Dokter Kode hadir! Kalau waktu kalian langsung 0 dalam sekejap, periksa apakah kalian lupa memasang wait 1 seconds! Dan pastikan angkanya minus satu (-1) agar berkurang, bukan bertambah!"
+        },
+        {
+            "title": "Slide 9: Rangkuman & Pesta Apresiasi",
+            "time": "Menit 82–87",
+            "instructions": "Ajak siswa menekan tombol konfeti bersama dan merayakan penguasaan sistem timer game arkade.",
+            "script": "Luar biasa! Kalian sudah berhasil membuat game berbatas waktu seperti game arkade sungguhan di mall! Mari kita klik tombol konfeti dan rayakan keberhasilan kita!"
+        },
+        {
+            "title": "Slide 10: Penutup & Teaser Sesi 16",
+            "time": "Menit 87–90",
+            "instructions": "Ingatkan siswa menyimpan file proyek (File -> Save to your computer) dan beri teaser sistem 3 Nyawa Hati di Sesi 16.",
+            "script": "Simpan proyek kalian ke komputer ya! Pekan depan di Sesi 16, kita akan tambahkan sistem 3 Nyawa Hati dan buah beracun! Sampai jumpa, para juara!"
+        }
+    ]
+    notes_json = json.dumps(notes, indent=6, ensure_ascii=False)
+
+    slides_html = """      <!-- ================= SLIDE 1: COVER ================= -->
+      <div class="slide active" data-time="⏱️ Menit ke 00–10">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 15 • Timer &amp; Alarm</div>
+          <div class="badge-time">⏱️ Menit ke 00–10</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Misi Arkade: <span>Sistem Timer Hitung Mundur &amp; Alarm Kemenangan</span>! ⏱️
+            </h1>
+            <p style="color: #cbd5e1; font-size: 15.5px; margin: 12px 0 18px; line-height: 1.55;">
+              Selamat datang di <strong>STAGE 2: SESI 15</strong>! Hari ini kita naik level dengan menguasai <strong>Variabel Waktu 30 Detik, Analogi Jam Pasir, Loop Hitung Mundur, dan Alarm Kemenangan</strong>. Siapkan logikamu untuk menghadirkan ketegangan seru di game arkade kita!
+            </p>
+            <div class="concept-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13.5px; margin-bottom: 6px;">🎯 Misi Utama Hari Ini:</div>
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>⏳ <strong>Konsep &amp; Inti:</strong> Variabel <code>Waktu</code> menghitung mundur dari 30 ke 0</li>
+                <li>⌛ <strong>Analogi Jam Pasir:</strong> Butiran pasir yang jatuh satu per satu setiap detik</li>
+                <li>🧩 <strong>Instruksi / Kode:</strong> <code>repeat until &lt;Waktu = 0&gt; [wait (1) secs ➔ change Waktu by (-1)]</code></li>
+                <li>🚨 <strong>Alarm Kemenangan:</strong> Memancarkan sinyal siaran saat detik ke-0 tercapai!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <img src="beeby-timer.jpg" alt="Sistem Timer Hitung Mundur &amp; Alarm - Beekoding Level 2" class="hero-img" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: KONSEP DASAR & SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 10–22">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Dasar • Analogi Jam Pasir &amp; Variabel Waktu</div>
+          <div class="badge-time">⏱️ Menit ke 10–22</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Analogi Jam Pasir: <span>Menghitung Mundur 30 ke 0</span> ⏳
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Bayangkan sebuah <strong>jam pasir</strong> (hourglass): di awal, tabung atas terisi penuh 30 butiran pasir. Setiap 1 detik berlalu, tepat 1 butir pasir jatuh ke bawah hingga butiran habis di angka 0!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>⏳ <strong>Variabel Waktu:</strong> Menyimpan jumlah butiran detik yang tersisa (mulai dari 30)</li>
+                <li>⏱️ <strong>Detak 1 Detik:</strong> Balok <code>wait (1) secs</code> menahan jeda waktu sebelum butiran berikutnya jatuh</li>
+                <li>➖ <strong>Kurangi 1:</strong> Balok <code>change Waktu by (-1)</code> menurunkan angka (30 ➔ 29 ➔ 28 ... ➔ 0)</li>
+                <li>🚨 <strong>Alarm Berbunyi:</strong> Saat pasir habis (Waktu = 0), Alarm Kemenangan langsung berdering!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <span style="font-weight: 800; font-size: 13px; color: #fbbf24;">⏳ Simulator Jam Pasir: Sesi 15</span>
+                <span id="sim2Status" style="color: #38bdf8; font-size: 12px; font-weight: 700;">Jam Pasir Siaga (30s)</span>
+              </div>
+              <div id="sim2Stage" style="height: 190px; background: #020617; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 12px;">
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
+                  <div id="sim2HourglassIcon" style="font-size: 42px; transition: transform 0.3s;">⏳</div>
+                  <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div id="sim2DisplayVal" style="font-family: 'Fredoka', cursive; font-size: 40px; color: #fbbf24; line-height: 1; font-weight: 800;">
+                      30s
+                    </div>
+                    <div style="font-size: 11px; color: #94a3b8; font-weight: 700; margin-top: 2px;">Variabel WAKTU</div>
+                  </div>
+                </div>
+
+                <!-- Progress Bar Sisa Pasir -->
+                <div style="width: 85%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; border: 1px solid #334155; margin-bottom: 8px;">
+                  <div id="sim2ProgressBar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 0.3s ease;"></div>
+                </div>
+
+                <div id="sim2SubText" style="color: #cbd5e1; font-size: 12px; text-align: center; max-width: 90%;">
+                  Analogi Jam Pasir: butiran jatuh 1 per 1 setiap detik <code>[wait (1) secs ➔ change Waktu by (-1)]</code>
+                </div>
+              </div>
+              <div style="padding: 10px 14px; background: #0f172a; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                <button id="sim2StartBtn" onclick="toggleSim2Timer()" style="background: #f59e0b; border: none; color: #000; font-size: 12px; font-weight: 800; padding: 7px 14px; border-radius: 8px; cursor: pointer;">
+                  ▶️ Mulai Jam Pasir
+                </button>
+                <button onclick="testQuick5sSim2()" style="background: #334155; border: none; color: #fbbf24; font-size: 11px; font-weight: 700; padding: 7px 10px; border-radius: 8px; cursor: pointer;" title="Uji coba 5 detik terakhir">
+                  ⚡ Cek 5s Terakhir
+                </button>
+                <button onclick="resetSim2Timer()" style="background: #1e293b; border: 1px solid #475569; color: #cbd5e1; font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 8px; cursor: pointer;">
+                  🔄 Reset (30s)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: BALOK KUNCI UTAMA ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 22–32">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Balok Kode • Inisialisasi Waktu</div>
+          <div class="badge-time">⏱️ Menit ke 22–32</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Balok Kunci: <span>Inisialisasi Variabel Waktu</span> 🧩
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Sebelum jam pasir dibalik, kita harus memastikan tabung pasir terisi penuh. Di Scratch, kita wajib menyiapkan variabel <strong>Waktu</strong> ke angka <strong>30</strong> setiap kali bendera hijau diklik!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🚩 <strong>when ⚑ clicked:</strong> Memicu dimulainya ronde baru</li>
+                <li>🟠 <strong>set [Waktu] to (30):</strong> Mengisi tabung jam pasir penuh 30 detik</li>
+                <li>🟠 <strong>set [Skor] to (0):</strong> Mengatur ulang skor tangkapan pemain ke nol</li>
+                <li>👁️ <strong>show variable [Waktu]:</strong> Menampilkan papan waktu di pojok panggung</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block event">
+                when 🏴 clicked
+              </div>
+              <div class="scratch-block variable">
+                set <span class="block-input">Waktu ▾</span> to <span class="block-input">30</span>
+              </div>
+              <div class="scratch-block variable">
+                set <span class="block-input">Skor ▾</span> to <span class="block-input">0</span>
+              </div>
+              <div class="scratch-block looks">
+                show variable <span class="block-input">Waktu ▾</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: LOGIKA KONDISI & KEPUTUSAN ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 32–42">
+        <div class="slide-header">
+          <div class="badge-session">Mekanik Inti • Perulangan Hitung Mundur</div>
+          <div class="badge-time">⏱️ Menit ke 32–42</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Detak Jam Pasir: <span>repeat until [wait 1 secs ➔ -1]</span> ⚡
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Inilah instruksi utama sistem hitung mundur: kita mengulangi pengurangan waktu sebesar <code>-1</code> setiap jeda <code>1 detik</code> sampai nilai <code>Waktu = 0</code>!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🔁 <strong>repeat until &lt;Waktu = 0&gt;:</strong> Mengulang perintah hingga pasir habis</li>
+                <li>⏱️ <strong>wait (1) seconds:</strong> Memberi jeda tepat 1 detik per butiran pasir</li>
+                <li>➖ <strong>change [Waktu] by (-1):</strong> Menurunkan nilai waktu 1 per 1</li>
+                <li>📢 <strong>broadcast [WaktuHabis]:</strong> Memancarkan sinyal saat angka menyentuh 0!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block-c">
+                repeat until <span class="scratch-inline-operator"><span class="scratch-inline-variable">Waktu</span> = <span class="block-input">0</span></span>
+                <div class="scratch-c-indent">
+                  <div class="scratch-block control">
+                    wait <span class="block-input">1</span> seconds
+                  </div>
+                  <div class="scratch-block variable">
+                    change <span class="block-input">Waktu ▾</span> by <span class="block-input">-1</span>
+                  </div>
+                </div>
+              </div>
+              <div class="scratch-block event" style="background:#ffab19; color:#fff;">
+                broadcast <span class="block-input">WaktuHabis ▾</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: SINYAL BROADCAST & RESPON ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 42–52">
+        <div class="slide-header">
+          <div class="badge-session">Alarm Kemenangan • Penerima Broadcast WaktuHabis</div>
+          <div class="badge-time">⏱️ Menit ke 42–52</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Alarm Kemenangan: <span>Respons Sinyal WaktuHabis</span> 📢
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Begitu loop hitung mundur selesai di detik ke-0, pesan <code>WaktuHabis</code> terpancar! Sprite panggung langsung membunyikan alarm kemenangan dan mengumumkan skor akhir!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>📻 <strong>when I receive [WaktuHabis]:</strong> Menerima sinyal alarm secara serentak</li>
+                <li>🔔 <strong>start sound [AlarmKemenangan]:</strong> Membunyikan melodi perayaan meriah</li>
+                <li>🖼️ <strong>switch backdrop to [LayarHasil]:</strong> Menampilkan banner selamat</li>
+                <li>🛑 <strong>stop [all]:</strong> Menghentikan jatuhnya apel dan mengunci skor pemain</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block event">
+                when I receive <span class="block-input">WaktuHabis ▾</span>
+              </div>
+              <div class="scratch-block sound">
+                start sound <span class="block-input">AlarmKemenangan ▾</span>
+              </div>
+              <div class="scratch-block looks">
+                switch backdrop to <span class="block-input">LayarHasil ▾</span>
+              </div>
+              <div class="scratch-block looks">
+                say <span class="block-input">"Waktu Habis! Kamu Hebat!"</span> for <span class="block-input">3</span> secs
+              </div>
+              <div class="scratch-block control">
+                stop <span class="block-input">all ▾</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: ALUR INSTRUKSI LENGKAP ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 52–62">
+        <div class="slide-header">
+          <div class="badge-session">Algoritma Game • Alur Kerja Sistem Timer</div>
+          <div class="badge-time">⏱️ Menit ke 52–62</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Alur Algoritma: <span>Dari 30 Detik ke Alarm Kemenangan</span> 🗺️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Mari rangkai 4 tahapan alur pikir sistem timer hitung mundur ini agar kode kita rapi dan mudah dipahami:
+            </p>
+            <div class="concept-card">
+              <ol style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.7;">
+                <li>1️⃣ <strong>Inisialisasi:</strong> Bendera Hijau diklik ➔ <code>set Waktu to 30</code> &amp; <code>set Skor to 0</code></li>
+                <li>2️⃣ <strong>Detak Jam Pasir:</strong> Tunggu 1 detik ➔ kurangi <code>Waktu</code> sebesar -1</li>
+                <li>3️⃣ <strong>Pengecekan Syarat:</strong> Apakah <code>Waktu = 0</code>? Jika belum, ulangi langkah 2</li>
+                <li>4️⃣ <strong>Pemicu Alarm:</strong> Jika sudah 0 ➔ <code>broadcast WaktuHabis</code> &amp; bunyikan Alarm Kemenangan!</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: #090d16; border: 2px solid #f59e0b; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
+              <div style="font-size: 42px; margin-bottom: 8px;">⏳ ➔ ⏱️ ➔ 🚨</div>
+              <h4 style="color: #fbbf24; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Arsitektur Timer Sesi 15</h4>
+              <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Perpaduan variabel dinamis, loop bersyarat, dan alarm siaran universal!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: PLAYABLE SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 62–74">
+        <div class="slide-header">
+          <div class="badge-session">Playable Arcade • Tantangan Tangkap Apel 30 Detik</div>
+          <div class="badge-time">⏱️ Menit ke 62–74</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tantangan Nyata: <span>Tangkap Apel 30 Detik</span>! 🎮
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Waktunya menguji nyali! Klik bendera hijau dan tangkap apel sebanyak mungkin sebelum <strong>Waktu 30 Detik</strong> habis dan <strong>Alarm Kemenangan</strong> berbunyi!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🚩 <strong>Klik Bendera Hijau:</strong> Memulai game sekaligus membalik jam pasir 30 detik</li>
+                <li>🖱️ <strong>Gerakkan Mouse:</strong> Geser mangkuk penangkap ke kiri dan kanan</li>
+                <li>⏱️ <strong>Pantau Waktu:</strong> Angka menghitung mundur (30s ➔ 0s) dengan detak jarum jam!</li>
+                <li>🚨 <strong>Alarm Kemenangan:</strong> Di detik ke-0, alarm berbunyi dan skor akhir ditampilkan!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <div class="sim-btns">
+                  <button class="btn-green-flag" onclick="startPlayableGame_15()" title="Mulai Game &amp; Timer 30 Detik">🚩</button>
+                  <button class="btn-red-stop" onclick="stopPlayableGame_15()" title="Hentikan Game">🛑</button>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <div id="simTimerBadge_15" style="background: #090d16; border: 1px solid #f59e0b; color: #fbbf24; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; font-family: 'Fredoka', cursive; transition: all 0.2s;">
+                    ⏱️ WAKTU: <span id="gameTimer_15">30</span>s
+                  </div>
+                  <div class="sim-score-badge">
+                    🍎 SKOR: <span id="gameScore_15">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="gameCanvas_15" class="sim-canvas" onmousemove="handleGameMouse_15(event)">
+                <!-- Overlay Mulai -->
+                <div id="gameOverlay_15" style="position: absolute; inset: 0; background: rgba(0,0,0,0.78); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20; padding: 16px; text-align: center;">
+                  <span style="font-size: 36px; margin-bottom: 6px;">⏱️🍎</span>
+                  <span style="font-size: 14px; font-weight: 800; color: #fbbf24;">Tantangan Arkade: Timer 30 Detik!</span>
+                  <span style="font-size: 11.5px; color: #94a3b8; margin: 4px 0 12px;">Tangkap apel sebanyak mungkin sebelum jam pasir habis di detik ke-0!</span>
+                  <button onclick="startPlayableGame_15()" style="background: #10b981; border: none; color: #000; font-family: 'Fredoka', cursive; font-size: 13px; font-weight: 700; padding: 7px 18px; border-radius: 999px; cursor: pointer;">
+                    🚩 Mulai Sekarang (30 Detik)
+                  </button>
+                </div>
+
+                <!-- Overlay Layar Hasil / Alarm Kemenangan -->
+                <div id="gameOverScreen_15" style="position: absolute; inset: 0; background: rgba(15, 23, 42, 0.94); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 25; padding: 16px; text-align: center;">
+                  <span style="font-size: 40px; margin-bottom: 4px;">⏰🎉</span>
+                  <span style="font-size: 16px; font-weight: 800; color: #fbbf24;">WAKTU HABIS! ALARM BERBUNYI!</span>
+                  <span style="font-size: 13px; color: #38bdf8; margin-top: 4px;">Skor Akhir Kamu: <strong id="finalScoreVal_15" style="font-size: 20px; color: #fff;">0</strong> Apel!</span>
+                  <button onclick="startPlayableGame_15()" style="margin-top: 12px; background: #f59e0b; border: none; color: #000; font-family: 'Fredoka', cursive; font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 999px; cursor: pointer;">
+                    🔄 Main Ulang (30 Detik)
+                  </button>
+                </div>
+
+                <div id="gameApple_15" style="position: absolute; font-size: 26px; transform: translate(-50%, -50%); top: -30px; left: 160px; pointer-events: none;">🍎</div>
+                <div id="gameBowl_15" style="position: absolute; font-size: 30px; transform: translate(-50%, -50%); bottom: 10px; left: 160px; pointer-events: none;">🥣</div>
+              </div>
+
+              <div style="background: #0f172a; padding: 6px 14px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1e293b; font-size: 11px; color: #94a3b8;">
+                <span>Mekanik: <strong style="color: #38bdf8;">⏱️ Countdown 30s ➔ 0s &amp; Alarm Kemenangan</strong></span>
+                <span id="gameLiveStatus_15" style="color: #10b981;">● Siap Dimainkan</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: DOKTER KODE ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 74–82">
+        <div class="slide-header">
+          <div class="badge-session">Klinik Debugging • Mengatasi Bug Timer</div>
+          <div class="badge-time">⏱️ Menit ke 74–82</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Dokter Kode: <span>Menangani Kesalahan Timer</span> 🐛
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Saat merakit timer hitung mundur, ada 2 jebakan bug yang sering dialami programmer. Yuk pelajari perbandingannya agar kodemu bekerja sempurna:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>⏳ Selalu sertakan <code>wait 1 seconds</code> agar waktu tidak habis sekejap mata</li>
+                <li>➖ Gunakan angka negatif <code>-1</code> agar waktu berkurang, bukan bertambah</li>
+                <li>🎯 Pastikan syarat perhentian tepat di <code>Waktu = 0</code></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+              <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #ef4444; font-weight: 800; font-size: 13px; margin-bottom: 4px;">❌ KODE SALAH: Lupa Balok Wait 1 Detik</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px; line-height: 1.45;">
+                  repeat until &lt;Waktu = 0&gt;<br>
+                  &nbsp;&nbsp;change [Waktu ▾] by (-1)<br>
+                  <span style="color: #f87171;">⚠️ Tanpa wait 1 detik, komputer menghitung begitu cepat sehingga Waktu langsung 0 dalam 0.05 detik!</span>
+                </div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #10b981; font-weight: 800; font-size: 13px; margin-bottom: 4px;">✅ KODE BENAR: Detak Teratur Seperti Jam Pasir</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px; line-height: 1.45;">
+                  repeat until &lt;Waktu = 0&gt;<br>
+                  &nbsp;&nbsp;<span style="color: #34d399; font-weight: 700;">wait (1) seconds</span>  ➔ Jeda tepat 1 detik!<br>
+                  &nbsp;&nbsp;<span style="color: #34d399; font-weight: 700;">change [Waktu ▾] by (-1)</span> ✅
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 82–87">
+        <div class="slide-header">
+          <div class="badge-session">Review Pemahaman • Sukses Sesi 15</div>
+          <div class="badge-time">⏱️ Menit ke 82–87</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Programmer Hebat! <span>Review Kunci Hari Ini</span> 🌟
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Selamat! Kamu telah menguasai sistem hitung mundur dan alarm kemenangan seperti game profesional. Mari kita ingat 3 kunci penting hari ini:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>1️⃣ <strong>Konsep Inti:</strong> Variabel <code>Waktu</code> menghitung mundur dari 30 ke 0</li>
+                <li>2️⃣ <strong>Instruksi Kode:</strong> <code>repeat until [wait (1) secs ➔ change Waktu by (-1)]</code></li>
+                <li>3️⃣ <strong>Analogi Jam Pasir:</strong> Butiran waktu jatuh teratur satu per satu setiap detik</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 16px; padding: 24px; text-align: center; width: 100%;">
+              <div style="font-size: 48px; margin-bottom: 10px;">🏆 ⏱️</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Kerja Keras Terbayar!</h3>
+              <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.5;">Kamu resmi menguasai modul Timer Hitung Mundur &amp; Alarm Kemenangan di Beekoding Academy!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 14px; background: #000; color: #fbbf24; border: 1px solid #fbbf24; padding: 10px 20px; border-radius: 999px; font-weight: 800; cursor: pointer; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🎊 Rayakan Keberhasilan (Klik Confetti)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 87–90">
+        <div class="slide-header">
+          <div class="badge-session">Teaser Sesi Berikutnya • Terus Berkembang</div>
+          <div class="badge-time">⏱️ Menit ke 87–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Petualangan Berlanjut: <span>Menuju Sesi 16</span>! 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Game arkade buatanmu semakin menegangkan dan seru dimainkan! Jangan lupa simpan file proyek Scratch (.sb3) di laptopmu hari ini.
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>💾 Klik <code>File ➔ Save to your computer</code> di Scratch Studio</li>
+                <li>❤️ <strong>Sesi 16:</strong> Menambahkan 3 Hati Kehidupan (Health Hearts) &amp; Apel Beracun</li>
+                <li>👏 Berikan tepuk tangan meriah untuk seluruh teman di kelas!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 26px; text-align: center; width: 100%;">
+              <div style="font-size: 52px; margin-bottom: 10px;">🌟❤️</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Sampai Jumpa di Sesi 16!</h3>
+              <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">Tetap semangat bereksplorasi dan berkreasi membuat game impian bersama Beekoding Academy!</p>
+            </div>
+          </div>
+        </div>
+      </div>"""
+
+    sim_js = """
+    // ================= AUDIO HELPER (CLOCK TICK & ALARM FANFARE) =================
+    function playClockTick(freq = 700) {
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.05);
+      } catch(e) {}
+    }
+
+    function playAlarmVictory() {
+      try {
+        const ctx = getAudioCtx();
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            try {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, ctx.currentTime);
+              gain.gain.setValueAtTime(0.22, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.28);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.3);
+            } catch(e) {}
+          }, idx * 100);
+        });
+      } catch(e) {}
+    }
+
+    // ================= SIMULATOR 1 (SLIDE 2): INTERACTIVE HOURGLASS & COUNTDOWN =================
+    let sim2TimerVal = 30;
+    let sim2IntervalId = null;
+    let sim2Running = false;
+
+    function updateSim2UI() {
+      const disp = document.getElementById('sim2DisplayVal');
+      const bar = document.getElementById('sim2ProgressBar');
+      const icon = document.getElementById('sim2HourglassIcon');
+      const st = document.getElementById('sim2Status');
+      const sub = document.getElementById('sim2SubText');
+
+      if (disp) {
+        disp.innerText = `${sim2TimerVal}s`;
+        if (sim2TimerVal <= 5 && sim2TimerVal > 0) {
+          disp.style.color = '#ef4444';
+          disp.style.transform = 'scale(1.15)';
+        } else if (sim2TimerVal === 0) {
+          disp.style.color = '#10b981';
+          disp.style.transform = 'scale(1)';
+        } else {
+          disp.style.color = '#fbbf24';
+          disp.style.transform = 'scale(1)';
+        }
+      }
+
+      if (bar) {
+        const pct = Math.max(0, Math.min(100, (sim2TimerVal / 30) * 100));
+        bar.style.width = `${pct}%`;
+        bar.style.background = sim2TimerVal <= 5 ? '#ef4444' : 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+      }
+
+      if (icon) {
+        icon.style.transform = sim2Running ? (sim2TimerVal % 2 === 0 ? 'rotate(10deg)' : 'rotate(-10deg)') : 'rotate(0deg)';
+      }
+    }
+
+    function toggleSim2Timer() {
+      const btn = document.getElementById('sim2StartBtn');
+      const st = document.getElementById('sim2Status');
+      const sub = document.getElementById('sim2SubText');
+
+      if (sim2Running) {
+        // Pause
+        clearInterval(sim2IntervalId);
+        sim2Running = false;
+        if (btn) btn.innerText = '▶️ Lanjutkan Jam Pasir';
+        if (st) st.innerText = 'Jam Pasir Dijeda';
+      } else {
+        if (sim2TimerVal <= 0) sim2TimerVal = 30;
+        sim2Running = true;
+        if (btn) btn.innerText = '⏸️ Jeda Jam Pasir';
+        if (st) st.innerText = '⏳ Menghitung Mundur...';
+        if (sub) sub.innerText = 'Butiran jatuh satu per satu: [wait (1) secs ➔ change Waktu by (-1)]';
+
+        updateSim2UI();
+        playClockTick(750);
+
+        sim2IntervalId = setInterval(() => {
+          if (sim2TimerVal > 0) {
+            sim2TimerVal--;
+            playClockTick(sim2TimerVal <= 5 ? 900 : 700);
+            updateSim2UI();
+
+            if (sim2TimerVal === 0) {
+              clearInterval(sim2IntervalId);
+              sim2Running = false;
+              if (btn) btn.innerText = '▶️ Mulai Jam Pasir';
+              if (st) {
+                st.innerText = '🚨 WAKTU HABIS! Alarm Kemenangan!';
+                st.style.color = '#10b981';
+              }
+              if (sub) {
+                sub.innerHTML = '<strong style="color: #fbbf24;">🎉 Pasir Habis! broadcast [WaktuHabis] terpancar &amp; Alarm Kemenangan berbunyi!</strong>';
+              }
+              playAlarmVictory();
+              triggerConfetti();
+            }
+          }
+        }, 1000);
+      }
+    }
+
+    function testQuick5sSim2() {
+      clearInterval(sim2IntervalId);
+      sim2Running = false;
+      sim2TimerVal = 5;
+      updateSim2UI();
+      const sub = document.getElementById('sim2SubText');
+      if (sub) sub.innerText = 'Menguji 5 detik terakhir menuju alarm kemenangan...';
+      toggleSim2Timer();
+    }
+
+    function resetSim2Timer() {
+      clearInterval(sim2IntervalId);
+      sim2Running = false;
+      sim2TimerVal = 30;
+      updateSim2UI();
+      const btn = document.getElementById('sim2StartBtn');
+      if (btn) btn.innerText = '▶️ Mulai Jam Pasir';
+      const st = document.getElementById('sim2Status');
+      if (st) {
+        st.innerText = 'Jam Pasir Siaga (30s)';
+        st.style.color = '#38bdf8';
+      }
+      const sub = document.getElementById('sim2SubText');
+      if (sub) sub.innerText = 'Analogi Jam Pasir: butiran jatuh 1 per 1 setiap detik [wait (1) secs ➔ change Waktu by (-1)]';
+    }
+
+    // ================= SIMULATOR 2 (SLIDE 7): PLAYABLE CANVAS GAME DENGAN TIMER 30 DETIK REAL =================
+    let gameRunning_15 = false;
+    let gameScore_15 = 0;
+    let gameTimer_15 = 30;
+    let gameTimerInterval_15 = null;
+    let gameAppleX_15 = 160;
+    let gameAppleY_15 = -20;
+    let gameBowlX_15 = 160;
+    let gameAnimId_15 = null;
+
+    function updateGameTimerUI() {
+      const timerEl = document.getElementById('gameTimer_15');
+      const badgeEl = document.getElementById('simTimerBadge_15');
+      if (timerEl) {
+        timerEl.innerText = gameTimer_15;
+      }
+      if (badgeEl) {
+        if (gameTimer_15 <= 5 && gameTimer_15 > 0) {
+          badgeEl.style.borderColor = '#ef4444';
+          badgeEl.style.color = '#ef4444';
+          badgeEl.style.transform = 'scale(1.08)';
+        } else {
+          badgeEl.style.borderColor = '#f59e0b';
+          badgeEl.style.color = '#fbbf24';
+          badgeEl.style.transform = 'scale(1)';
+        }
+      }
+    }
+
+    function startPlayableGame_15() {
+      gameRunning_15 = true;
+      gameScore_15 = 0;
+      gameTimer_15 = 30;
+
+      const scoreEl = document.getElementById('gameScore_15');
+      if (scoreEl) scoreEl.innerText = '0';
+      updateGameTimerUI();
+
+      const overlay = document.getElementById('gameOverlay_15');
+      if (overlay) overlay.style.display = 'none';
+
+      const overScreen = document.getElementById('gameOverScreen_15');
+      if (overScreen) overScreen.style.display = 'none';
+
+      const liveSt = document.getElementById('gameLiveStatus_15');
+      if (liveSt) {
+        liveSt.innerText = '● Bertanding! Waktu Berjalan';
+        liveSt.style.color = '#f59e0b';
+      }
+
+      gameAppleY_15 = -20;
+      gameAppleX_15 = Math.floor(Math.random() * 280) + 20;
+
+      if (gameAnimId_15) cancelAnimationFrame(gameAnimId_15);
+      gameLoop_15();
+
+      if (gameTimerInterval_15) clearInterval(gameTimerInterval_15);
+      gameTimerInterval_15 = setInterval(() => {
+        if (!gameRunning_15) return;
+        if (gameTimer_15 > 0) {
+          gameTimer_15--;
+          updateGameTimerUI();
+          playClockTick(gameTimer_15 <= 5 ? 880 : 660);
+
+          if (gameTimer_15 === 0) {
+            // Waktu Habis -> Trigger Alarm Kemenangan
+            finishGameDueToTimeout_15();
+          }
+        }
+      }, 1000);
+    }
+
+    function finishGameDueToTimeout_15() {
+      gameRunning_15 = false;
+      if (gameTimerInterval_15) clearInterval(gameTimerInterval_15);
+      if (gameAnimId_15) cancelAnimationFrame(gameAnimId_15);
+
+      updateGameTimerUI();
+
+      const finalScoreEl = document.getElementById('finalScoreVal_15');
+      if (finalScoreEl) finalScoreEl.innerText = gameScore_15;
+
+      const overScreen = document.getElementById('gameOverScreen_15');
+      if (overScreen) overScreen.style.display = 'flex';
+
+      const liveSt = document.getElementById('gameLiveStatus_15');
+      if (liveSt) {
+        liveSt.innerText = '● Waktu Habis - Alarm Kemenangan!';
+        liveSt.style.color = '#10b981';
+      }
+
+      playAlarmVictory();
+      triggerConfetti();
+    }
+
+    function stopPlayableGame_15() {
+      gameRunning_15 = false;
+      if (gameTimerInterval_15) clearInterval(gameTimerInterval_15);
+      if (gameAnimId_15) cancelAnimationFrame(gameAnimId_15);
+
+      const overlay = document.getElementById('gameOverlay_15');
+      if (overlay) overlay.style.display = 'flex';
+
+      const overScreen = document.getElementById('gameOverScreen_15');
+      if (overScreen) overScreen.style.display = 'none';
+
+      const liveSt = document.getElementById('gameLiveStatus_15');
+      if (liveSt) {
+        liveSt.innerText = '● Permainan Dihentikan';
+        liveSt.style.color = '#94a3b8';
+      }
+    }
+
+    function handleGameMouse_15(e) {
+      if (!gameRunning_15) return;
+      const stage = document.getElementById('gameCanvas_15');
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      let mouseX = e.clientX - rect.left;
+      mouseX = Math.max(25, Math.min(rect.width - 25, mouseX));
+      gameBowlX_15 = mouseX;
+
+      const bowlEl = document.getElementById('gameBowl_15');
+      if (bowlEl) bowlEl.style.left = `${gameBowlX_15}px`;
+    }
+
+    function gameLoop_15() {
+      if (!gameRunning_15) return;
+
+      gameAppleY_15 += 4.5;
+      const stage = document.getElementById('gameCanvas_15');
+      const stageH = stage ? stage.clientHeight : 220;
+      const bowlTop = stageH - 35;
+
+      // Collision Check
+      if (gameAppleY_15 >= bowlTop - 20 && gameAppleY_15 <= bowlTop + 15) {
+        if (Math.abs(gameAppleX_15 - gameBowlX_15) < 40) {
+          // Caught!
+          gameScore_15++;
+          const scoreEl = document.getElementById('gameScore_15');
+          if (scoreEl) scoreEl.innerText = gameScore_15;
+          playBeep(660, 'triangle', 0.15);
+
+          // Reset apple to top
+          gameAppleY_15 = -25;
+          gameAppleX_15 = Math.floor(Math.random() * (stage.clientWidth - 50)) + 25;
+        }
+      }
+
+      // Missed bottom
+      if (gameAppleY_15 > stageH + 20) {
+        gameAppleY_15 = -25;
+        gameAppleX_15 = Math.floor(Math.random() * (stage.clientWidth - 50)) + 25;
+      }
+
+      const appleEl = document.getElementById('gameApple_15');
+      if (appleEl) {
+        appleEl.style.left = `${gameAppleX_15}px`;
+        appleEl.style.top = `${gameAppleY_15}px`;
+      }
+
+      gameAnimId_15 = requestAnimationFrame(gameLoop_15);
+    }
+    """
+
+    full_html = f"""<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 15 - Sistem Timer Hitung Mundur &amp; Alarm Kemenangan | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  {style_block}
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      <a href="/" class="brand-link" title="Kembali ke Beranda Beekoding">
+        <div class="brand-logo-wrap">
+          <div class="brand-logo-box">
+            <div class="brand-logo-inner">
+              <img src="/beekoding-logo.png" alt="Beekoding Logo" class="brand-logo-img" />
+            </div>
+          </div>
+          <span class="brand-sparkle-ping">
+            <span class="ping-ring"></span>
+            <span class="ping-dot"></span>
+          </span>
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title">Bee<span class="accent">koding</span></span>
+          <span class="brand-subtitle">Platform Edukasi Koding &amp; AI</span>
+        </div>
+      </a>
+      <span class="brand-stage-badge">STAGE 2: SESI 15</span>
+    </div>
+
+    <div class="toolbar-actions">
+      <a href="/slides/index.html" class="btn-nav-sesi" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800;" title="Buka Portal Semua Sesi &amp; Stage">🗂️ Semua Sesi</a>
+      <a href="/slides/sesi-14/index.html" class="btn-nav-sesi">⏪ Sesi 14</a>
+      <a href="/slides/sesi-16/index.html" class="btn-nav-sesi">Sesi 16 ⏩</a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage Presentation -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+
+{slides_html}
+
+      </div><!-- .slide-canvas -->
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+
+      <!-- Teacher Notes Drawer Panel -->
+      <div id="teacherNotesPanel" class="teacher-notes-panel">
+        <div class="notes-header">
+          <div class="notes-title">
+            <span>📝 CATATAN GURU &amp; PANDUAN MENGAJAR</span>
+            <span id="notesBadge" style="font-size: 11px; color: #94a3b8; font-weight: 600;">(Slide 1 dari 10)</span>
+          </div>
+          <button class="notes-close" onclick="toggleNotes()">✕</button>
+        </div>
+        <div class="notes-content">
+          <div id="notesInstructions" style="color: #94a3b8; margin-bottom: 6px;"></div>
+          <div id="notesScript" class="notes-script"></div>
+        </div>
+      </div>
+
+    </div><!-- .slide-viewport -->
+  </div><!-- .stage-wrapper -->
+
+  <script>
+    // Speaker Notes Data
+    const notesData = {notes_json};
+
+    let currentSlide = 1;
+    const totalSlides = 10;
+    let notesOpen = false;
+
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    const progressDots = document.getElementById('progressDots');
+    const notesPanel = document.getElementById('teacherNotesPanel');
+
+    // Create progress dots
+    progressDots.innerHTML = '';
+    for (let i = 1; i <= totalSlides; i++) {{
+      const dot = document.createElement('div');
+      dot.className = `dot ${{i === 1 ? 'active' : ''}}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      progressDots.appendChild(dot);
+    }}
+
+    const dots = document.querySelectorAll('.dot');
+
+    // Slide Navigation
+    function goToSlide(n) {{
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      updateSlide();
+    }}
+
+    function updateSlide() {{
+      slides.forEach((sl, idx) => {{
+        sl.classList.toggle('active', idx + 1 === currentSlide);
+      }});
+
+      dots.forEach((dot, idx) => {{
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      }});
+
+      if (slideCounter) {{
+        slideCounter.textContent = `Slide ${{currentSlide}} / ${{totalSlides}}`;
+      }}
+      if (prevBtn) prevBtn.disabled = currentSlide === 1;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update teacher notes
+      const note = notesData[currentSlide - 1];
+      if (note) {{
+        const b = document.getElementById('notesBadge');
+        if (b) b.innerText = `Slide ${{currentSlide}} • ${{note.time}}`;
+        const inst = document.getElementById('notesInstructions');
+        if (inst) inst.innerHTML = `<strong>Instruksi Guru:</strong> ${{note.instructions}}`;
+        const sc = document.getElementById('notesScript');
+        if (sc) sc.innerText = `"${{note.script}}"`;
+      }}
+    }}
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    function toggleNotes() {{
+      notesOpen = !notesOpen;
+      notesPanel.classList.toggle('open', notesOpen);
+    }}
+
+    function toggleFullscreen() {{
+      if (!document.fullscreenElement) {{
+        document.documentElement.requestFullscreen().catch(err => {{}});
+      }} else {{
+        document.exitFullscreen().catch(err => {{}});
+      }}
+    }}
+
+    function triggerConfetti() {{
+      if (typeof confetti === 'function') {{
+        confetti({{
+          particleCount: 100,
+          spread: 80,
+          origin: {{ y: 0.6 }}
+        }});
+      }}
+    }}
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {{
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {{
+        goToSlide(currentSlide + 1);
+      }} else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {{
+        goToSlide(currentSlide - 1);
+      }} else if (e.key === 'n' || e.key === 'N') {{
+        toggleNotes();
+      }} else if (e.key === 'f' || e.key === 'F') {{
+        toggleFullscreen();
+      }}
+    }});
+
+    // Audio Synthesizer (Web Audio API)
+    let audioCtx = null;
+    function getAudioCtx() {{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }}
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.15) {{
+      try {{
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      }} catch(e) {{}}
+    }}
+
+{sim_js}
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
+"""
+
+    SESI15_HTML_PATH.write_text(full_html, encoding="utf-8")
+    open_div = full_html.count("<div")
+    close_div = full_html.count("</div>")
+    print(f"[OK] Sesi 15 updated. Open div: {open_div}, Close div: {close_div}, Diff: {open_div - close_div}")
+
+if __name__ == "__main__":
+    build_sesi15()
