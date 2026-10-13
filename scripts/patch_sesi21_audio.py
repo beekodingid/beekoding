@@ -1,0 +1,1141 @@
+import os
+import sys
+import json
+import shutil
+from pathlib import Path
+
+sys.stdout.reconfigure(encoding='utf-8')
+
+ARTIFACT_DIR = Path(r"C:\Users\devop\.gemini\antigravity\brain\645a5bda-8de7-4b62-a0d1-1f8ba42f03f5")
+SESI21_DIR = Path(r"c:\Users\devop\Documents\MyWork\Projects\2026\beekoding\public\slides\sesi-21")
+SESI21_HTML_PATH = SESI21_DIR / "index.html"
+
+def build_sesi21():
+    # Copy 3D Audio hero image as beeby-audio.jpg
+    src_img = ARTIFACT_DIR / "beeby_audio_3d_1791853479681.jpg"
+    dest_img = SESI21_DIR / "beeby-audio.jpg"
+    if src_img.exists():
+        shutil.copy2(src_img, dest_img)
+        print(f"[OK] Copied {src_img.name} to {dest_img.name}")
+
+    # Read existing styling to keep 100% exact styling
+    existing_html = SESI21_HTML_PATH.read_text(encoding="utf-8")
+    style_start = existing_html.find("<style>")
+    style_end = existing_html.find("</style>") + len("</style>")
+    style_block = existing_html[style_start:style_end]
+
+    notes = [
+        {
+            "title": "Slide 1: Pembukaan & Sambutan Sesi 21",
+            "time": "Menit 00–10 (Total 90 Menit)",
+            "instructions": "Sambut siswa dengan antusiasme mempelajari rahasia audio game profesional: Musik Latar (BGM Loop) dan Tombol Mute! Tunjukkan ilustrasi 3D Beeby mengenakan headphone DJ keren.",
+            "script": "Halo para Sound Engineer & Game Creator! Selamat datang di Sesi 21! Pernahkah kalian bermain game yang sepi tanpa suara? Pasti membosankan, bukan? Tapi bagaimana kalau suaranya terlalu kencang dan adik kalian sedang tidur? Hari ini kita akan belajar merakit Efek Suara Latar Dinamis dan Tombol Mute agar pemain merasa nyaman!"
+        },
+        {
+            "title": "Slide 2: Konsep Dasar & Simulator Live Audio Controller",
+            "time": "Menit 10–22",
+            "instructions": "Jelaskan 2 komponen utama: BGM (Background Music) yang berputar berulang-ulang tanpa putus, dan Tombol Mute yang memberi kebebasan pemain mematikan/menyalakan suara. Demonstrasikan simulator di kanan.",
+            "script": "Perhatikan simulator di sebelah kanan! Kita punya melodi latar yang menyenangkan. Saat tombol Mute kita klik, ikonnya berubah dari speaker bersuara menjadi speaker tanda silang, dan seketika semua audio hening! Ini adalah fondasi penting User Experience (UX)!"
+        },
+        {
+            "title": "Slide 3: Balok Kunci: Loop Musik Latar (BGM)",
+            "time": "Menit 22–32",
+            "instructions": "Bimbing siswa memprogram BGM di panggung menggunakan balok forever [play sound until done]. Tekankan kata 'until done'.",
+            "script": "Untuk memutar musik latar tanpa henti, kita gunakan loop forever dan balok play sound UNTIL DONE! Komputer akan memainkan musik dari awal sampai selesai, lalu otomatis mengulanginya kembali dari detik pertama. Musik jadi mengalir mulus tanpa tumpang tindih!"
+        },
+        {
+            "title": "Slide 4: Logika Tombol Mute: Ganti Kostum & Atur Volume",
+            "time": "Menit 32–42",
+            "instructions": "Pandu siswa merakit logika pada sprite tombol mute: when this sprite clicked -> cek kondisi volume / status -> ganti kostum ke Mute/SoundOn dan set volume to 0% atau 100%.",
+            "script": "Sekarang kita buat tombolnya! Kita berikan dua kostum: SoundOn dan SoundMute. Setiap kali tombol ini diklik pemain, kita cek: jika suara sedang aktif, ubah volume menjadi 0% dan ganti kostum ke bisu. Jika sedang bisu, kembalikan volume ke 100%! Sangat cerdas dan rapi!"
+        },
+        {
+            "title": "Slide 5: Desain UX (User Experience) dalam Game",
+            "time": "Menit 42–52",
+            "instructions": "Jelaskan filosofi UX (Pengalaman Pengguna): mengapa seorang programmer yang hebat harus memiliki empati terhadap situasi pemain.",
+            "script": "Di dunia teknologi, ini disebut UX atau User Experience! Pembuat game hebat selalu peduli pada kenyamanan pemain. Ada pemain yang suka suara kencang, tapi ada juga yang bermain di perpustakaan atau malam hari. Tombol mute memberikan kontrol penuh ke tangan pengguna!"
+        },
+        {
+            "title": "Slide 6: Alur Algoritma Manajemen Audio",
+            "time": "Menit 52–62",
+            "instructions": "Tunjukkan bagan alur: Mulai Game -> Putar BGM Loop -> Pemain Klik Tombol Mute -> Toggle Status Volume -> Perbarui Ikon Tombol.",
+            "script": "Mari kita lihat alur kerjanya: musik berjalan di satu jalur, sementara tombol kontrol siap mendengarkan klik pemain kapan saja! Dua proses ini bekerja bersamaan secara serentak (paralel)!"
+        },
+        {
+            "title": "Slide 7: Playable Arcade: Konser Musik Beeby",
+            "time": "Menit 62–74",
+            "instructions": "Beri kebebasan siswa memainkan arcade mini game konser musik. Siswa menangkap nada musik sambil mencoba mengklik tombol Mute di panggung secara real-time.",
+            "script": "Waktunya konser! Gerakkan Beeby untuk mengumpulkan nada-nada musik emas. Coba klik tombol speaker di sudut panggung: dengarkan bagaimana musik seketika berhenti dan menyala kembali saat diklik! Buktikan kalian bisa memainkannya dengan nyaman!"
+        },
+        {
+            "title": "Slide 8: Klinik Dokter Kode: Jebakan Glitch Audio & Kostum Tombol",
+            "time": "Menit 74–82",
+            "instructions": "Bahas bug klasik: menggunakan start sound di dalam loop forever tanpa wait/until done (menghasilkan suara kresek mendengung), dan tombol yang lupa ganti kostum.",
+            "script": "Dokter Kode hadir! Jangan pernah memakai start sound di dalam forever tanpa until done ya! Nanti musiknya dimulai ulang 30 kali per detik dan terdengar seperti suara dengungan rusak! Selalu gunakan play sound UNTIL DONE!"
+        },
+        {
+            "title": "Slide 9: Rangkuman & Pesta Apresiasi Sesi 21",
+            "time": "Menit 82–87",
+            "instructions": "Rayakan keberhasilan siswa menjadi Game Developer yang peduli User Experience. Tekan tombol konfeti bersama.",
+            "script": "Luar biasa! Hari ini kalian tidak hanya belajar koding, tetapi juga belajar menjadi desainer game yang berempati pada pemain! Klik tombol konfeti dan beri tepuk tangan untuk kita semua!"
+        },
+        {
+            "title": "Slide 10: Penutup & Teaser Sesi 22",
+            "time": "Menit 87–90",
+            "instructions": "Ingatkan siswa menyimpan file Scratch (.sb3) dan berikan teaser sistem toko item di Sesi 22.",
+            "script": "Simpan proyek kalian ya! Di Sesi 22 pekan depan, kita akan belajar membuat Sistem Toko Game (Item Shop & Coin Economy) untuk membeli kostum baru Beeby! Sampai jumpa di sesi berikutnya!"
+        }
+    ]
+    notes_json = json.dumps(notes, indent=6, ensure_ascii=False)
+
+    slides_html = """      <!-- ================= SLIDE 1: COVER ================= -->
+      <div class="slide active" data-time="⏱️ Menit ke 00–10">
+        <div class="slide-header">
+          <div class="badge-session">Sesi 21 • Audio &amp; User Experience</div>
+          <div class="badge-time">⏱️ Menit ke 00–10</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h1 class="slide-title">
+              Efek Suara Latar Dinamis &amp; <span>Tombol Mute</span>! 🎵
+            </h1>
+            <p style="color: #cbd5e1; font-size: 15.5px; margin: 12px 0 18px; line-height: 1.55;">
+              Selamat datang di <strong>STAGE 2: SESI 21</strong>! Hari ini kita meningkatkan kualitas game kita ke level profesional dengan <strong>Background Music Loop dan Tombol Kontrol Suara yang Bisa Diklik</strong>. Belajar merancang kenyamanan pengalaman bermain pengguna (<strong>User Experience / UX</strong>)!
+            </p>
+            <div class="concept-card">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 13.5px; margin-bottom: 6px;">🎯 Misi Utama Hari Ini:</div>
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🎵 <strong>Konsep &amp; Inti:</strong> Background music loop tanpa henti dan tombol kontrol suara yang bisa diklik</li>
+                <li>🎧 <strong>Instruksi / Kode:</strong> Belajar kenyamanan pengalaman bermain pengguna (User Experience)</li>
+                <li>🔁 <strong>BGM Loop:</strong> Memutar musik secara mulus dengan <code>play sound [BGM] until done</code></li>
+                <li>🔇 <strong>Toggle Mute:</strong> Mengatur <code>volume</code> ke <code>0%</code> atau <code>100%</code> dan mengganti kostum tombol!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <img src="beeby-audio.jpg" alt="Beeby DJ Audio Controller &amp; Mute Button - Beekoding Level 2" class="hero-img" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 2: KONSEP DASAR & SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 10–22">
+        <div class="slide-header">
+          <div class="badge-session">Konsep Dasar • Audio Game &amp; Kenyamanan Pemain</div>
+          <div class="badge-time">⏱️ Menit ke 10–22</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Atmosfer Game: <span>Musik Latar vs Kontrol Pemain</span> 🎶
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Musik latar (BGM) membuat game terasa hidup dan seru! Tetapi pemain juga butuh ketenangan saat bermain di malam hari atau tempat umum. Tombol Mute memberikan kendali penuh kepada pemain!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>📻 <strong>BGM (Background Music):</strong> Mengalun lembut tanpa mengganggu efek suara utama</li>
+                <li>🔊 <strong>Status Aktif:</strong> Volume 100%, tombol menampilkan ikon suara menyala</li>
+                <li>🔇 <strong>Status Mute:</strong> Volume 0%, tombol menampilkan ikon suara tersilang</li>
+                <li>🔄 <strong>Toggle:</strong> Satu tombol yang berganti fungsi setiap kali ditekan!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <span style="font-weight: 800; font-size: 13px; color: #38bdf8;">🎛️ Audio Controller Live</span>
+                <span id="sim2MuteStatus" style="color: #10b981; font-size: 12px; font-weight: 700;">● Suara Aktif (100%)</span>
+              </div>
+              <div style="padding: 16px; background: #0f172a; display: flex; flex-direction: column; gap: 14px;">
+                <!-- Audio Visualizer Wave Demo -->
+                <div style="background: #1e293b; border-radius: 12px; padding: 14px; text-align: center;">
+                  <div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">VISUALIZER GELOMBANG SUARA:</div>
+                  <div id="sim2Visualizer" style="display: flex; justify-content: center; align-items: flex-end; gap: 5px; height: 45px;">
+                    <div class="sim2-bar" style="width: 8px; height: 35px; background: #38bdf8; border-radius: 4px; animation: bounceBar 0.5s infinite alternate ease-in-out;"></div>
+                    <div class="sim2-bar" style="width: 8px; height: 20px; background: #818cf8; border-radius: 4px; animation: bounceBar 0.7s infinite alternate 0.1s ease-in-out;"></div>
+                    <div class="sim2-bar" style="width: 8px; height: 42px; background: #fbbf24; border-radius: 4px; animation: bounceBar 0.4s infinite alternate 0.2s ease-in-out;"></div>
+                    <div class="sim2-bar" style="width: 8px; height: 28px; background: #34d399; border-radius: 4px; animation: bounceBar 0.6s infinite alternate 0.15s ease-in-out;"></div>
+                    <div class="sim2-bar" style="width: 8px; height: 38px; background: #f472b6; border-radius: 4px; animation: bounceBar 0.55s infinite alternate 0.05s ease-in-out;"></div>
+                  </div>
+                  <div id="sim2BgmTitle" style="font-size: 11.5px; color: #fbbf24; font-weight: 700; margin-top: 8px;">
+                    🎵 Melodi 8-Bit Ceria (BGM Loop)
+                  </div>
+                </div>
+
+                <!-- Kontrol Tombol Mute & Play BGM -->
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                  <button id="sim2ToggleMuteBtn" onclick="toggleSim2Mute()" style="background: #10b981; border: none; color: #000; font-weight: 800; font-size: 13px; padding: 10px 20px; border-radius: 999px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
+                    <span id="sim2MuteIcon" style="font-size: 18px;">🔊</span>
+                    <span id="sim2MuteText">MUTE SUARA</span>
+                  </button>
+                  <button onclick="playSampleSoundEffect()" style="background: #1e293b; border: 1px solid #475569; color: #cbd5e1; font-weight: 700; font-size: 12px; padding: 10px 14px; border-radius: 999px; cursor: pointer;">
+                    🔔 Uji Sound FX
+                  </button>
+                </div>
+                <div style="font-size: 11px; color: #94a3b8; text-align: center;">
+                  Klik tombol di atas untuk merasakan langsung pergantian status Mute/Unmute!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 3: BALOK KUNCI UTAMA ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 22–32">
+        <div class="slide-header">
+          <div class="badge-session">Bedah Balok Kode • Loop Musik Latar (BGM)</div>
+          <div class="badge-time">⏱️ Menit ke 22–32</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Balok Kunci: <span>Loop Musik Latar Tanpa Putus</span> 🧩
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Agar musik latar tidak berhenti di tengah permainan, letakkan balok <code>play sound until done</code> di dalam blok pengulangan <code>forever</code> pada sprite panggung (Stage)!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🚩 <strong>when ⚑ clicked:</strong> Memulai audio saat permainan dimulai</li>
+                <li>🔊 <strong>set volume to (100) %:</strong> Memastikan suara aktif di awal game</li>
+                <li>🔄 <strong>forever [play sound until done]:</strong> Memutar lagu sampai selesai, lalu mengulang otomatis dari awal</li>
+                <li>🛡️ <strong>Penting:</strong> Jangan gunakan <em>start sound</em> biasa tanpa <em>until done</em>!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block event">
+                when 🏴 clicked
+              </div>
+              <div class="scratch-block sound">
+                set volume to <span class="block-input">100</span> %
+              </div>
+              <div class="scratch-block-c">
+                forever
+                <div class="scratch-c-indent">
+                  <div class="scratch-block sound">
+                    play sound <span class="block-input">DanceBGM ▾</span> until done
+                  </div>
+                </div>
+              </div>
+              <div style="background: rgba(56, 189, 248, 0.12); border-left: 3px solid #38bdf8; padding: 6px 10px; border-radius: 0 6px 6px 0; margin-top: 6px; font-size: 11.5px; color: #bae6fd;">
+                💡 <em>Catatan Guru:</em> Balok <code>until done</code> membuat Scratch menunggu lagu selesai sebelum memutar ulang, sehingga melodi tidak bertabrakan!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 4: LOGIKA KONDISI & KEPUTUSAN ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 32–42">
+        <div class="slide-header">
+          <div class="badge-session">Mekanik Inti • Tombol Toggle Mute Interaktif</div>
+          <div class="badge-time">⏱️ Menit ke 32–42</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Tombol Mute: <span>Sentuhan Klik &amp; Dua Kostum</span> ⚡
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Sprite Tombol Mute diletakkan di sudut layar panggung. Saat sprite ini diklik, komputer memeriksa volume: jika sedang bersuara maka di-mute (0%), dan jika sedang mute maka diaktifkan kembali (100%)!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🖱️ <strong>when this sprite clicked:</strong> Mendeteksi klik langsung pemain</li>
+                <li>⚖️ <strong>if &lt;volume = 0&gt;:</strong> Memeriksa apakah status suara sedang mati</li>
+                <li>👗 <strong>switch costume to [SoundOn / SoundMute]:</strong> Indikator visual instan</li>
+                <li>🔊 <strong>set volume to (0 / 100)%:</strong> Membungkam atau membunyikan seluruh game</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="block-stack">
+              <div class="scratch-block event">
+                when this sprite clicked
+              </div>
+              <div class="scratch-block-c">
+                if <span class="scratch-inline-operator"><span class="scratch-inline-sensing">volume</span> = <span class="block-input">0</span></span> then
+                <div class="scratch-c-indent">
+                  <div class="scratch-block sound">
+                    set volume to <span class="block-input">100</span> %
+                  </div>
+                  <div class="scratch-block looks">
+                    switch costume to <span class="block-input">SoundOn ▾</span>
+                  </div>
+                </div>
+                else
+                <div class="scratch-c-indent">
+                  <div class="scratch-block sound">
+                    set volume to <span class="block-input">0</span> %
+                  </div>
+                  <div class="scratch-block looks">
+                    switch costume to <span class="block-input">SoundMute ▾</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 5: SINYAL BROADCAST & RESPON ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 42–52">
+        <div class="slide-header">
+          <div class="badge-session">Prinsip UX • Desain Ramah Pengguna</div>
+          <div class="badge-time">⏱️ Menit ke 42–52</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Pilar UX: <span>Empati Programmer pada Pemain</span> ❤️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Apa itu <strong>User Experience (UX)</strong>? UX adalah bagaimana perasaan pemain saat memainkan game kita. Game yang hebat bukan cuma gambarnya bagus, tetapi juga nyaman dan mudah dikontrol!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>👂 <strong>Telinga Nyaman:</strong> Musik tidak boleh memekakkan telinga (terlalu keras)</li>
+                <li>🎯 <strong>Mudah Diakses:</strong> Tombol suara ditaruh di tempat yang terlihat jelas (pojok atas)</li>
+                <li>👀 <strong>Umpan Balik Visual:</strong> Pemain langsung tahu status suara dari bentuk ikon tombol</li>
+                <li>🤝 <strong>Beri Pilihan:</strong> Jangan paksa pemain mendengarkan suara jika situasinya tidak memungkinkan!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: #090d16; border: 2px solid #818cf8; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
+              <div style="font-size: 42px; margin-bottom: 8px;">🎮 🤝 🎧</div>
+              <h4 style="color: #818cf8; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Pilar User Experience (UX)</h4>
+              <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Membuat game dengan memikirkan kenyamanan orang lain melatih empati dan pola pikir problem-solving kreator masa depan!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 6: ALUR INSTRUKSI LENGKAP ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 52–62">
+        <div class="slide-header">
+          <div class="badge-session">Algoritma Game • Siklus Pengendalian Audio</div>
+          <div class="badge-time">⏱️ Menit ke 52–62</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Siklus Sistem: <span>BGM Berjalan &amp; Respon Tombol</span> 🗺️
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Di Scratch, proses pemutaran musik dan pendeteksian tombol berjalan secara serentak (paralel):
+            </p>
+            <div class="concept-card">
+              <ol style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.7;">
+                <li>1️⃣ <strong>Jalur 1 (Stage):</strong> Memutar lagu BGM terus-menerus tanpa henti</li>
+                <li>2️⃣ <strong>Jalur 2 (BtnMute):</strong> Menunggu interaksi klik dari jemari pemain</li>
+                <li>3️⃣ <strong>Pemain Klik Tombol:</strong> Nilai <code>volume</code> berganti antara 100% dan 0%</li>
+                <li>4️⃣ <strong>Sinkronisasi:</strong> Musik tetap berputar dalam hening, dan terdengar lagi saat di-unmute!</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: #090d16; border: 2px solid #10b981; border-radius: 16px; padding: 22px; width: 100%; text-align: center;">
+              <div style="font-size: 42px; margin-bottom: 8px;">🔁 🎶 ⇄ 🖱️ 🔇</div>
+              <h4 style="color: #10b981; font-size: 16px; font-weight: 800; margin-bottom: 6px;">Eksekusi Paralel Scratch</h4>
+              <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">Dua script bekerja bersama: satu memutar alunan lagu, satu lagi mengendalikan kenyamanan volume!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 7: PLAYABLE SIMULATOR ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 62–74">
+        <div class="slide-header">
+          <div class="badge-session">Playable Arcade • Konser Musik &amp; Tombol Mute Nyata</div>
+          <div class="badge-time">⏱️ Menit ke 62–74</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Mainkan Hasilnya: <span>Konser Musik Beeby!</span> 🎮
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Tangkap nada-nada musik yang melayang di panggung! Coba klik <strong>Tombol MUTE</strong> di pojok kanan atas panggung game untuk membuktikan kontrol suara real-time!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>🚩 <strong>Klik Bendera Hijau:</strong> Memulai konser musik</li>
+                <li>⌨️ <strong>Panah Kiri / Kanan atau Mouse:</strong> Menggerakkan Beeby mengumpulkan nada musik</li>
+                <li>🔇 <strong>Klik Tombol Speaker di Panggung:</strong> Mematikan atau menyalakan lagu BGM seketika</li>
+                <li>🎵 <strong>Uji UX:</strong> Rasakan betapa bergunanya tombol suara bagi kenyamanan bermain!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div class="sim-box">
+              <div class="sim-header">
+                <div class="sim-btns">
+                  <button class="btn-green-flag" onclick="startPlayableGame_21()" title="Mulai Konser">🚩</button>
+                  <button class="btn-red-stop" onclick="stopPlayableGame_21()" title="Hentikan Konser">🛑</button>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <div class="sim-score-badge" style="border-color: #fbbf24; color: #fbbf24;">
+                    🎵 NADA: <span id="gameScore_21">0</span>
+                  </div>
+                  <div class="sim-score-badge" style="border-color: #38bdf8; color: #38bdf8;">
+                    ⏱️ <span id="gameTimer_21">20</span>s
+                  </div>
+                </div>
+              </div>
+
+              <div id="gameCanvas_21" class="sim-canvas" style="background: linear-gradient(180deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%); position: relative; overflow: hidden; height: 215px;">
+                <!-- Tombol Mute Nyata di Sudut Layar Game -->
+                <button id="gameMuteBtn_21" onclick="toggleGameMute_21(event)" style="position: absolute; top: 8px; right: 8px; z-index: 15; background: rgba(15, 23, 42, 0.85); border: 2px solid #fbbf24; color: #fbbf24; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.15s;" title="Klik untuk Mute / Unmute">
+                  <span id="gameMuteIcon_21">🔊</span>
+                  <span id="gameMuteText_21">BGM ON</span>
+                </button>
+
+                <!-- Overlay Mulai -->
+                <div id="gameOverlay_21" style="position: absolute; inset: 0; background: rgba(0,0,0,0.82); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20; padding: 16px; text-align: center;">
+                  <span style="font-size: 38px; margin-bottom: 4px;">🎧🎵</span>
+                  <span style="font-size: 14.5px; font-weight: 800; color: #fbbf24;">Konser Musik &amp; Kontrol Mute Beeby!</span>
+                  <span style="font-size: 11.5px; color: #cbd5e1; margin: 4px 0 12px;">Tangkap nada melodi dan coba klik tombol MUTE di pojok kanan atas!</span>
+                  <button onclick="startPlayableGame_21()" style="background: #10b981; border: none; color: #000; font-family: 'Fredoka', cursive; font-size: 13px; font-weight: 700; padding: 7px 18px; border-radius: 999px; cursor: pointer;">
+                    🚩 Mulai Konser Sekarang (Spasi)
+                  </button>
+                </div>
+
+                <!-- Overlay Game Over Screen -->
+                <div id="gameOverScreen_21" style="position: absolute; inset: 0; background: rgba(15, 23, 42, 0.94); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 25; padding: 16px; text-align: center;">
+                  <span style="font-size: 42px; margin-bottom: 2px;">🎉🎶</span>
+                  <span style="font-size: 16px; font-weight: 800; color: #fbbf24;">KONSER SELESAI DENGAN MERIAH!</span>
+                  <span style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">Total Nada Tertangkap: <strong id="finalScoreVal_21" style="color: #38bdf8; font-size: 17px;">0</strong> Nada!</span>
+                  <button onclick="startPlayableGame_21()" style="margin-top: 12px; background: #f59e0b; border: none; color: #000; font-family: 'Fredoka', cursive; font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 999px; cursor: pointer;">
+                    🔄 Mainkan Ronde Konser Lagi (Spasi)
+                  </button>
+                </div>
+
+                <!-- Sprite Beeby (Karakter DJ) -->
+                <div id="gameBeeby_21" style="position: absolute; font-size: 32px; left: 135px; bottom: 8px; pointer-events: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); transition: left 0.05s ease-out;">🐝</div>
+
+                <!-- Nada Musik Melayang (Sprite Item) -->
+                <div id="gameNote_21" style="position: absolute; font-size: 26px; left: 140px; top: -35px; pointer-events: none; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9));">🎵</div>
+              </div>
+
+              <div style="background: #0f172a; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1e293b; font-size: 11px;">
+                <div style="display: flex; gap: 6px;">
+                  <button onclick="moveBeebyLeft_21()" style="background: #1e293b; border: 1px solid #475569; color: #cbd5e1; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 6px; cursor: pointer;">◀ Kiri</button>
+                  <button onclick="moveBeebyRight_21()" style="background: #1e293b; border: 1px solid #475569; color: #cbd5e1; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 6px; cursor: pointer;">Kanan ▶</button>
+                </div>
+                <span id="gameLiveStatus_21" style="color: #10b981;">● Musik BGM Mengalun</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 8: DOKTER KODE ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 74–82">
+        <div class="slide-header">
+          <div class="badge-session">Klinik Debugging • Mencegah Glitch Audio</div>
+          <div class="badge-time">⏱️ Menit ke 74–82</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Dokter Kode: <span>Glitch Musik Rusak vs Mulus</span> 🩺
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Kesalahan paling umum yang membuat telinga pemain sakit: memakai balok suara yang salah di dalam loop pengulangan!
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>❌ <strong>Kesalahan Fatal:</strong> <code>forever [start sound]</code> tanpa until done ➔ Lagu diulang 30x per detik hingga terdengar seperti suara dengungan rusak!</li>
+                <li>✅ <strong>Solusi Tepat:</strong> <code>forever [play sound until done]</code> ➔ Lagu diputar sampai tamat baru diulang</li>
+                <li>❌ <strong>Tombol Tidak Berubah:</strong> Lupa memasang <code>switch costume</code> ➔ Pemain bingung apakah tombol berfungsi</li>
+                <li>✅ <strong>Feedback Visual:</strong> Selalu beri perubahan ikon agar pemain yakin!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+              <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #ef4444; font-weight: 800; font-size: 13px; margin-bottom: 4px;">❌ KODE SALAH: Glitch Suara Berdengung</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px; line-height: 1.45;">
+                  forever<br>
+                  &nbsp;&nbsp;<span style="color: #f87171;">start sound [DanceBGM ▾]</span><br>
+                  <span style="color: #fca5a5;">⚠️ Suara dimulai ulang setiap frame tanpa menunggu selesai, menghasilkan dengungan bising!</span>
+                </div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; padding: 12px 16px;">
+                <div style="color: #10b981; font-weight: 800; font-size: 13px; margin-bottom: 4px;">✅ KODE BENAR: Melodi Mulus &amp; Harmonis</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #cbd5e1; background: #0b0f19; padding: 8px; border-radius: 6px; line-height: 1.45;">
+                  forever<br>
+                  &nbsp;&nbsp;<span style="color: #34d399; font-weight: 700;">play sound [DanceBGM ▾] until done</span><br>
+                  <span style="color: #6ee7b7;">✅ Musik diputar sempurna sampai nada terakhir, baru mengulang kembali!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 9: RANGKUMAN & APRESIASI ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 82–87">
+        <div class="slide-header">
+          <div class="badge-session">Review Pemahaman • Sukses Sesi 21</div>
+          <div class="badge-time">⏱️ Menit ke 82–87</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Audio Master! <span>Rangkuman Sesi 21</span> 🌟
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Keren sekali! Game buatanmu sekarang punya musik yang keren dan tombol kontrol yang ramah pengguna! Mari ingat 3 kunci utama hari ini:
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>1️⃣ <strong>Konsep Inti:</strong> Background music loop mulus dengan <code>play sound until done</code></li>
+                <li>2️⃣ <strong>Kontrol Suara:</strong> Tombol interaktif yang mengganti volume (0% vs 100%) dan kostum (🔊 vs 🔇)</li>
+                <li>3️⃣ <strong>Pola Pikir UX:</strong> Merancang fitur dengan memprioritaskan kenyamanan bermain orang lain!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 16px; padding: 24px; text-align: center; width: 100%;">
+              <div style="font-size: 48px; margin-bottom: 10px;">🎧 🏆</div>
+              <h3 style="color: #10b981; font-size: 20px; font-weight: 800; margin-bottom: 6px;">Game Lebih Hidup &amp; Ramah UX!</h3>
+              <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.5;">Kamu resmi menguasai modul Audio Dinamis &amp; Tombol Mute di Beekoding Academy!</p>
+              <button onclick="triggerConfetti()" style="margin-top: 14px; background: #000; color: #10b981; border: 1px solid #10b981; padding: 10px 20px; border-radius: 999px; font-weight: 800; cursor: pointer; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🎊 Rayakan Keberhasilan (Klik Confetti)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SLIDE 10: PENUTUP & TEASER ================= -->
+      <div class="slide" data-time="⏱️ Menit ke 87–90">
+        <div class="slide-header">
+          <div class="badge-session">Teaser Sesi Berikutnya • Terus Berkembang</div>
+          <div class="badge-time">⏱️ Menit ke 87–90</div>
+        </div>
+
+        <div class="slide-body">
+          <div class="text-column">
+            <h2 class="slide-title">
+              Petualangan Berlanjut: <span>Menuju Sesi 22</span>! 🚀
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 10px 0 16px; line-height: 1.55;">
+              Game kalian kini semakin terasa seperti game komersial sungguhan! Pastikan kalian menyimpan file proyek Scratch (.sb3) di komputermu hari ini.
+            </p>
+            <div class="concept-card">
+              <ul style="padding-left: 18px; color: #e2e8f0; font-size: 13px; line-height: 1.6;">
+                <li>💾 Simpan file proyek: <code>File ➔ Save to your computer</code></li>
+                <li>🛍️ <strong>Sesi 22:</strong> Sistem Toko Game (Item Shop &amp; Coin Economy) untuk membeli kostum skin!</li>
+                <li>👏 Berikan tepuk tangan meriah untuk seluruh kreator di kelas!</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-column">
+            <div style="background: rgba(30, 41, 59, 0.9); border: 2px solid #fbbf24; border-radius: 18px; padding: 26px; text-align: center; width: 100%;">
+              <div style="font-size: 52px; margin-bottom: 10px;">🌟🛍️</div>
+              <h3 style="color: #fbbf24; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Sampai Jumpa di Sesi 22!</h3>
+              <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">Bersiap belajar ekonomi koin game dan transaksi toko digital bersama Beekoding Academy!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+"""
+
+    script_logic = """
+    // Speaker Notes Data
+    const notesData = """ + notes_json + """;
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    // Build Progress Dots
+    const progressContainer = document.getElementById('progressDots');
+    if (progressContainer) {
+      progressContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        progressContainer.appendChild(dot);
+      }
+    }
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+
+      const dots = document.querySelectorAll('.progress-dot');
+      dots.forEach((d, idx) => {
+        d.classList.toggle('active', idx === currentSlide);
+      });
+
+      const counter = document.getElementById('slideCounter');
+      if (counter) counter.innerText = `Slide ${currentSlide + 1} / ${totalSlides}`;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      if (prevBtn) prevBtn.disabled = (currentSlide === 0);
+      if (nextBtn) nextBtn.disabled = (currentSlide === totalSlides - 1);
+
+      updateNotes();
+    }
+
+    function goToSlide(n) {
+      if (n >= 0 && n < totalSlides) {
+        currentSlide = n;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    const prevBtnEl = document.getElementById('prevBtn');
+    const nextBtnEl = document.getElementById('nextBtn');
+    if (prevBtnEl) prevBtnEl.onclick = prevSlide;
+    if (nextBtnEl) nextBtnEl.onclick = nextSlide;
+
+    // Teacher Notes Drawer
+    function toggleNotes() {
+      const panel = document.getElementById('teacherNotesPanel');
+      if (panel) panel.classList.toggle('open');
+    }
+
+    function updateNotes() {
+      const data = notesData[currentSlide] || {};
+      const badge = document.getElementById('notesBadge');
+      const inst = document.getElementById('notesInstructions');
+      const scr = document.getElementById('notesScript');
+
+      if (badge) badge.innerText = `(${data.time || ''} • Slide ${currentSlide + 1} dari ${totalSlides})`;
+      if (inst) inst.innerText = data.instructions || '';
+      if (scr) scr.innerText = `Naskah Guru: "${data.script || ''}"`;
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Keyboard Shortcuts (Space is reserved for simulator & games, NOT changing slides!)
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goToSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      } else if (e.code === 'Space' || e.key === ' ') {
+        // Tombol Spasi khusus simulator Slide 2 & arcade game Slide 7
+        const slides = document.querySelectorAll('.slide');
+        const slide2 = slides[1];
+        const slide7 = slides[6];
+        if (slide2 && slide2.classList.contains('active')) {
+          e.preventDefault();
+          toggleSim2Mute();
+        } else if (slide7 && slide7.classList.contains('active')) {
+          e.preventDefault();
+          if (!gameRunning_21) {
+            startPlayableGame_21();
+          }
+        } else {
+          // Mencegah spasi berpindah slide di slide lain
+          e.preventDefault();
+        }
+      }
+    });
+
+    // Audio Synthesizer (Web Audio API)
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    let globalMuted = false;
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.15, vol = 0.25) {
+      if (globalMuted) return;
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // Melodi BGM 8-Bit Ceria
+    let bgmInterval = null;
+    const bgmNotes = [
+      261.63, 329.63, 392.00, 523.25, // C4, E4, G4, C5
+      392.00, 329.63, 293.66, 349.23, // G4, E4, D4, F4
+      440.00, 523.25, 440.00, 392.00  // A4, C5, A4, G4
+    ];
+    let bgmIndex = 0;
+
+    function startSynthesizedBGM() {
+      if (bgmInterval) return;
+      bgmInterval = setInterval(() => {
+        if (!globalMuted) {
+          playBeep(bgmNotes[bgmIndex], 'triangle', 0.2, 0.12);
+        }
+        bgmIndex = (bgmIndex + 1) % bgmNotes.length;
+      }, 250);
+    }
+
+    function stopSynthesizedBGM() {
+      if (bgmInterval) {
+        clearInterval(bgmInterval);
+        bgmInterval = null;
+      }
+    }
+
+    function playSampleSoundEffect() {
+      playBeep(659.25, 'sine', 0.1, 0.25);
+      setTimeout(() => playBeep(880.00, 'sine', 0.15, 0.25), 100);
+    }
+
+    // ================= SIMULATOR 1 (SLIDE 2): LIVE AUDIO CONTROLLER =================
+    let sim2IsMuted = false;
+    function toggleSim2Mute() {
+      sim2IsMuted = !sim2IsMuted;
+      globalMuted = sim2IsMuted;
+
+      const icon = document.getElementById('sim2MuteIcon');
+      const text = document.getElementById('sim2MuteText');
+      const btn = document.getElementById('sim2ToggleMuteBtn');
+      const st = document.getElementById('sim2MuteStatus');
+      const visualizer = document.getElementById('sim2Visualizer');
+
+      if (sim2IsMuted) {
+        if (icon) icon.innerText = '🔇';
+        if (text) text.innerText = 'UNMUTE SUARA';
+        if (btn) {
+          btn.style.background = '#ef4444';
+          btn.style.boxShadow = '0 4px 14px rgba(239, 68, 68, 0.4)';
+        }
+        if (st) {
+          st.innerText = '● Suara Dibisukan (Mute 0%)';
+          st.style.color = '#ef4444';
+        }
+        if (visualizer) {
+          visualizer.querySelectorAll('.sim2-bar').forEach(b => {
+            b.style.animationPlayState = 'paused';
+            b.style.height = '4px';
+          });
+        }
+      } else {
+        if (icon) icon.innerText = '🔊';
+        if (text) text.innerText = 'MUTE SUARA';
+        if (btn) {
+          btn.style.background = '#10b981';
+          btn.style.boxShadow = '0 4px 14px rgba(16, 185, 129, 0.4)';
+        }
+        if (st) {
+          st.innerText = '● Suara Aktif (100%)';
+          st.style.color = '#10b981';
+        }
+        if (visualizer) {
+          visualizer.querySelectorAll('.sim2-bar').forEach(b => {
+            b.style.animationPlayState = 'running';
+          });
+        }
+        playBeep(523.25, 'triangle', 0.15);
+      }
+    }
+
+    // Mulai melodi audio di slide 2 saat pertama kali aktif
+    startSynthesizedBGM();
+
+    // ================= SIMULATOR 2 (SLIDE 7): PLAYABLE MUSIC CONCERT ARCADE =================
+    let gameRunning_21 = false;
+    let gameScore_21 = 0;
+    let gameTimer_21 = 20;
+    let gameTimerInterval_21 = null;
+    let gameBeebyX_21 = 135;
+    let gameNoteX_21 = 140;
+    let gameNoteY_21 = -35;
+    let gameNoteSpeed_21 = 3.6;
+    let gameAnimId_21 = null;
+    let gameIsMuted_21 = false;
+
+    function toggleGameMute_21(e) {
+      if (e) e.stopPropagation();
+      gameIsMuted_21 = !gameIsMuted_21;
+      globalMuted = gameIsMuted_21;
+
+      const icon = document.getElementById('gameMuteIcon_21');
+      const text = document.getElementById('gameMuteText_21');
+      const btn = document.getElementById('gameMuteBtn_21');
+      const st = document.getElementById('gameLiveStatus_21');
+
+      if (gameIsMuted_21) {
+        if (icon) icon.innerText = '🔇';
+        if (text) text.innerText = 'BGM OFF';
+        if (btn) {
+          btn.style.borderColor = '#ef4444';
+          btn.style.color = '#ef4444';
+        }
+        if (st) {
+          st.innerText = '● Suara Dibisukan (Mute)';
+          st.style.color = '#ef4444';
+        }
+      } else {
+        if (icon) icon.innerText = '🔊';
+        if (text) text.innerText = 'BGM ON';
+        if (btn) {
+          btn.style.borderColor = '#fbbf24';
+          btn.style.color = '#fbbf24';
+        }
+        if (st) {
+          st.innerText = '● Musik BGM Mengalun';
+          st.style.color = '#10b981';
+        }
+        playBeep(783.99, 'triangle', 0.15);
+      }
+    }
+
+    function startPlayableGame_21() {
+      gameRunning_21 = true;
+      gameScore_21 = 0;
+      gameTimer_21 = 20;
+      gameBeebyX_21 = 135;
+      gameNoteY_21 = -35;
+      gameNoteX_21 = Math.floor(Math.random() * 260) + 30;
+
+      const scoreEl = document.getElementById('gameScore_21');
+      const timerEl = document.getElementById('gameTimer_21');
+      if (scoreEl) scoreEl.innerText = '0';
+      if (timerEl) timerEl.innerText = '20';
+
+      const overlay = document.getElementById('gameOverlay_21');
+      if (overlay) overlay.style.display = 'none';
+
+      const overScreen = document.getElementById('gameOverScreen_21');
+      if (overScreen) overScreen.style.display = 'none';
+
+      const liveSt = document.getElementById('gameLiveStatus_21');
+      if (liveSt) {
+        liveSt.innerText = gameIsMuted_21 ? '● Suara Dibisukan (Mute)' : '● Musik BGM Mengalun';
+        liveSt.style.color = gameIsMuted_21 ? '#ef4444' : '#10b981';
+      }
+
+      startSynthesizedBGM();
+
+      if (gameTimerInterval_21) clearInterval(gameTimerInterval_21);
+      gameTimerInterval_21 = setInterval(() => {
+        if (!gameRunning_21) return;
+        gameTimer_21--;
+        const tEl = document.getElementById('gameTimer_21');
+        if (tEl) tEl.innerText = gameTimer_21;
+
+        if (gameTimer_21 <= 0) {
+          finishGameOver_21();
+        }
+      }, 1000);
+
+      if (gameAnimId_21) cancelAnimationFrame(gameAnimId_21);
+      gameLoop_21();
+    }
+
+    function stopPlayableGame_21() {
+      gameRunning_21 = false;
+      if (gameTimerInterval_21) clearInterval(gameTimerInterval_21);
+      if (gameAnimId_21) cancelAnimationFrame(gameAnimId_21);
+
+      const overlay = document.getElementById('gameOverlay_21');
+      if (overlay) overlay.style.display = 'flex';
+
+      const overScreen = document.getElementById('gameOverScreen_21');
+      if (overScreen) overScreen.style.display = 'none';
+
+      const liveSt = document.getElementById('gameLiveStatus_21');
+      if (liveSt) {
+        liveSt.innerText = '● Konser Dihentikan';
+        liveSt.style.color = '#94a3b8';
+      }
+    }
+
+    function finishGameOver_21() {
+      gameRunning_21 = false;
+      if (gameTimerInterval_21) clearInterval(gameTimerInterval_21);
+      if (gameAnimId_21) cancelAnimationFrame(gameAnimId_21);
+
+      const finalScore = document.getElementById('finalScoreVal_21');
+      if (finalScore) finalScore.innerText = gameScore_21;
+
+      const overScreen = document.getElementById('gameOverScreen_21');
+      if (overScreen) overScreen.style.display = 'flex';
+
+      playBeep(523.25, 'triangle', 0.2);
+      setTimeout(() => playBeep(659.25, 'triangle', 0.25), 120);
+      setTimeout(() => playBeep(783.99, 'triangle', 0.35), 240);
+      triggerConfetti();
+
+      const liveSt = document.getElementById('gameLiveStatus_21');
+      if (liveSt) {
+        liveSt.innerText = '● Konser Selesai!';
+        liveSt.style.color = '#fbbf24';
+      }
+    }
+
+    function moveBeebyLeft_21() {
+      if (!gameRunning_21) return;
+      gameBeebyX_21 = Math.max(15, gameBeebyX_21 - 28);
+      const bEl = document.getElementById('gameBeeby_21');
+      if (bEl) bEl.style.left = `${gameBeebyX_21}px`;
+    }
+
+    function moveBeebyRight_21() {
+      if (!gameRunning_21) return;
+      const canvas = document.getElementById('gameCanvas_21');
+      const maxW = canvas ? canvas.clientWidth - 50 : 280;
+      gameBeebyX_21 = Math.min(maxW, gameBeebyX_21 + 28);
+      const bEl = document.getElementById('gameBeeby_21');
+      if (bEl) bEl.style.left = `${gameBeebyX_21}px`;
+    }
+
+    // Keyboard Panah Kiri/Kanan & Mouse Touch Listener untuk Slide 7
+    window.addEventListener('keydown', (e) => {
+      const slide7 = document.querySelectorAll('.slide')[6];
+      if (slide7 && slide7.classList.contains('active') && gameRunning_21) {
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+          e.preventDefault();
+          moveBeebyLeft_21();
+        } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+          e.preventDefault();
+          moveBeebyRight_21();
+        }
+      }
+    });
+
+    const canvasEl_21 = document.getElementById('gameCanvas_21');
+    if (canvasEl_21) {
+      canvasEl_21.addEventListener('mousemove', (e) => {
+        if (!gameRunning_21) return;
+        const rect = canvasEl_21.getBoundingClientRect();
+        const relX = e.clientX - rect.left - 20;
+        gameBeebyX_21 = Math.max(15, Math.min(rect.width - 45, relX));
+        const bEl = document.getElementById('gameBeeby_21');
+        if (bEl) bEl.style.left = `${gameBeebyX_21}px`;
+      });
+    }
+
+    const noteSymbols = ['🎵', '🎶', '🎼', '🎷', '🎹'];
+    function gameLoop_21() {
+      if (!gameRunning_21) return;
+
+      const canvas = document.getElementById('gameCanvas_21');
+      const canvasH = canvas ? canvas.clientHeight : 215;
+      const canvasW = canvas ? canvas.clientWidth : 320;
+
+      // Jatuhkan Nada Musik
+      gameNoteY_21 += gameNoteSpeed_21;
+
+      // Cek Menangkap Nada
+      const beebyY = canvasH - 35;
+      if (gameNoteY_21 > beebyY - 25 && gameNoteY_21 < beebyY + 25) {
+        if (Math.abs(gameNoteX_21 - gameBeebyX_21) < 38) {
+          // Tertangkap!
+          gameScore_21++;
+          playBeep(880, 'sine', 0.12, 0.3);
+          const scEl = document.getElementById('gameScore_21');
+          if (scEl) scEl.innerText = gameScore_21;
+
+          // Reset Nada ke atas
+          gameNoteY_21 = -35;
+          gameNoteX_21 = Math.floor(Math.random() * (canvasW - 60)) + 30;
+
+          const nEl = document.getElementById('gameNote_21');
+          if (nEl) {
+            nEl.innerText = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+          }
+        }
+      }
+
+      // Jika Nada Musik lolos jatuh ke lantai panggung
+      if (gameNoteY_21 > canvasH) {
+        gameNoteY_21 = -35;
+        gameNoteX_21 = Math.floor(Math.random() * (canvasW - 60)) + 30;
+      }
+
+      // Render posisi nada musik
+      const noteEl = document.getElementById('gameNote_21');
+      if (noteEl) {
+        noteEl.style.top = `${gameNoteY_21}px`;
+        noteEl.style.left = `${gameNoteX_21}px`;
+      }
+
+      gameAnimId_21 = requestAnimationFrame(gameLoop_21);
+    }
+
+    // Initialize
+    updateSlide();
+    """
+
+    final_html = f"""<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Mengajar: Sesi 21 - Efek Suara Latar Dinamis &amp; Tombol Mute | Beekoding Academy</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+{style_block}
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="brand-tag">
+      <a href="/" class="brand-link" title="Kembali ke Beranda Beekoding">
+        <div class="brand-logo-wrap">
+          <div class="brand-logo-box">
+            <div class="brand-logo-inner">
+              <img src="/beekoding-logo.png" alt="Beekoding Logo" class="brand-logo-img" />
+            </div>
+          </div>
+          <span class="brand-sparkle-ping">
+            <span class="ping-ring"></span>
+            <span class="ping-dot"></span>
+          </span>
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title">Bee<span class="accent">koding</span></span>
+          <span class="brand-subtitle">Platform Edukasi Koding &amp; AI</span>
+        </div>
+      </a>
+      <span class="brand-stage-badge">STAGE 2: SESI 21</span>
+    </div>
+
+    <div class="toolbar-actions">
+      <a href="/slides/index.html" class="btn-nav-sesi" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800;" title="Buka Portal Semua Sesi &amp; Stage">🗂️ Semua Sesi</a>
+      <a href="/slides/sesi-20/index.html" class="btn-nav-sesi">⏪ Sesi 20</a>
+      <a href="/slides/sesi-22/index.html" class="btn-nav-sesi">Sesi 22 ⏩</a>
+      <button class="btn btn-toggle-notes" onclick="toggleNotes()">
+        📝 Catatan Guru (N)
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        ⛶ Layar Penuh (F)
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage Presentation -->
+  <div class="stage-wrapper">
+    <div class="slide-viewport">
+      <div class="slide-canvas">
+{slides_html}
+      </div><!-- .slide-canvas -->
+
+      <!-- Slide Footer Bar -->
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <div class="slide-progress-dots" id="progressDots"></div>
+          <span class="slide-counter" id="slideCounter">Slide 1 / 10</span>
+        </div>
+        <div class="footer-controls">
+          <button class="btn-nav" id="prevBtn" disabled>◀ Sebelumnya</button>
+          <button class="btn-nav primary" id="nextBtn">Selanjutnya ▶</button>
+        </div>
+      </footer>
+
+      <!-- Teacher Notes Drawer Panel -->
+      <div id="teacherNotesPanel" class="teacher-notes-panel">
+        <div class="notes-header">
+          <div class="notes-title">
+            <span>📝 CATATAN GURU &amp; PANDUAN MENGAJAR</span>
+            <span id="notesBadge" style="font-size: 11px; color: #94a3b8; font-weight: 600;">(Slide 1 dari 10)</span>
+          </div>
+          <button class="notes-close" onclick="toggleNotes()">✕</button>
+        </div>
+        <div class="notes-content">
+          <div id="notesInstructions" style="color: #94a3b8; margin-bottom: 6px;"></div>
+          <div id="notesScript" class="notes-script"></div>
+        </div>
+      </div>
+
+    </div><!-- .slide-viewport -->
+  </div><!-- .stage-wrapper -->
+
+  <script>
+{script_logic}
+  </script>
+</body>
+</html>
+"""
+
+    SESI21_HTML_PATH.write_text(final_html, encoding="utf-8")
+    o = final_html.count("<div")
+    c = final_html.count("</div")
+    print(f"[OK] Sesi 21 updated. Open div: {o}, Close div: {c}, Diff: {o - c}")
+
+if __name__ == "__main__":
+    build_sesi21()
