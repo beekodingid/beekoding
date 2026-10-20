@@ -1407,32 +1407,41 @@ export const BlogView: React.FC<BlogViewProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div>
-            © 2026 Beekoding Edukasi Teknologi. Seluruh Hak Cipta Dilindungi.
+            © 2026 Sarang Edukasi Teknologi. Seluruh Hak Cipta Dilindungi.
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 text-[11px]">
-            <button
-              type="button"
-              onClick={() => handleOpenLegal('privacy')}
+            <a
+              href="/kebijakan-privasi"
+              onClick={(e) => {
+                e.preventDefault();
+                handleOpenLegal('privacy');
+              }}
               className="hover:text-amber-500 transition-colors underline cursor-pointer"
             >
               Kebijakan Privasi
-            </button>
+            </a>
             <span>•</span>
-            <button
-              type="button"
-              onClick={() => handleOpenLegal('terms')}
+            <a
+              href="/syarat-ketentuan"
+              onClick={(e) => {
+                e.preventDefault();
+                handleOpenLegal('terms');
+              }}
               className="hover:text-amber-500 transition-colors underline cursor-pointer"
             >
               Syarat Layanan
-            </button>
+            </a>
             <span>•</span>
-            <button
-              type="button"
-              onClick={() => handleOpenLegal('disclaimer')}
+            <a
+              href="/penafian"
+              onClick={(e) => {
+                e.preventDefault();
+                handleOpenLegal('disclaimer');
+              }}
               className="hover:text-amber-500 transition-colors underline cursor-pointer"
             >
               Penafian
-            </button>
+            </a>
             <span>•</span>
             <a
               href="/ads.txt"
