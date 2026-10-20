@@ -47,7 +47,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       return context.next();
     }
 
-    const domain = 'https://beekoding.pages.dev';
+    const originUrl = new URL(context.request.url);
+    const domain = originUrl.origin.includes('localhost') ? 'https://beekoding.my.id' : originUrl.origin;
     const nowRfc822 = new Date().toUTCString();
 
     let rss = `<?xml version="1.0" encoding="UTF-8"?>

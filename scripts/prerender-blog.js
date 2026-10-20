@@ -109,8 +109,8 @@ async function main() {
     .replace(/<title>.*?<\/title>/, '<title>Blog Edukasi Coding & AI Anak | Beekoding</title>')
     .replace(/<meta property="og:title" content="[^"]*"/, '<meta property="og:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
     .replace(/<meta name="twitter:title" content="[^"]*"/, '<meta name="twitter:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
-    .replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="https://beekoding.pages.dev/blog"')
-    .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.pages.dev/blog"');
+    .replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="https://beekoding.my.id/blog"')
+    .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.my.id/blog"');
   fs.writeFileSync(path.join(blogDir, 'index.html'), blogListHtml, 'utf-8');
 
   // =========================================================================
@@ -122,7 +122,7 @@ async function main() {
       title: 'Kursus Coding Anak SD (Usia 6-10 Thn) | Belajar Scratch & AI Seru Beekoding',
       description: 'Les coding anak SD terbaik di Indonesia. Metode belajar visual Scratch 3.0, game dev interaktif, & logika AI ramah anak bersama mentor sabar. Coba Free Trial Class sekarang!',
       keywords: 'kursus coding anak sd, les coding anak sd, belajar scratch anak pemula, kursus logika anak 6 7 8 9 10 tahun, les koding terdekat, biaya les coding anak sd',
-      url: 'https://beekoding.pages.dev/kursus-coding-anak-sd',
+      url: 'https://beekoding.my.id/kursus-coding-anak-sd',
       courseName: 'Kursus Coding Anak SD (Usia 6-10 Thn) - Scratch & AI Logic Beekoding',
       courseDesc: 'Program belajar coding visual Scratch 3.0, animasi cerita, dan logika game interaktif untuk anak SD usia 6-10 tahun.',
     },
@@ -131,7 +131,7 @@ async function main() {
       title: 'Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) | Portofolio & Olimpiade Beekoding',
       description: 'Kursus coding Python, AI Machine Learning, Roblox Lua & Web Dev untuk remaja SMP & SMA. Bangun portofolio nyata, persiapan olimpiade informatika (OSN), & beasiswa!',
       keywords: 'kursus python remaja, les coding smp sma, belajar ai untuk anak remaja, kursus roblox lua, les programming anak smp, persiapan olimpiade informatika, kurikulum python pemula',
-      url: 'https://beekoding.pages.dev/kursus-python-remaja-smp-sma',
+      url: 'https://beekoding.my.id/kursus-python-remaja-smp-sma',
       courseName: 'Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) - Beekoding',
       courseDesc: 'Kursus coding Python profesional, game 3D Roblox Studio, Artificial Intelligence, dan web fullstack untuk remaja SMP & SMA.',
     },
@@ -151,8 +151,8 @@ async function main() {
       provider: {
         '@type': 'EducationalOrganization',
         name: 'Beekoding',
-        url: 'https://beekoding.pages.dev',
-        sameAs: 'https://beekoding.pages.dev',
+        url: 'https://beekoding.my.id',
+        sameAs: 'https://beekoding.my.id',
       },
       aggregateRating: {
         '@type': 'AggregateRating',
@@ -172,7 +172,7 @@ async function main() {
           '@type': 'ListItem',
           position: 1,
           name: 'Beranda',
-          item: 'https://beekoding.pages.dev',
+          item: 'https://beekoding.my.id',
         },
         {
           '@type': 'ListItem',
@@ -215,7 +215,7 @@ async function main() {
   const glossaryTitle = 'Kamus Istilah Koding & AI untuk Anak & Pemula | Glosarium Beekoding';
   const glossaryDesc = 'Kamus istilah coding & AI ramah anak terlengkap di Indonesia. Pahami apa itu algoritma, loop, variabel, machine learning, dan prompt engineering dengan analogi seru dunia nyata.';
   const glossaryKeywords = 'kamus koding anak, glosarium coding, apa itu algoritma, apa itu loop koding, apa itu machine learning, kamus istilah ai, coding untuk pemula indonesia';
-  const glossaryUrl = 'https://beekoding.pages.dev/glosarium';
+  const glossaryUrl = 'https://beekoding.my.id/glosarium';
 
   const glossaryDefinedTermSetJsonLd = JSON.stringify({
     '@context': 'https://schema.org',
@@ -265,7 +265,7 @@ async function main() {
         '@type': 'ListItem',
         position: 1,
         name: 'Beranda',
-        item: 'https://beekoding.pages.dev',
+        item: 'https://beekoding.my.id',
       },
       {
         '@type': 'ListItem',
@@ -311,7 +311,7 @@ async function main() {
   const quizTitle = 'Kuis Minat & Bakat Coding Anak (1 Menit) | Temukan Potensi Digital Buah Hati';
   const quizDesc = 'Apakah anak Anda tipe The Game Creator, Logic Sleuth, Web Designer, atau AI Builder? Ikuti kuis 1 menit gratis untuk mengetahui gaya belajar dan rekomendasi kurikulum koding terbaik ananda.';
   const quizKeywords = 'kuis minat coding anak, tes bakat logika anak, tes potensi koding, arketipe digital anak, belajar coding anak pemula, kursus scratch beekoding, kursus python remaja';
-  const quizUrl = 'https://beekoding.pages.dev/cek-minat-anak';
+  const quizUrl = 'https://beekoding.my.id/cek-minat-anak';
 
   const quizJsonLd = JSON.stringify({
     '@context': 'https://schema.org',
@@ -322,7 +322,7 @@ async function main() {
     provider: {
       '@type': 'EducationalOrganization',
       name: 'Beekoding',
-      url: 'https://beekoding.pages.dev',
+      url: 'https://beekoding.my.id',
     },
     about: {
       '@type': 'Thing',
@@ -338,7 +338,7 @@ async function main() {
         '@type': 'ListItem',
         position: 1,
         name: 'Beranda',
-        item: 'https://beekoding.pages.dev',
+        item: 'https://beekoding.my.id',
       },
       {
         '@type': 'ListItem',
@@ -389,7 +389,7 @@ async function main() {
           
           <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:24px 0;">
             <h2 style="font-size:1.1rem;font-weight:700;color:#92400e;margin:0 0 8px 0;">Pemberitahuan Khusus Google AdSense &amp; Cookie Pihak Ketiga</h2>
-            <p style="font-size:0.95rem;color:#78350f;margin:0 0 10px 0;">Situs web Beekoding (<a href="https://beekoding.pages.dev" style="color:#b45309;font-weight:bold;">https://beekoding.pages.dev</a>) menggunakan Google AdSense untuk menayangkan iklan yang relevan dan edukatif.</p>
+            <p style="font-size:0.95rem;color:#78350f;margin:0 0 10px 0;">Situs web Beekoding (<a href="https://beekoding.my.id" style="color:#b45309;font-weight:bold;">https://beekoding.my.id</a>) menggunakan Google AdSense untuk menayangkan iklan yang relevan dan edukatif.</p>
             <ul style="font-size:0.9rem;color:#78350f;margin:0;padding-left:20px;">
               <li>Vendor pihak ketiga, termasuk Google, menggunakan cookie untuk menayangkan iklan berdasarkan kunjungan pengguna sebelumnya ke situs web kami atau situs web lain.</li>
               <li>Penggunaan cookie periklanan (termasuk Cookie DoubleClick / DART) memungkinkan Google dan mitranya menayangkan iklan kepada pengguna kami berdasarkan kunjungan mereka ke situs kami dan/atau situs lain di Internet.</li>
@@ -410,7 +410,7 @@ async function main() {
           </ul>
 
           <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">3. Berkas Verifikasi Transparansi Iklan (Authorized Digital Sellers / ads.txt)</h2>
-          <p>Beekoding menyediakan berkas <code>ads.txt</code> resmi yang dapat diakses publik pada tautan: <a href="https://beekoding.pages.dev/ads.txt" target="_blank" style="color:#d97706;font-weight:bold;">https://beekoding.pages.dev/ads.txt</a> sesuai standar IAB Tech Lab untuk menjamin penayangan iklan yang sah dari penayang terverifikasi Google AdSense (Publisher ID: <code>pub-6361492236129824</code>).</p>
+          <p>Beekoding menyediakan berkas <code>ads.txt</code> resmi yang dapat diakses publik pada tautan: <a href="https://beekoding.my.id/ads.txt" target="_blank" style="color:#d97706;font-weight:bold;">https://beekoding.my.id/ads.txt</a> sesuai standar IAB Tech Lab untuk menjamin penayangan iklan yang sah dari penayang terverifikasi Google AdSense (Publisher ID: <code>pub-6361492236129824</code>).</p>
 
           <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">4. Hak Pemilik Data Pribadi</h2>
           <p>Setiap orang tua atau siswa memiliki hak untuk meminta salinan data pribadi yang kami simpan, memperbarui data yang tidak akurat, atau meminta penghapusan riwayat data pendaftaran kapan saja melalui kontak resmi kami.</p>
@@ -420,7 +420,7 @@ async function main() {
           <ul style="padding-left:20px;">
             <li><strong>Email Resmi:</strong> <a href="mailto:halo@beekoding.id" style="color:#d97706;">halo@beekoding.id</a></li>
             <li><strong>WhatsApp Hotline:</strong> <a href="https://wa.me/6281818901737" style="color:#d97706;">+62 818-1890-1737</a></li>
-            <li><strong>Situs Web:</strong> <a href="https://beekoding.pages.dev" style="color:#d97706;">https://beekoding.pages.dev</a></li>
+            <li><strong>Situs Web:</strong> <a href="https://beekoding.my.id" style="color:#d97706;">https://beekoding.my.id</a></li>
           </ul>
         </header>
       `,
@@ -487,7 +487,7 @@ async function main() {
       fs.mkdirSync(pageDir, { recursive: true });
     }
 
-    const pageUrl = `https://beekoding.pages.dev/${page.slug}`;
+    const pageUrl = `https://beekoding.my.id/${page.slug}`;
     const pageJsonLd = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebPage',
@@ -497,10 +497,10 @@ async function main() {
       publisher: {
         '@type': 'EducationalOrganization',
         name: 'Beekoding',
-        url: 'https://beekoding.pages.dev',
+        url: 'https://beekoding.my.id',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://beekoding.pages.dev/og-image.jpg',
+          url: 'https://beekoding.my.id/og-image.jpg',
         },
       },
     });
@@ -513,7 +513,7 @@ async function main() {
           '@type': 'ListItem',
           position: 1,
           name: 'Beranda',
-          item: 'https://beekoding.pages.dev',
+          item: 'https://beekoding.my.id',
         },
         {
           '@type': 'ListItem',
@@ -564,10 +564,10 @@ async function main() {
 
     const title = `${article.title} | Blog Beekoding`;
     const desc = article.excerpt.replace(/"/g, '&quot;');
-    const url = `https://beekoding.pages.dev/blog/${article.slug}`;
+    const url = `https://beekoding.my.id/blog/${article.slug}`;
     let image = article.coverImage;
     if (image.startsWith('/')) {
-      image = `https://beekoding.pages.dev${image}`;
+      image = `https://beekoding.my.id${image}`;
     }
 
     let imageType = 'image/jpeg';
@@ -617,10 +617,10 @@ async function main() {
       publisher: {
         '@type': 'EducationalOrganization',
         name: 'Beekoding',
-        url: 'https://beekoding.pages.dev',
+        url: 'https://beekoding.my.id',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://beekoding.pages.dev/og-image.jpg',
+          url: 'https://beekoding.my.id/og-image.jpg',
         },
       },
       articleSection: article.category,
@@ -634,13 +634,13 @@ async function main() {
           '@type': 'ListItem',
           position: 1,
           name: 'Beranda',
-          item: 'https://beekoding.pages.dev',
+          item: 'https://beekoding.my.id',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Blog Edukasi',
-          item: 'https://beekoding.pages.dev/blog',
+          item: 'https://beekoding.my.id/blog',
         },
         {
           '@type': 'ListItem',
@@ -677,7 +677,7 @@ async function main() {
 
   function generateSitemapXml(articlesList) {
     const today = new Date().toISOString().split('T')[0];
-    const domain = 'https://beekoding.pages.dev';
+    const domain = 'https://beekoding.my.id';
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -805,7 +805,7 @@ async function main() {
 
   function generateRssXml(articlesList) {
     const nowRfc822 = new Date().toUTCString();
-    const domain = 'https://beekoding.pages.dev';
+    const domain = 'https://beekoding.my.id';
 
     let rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">

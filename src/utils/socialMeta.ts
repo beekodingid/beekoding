@@ -9,16 +9,16 @@ const DEFAULT_META = {
   title: 'Beekoding | Coding & AI Learning for Future-Ready Minds',
   description:
     'Beekoding membekali anak-anak dan generasi muda dengan skill Coding, Artificial Intelligence, dan 21st-century skills seru dan aplikatif.',
-  image: 'https://beekoding.pages.dev/og-image.jpg',
-  url: 'https://beekoding.pages.dev/',
+  image: 'https://beekoding.my.id/og-image.jpg',
+  url: 'https://beekoding.my.id/',
   type: 'website',
 };
 
 export function getPublicBaseUrl(): string {
-  if (typeof window === 'undefined') return 'https://beekoding.pages.dev';
+  if (typeof window === 'undefined') return 'https://beekoding.my.id';
   const host = window.location.hostname;
   if (host === 'localhost' || host === '127.0.0.1') {
-    return 'https://beekoding.pages.dev';
+    return 'https://beekoding.my.id';
   }
   return window.location.origin;
 }

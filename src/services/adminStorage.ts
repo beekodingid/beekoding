@@ -8499,7 +8499,7 @@ ${announcement.content}
 
 ---------------------------------------------
 📱 *Akses Portal Mandiri Siswa:*
-Buka jadwal sesi, rapor, dan piagam anak di https://beekoding.pages.dev/#portal
+Buka jadwal sesi, rapor, dan piagam anak di https://beekoding.my.id/#portal
 
 _Salam hangat, Tim Akademik & Kesiswaan Beekoding Academy 🐝_
 `.trim();

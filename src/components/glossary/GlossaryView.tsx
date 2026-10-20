@@ -67,7 +67,7 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({
 
   // Handle WhatsApp Share for single term
   const handleShareTerm = (term: GlossaryTerm) => {
-    const text = `📖 *Kamus Koding Anak Beekoding*\n\n*${term.term} (${term.englishTerm || ''})*\n💡 *Analogi:* ${term.kidsAnalogy}\n\n📌 *Definisi:* ${term.shortDefinition}\n\nPelajari koding & AI seru untuk anak di: https://beekoding.pages.dev/glosarium`;
+    const text = `📖 *Kamus Koding Anak Beekoding*\n\n*${term.term} (${term.englishTerm || ''})*\n💡 *Analogi:* ${term.kidsAnalogy}\n\n📌 *Definisi:* ${term.shortDefinition}\n\nPelajari koding & AI seru untuk anak di: https://beekoding.my.id/glosarium`;
     const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     window.open(shareUrl, '_blank', 'noopener,noreferrer');
   };

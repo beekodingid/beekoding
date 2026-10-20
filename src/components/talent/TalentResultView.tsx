@@ -62,7 +62,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
       `🌟 *Top 3 Pilar Unggulan*:\n` +
       topStrengths.map((k, i) => `${i + 1}. ${CATEGORIES[k].name} (${scores[k]}%)`).join('\n') +
       `\n\n🚀 *Rekomendasi Program*: ${recommendedProgram.title}\n\n` +
-      `Yuk cek potensi & bakat digital anak di: https://beekoding.pages.dev/#talent`;
+      `Yuk cek potensi & bakat digital anak di: https://beekoding.my.id/#talent`;
 
     try {
       await navigator.clipboard.writeText(summaryText);
@@ -80,7 +80,7 @@ export const TalentResultView: React.FC<TalentResultViewProps> = ({
         await navigator.share({
           title: `Hasil Diagnostic Bakat Digital - ${profile.childName}`,
           text: `Peta Bakat Digital Ananda ${profile.childName}: Skor ${totalScore}/100${timePart}. Rekomendasi: ${recommendedProgram.title}.`,
-          url: 'https://beekoding.pages.dev/#talent',
+          url: 'https://beekoding.my.id/#talent',
         });
       } catch {
         // Ignored or cancelled

@@ -35,4 +35,4 @@ Disallow: /*?type=recovery*
 Crawl-delay: 1
 
 # Sitemaps
-Sitemap: https://beekoding.pages.dev/sitemap.xml
+Sitemap: https://beekoding.my.id/sitemap.xml

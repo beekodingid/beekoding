@@ -50,7 +50,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       return context.next();
     }
 
-    const domain = 'https://beekoding.pages.dev';
+    const originUrl = new URL(context.request.url);
+    const domain = originUrl.origin.includes('localhost') ? 'https://beekoding.my.id' : originUrl.origin;
     const today = new Date().toISOString().split('T')[0];
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -79,6 +80,62 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <!-- Programmatic SEO Landing: Kursus Coding Anak SD -->
+  <url>
+    <loc>${domain}/kursus-coding-anak-sd</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Programmatic SEO Landing: Kursus Python & AI Remaja SMP-SMA -->
+  <url>
+    <loc>${domain}/kursus-python-remaja-smp-sma</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Kamus & Glosarium Koding Anak -->
+  <url>
+    <loc>${domain}/glosarium</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Lead Magnet: Kuis Minat & Bakat Coding Anak -->
+  <url>
+    <loc>${domain}/cek-minat-anak</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Legal: Kebijakan Privasi (Google AdSense & COPPA Compliance) -->
+  <url>
+    <loc>${domain}/kebijakan-privasi</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Legal: Syarat & Ketentuan Layanan (Terms of Service) -->
+  <url>
+    <loc>${domain}/syarat-ketentuan</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Legal: Penafian Resmi (Disclaimer) -->
+  <url>
+    <loc>${domain}/penafian</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 `;
 
