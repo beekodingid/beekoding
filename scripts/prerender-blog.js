@@ -370,6 +370,191 @@ async function main() {
   fs.writeFileSync(path.join(distDir, 'kuis-minat.html'), quizHtml, 'utf-8');
   console.log(`[prerender-blog] Successfully prerendered Lead Magnet Quiz SEO page!`);
 
+  // =========================================================================
+  // 3e. PRERENDER LEGAL & PRIVACY POLICY PAGES (GOOGLE ADSENSE & COMPLIANCE)
+  // =========================================================================
+  const legalPages = [
+    {
+      slug: 'kebijakan-privasi',
+      aliases: ['privacy-policy', 'privacy'],
+      title: 'Kebijakan Privasi (Privacy Policy) & AdSense Cookie | Beekoding',
+      description: 'Kebijakan Privasi resmi Beekoding: Keterbukaan pengelolaan data, privasi anak (COPPA & UU PDP No. 27/2022), penggunaan cookie pihak ketiga & Google AdSense DART cookie.',
+      keywords: 'kebijakan privasi beekoding, privacy policy, google adsense cookie, perlindungan data anak, uupdp no 27 2022, coppa indonesia, opt-out adsense',
+      bodyHtml: `
+        <header style="max-width:800px;margin:40px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">
+          <a href="/" style="display:inline-block;margin-bottom:20px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2rem;font-weight:800;color:#0f172a;margin-bottom:8px;">Kebijakan Privasi (Privacy Policy) Beekoding</h1>
+          <p style="color:#64748b;font-size:0.9rem;">Pembaruan Terakhir: 20 Oktober 2026 | Berlaku Efektif untuk Pengguna Situs &amp; Siswa Beekoding</p>
+          <hr style="margin:24px 0;border:0;border-top:1px solid #e2e8f0;"/>
+          
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:24px 0;">
+            <h2 style="font-size:1.1rem;font-weight:700;color:#92400e;margin:0 0 8px 0;">Pemberitahuan Khusus Google AdSense &amp; Cookie Pihak Ketiga</h2>
+            <p style="font-size:0.95rem;color:#78350f;margin:0 0 10px 0;">Situs web Beekoding (<a href="https://beekoding.pages.dev" style="color:#b45309;font-weight:bold;">https://beekoding.pages.dev</a>) menggunakan Google AdSense untuk menayangkan iklan yang relevan dan edukatif.</p>
+            <ul style="font-size:0.9rem;color:#78350f;margin:0;padding-left:20px;">
+              <li>Vendor pihak ketiga, termasuk Google, menggunakan cookie untuk menayangkan iklan berdasarkan kunjungan pengguna sebelumnya ke situs web kami atau situs web lain.</li>
+              <li>Penggunaan cookie periklanan (termasuk Cookie DoubleClick / DART) memungkinkan Google dan mitranya menayangkan iklan kepada pengguna kami berdasarkan kunjungan mereka ke situs kami dan/atau situs lain di Internet.</li>
+              <li>Pengguna dapat memilih untuk menonaktifkan iklan hasil personalisasi dengan mengunjungi <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style="color:#b45309;text-decoration:underline;font-weight:bold;">Setelan Iklan Google (Google Ads Settings)</a>.</li>
+              <li>Atau, Anda dapat menyisih dari penggunaan cookie vendor pihak ketiga untuk iklan berbasis minat dengan mengunjungi <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" style="color:#b45309;text-decoration:underline;font-weight:bold;">AboutAds.info</a>.</li>
+            </ul>
+          </div>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">1. Komitmen Perlindungan Privasi Anak (COPPA &amp; UU PDP No. 27 Tahun 2022)</h2>
+          <p>Sebagai lembaga pendidikan coding dan teknologi untuk anak-anak, Beekoding berkomitmen teguh melindungi privasi anak di bawah usia 18 tahun. Kami mematuhi Undang-Undang Perlindungan Data Pribadi (UU PDP No. 27 Tahun 2022) Republik Indonesia dan Children's Online Privacy Protection Act (COPPA). Pendaftaran kelas untuk anak wajib didampingi dan disetujui secara eksplisit oleh orang tua atau wali murid yang sah.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">2. Informasi yang Kami Kumpulkan</h2>
+          <p>Informasi yang kami kumpulkan meliputi:</p>
+          <ul style="padding-left:20px;">
+            <li><strong>Data Kontak Wali:</strong> Nama orang tua/wali, nomor WhatsApp aktif, alamat email, dan kota domisili untuk keperluan jadwal dan laporan belajar anak.</li>
+            <li><strong>Data Siswa:</strong> Nama panggilan anak, jenjang kelas/usia, dan portofolio tugas koding yang dibuat selama pembelajaran.</li>
+            <li><strong>Data Log Otomatis:</strong> Alamat Protokol Internet (IP), jenis peramban (browser), Internet Service Provider (ISP), stempel tanggal/waktu, dan halaman perujuk/keluar.</li>
+          </ul>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">3. Berkas Verifikasi Transparansi Iklan (Authorized Digital Sellers / ads.txt)</h2>
+          <p>Beekoding menyediakan berkas <code>ads.txt</code> resmi yang dapat diakses publik pada tautan: <a href="https://beekoding.pages.dev/ads.txt" target="_blank" style="color:#d97706;font-weight:bold;">https://beekoding.pages.dev/ads.txt</a> sesuai standar IAB Tech Lab untuk menjamin penayangan iklan yang sah dari penayang terverifikasi Google AdSense (Publisher ID: <code>pub-6361492236129824</code>).</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">4. Hak Pemilik Data Pribadi</h2>
+          <p>Setiap orang tua atau siswa memiliki hak untuk meminta salinan data pribadi yang kami simpan, memperbarui data yang tidak akurat, atau meminta penghapusan riwayat data pendaftaran kapan saja melalui kontak resmi kami.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">5. Kontak Resmi Privasi &amp; Perlindungan Data</h2>
+          <p>Jika ada pertanyaan atau permintaan terkait Kebijakan Privasi ini, silakan hubungi tim kami:</p>
+          <ul style="padding-left:20px;">
+            <li><strong>Email Resmi:</strong> <a href="mailto:halo@beekoding.id" style="color:#d97706;">halo@beekoding.id</a></li>
+            <li><strong>WhatsApp Hotline:</strong> <a href="https://wa.me/6281818901737" style="color:#d97706;">+62 818-1890-1737</a></li>
+            <li><strong>Situs Web:</strong> <a href="https://beekoding.pages.dev" style="color:#d97706;">https://beekoding.pages.dev</a></li>
+          </ul>
+        </header>
+      `,
+    },
+    {
+      slug: 'syarat-ketentuan',
+      aliases: ['terms-of-service', 'terms'],
+      title: 'Syarat & Ketentuan Layanan (Terms of Service) | Beekoding',
+      description: 'Syarat dan ketentuan resmi penggunaan layanan edukasi coding dan kecerdasan buatan (AI) Beekoding. Ketentuan pendaftaran, hak kekayaan intelektual, dan batasan tanggung jawab.',
+      keywords: 'syarat dan ketentuan beekoding, terms of service, ketentuan kursus coding anak, lisensi karya siswa',
+      bodyHtml: `
+        <header style="max-width:800px;margin:40px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">
+          <a href="/" style="display:inline-block;margin-bottom:20px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2rem;font-weight:800;color:#0f172a;margin-bottom:8px;">Syarat &amp; Ketentuan Layanan (Terms of Service)</h1>
+          <p style="color:#64748b;font-size:0.9rem;">Pembaruan Terakhir: 20 Oktober 2026 | Berlaku untuk Seluruh Program Belajar Beekoding</p>
+          <hr style="margin:24px 0;border:0;border-top:1px solid #e2e8f0;"/>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">1. Penerimaan Ketentuan</h2>
+          <p>Dengan mengakses situs web Beekoding atau mendaftar pada salah satu program pelatihan, kursus, maupun workshop kami, Anda menyatakan telah membaca, memahami, dan menyetujui seluruh isi Syarat &amp; Ketentuan ini.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">2. Program Pelatihan &amp; Kelas</h2>
+          <p>Beekoding menyelenggarakan kelas pembelajaran coding, logika komputasi, robotik, dan Artificial Intelligence untuk anak (SD) hingga remaja (SMP-SMA) baik secara tatap muka maupun daring interaktif dalam kelompok kecil.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">3. Hak Kekayaan Intelektual</h2>
+          <p>Seluruh materi kurikulum, modul ajar, lembar kerja siswa, maskot karakter Beeby, dan materi grafis adalah milik Beekoding. Proyek game, aplikasi, dan kode program yang diciptakan siswa selama masa belajar sepenuhnya menjadi hak cipta milik siswa yang bersangkutan.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">4. Pembayaran &amp; Kebijakan Pembatalan</h2>
+          <p>Biaya pendaftaran program wajib diselesaikan sebelum jadwal kelas perdana dimulai. Jadwal pengganti (make-up class) dapat diajukan dengan pemberitahuan minimal 24 jam sebelum kelas berlangsung.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">5. Kontak Layanan Bantuan</h2>
+          <p>Untuk pertanyaan seputar syarat layanan, hubungi <a href="mailto:halo@beekoding.id" style="color:#d97706;">halo@beekoding.id</a> atau WhatsApp resmi di <a href="https://wa.me/6281818901737" style="color:#d97706;">+62 818-1890-1737</a>.</p>
+        </header>
+      `,
+    },
+    {
+      slug: 'penafian',
+      aliases: ['disclaimer'],
+      title: 'Penafian Resmi (Disclaimer) | Beekoding',
+      description: 'Penafian resmi Beekoding terkait konten materi edukasi, hasil capaian belajar siswa, tautan eksternal, dan penayangan iklan pihak ketiga Google AdSense.',
+      keywords: 'disclaimer beekoding, penafian resmi, iklan pihak ketiga, hasil belajar koding',
+      bodyHtml: `
+        <header style="max-width:800px;margin:40px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">
+          <a href="/" style="display:inline-block;margin-bottom:20px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2rem;font-weight:800;color:#0f172a;margin-bottom:8px;">Penafian Resmi (Disclaimer)</h1>
+          <p style="color:#64748b;font-size:0.9rem;">Pembaruan Terakhir: 20 Oktober 2026 | Beekoding</p>
+          <hr style="margin:24px 0;border:0;border-top:1px solid #e2e8f0;"/>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">1. Materi Edukasi &amp; Hasil Pembelajaran</h2>
+          <p>Seluruh materi di situs ini disediakan untuk tujuan pendidikan umum. Kecepatan perkembangan setiap anak dapat bervariasi sesuai ketekunan, minat personal, dan konsistensi berlatih.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">2. Iklan Pihak Ketiga (Google AdSense)</h2>
+          <p>Situs ini dapat menampilkan iklan yang dikelola oleh Google AdSense dan jaringan periklanan pihak ketiga. Penayangan iklan ini tidak serta merta mencerminkan dukungan langsung atau rekomendasi resmi Beekoding atas produk/layanan yang diiklankan oleh pihak ketiga tersebut.</p>
+
+          <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">3. Tautan Luar (External Links)</h2>
+          <p>Situs kami mungkin memuat tautan ke situs luar seperti Scratch MIT, Python.org, atau Google. Kami tidak bertanggung jawab atas kebijakan privasi atau konten situs eksternal tersebut.</p>
+        </header>
+      `,
+    },
+  ];
+
+  for (const page of legalPages) {
+    const pageDir = path.join(distDir, page.slug);
+    if (!fs.existsSync(pageDir)) {
+      fs.mkdirSync(pageDir, { recursive: true });
+    }
+
+    const pageUrl = `https://beekoding.pages.dev/${page.slug}`;
+    const pageJsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: page.title,
+      description: page.description,
+      url: pageUrl,
+      publisher: {
+        '@type': 'EducationalOrganization',
+        name: 'Beekoding',
+        url: 'https://beekoding.pages.dev',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://beekoding.pages.dev/og-image.jpg',
+        },
+      },
+    });
+
+    const pageBreadcrumbJsonLd = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Beranda',
+          item: 'https://beekoding.pages.dev',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: page.title.split('|')[0].trim(),
+          item: pageUrl,
+        },
+      ],
+    });
+
+    const pageSchemasTag = `\n    <!-- Legal WebPage Structured Data -->\n    <script type="application/ld+json">\n    ${pageJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${pageBreadcrumbJsonLd}\n    </script>\n  </head>`;
+
+    let renderedHtml = baseHtml
+      .replace(/<title>.*?<\/title>/, `<title>${page.title}</title>`)
+      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${pageUrl}" />`)
+      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${page.description}" />`)
+      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${page.keywords}" />`)
+      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${page.title}" />`)
+      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${page.description}" />`)
+      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${pageUrl}" />`)
+      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${page.title}" />`)
+      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${page.description}" />`)
+      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${pageUrl}" />`)
+      .replace('</head>', pageSchemasTag)
+      .replace('<div id="root"></div>', `<div id="root">${page.bodyHtml}</div>`);
+
+    fs.writeFileSync(path.join(pageDir, 'index.html'), renderedHtml, 'utf-8');
+    fs.writeFileSync(path.join(distDir, `${page.slug}.html`), renderedHtml, 'utf-8');
+
+    for (const alias of page.aliases) {
+      const aliasDir = path.join(distDir, alias);
+      if (!fs.existsSync(aliasDir)) {
+        fs.mkdirSync(aliasDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(aliasDir, 'index.html'), renderedHtml, 'utf-8');
+      fs.writeFileSync(path.join(distDir, `${alias}.html`), renderedHtml, 'utf-8');
+    }
+  }
+
+  console.log(`[prerender-blog] Successfully prerendered ${legalPages.length} Legal & Policy pages for Google AdSense compliance!`);
+
   // 4. Prerender each article static directory and index.html
   for (const article of articles) {
     const articleDir = path.join(blogDir, article.slug);
@@ -569,6 +754,27 @@ async function main() {
       <image:title>Kuis Minat &amp; Bakat Coding Anak (1 Menit) Beekoding</image:title>
       <image:caption>Temukan potensi digital buah hati: The Game Creator, Logic Sleuth, Web Designer, atau AI Builder.</image:caption>
     </image:image>
+  </url>
+  <!-- Legal: Kebijakan Privasi (Google AdSense & COPPA Compliance) -->
+  <url>
+    <loc>${domain}/kebijakan-privasi</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Legal: Syarat & Ketentuan Layanan (Terms of Service) -->
+  <url>
+    <loc>${domain}/syarat-ketentuan</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Legal: Penafian Resmi (Disclaimer) -->
+  <url>
+    <loc>${domain}/penafian</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 `;
 

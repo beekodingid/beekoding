@@ -61,6 +61,9 @@ const GlossaryView = lazy(() =>
 const QuizMinatView = lazy(() =>
   import('./components/quiz/QuizMinatView').then((m) => ({ default: m.QuizMinatView }))
 );
+const LegalView = lazy(() =>
+  import('./components/legal/LegalView').then((m) => ({ default: m.LegalView }))
+);
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
   return (
@@ -92,6 +95,8 @@ export function App() {
   const [showGlossary, setShowGlossary] = useState(false);
   const [glossarySlug, setGlossarySlug] = useState<string | undefined>(undefined);
   const [showQuizMinat, setShowQuizMinat] = useState(false);
+  const [showLegal, setShowLegal] = useState(false);
+  const [legalTab, setLegalTab] = useState<'privacy' | 'terms' | 'disclaimer'>('privacy');
   const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
@@ -116,6 +121,7 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
       } else if (hash === '#talent' || pathname === '/talent') {
         setShowTalentAssessment(true);
@@ -124,6 +130,7 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
       } else if (
         hash.startsWith('#admin') ||
@@ -137,6 +144,7 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
       } else if (
         hash.startsWith('#portal') ||
@@ -150,6 +158,7 @@ export function App() {
         setShowTalentAssessment(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
       } else if (hash === '#review' || hash === '#showcase' || hash === '#testimoni') {
         setShowQuizMinat(false);
@@ -158,6 +167,7 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
       } else if (
         hash.startsWith('#kursus-coding-anak-sd') ||
@@ -170,6 +180,7 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
       } else if (
         hash.startsWith('#kursus-python-remaja-smp-sma') ||
         pathname.startsWith('/kursus-python-remaja-smp-sma')
@@ -181,6 +192,54 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
+      } else if (
+        hash === '#privacy' ||
+        hash === '#kebijakan-privasi' ||
+        pathname === '/kebijakan-privasi' ||
+        pathname === '/privacy-policy' ||
+        pathname === '/privacy'
+      ) {
+        setLegalTab('privacy');
+        setShowLegal(true);
+        setShowQuizMinat(false);
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
+      } else if (
+        hash === '#terms' ||
+        hash === '#syarat-ketentuan' ||
+        pathname === '/syarat-ketentuan' ||
+        pathname === '/terms-of-service' ||
+        pathname === '/terms'
+      ) {
+        setLegalTab('terms');
+        setShowLegal(true);
+        setShowQuizMinat(false);
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
+      } else if (
+        hash === '#disclaimer' ||
+        hash === '#penafian' ||
+        pathname === '/penafian' ||
+        pathname === '/disclaimer'
+      ) {
+        setLegalTab('disclaimer');
+        setShowLegal(true);
+        setShowQuizMinat(false);
+        setShowAdmin(false);
+        setShowTalentAssessment(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setAgeLandingTier(null);
       } else if (
         hash.startsWith('#glosarium') ||
         pathname.startsWith('/glosarium')
@@ -191,6 +250,7 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowBlog(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
         let slug = '';
         if (hash.startsWith('#glosarium/')) {
@@ -206,6 +266,7 @@ export function App() {
         setShowTalentAssessment(false);
         setShowStudentPortal(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
         let slug = '';
         if (hash.startsWith('#blog/')) {
@@ -221,6 +282,7 @@ export function App() {
         setShowStudentPortal(false);
         setShowBlog(false);
         setShowGlossary(false);
+        setShowLegal(false);
         setAgeLandingTier(null);
       }
     };
@@ -449,7 +511,64 @@ export function App() {
     }
   };
 
-  // 0. Jika Kuis Minat & Bakat Coding Anak sedang aktif
+  const handleOpenLegal = (tab: 'privacy' | 'terms' | 'disclaimer' = 'privacy') => {
+    const slugMap: Record<string, string> = {
+      privacy: 'kebijakan-privasi',
+      terms: 'syarat-ketentuan',
+      disclaimer: 'penafian',
+    };
+    window.history.pushState(null, '', `/${slugMap[tab]}`);
+    startTransition(() => {
+      setLegalTab(tab);
+      setShowLegal(true);
+      setShowQuizMinat(false);
+      setShowBlog(false);
+      setShowAdmin(false);
+      setShowTalentAssessment(false);
+      setShowStudentPortal(false);
+      setShowGlossary(false);
+      setAgeLandingTier(null);
+    });
+  };
+
+  const handleCloseLegal = () => {
+    startTransition(() => {
+      setShowLegal(false);
+    });
+    if (
+      window.location.hash.includes('privacy') ||
+      window.location.hash.includes('terms') ||
+      window.location.hash.includes('disclaimer') ||
+      window.location.hash.includes('kebijakan-privasi') ||
+      window.location.hash.includes('syarat-ketentuan') ||
+      window.location.hash.includes('penafian') ||
+      window.location.pathname.includes('kebijakan-privasi') ||
+      window.location.pathname.includes('privacy') ||
+      window.location.pathname.includes('syarat-ketentuan') ||
+      window.location.pathname.includes('terms') ||
+      window.location.pathname.includes('penafian') ||
+      window.location.pathname.includes('disclaimer')
+    ) {
+      window.history.pushState(null, '', '/');
+    }
+  };
+
+  // 0. Jika Halaman Legalitas (Kebijakan Privasi, Syarat Layanan, Penafian) sedang aktif
+  if (showLegal) {
+    return (
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Membuka Kebijakan & Ketentuan Layanan Beekoding..." />}>
+          <LegalView
+            initialTab={legalTab}
+            onBackToHome={handleCloseLegal}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
+    );
+  }
+
+  // 1. Jika Kuis Minat & Bakat Coding Anak sedang aktif
   if (showQuizMinat) {
     return (
       <>
@@ -618,6 +737,7 @@ export function App() {
         onOpenBlog={handleOpenBlog}
         onOpenAgeLanding={handleOpenAgeLanding}
         onOpenGlossary={handleOpenGlossary}
+        onOpenLegal={handleOpenLegal}
       />
 
       {/* Floating WhatsApp chat widget */}

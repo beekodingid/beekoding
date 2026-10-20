@@ -12,6 +12,7 @@ interface FooterProps {
   onOpenBlog?: () => void;
   onOpenAgeLanding?: (tier: 'sd' | 'teens') => void;
   onOpenGlossary?: () => void;
+  onOpenLegal?: (tab: LegalTabType) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -22,14 +23,19 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenBlog,
   onOpenAgeLanding,
   onOpenGlossary,
+  onOpenLegal,
 }) => {
   const { isDark } = useTheme();
   const [legalModalOpen, setLegalModalOpen] = useState(false);
   const [legalTab, setLegalTab] = useState<LegalTabType>('privacy');
 
   const handleOpenLegal = (tab: LegalTabType) => {
-    setLegalTab(tab);
-    setLegalModalOpen(true);
+    if (onOpenLegal) {
+      onOpenLegal(tab);
+    } else {
+      setLegalTab(tab);
+      setLegalModalOpen(true);
+    }
   };
 
   const scrollToTop = () => {
@@ -429,29 +435,38 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
             <span>© 2026 Beekoding. Seluruh Hak Cipta Dilindungi.</span>
             <div className="flex items-center gap-3 text-[11px]">
-              <button
-                type="button"
-                onClick={() => handleOpenLegal('privacy')}
+              <a
+                href="/kebijakan-privasi"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleOpenLegal('privacy');
+                }}
                 className="hover:text-amber-500 transition-colors underline cursor-pointer"
               >
                 Kebijakan Privasi
-              </button>
+              </a>
               <span>•</span>
-              <button
-                type="button"
-                onClick={() => handleOpenLegal('terms')}
+              <a
+                href="/syarat-ketentuan"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleOpenLegal('terms');
+                }}
                 className="hover:text-amber-500 transition-colors underline cursor-pointer"
               >
                 Syarat Layanan
-              </button>
+              </a>
               <span>•</span>
-              <button
-                type="button"
-                onClick={() => handleOpenLegal('disclaimer')}
+              <a
+                href="/penafian"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleOpenLegal('disclaimer');
+                }}
                 className="hover:text-amber-500 transition-colors underline cursor-pointer"
               >
                 Penafian
-              </button>
+              </a>
             </div>
           </div>
 
