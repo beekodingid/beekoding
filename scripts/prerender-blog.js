@@ -731,6 +731,7 @@ async function main() {
       <image:title>Kursus Python &amp; AI Remaja SMP-SMA (Usia 11-17 Thn) Beekoding</image:title>
       <image:caption>Belajar Python, Roblox Lua, AI Machine Learning, dan portofolio teknologi remaja.</image:caption>
     </image:image>
+  </url>
   <!-- Programmatic SEO: Kamus & Glosarium Koding Anak -->
   <url>
     <loc>${domain}/glosarium</loc>

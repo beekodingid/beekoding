@@ -6,6 +6,13 @@ Allow: /
 # General Search Engine Crawlers
 User-agent: *
 Allow: /
+Allow: /kebijakan-privasi
+Allow: /privacy-policy
+Allow: /syarat-ketentuan
+Allow: /terms-of-service
+Allow: /penafian
+Allow: /disclaimer
+Allow: /ads.txt
 Allow: /blog
 Allow: /blog/*
 Allow: /#programs
