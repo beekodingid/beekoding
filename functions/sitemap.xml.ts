@@ -82,6 +82,14 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     <priority>0.9</priority>
   </url>
 
+  <!-- Programmatic Pricing: Biaya Kursus Resmi -->
+  <url>
+    <loc>${domain}/biaya-kursus</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- Programmatic SEO Landing: Kursus Coding Anak SD -->
   <url>
     <loc>${domain}/kursus-coding-anak-sd</loc>

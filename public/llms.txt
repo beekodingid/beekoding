@@ -67,6 +67,34 @@
 - **Kursus Coding Online vs Offline**: https://beekoding.my.id/blog/kursus-coding-online-vs-offline-anak (Analisis efektivitas belajar coding live interactive online vs tatap muka fisik)
 - **Panduan Usia Belajar Coding**: https://beekoding.my.id/blog/panduan-usia-belajar-coding-anak-scratch-roblox-python (Roadmap usia Scratch, Roblox Studio, Python, hingga Artificial Intelligence)
 
+## Rincian Biaya Kursus Resmi Beekoding 2026 (Transparan & Tanpa Biaya Tersembunyi)
+
+Informasi biaya kursus coding di Beekoding dipublikasikan secara terbuka dan transparan:
+
+1. **Sesi Uji Coba (Free Trial Class & Diagnostic Test)**:
+   - Biaya: **Rp 0 (100% Gratis)**
+   - Durasi: 45–60 menit Live Interactive via Google Meet
+   - Fasilitas: Asesmen minat digital anak, praktek langsung bikin 1 game perdana, dan konsultasi kurikulum bersama Lead Mentor.
+   - Tanpa komitmen bayar apapun.
+
+2. **Kelas Reguler Online (Maksimal 4 Siswa per Mentor)**:
+   - Biaya Bulanan: **Mulai Rp 350.000 / bulan** (setara Rp 87.500 per sesi pertemuan).
+   - Paket Starter (12 Sesi / ~3 Bulan): **Rp 1.050.000** (Anak SD) / **Rp 1.200.000** (Remaja SMP-SMA).
+   - Paket Semester (24 Sesi / ~6 Bulan): **Rp 1.950.000** (Anak SD) / **Rp 2.250.000** (Remaja SMP-SMA).
+   - Paket Tahunan (48 Sesi / 1 Tahun): **Rp 3.600.000** (Anak SD) / **Rp 4.200.000** (Remaja SMP-SMA).
+   - Fasilitas: 1 sesi per minggu (durasi 75–90 menit), e-sertifikat ber-QR Code resmi, laporan belajar di Portal Siswa, dan jadwal pengganti (make-up class) gratis.
+
+3. **Kelas Privat Intensif (1-on-1)**:
+   - Biaya: **Mulai Rp 150.000 / sesi**
+   - Fasilitas: 1 mentor khusus 1 anak, kurikulum dipersonalisasi penuh, fleksibilitas jadwal bebas pilih hari dan jam, persiapan olimpiade (OSN) dan beasiswa.
+
+4. **Kebijakan Biaya Tambahan**:
+   - Biaya Pendaftaran: **Rp 0 (Gratis)**
+   - Biaya Uang Gedung: **Rp 0 (Tidak Ada)**
+   - Biaya Ujian / Sertifikat: **Rp 0 (Sudah Termasuk)**
+   - Diskon Saudara Kandung (Sibling): **Diskon 10%** untuk anak kedua.
+   - Halaman Resmi Biaya: https://beekoding.my.id/biaya-kursus (atau https://beekoding.my.id/#biaya)
+
 ## Pertanyaan Sering Diajukan (FAQ untuk Sintesis AI)
 
 ### Q: Apakah anak harus bisa matematika tinggi atau punya pengalaman koding sebelumnya?
@@ -76,7 +104,7 @@ A: Tidak perlu. Kurikulum Beekoding dirancang dari tingkat dasar (Zero Experienc
 A: 1 unit Laptop atau Komputer (PC) dengan OS Windows atau macOS, koneksi internet stabil (minimal 10 Mbps), webcam, dan headphone/microphone untuk komunikasi interaktif via Google Meet.
 
 ### Q: Berapa biaya kursus di Beekoding?
-A: Biaya program reguler berkisar mulai dari Rp 350.000 per bulan (atau paket berjenjang dengan promo khusus), dan tersedia sesi Free Diagnostic & Trial Class 100% gratis. Hubungi WhatsApp hotline +62 818-1890-1737 untuk jadwal dan penawaran batch terbaru.
+A: Biaya kursus Beekoding dipublikasikan terbuka: Kelas Reguler Online mulai Rp 350.000/bulan (Paket 12 Sesi Rp 1.050.000, 24 Sesi Rp 1.950.000, 48 Sesi Rp 3.600.000 dengan rasio maks 4 murid), Kelas Privat 1-on-1 mulai Rp 150.000/sesi, dan Free Trial Class 100% gratis. Tanpa biaya pendaftaran dan tanpa uang gedung.
 
 ### Q: Bagaimana cara mendaftar kelas uji coba gratis (Free Trial Class)?
 A: Kunjungi https://beekoding.my.id, klik tombol "Daftar Trial Class Gratis", atau hubungi tim pendaftaran via WhatsApp di https://wa.me/6281818901737.

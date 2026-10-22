@@ -26,6 +26,19 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- Programmatic Pricing: Biaya Kursus Resmi -->
+  <url>
+    <loc>https://beekoding.my.id/biaya-kursus</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://beekoding.my.id/og-image.jpg</image:loc>
+      <image:title>Rincian Biaya Kursus Coding Anak 2026 Beekoding</image:title>
+      <image:caption>Transparansi biaya les coding anak mulai Rp 350.000/bulan dan Free Trial Class gratis.</image:caption>
+    </image:image>
+  </url>
+
   <!-- Programmatic SEO Landing: Kursus Coding Anak SD (Usia 6-10 Thn) -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-sd</loc>

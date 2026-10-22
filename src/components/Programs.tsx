@@ -33,6 +33,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1 Foundation',
         levelRange: 'Sesi 01 – 12',
         tag: 'Starter Minat',
+        price: 'Rp 1.050.000',
+        perMonth: 'Rp 350.000 / bln',
         description: 'Membangun fondasi logika komputasional & verifikasi minat awal buah hati terhadap dunia coding.',
         focus: 'Scratch 3.0, Motion, Events, Loops & Text-to-Speech AI',
         deliverables: [
@@ -48,6 +50,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1–2 Mastery',
         levelRange: 'Sesi 01 – 24 (1 Semester)',
         tag: 'Semester Track',
+        price: 'Rp 1.950.000',
+        perMonth: 'Rp 325.000 / bln',
         description: 'Memperdalam logika percabangan, interaksi sensor kamera webcam & pembuatan game fisika 2D mandiri.',
         focus: 'Video Sensing Webcam, Broadcast System & Game Fisika',
         deliverables: [
@@ -64,6 +68,8 @@ const STAGES_PATHWAY_DATA = {
         levelRange: 'Sesi 01 – 48 (Tahun ke-1)',
         tag: 'Paling Diminati',
         isPopular: true,
+        price: 'Rp 3.600.000',
+        perMonth: 'Rp 300.000 / bln',
         description: 'Kurikulum tahunan komprehensif. Menguasai game arcade tingkat lanjut, matematika visual & robotika simulasi.',
         focus: 'Game Arcade Multi-Level, Pen Extension & Robotika Scratch',
         deliverables: [
@@ -79,6 +85,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1–8 Full Pathway',
         levelRange: 'Sesi 01 – 96 (Pathway Lengkap)',
         tag: 'Pathway Lengkap',
+        price: 'Rp 6.700.000',
+        perMonth: 'Rp 279.000 / bln',
         description: 'Jalur tuntas 2 tahun: dari balok Scratch hingga transisi lancar ke teks Python Kids dan AI mandiri.',
         focus: 'Transisi Python Kids, AI Logic, Portofolio Web & Wisuda',
         deliverables: [
@@ -105,6 +113,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1 Mobile Dev',
         levelRange: 'Sesi 01 – 12',
         tag: 'Starter Mobile',
+        price: 'Rp 1.150.000',
+        perMonth: 'Rp 383.000 / bln',
         description: 'Membangun aplikasi ponsel Android nyata, sensor getar accelerometer & kompilasi file APK langsung.',
         focus: 'MIT App Inventor, Sensor Accelerometer & Build APK',
         deliverables: [
@@ -120,6 +130,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1–2 Mastery',
         levelRange: 'Sesi 01 – 24 (1 Semester)',
         tag: 'Semester Track',
+        price: 'Rp 2.100.000',
+        perMonth: 'Rp 350.000 / bln',
         description: 'Pembuatan game 3D multiplayer di Roblox Studio menggunakan kode skrip bahasa Lua nyata.',
         focus: 'Roblox Studio 3D, Pemrograman Skrip Lua & Obby Parkour',
         deliverables: [
@@ -136,6 +148,8 @@ const STAGES_PATHWAY_DATA = {
         levelRange: 'Sesi 01 – 48 (Tahun ke-1)',
         tag: 'Paling Diminati',
         isPopular: true,
+        price: 'Rp 3.900.000',
+        perMonth: 'Rp 325.000 / bln',
         description: 'Transisi mantap ke coding teks murni Python dan pembuatan game arcade 2D mandiri dengan Pygame.',
         focus: 'Python Data Logic, Fungsi, Algoritma OOP & Pygame Arcade',
         deliverables: [
@@ -151,6 +165,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1–8 Full Pathway',
         levelRange: 'Sesi 01 – 96 (Pathway Lengkap)',
         tag: 'Pathway Lengkap',
+        price: 'Rp 7.200.000',
+        perMonth: 'Rp 300.000 / bln',
         description: 'Spesialisasi penuh 2 tahun mencakup Web Development, Cloud Database Firebase & AI Vision.',
         focus: 'Fullstack Web Dasar, Cloud Database, Computer Vision & Grand Demo Day',
         deliverables: [
@@ -177,6 +193,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1 Python Pro',
         levelRange: 'Sesi 01 – 12',
         tag: 'Fondasi Teks',
+        price: 'Rp 1.200.000',
+        perMonth: 'Rp 400.000 / bln',
         description: 'Penguasaan dasar Python profesional, algoritma struktur data terapan, dan otomasi CLI.',
         focus: 'Python Data Structure, File I/O, OOP Class & CLI Automation',
         deliverables: [
@@ -192,6 +210,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1–2 Mastery',
         levelRange: 'Sesi 01 – 24 (1 Semester)',
         tag: 'Semester Track',
+        price: 'Rp 2.250.000',
+        perMonth: 'Rp 375.000 / bln',
         description: 'Membangun antarmuka web modern dengan HTML5, Tailwind CSS, JavaScript & integrasi REST API.',
         focus: 'Modern Web Engineering, UI/UX Responsive, REST API & Git',
         deliverables: [
@@ -208,6 +228,8 @@ const STAGES_PATHWAY_DATA = {
         levelRange: 'Sesi 01 – 48 (Tahun ke-1)',
         tag: 'Paling Diminati',
         isPopular: true,
+        price: 'Rp 4.200.000',
+        perMonth: 'Rp 350.000 / bln',
         description: 'Kecerdasan Buatan Terapan, Machine Learning, Prompt Engineering & Computer Vision OpenCV.',
         focus: 'Applied AI, Machine Learning Scikit-Learn, OpenCV & Chatbot Model',
         deliverables: [
@@ -223,6 +245,8 @@ const STAGES_PATHWAY_DATA = {
         badge: 'Level 1–8 Full Pathway',
         levelRange: 'Sesi 01 – 96 (Pathway Lengkap)',
         tag: 'Pathway Lengkap',
+        price: 'Rp 7.800.000',
+        perMonth: 'Rp 325.000 / bln',
         description: 'Inkubasi produk teknologi utuh: Fullstack SaaS, Live Multi-Cloud Deploy, Pitch Deck & Beasiswa Kuliah.',
         focus: 'Fullstack SaaS, Cloud Deployment CI/CD, Pitch Deck Silicon Valley & Grand Demo Day',
         deliverables: [
@@ -699,6 +723,24 @@ export const Programs: React.FC<ProgramsProps> = ({
                           <span className="text-xs text-amber-500 font-bold">{track.period}</span>
                         </div>
 
+                        {track.price && (
+                          <div className="mt-2 pt-2 border-t border-slate-700/30">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-xl font-black text-amber-500 font-['Space_Grotesk']">
+                                {track.price}
+                              </span>
+                              {track.perMonth && (
+                                <span className="text-[11px] font-medium text-slate-400">
+                                  ({track.perMonth})
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[10px] text-emerald-500 font-semibold block mt-0.5">
+                              ✓ Bebas Biaya Registrasi
+                            </span>
+                          </div>
+                        )}
+
                         <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                           {track.description}
                         </p>
@@ -750,6 +792,231 @@ export const Programs: React.FC<ProgramsProps> = ({
                       </div>
                     </div>
                   ))}
+                </div>
+
+                {/* DEDICATED TRANSPARENT PRICING & BIAYA KURSUS SECTION */}
+                <div id="biaya" className="scroll-mt-24 mt-20 pt-12 border-t border-slate-800/80">
+                  <div className="text-center max-w-3xl mx-auto mb-12">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-3 bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>RINCIAN BIAYA RESMI BEEKODING 2026</span>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
+                      Transparansi Biaya Kursus Coding &amp; AI
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+                      Kami memegang teguh kejujuran informasi. Seluruh biaya kursus di Beekoding tertera secara terbuka tanpa biaya pendaftaran tersembunyi, tanpa uang gedung, dan bebas biaya sertifikasi.
+                    </p>
+                  </div>
+
+                  {/* 3 Core Package Cards */}
+                  <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+                    {/* 1. Trial Class */}
+                    <div
+                      className={`p-6 rounded-3xl border flex flex-col justify-between ${
+                        isDark ? 'bg-[#151928] border-slate-800' : 'bg-white border-slate-200 shadow-md'
+                      }`}
+                    >
+                      <div>
+                        <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-800 text-slate-300">
+                          Sesi Pengenalan
+                        </span>
+                        <h4 className="text-xl font-black mt-3 mb-1 text-slate-900 dark:text-white">
+                          Free Trial &amp; Diagnostic
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                          Uji coba simulasi belajar dan tes pemetaan minat koding anak.
+                        </p>
+                        <div className="mb-4 pb-4 border-b border-slate-700/40">
+                          <span className="text-3xl font-black text-amber-500 font-['Space_Grotesk']">
+                            Rp 0
+                          </span>
+                          <span className="text-xs text-slate-400 font-medium block">
+                            100% Gratis Tanpa Komitmen
+                          </span>
+                        </div>
+                        <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>1x Sesi Belajar Langsung (45–60 Menit)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Praktek Membuat 1 Game Perdana</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Konsultasi Minat &amp; Gaya Belajar Buah Hati</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Rekomendasi Kurikulum Berdasarkan Usia</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <a
+                        href={getWhatsAppInquiryUrl('Free Trial Class & Diagnostic Test')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 w-full py-3 rounded-xl text-center text-xs font-black text-slate-900 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white transition-all block"
+                      >
+                        Klaim Kelas Uji Coba Gratis →
+                      </a>
+                    </div>
+
+                    {/* 2. Regular Small Group (1:4) - Highlighted */}
+                    <div
+                      className={`p-6 rounded-3xl border-2 flex flex-col justify-between relative ${
+                        isDark
+                          ? 'bg-gradient-to-b from-[#1a2032] to-[#121622] border-amber-400/80 shadow-2xl shadow-amber-500/10'
+                          : 'bg-gradient-to-b from-white to-amber-50/50 border-amber-400 shadow-xl'
+                      }`}
+                    >
+                      <div className="absolute -top-3.5 right-6 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow">
+                        Paling Favorit Orang Tua
+                      </div>
+                      <div>
+                        <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400">
+                          Kelas Kelompok Kecil (Maks 4 Murid)
+                        </span>
+                        <h4 className="text-xl font-black mt-3 mb-1 text-slate-900 dark:text-white">
+                          Kelas Reguler Interaktif
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                          Pendampingan terarah dengan teman sebaya yang suportif.
+                        </p>
+                        <div className="mb-4 pb-4 border-b border-slate-700/40">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-xs text-slate-400">Mulai</span>
+                            <span className="text-3xl font-black text-amber-500 font-['Space_Grotesk']">
+                              Rp 350.000
+                            </span>
+                            <span className="text-xs text-slate-400 font-bold">/ bulan</span>
+                          </div>
+                          <span className="text-[11px] text-emerald-500 font-semibold block mt-1">
+                            ✓ Paket 12 Sesi: Rp 1.050.000 | 24 Sesi: Rp 1.950.000
+                          </span>
+                        </div>
+                        <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Live Google Meet (Rasio Terarah 1 Mentor : Maks 4 Murid)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Durasi 75–90 Menit per Sesi (1x / Minggu)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Bebas Biaya Pendaftaran &amp; Bebas Uang Gedung</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Akses Portal Siswa &amp; Sertifikat Digital QR Code Resmi</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Jadwal Pengganti (Make-up Class) Jika Berhalangan</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <a
+                        href={getWhatsAppInquiryUrl('Program Reguler Online (Maks 4 Murid)')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 w-full py-3 rounded-xl text-center text-xs font-black text-slate-950 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:brightness-110 shadow-lg shadow-amber-500/20 transition-all block"
+                      >
+                        Pilih Kelas Reguler (Rp 350rb/bln) →
+                      </a>
+                    </div>
+
+                    {/* 3. Private 1-on-1 */}
+                    <div
+                      className={`p-6 rounded-3xl border flex flex-col justify-between ${
+                        isDark ? 'bg-[#151928] border-slate-800' : 'bg-white border-slate-200 shadow-md'
+                      }`}
+                    >
+                      <div>
+                        <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-800 text-slate-300">
+                          Eksklusif Personal
+                        </span>
+                        <h4 className="text-xl font-black mt-3 mb-1 text-slate-900 dark:text-white">
+                          Kelas Privat 1-on-1
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                          1 Mentor khusus untuk 1 murid dengan kurikulum fleksibel.
+                        </p>
+                        <div className="mb-4 pb-4 border-b border-slate-700/40">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-xs text-slate-400">Mulai</span>
+                            <span className="text-3xl font-black text-amber-500 font-['Space_Grotesk']">
+                              Rp 150.000
+                            </span>
+                            <span className="text-xs text-slate-400 font-bold">/ sesi</span>
+                          </div>
+                          <span className="text-[11px] text-slate-400 font-medium block mt-1">
+                            Tersedia Paket 8, 12, atau 24 Sesi
+                          </span>
+                        </div>
+                        <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>100% Perhatian Penuh Mentor ke Buah Hati</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Kecepatan Belajar Sesuai Ritme Personal Anak</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Bebas Pilih Jadwal Hari &amp; Jam Belajar</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                            <span>Bimbingan Portofolio Lomba &amp; Olimpiade (OSN)</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <a
+                        href={getWhatsAppInquiryUrl('Kelas Privat Intensif 1-on-1')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 w-full py-3 rounded-xl text-center text-xs font-black text-slate-900 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white transition-all block"
+                      >
+                        Konsultasi Kelas Privat 1-on-1 →
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Summary Comparison & FAQ Box */}
+                  <div
+                    className={`max-w-4xl mx-auto p-6 rounded-3xl border ${
+                      isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-amber-50/50 border-amber-200'
+                    }`}
+                  >
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-500" />
+                      <span>Kebijakan Transparansi Biaya Beekoding untuk Orang Tua:</span>
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-3 text-xs text-slate-600 dark:text-slate-300">
+                      <div className="flex items-start gap-2">
+                        <span className="text-amber-500 font-bold">•</span>
+                        <span><strong>Bebas Biaya Registrasi:</strong> Tidak ada biaya pendaftaran awal atau iuran tahunan.</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-amber-500 font-bold">•</span>
+                        <span><strong>Sertifikat Gratis:</strong> Sertifikat digital QR Code resmi sudah termasuk tanpa biaya tambahan.</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-amber-500 font-bold">•</span>
+                        <span><strong>Jadwal Pengganti:</strong> Fasilitas make-up class jika anak berhalangan hadir karena sakit/ujian.</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-amber-500 font-bold">•</span>
+                        <span><strong>Sibling Discount:</strong> Diskon 10% untuk pendaftaran saudara kandung (kakak/adik).</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </>
             );

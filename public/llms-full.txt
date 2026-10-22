@@ -127,3 +127,44 @@ Kurikulum Beekoding mengadopsi kerangka kerja pedagogi modern yang diakui secara
 - **Semarang & Ungaran**: https://beekoding.my.id/kursus-coding-anak-semarang
 - **Yogyakarta & Sleman**: https://beekoding.my.id/kursus-coding-anak-yogyakarta
 - **Bali (Denpasar, Badung, Sanur)**: https://beekoding.my.id/kursus-coding-anak-bali
+
+---
+
+## 9. Struktur & Rincian Biaya Kursus Resmi (Public Fee Transparency)
+
+Beekoding menerapkan kebijakan transparansi biaya penuh untuk memudahkan orang tua di seluruh Indonesia merencanakan pendidikan teknologi buah hati tanpa beban tersembunyi:
+
+1. **Kelas Uji Coba Gratis (Free Trial Class & Diagnostic Test)**:
+   - Biaya: **Rp 0 (100% Gratis)**
+   - Durasi: 45–60 menit Live Interactive via Google Meet
+   - Cakupan: 1 sesi praktik koding proyek game perdana + asesmen pemetaan 8 pilar kognitif anak + konsultasi Lead Mentor.
+
+2. **Program Reguler Anak SD (Tahap 1: Junior Explorer, Usia 6–10 Tahun)**:
+   - Materi: Scratch 3.0 Visual Block, Logic Game, Animation & Speech AI
+   - Format: Kelas kecil interaktif online, maksimal 4 murid per mentor
+   - Paket Starter (12 Sesi / ~3 Bulan): **Rp 1.050.000** (setara Rp 350.000/bln)
+   - Paket Semester (24 Sesi / ~6 Bulan): **Rp 1.950.000** (setara Rp 325.000/bln)
+   - Paket Tahunan (48 Sesi / 1 Tahun): **Rp 3.600.000** (setara Rp 300.000/bln)
+   - Paket 2 Tahun (96 Sesi): **Rp 6.700.000** (setara Rp 279.000/bln)
+
+3. **Program Madya (Tahap 2: Intermediate Coder, Usia 10–12 Tahun)**:
+   - Materi: MIT App Inventor (Android APK), Roblox Studio 3D (Scripting Lua) & Python Logic
+   - Paket Starter (12 Sesi): **Rp 1.150.000** (setara Rp 383.000/bln)
+   - Paket Semester (24 Sesi): **Rp 2.100.000** (setara Rp 350.000/bln)
+   - Paket Tahunan (48 Sesi): **Rp 3.900.000** (setara Rp 325.000/bln)
+
+4. **Program Remaja (Tahap 3: Teens Innovator, Usia 13–17 Tahun)**:
+   - Materi: Python Programming Profesional, Pygame, Machine Learning Scikit-Learn, OpenCV, Fullstack Web & AI
+   - Paket Starter (12 Sesi): **Rp 1.200.000** (setara Rp 400.000/bln)
+   - Paket Semester (24 Sesi): **Rp 2.250.000** (setara Rp 375.000/bln)
+   - Paket Tahunan AI (48 Sesi): **Rp 4.200.000** (setara Rp 350.000/bln)
+
+5. **Kelas Privat Intensif (1-on-1)**:
+   - Biaya: **Mulai Rp 150.000 / sesi** pertemuan privat (fleksibilitas jadwal penuh).
+
+6. **Biaya Pendaftaran & Kebijakan Finansial**:
+   - Biaya Pendaftaran / Uang Gedung: **Rp 0 (Bebas Biaya Registrasi)**
+   - Biaya E-Sertifikat Digital QR Code: **Rp 0 (Gratis & Terverifikasi)**
+   - Jadwal Pengganti (Make-up Class): **Gratis** jika berhalangan hadir
+   - Diskon Saudara Kandung: **10%** untuk anak kedua
+   - Halaman Resmi: https://beekoding.my.id/biaya-kursus (atau https://beekoding.my.id/#biaya)

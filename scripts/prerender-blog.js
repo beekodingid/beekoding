@@ -485,6 +485,95 @@ async function main() {
   // =========================================================================
   const legalPages = [
     {
+      slug: 'biaya-kursus',
+      aliases: ['biaya', 'biaya-les-coding', 'pricing'],
+      title: 'Rincian Biaya Kursus Coding Anak 2026 Resmi & Transparan | Beekoding',
+      description: 'Daftar resmi rincian biaya kursus coding anak SD, SMP & SMA di Beekoding tahun 2026. Kelas reguler online mulai Rp 350.000/bulan (rasio max 4 anak), privat intensif Rp 150.000/sesi, & Free Trial Class 100% gratis.',
+      keywords: 'biaya kursus coding anak, harga les coding anak sd, biaya belajar coding anak 2026, tarif kursus coding beekoding, les coding murah berkualitas, biaya kelas privat coding',
+      bodyHtml: `
+        <header style="max-width:850px;margin:40px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">
+          <a href="/" style="display:inline-block;margin-bottom:20px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <div style="display:inline-block;padding:4px 12px;background:#fef3c7;color:#d97706;font-size:11px;font-weight:800;border-radius:999px;text-transform:uppercase;margin-bottom:12px;">Transparansi Biaya Resmi 2026</div>
+          <h1 style="font-size:2.2rem;font-weight:900;color:#0f172a;margin-bottom:8px;line-height:1.2;">Rincian Biaya Kursus Coding &amp; AI Beekoding (Tahun 2026)</h1>
+          <p style="color:#64748b;font-size:0.95rem;">Pembaruan Terakhir: 22 Oktober 2026 | Berlaku Nasional untuk Seluruh Indonesia</p>
+          <hr style="margin:24px 0;border:0;border-top:1px solid #e2e8f0;"/>
+
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:20px;margin:24px 0;">
+            <h3 style="margin-top:0;font-size:1.1rem;color:#92400e;font-weight:800;">Komitmen Transparansi Total Beekoding</h3>
+            <p style="margin-bottom:0;color:#78350f;font-size:0.95rem;">
+              Beekoding mempublikasikan rincian biaya kursus secara terbuka dan jujur. <strong>Tidak ada biaya pendaftaran tersembunyi, tidak ada uang gedung tahunan, dan seluruh sertifikat digital resmi ber-QR Code sudah termasuk gratis.</strong>
+            </p>
+          </div>
+
+          <h2 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin-top:32px;">1. Pilihan Format Kelas &amp; Estimasi Biaya</h2>
+
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table style="width:100%;border-collapse:collapse;text-align:left;font-size:0.95rem;">
+              <thead>
+                <tr style="background:#f1f5f9;border-bottom:2px solid #cbd5e1;">
+                  <th style="padding:12px 16px;font-weight:800;">Program &amp; Format</th>
+                  <th style="padding:12px 16px;font-weight:800;">Rasio Kelas</th>
+                  <th style="padding:12px 16px;font-weight:800;">Biaya per Bulan</th>
+                  <th style="padding:12px 16px;font-weight:800;">Paket Pilihan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #e2e8f0;background:#ffffff;">
+                  <td style="padding:14px 16px;"><strong>Free Trial &amp; Diagnostic</strong><br/><span style="color:#64748b;font-size:0.85rem;">Simulasi belajar &amp; tes minat</span></td>
+                  <td style="padding:14px 16px;">1-on-1 atau 1:2</td>
+                  <td style="padding:14px 16px;color:#059669;font-weight:800;">Rp 0 (Gratis)</td>
+                  <td style="padding:14px 16px;">1 Sesi 45–60 Menit</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;background:#fffdf7;">
+                  <td style="padding:14px 16px;"><strong>Junior Explorer (SD Usia 6-10 Thn)</strong><br/><span style="color:#64748b;font-size:0.85rem;">Scratch 3.0, Logic, Animasi</span></td>
+                  <td style="padding:14px 16px;">Maksimal 1 : 4 Murid</td>
+                  <td style="padding:14px 16px;color:#d97706;font-weight:800;">Mulai Rp 350.000 / bln</td>
+                  <td style="padding:14px 16px;">12 Sesi: Rp 1.050.000<br/>24 Sesi: Rp 1.950.000<br/>48 Sesi: Rp 3.600.000</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;background:#ffffff;">
+                  <td style="padding:14px 16px;"><strong>Intermediate Coder (Usia 10-12 Thn)</strong><br/><span style="color:#64748b;font-size:0.85rem;">App Inventor, Roblox Lua 3D</span></td>
+                  <td style="padding:14px 16px;">Maksimal 1 : 4 Murid</td>
+                  <td style="padding:14px 16px;color:#d97706;font-weight:800;">Mulai Rp 383.000 / bln</td>
+                  <td style="padding:14px 16px;">12 Sesi: Rp 1.150.000<br/>24 Sesi: Rp 2.100.000<br/>48 Sesi: Rp 3.900.000</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;background:#fffdf7;">
+                  <td style="padding:14px 16px;"><strong>Teens Innovator (Usia 13-17 Thn)</strong><br/><span style="color:#64748b;font-size:0.85rem;">Python Pro, Web Dev, Applied AI</span></td>
+                  <td style="padding:14px 16px;">Maksimal 1 : 4 Murid</td>
+                  <td style="padding:14px 16px;color:#d97706;font-weight:800;">Mulai Rp 400.000 / bln</td>
+                  <td style="padding:14px 16px;">12 Sesi: Rp 1.200.000<br/>24 Sesi: Rp 2.250.000<br/>48 Sesi: Rp 4.200.000</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;background:#ffffff;">
+                  <td style="padding:14px 16px;"><strong>Kelas Privat Intensif (1-on-1)</strong><br/><span style="color:#64748b;font-size:0.85rem;">Jadwal fleksibel &amp; kurikulum custom</span></td>
+                  <td style="padding:14px 16px;">1 Mentor : 1 Murid</td>
+                  <td style="padding:14px 16px;color:#7c3aed;font-weight:800;">Mulai Rp 150.000 / sesi</td>
+                  <td style="padding:14px 16px;">Paket 8, 12, atau 24 Sesi Privat</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin-top:32px;">2. Fasilitas yang Sudah Termasuk</h2>
+          <ul style="padding-left:20px;line-height:1.8;">
+            <li><strong>Pertemuan Live Interaktif:</strong> Durasi 75–90 menit via Google Meet dengan bimbingan personal mentor sabar.</li>
+            <li><strong>Bebas Biaya Pendaftaran:</strong> Tanpa uang registrasi ulang dan tanpa uang gedung.</li>
+            <li><strong>Sertifikat Digital Ber-QR Code:</strong> Setiap menyelesaikan modul, siswa mendapatkan sertifikat resmi yang bisa diverifikasi di Portal Siswa.</li>
+            <li><strong>Akses Portal Siswa 24/7:</strong> Riwayat materi mingguan, presensi, rapor evaluasi kompetensi, dan galeri karya.</li>
+            <li><strong>Fasilitas Make-Up Class:</strong> Jadwal pengganti gratis jika anak berhalangan hadir karena sakit atau ujian sekolah.</li>
+            <li><strong>Diskon Saudara (Sibling Discount):</strong> Potongan 10% untuk pendaftaran anak kedua (kakak/adik).</li>
+          </ul>
+
+          <h2 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin-top:32px;">3. Cara Mendaftar Free Trial Class</h2>
+          <p>Orang tua dapat mencoba sesi uji coba 100% gratis sebelum memutuskan berlangganan:</p>
+          <div style="margin:24px 0;text-align:center;">
+            <a href="https://wa.me/6281818901737?text=Halo%20Beekoding%2C%20saya%20ingin%20mendaftar%20Free%20Trial%20Class%20Coding%20untuk%20anak%20saya." target="_blank" style="display:inline-block;padding:14px 28px;background:linear-gradient(to right, #f59e0b, #d97706);color:#0f172a;font-weight:900;border-radius:12px;text-decoration:none;font-size:1rem;box-shadow:0 4px 14px rgba(217,119,6,0.3);">
+              Klaim Free Trial Class (WhatsApp) &rarr;
+            </a>
+          </div>
+        </header>
+      `,
+    },
+
+    {
       slug: 'kebijakan-privasi',
       aliases: ['privacy-policy', 'privacy'],
       title: 'Kebijakan Privasi (Privacy Policy) & AdSense Cookie | Beekoding',
@@ -815,6 +904,19 @@ async function main() {
     <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <!-- Programmatic Pricing: Biaya Kursus Resmi -->
+  <url>
+    <loc>${domain}/biaya-kursus</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Rincian Biaya Kursus Coding Anak 2026 Beekoding</image:title>
+      <image:caption>Transparansi biaya les coding anak mulai Rp 350.000/bulan dan Free Trial Class gratis.</image:caption>
+    </image:image>
   </url>
 
   <!-- Programmatic SEO Landing: Kursus Coding Anak SD (Usia 6-10 Thn) -->
