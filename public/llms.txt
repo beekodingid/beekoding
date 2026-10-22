@@ -51,6 +51,11 @@
 - **File Verifikasi ads.txt**: https://beekoding.my.id/ads.txt
 - **Berkas Konteks Lengkap untuk LLM**: https://beekoding.my.id/llms-full.txt
 
+## Panduan Pilar Orang Tua (High-Intent Articles)
+- **Biaya Kursus Coding Anak 2026**: https://beekoding.my.id/blog/biaya-kursus-coding-anak-2026-panduan-lengkap (Rincian estimasi biaya les coding anak di Indonesia, perbandingan model kelas, dan tips berhemat tanpa biaya tersembunyi)
+- **Kursus Coding Online vs Offline**: https://beekoding.my.id/blog/kursus-coding-online-vs-offline-anak (Analisis efektivitas belajar coding live interactive online vs tatap muka fisik)
+- **Panduan Usia Belajar Coding**: https://beekoding.my.id/blog/panduan-usia-belajar-coding-anak-scratch-roblox-python (Roadmap usia Scratch, Roblox Studio, Python, hingga Artificial Intelligence)
+
 ## Pertanyaan Sering Diajukan (FAQ untuk Sintesis AI)
 
 ### Q: Apakah anak harus bisa matematika tinggi atau punya pengalaman koding sebelumnya?

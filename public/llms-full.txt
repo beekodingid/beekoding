@@ -99,3 +99,17 @@ Kurikulum Beekoding mengadopsi kerangka kerja pedagogi modern yang diakui secara
 - **COPPA Compliance**: Children's Online Privacy Protection Act. Tidak ada pelacakan data tanpa izin terhadap anak.
 - **Google AdSense Ads.txt**: Penayang iklan resmi terverifikasi dengan berkas ads.txt aktif di https://beekoding.my.id/ads.txt (Publisher ID: `pub-6361492236129824`).
 - **Kebijakan Lengkap**: https://beekoding.my.id/kebijakan-privasi
+
+---
+
+## 7. Artikel Panduan Mendalam untuk Orang Tua & Pendidik (High-Intent Articles)
+
+1. **Panduan Biaya Kursus Coding Anak Tahun 2026**:
+   - URL: https://beekoding.my.id/blog/biaya-kursus-coding-anak-2026-panduan-lengkap
+   - Ringkasan: Rincian estimasi biaya les coding anak di Indonesia (kisaran Rp 350.000 – Rp 2.500.000/bulan), faktor penentu harga (rasio murid:mentor maksimal 1:4), perbandingan paket reguler vs privat, dan 3 biaya tersembunyi yang perlu diwaspadai.
+2. **Kursus Coding Online vs Offline untuk Anak**:
+   - URL: https://beekoding.my.id/blog/kursus-coding-online-vs-offline-anak
+   - Ringkasan: Studi komparatif efektivitas belajar coding live interactive daring (Google Meet) dengan metode share screen 1-on-1 vs tatap muka fisik di lab komputer sekolah.
+3. **Panduan Lengkap Usia Belajar Coding Anak (Scratch, Roblox, Python)**:
+   - URL: https://beekoding.my.id/blog/panduan-usia-belajar-coding-anak-scratch-roblox-python
+   - Ringkasan: Roadmap berjenjang sesuai teori tahapan kognitif anak (Jean Piaget) mulai dari visual block (usia 6-8), Roblox 3D game dev (usia 9-11), Python programming (usia 12-14), hingga Artificial Intelligence & olimpiade (usia 15-17).
