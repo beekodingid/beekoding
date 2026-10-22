@@ -5,7 +5,7 @@
     <link>https://beekoding.my.id/blog</link>
     <description>Panduan dan wawasan koding anak, Artificial Intelligence, dan parenting digital masa depan.</description>
     <language>id-ID</language>
-    <lastBuildDate>Tue, 20 Oct 2026 07:15:02 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 22 Oct 2026 02:10:05 GMT</lastBuildDate>
     <atom:link href="https://beekoding.my.id/rss.xml" rel="self" type="application/rss+xml"/>
 
     <item>
@@ -119,6 +119,22 @@
       <pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate>
       <description>Anak suka bermain gadget? Temukan cara mengubah kebiasaan menggunakan gadget menjadi aktivitas kreatif melalui belajar coding sejak dini.</description>
       <category>Parenting Digital</category>
+    </item>
+    <item>
+      <title>7 Manfaat Belajar Coding untuk Anak Sejak Usia Dini yang Perlu Orang Tua Ketahui</title>
+      <link>https://beekoding.my.id/blog/7-manfaat-belajar-coding-untuk-anak</link>
+      <guid>https://beekoding.my.id/blog/7-manfaat-belajar-coding-untuk-anak</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Apa manfaat belajar coding untuk anak? Kenali 7 manfaat coding sejak dini, mulai dari melatih logika, kreativitas, problem solving, hingga literasi digital.</description>
+      <category>Parenting Digital</category>
+    </item>
+    <item>
+      <title>Belajar Coding Tanpa Laptop: 10 Aktivitas Seru untuk Anak di Rumah</title>
+      <link>https://beekoding.my.id/blog/belajar-coding-tanpa-laptop-untuk-anak</link>
+      <guid>https://beekoding.my.id/blog/belajar-coding-tanpa-laptop-untuk-anak</guid>
+      <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Belajar coding tidak harus menggunakan laptop! Temukan 10 aktivitas unplugged coding untuk melatih logika, kreativitas, dan problem solving anak di rumah</description>
+      <category>Coding Anak</category>
     </item>
   </channel>
 </rss>

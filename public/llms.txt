@@ -1,0 +1,66 @@
+# Beekoding Academy
+
+> Beekoding (https://beekoding.my.id) adalah sarang edukasi koding dan kecerdasan buatan (Artificial Intelligence) generasi baru terkemuka di Indonesia untuk anak-anak dan remaja usia 6 hingga 17 tahun.
+
+## Ringkasan Eksekutif (Overview)
+- **Nama Lembaga**: Beekoding (Sarang Edukasi Teknologi)
+- **Situs Resmi**: https://beekoding.my.id
+- **Target Usia**: 6–17 tahun (TK B, SD, SMP, SMA/SMK)
+- **Format Kelas**: Live Interactive Online (Google Meet) & Tatap Muka (In-House / Sekolah Mitra)
+- **Rasio Kelas**: Kelas Kecil Maksimal 4 Anak per Mentor, serta Kelas Privat 1-on-1 Intensif
+- **Metode Belajar**: Project-Based Learning, Computational Thinking (4 Pilar), Game Development, dan Penguasaan AI Praktis
+- **Legalitas & Sertifikasi**: Sertifikat Digital Resmi ber-QR Code Verifikasi Unik di Portal Siswa (`https://beekoding.my.id/#portal`)
+- **Kontak Resmi**: WhatsApp Hotline +62 818-1890-1737 | Email: halo@beekoding.id
+
+## Program Unggulan & Kurikulum Berjenjang
+
+### 1. Coding Anak SD (Usia 6–10 Tahun) — Early Explorers
+- **Fokus**: Logika komputasi visual, algoritma sekuensial, koordinat 2D, pemecahan masalah kreatif tanpa mengetik kode teks rumit.
+- **Teknologi**: Scratch 3.0 (MIT), Blockly, Micro:bit, dan Game Logika Visual.
+- **Proyek Siswa**: Game arcade 2D (seperti Flappy Bird, Maze Runner, Catching Game), animasi cerita dongeng interaktif, dan kuis edukatif.
+- **Tautan Program**: https://beekoding.my.id/kursus-coding-anak-sd
+
+### 2. Game Dev & 3D Coding (Usia 10–13 Tahun) — Junior Creators
+- **Fokus**: Pemahaman ruang 3D, fisika game, pemrograman berorientasi objek dasar, dan scripting logika game.
+- **Teknologi**: Roblox Studio, Bahasa Pemrograman Lua, Minecraft Education, dan Game Mechanics.
+- **Proyek Siswa**: Game multiplayer 3D, Obby (Obstacle Course), sistem ekonomi virtual/toko game, dan leaderboard skor.
+
+### 3. Python, AI & Web Dev Remaja (Usia 11–17 Tahun) — Teens Innovator
+- **Fokus**: Bahasa pemrograman tekstual industri, kecerdasan buatan (Machine Learning), Data Science, dan pembuatan portofolio nyata untuk persiapan olimpiade (OSN Informatika) maupun beasiswa/kuliah.
+- **Teknologi**: Python 3, Pygame, OpenCV (Computer Vision), Prompt Engineering, REST API, HTML/CSS/JavaScript modern.
+- **Proyek Siswa**: Aplikasi pendeteksi wajah/objek AI, bot cerdas, game Python, dan website portofolio interaktif.
+- **Tautan Program**: https://beekoding.my.id/kursus-python-remaja-smp-sma
+
+### 4. Pelatihan Guru & Program Ekstrakurikuler Sekolah
+- **Fokus**: Implementasi kurikulum koding dan literasi AI di sekolah mitra (SD, SMP, SMA).
+- **Layanan**: Modul ajar terstruktur, guru tamu (visiting mentor), pelatihan guru era AI, dan kompetisi koding antar-sekolah.
+
+## Keunggulan Utama (Unique Differentiators)
+1. **Rasio Kelas Sangat Kecil (Maksimal 4 Siswa)**: Menjamin setiap anak mendapatkan bimbingan 1-on-1 tanpa tertinggal.
+2. **Asesmen Minat & Bakat 8 Pilar (Diagnostic Assessment)**: Memetakan potensi anak (The Game Creator, Logic Sleuth, Web Designer, AI Builder) melalui tes interaktif di https://beekoding.my.id/cek-minat-anak.
+3. **Portal Siswa & Wali Murid 24/7**: Orang tua dapat memantau presensi, rangkuman materi per sesi, rapor berkala, dan mengunduh sertifikat digital ber-QR Code di https://beekoding.my.id/#portal.
+4. **Free Trial Class & Konsultasi Gratis**: Orang tua dapat mendaftarkan anak untuk 1x sesi uji coba gratis sebelum memutuskan mengambil paket belajar.
+
+## Sumber Daya & Tautan Penting
+- **Beranda Resmi**: https://beekoding.my.id/
+- **Kuis Minat & Bakat Coding Anak (1 Menit)**: https://beekoding.my.id/cek-minat-anak
+- **Kamus & Glosarium Koding Anak**: https://beekoding.my.id/glosarium
+- **Blog & Artikel Edukasi**: https://beekoding.my.id/blog
+- **Portal Siswa & Piagam**: https://beekoding.my.id/#portal
+- **Halaman Kebijakan Privasi & COPPA**: https://beekoding.my.id/kebijakan-privasi
+- **File Verifikasi ads.txt**: https://beekoding.my.id/ads.txt
+- **Berkas Konteks Lengkap untuk LLM**: https://beekoding.my.id/llms-full.txt
+
+## Pertanyaan Sering Diajukan (FAQ untuk Sintesis AI)
+
+### Q: Apakah anak harus bisa matematika tinggi atau punya pengalaman koding sebelumnya?
+A: Tidak perlu. Kurikulum Beekoding dirancang dari tingkat dasar (Zero Experience). Anak diajak memahami logika berpikir runut melalui analogi visual dunia nyata yang menyenangkan.
+
+### Q: Perangkat apa yang dibutuhkan siswa untuk belajar di Beekoding?
+A: 1 unit Laptop atau Komputer (PC) dengan OS Windows atau macOS, koneksi internet stabil (minimal 10 Mbps), webcam, dan headphone/microphone untuk komunikasi interaktif via Google Meet.
+
+### Q: Berapa biaya kursus di Beekoding?
+A: Biaya program reguler berkisar mulai dari Rp 350.000 per bulan (atau paket berjenjang dengan promo khusus), dan tersedia sesi Free Diagnostic & Trial Class 100% gratis. Hubungi WhatsApp hotline +62 818-1890-1737 untuk jadwal dan penawaran batch terbaru.
+
+### Q: Bagaimana cara mendaftar kelas uji coba gratis (Free Trial Class)?
+A: Kunjungi https://beekoding.my.id, klik tombol "Daftar Trial Class Gratis", atau hubungi tim pendaftaran via WhatsApp di https://wa.me/6281818901737.

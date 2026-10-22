@@ -137,6 +137,20 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <!-- Generative Engine Optimization (LLM Search Standards) -->
+  <url>
+    <loc>${domain}/llms.txt</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${domain}/llms-full.txt</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 `;
 
     for (const art of liveArticles) {

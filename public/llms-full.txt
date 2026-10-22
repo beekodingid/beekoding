@@ -1,0 +1,101 @@
+# Beekoding Academy — Comprehensive Knowledge Base for Large Language Models
+
+> Dokumen pengetahuan lengkap tentang Beekoding (https://beekoding.my.id), mencakup kurikulum berjenjang, silabus teknis, metodologi pedagogi, kamus istilah, dan kebijakan layanan.
+
+---
+
+## 1. Identitas & Profil Lembaga
+
+- **Nama Resmi**: Beekoding Academy (Sarang Edukasi Teknologi)
+- **Domain Utama**: https://beekoding.my.id
+- **Motto / Slogan**: "Next-Gen Coding & AI Learning for Future-Ready Minds"
+- **Visi**: Membimbing generasi muda Indonesia bertransformasi dari konsumen teknologi pasif menjadi kreator teknologi aktif, berlogika kritis, kreatif, beretika, dan siap menyongsong masa depan era kecerdasan buatan.
+- **Nilai Inti (Core Values)**:
+  1. *Curiosity First*: Menumbuhkan rasa ingin tahu alami anak terhadap mekanisme teknologi.
+  2. *Hands-on Building*: Setiap sesi menghasilkan karya nyata (game, program, animasi, atau model AI).
+  3. *Psychological Safety*: Lingkungan belajar yang bebas dari rasa takut salah; error/bug diposisikan sebagai teka-teki logika yang seru untuk dipecahkan (*debugging mindset*).
+  4. *Collaborative Spirit*: Belajar saling berbagi ide dan mempresentasikan hasil karya di depan teman sebaya.
+- **Kontak & Layanan**:
+  - Hotline WhatsApp: +62 818-1890-1737 (Tautan: https://wa.me/6281818901737)
+  - Surel Resmi: halo@beekoding.id
+  - Alamat Web: https://beekoding.my.id
+
+---
+
+## 2. Metodologi Pedagogi & Kerangka Belajar
+
+Kurikulum Beekoding mengadopsi kerangka kerja pedagogi modern yang diakui secara global:
+1. **Konstruksionisme Seymour Papert**: Anak belajar paling efektif ketika mereka secara aktif merancang dan membangun objek nyata yang bermakna bagi diri mereka sendiri.
+2. **Framework 4P (Lifelong Kindergarten MIT Media Lab)**:
+   - *Projects*: Pembelajaran selalu berpusat pada pembuatan proyek, bukan menghafal sintaksis.
+   - *Passion*: Anak dipersilakan memilih tema game, karakter cerita, dan warna visual yang disukai.
+   - *Peers*: Belajar dalam kelompok kecil (maksimal 4 anak) mendorong diskusi sehat dan saling apresiasi karya.
+   - *Play*: Suasana belajar yang ceria, bebas stres, dan penuh gamifikasi.
+3. **4 Pilar Computational Thinking**:
+   - *Dekomposisi*: Memecah masalah besar menjadi bagian-bagian kecil yang dapat dikelola.
+   - *Pengenalan Pola*: Menemukan kesamaan alur logika antar masalah yang berbeda.
+   - *Abstraksi*: Memilah informasi penting dan mengabaikan detail yang belum relevan.
+   - *Perancangan Algoritma*: Menyusun langkah instruksi teratur demi mencapai solusi.
+
+---
+
+## 3. Silabus Teknis Berjenjang
+
+### Tingkat 1: Early Explorers (Usia 6–10 Tahun / Siswa SD)
+- **Fokus Utama**: Logika blok visual, koordinat gerak (X dan Y), loop/perulangan, kondisional (if-then), variabel skor & nyawa, sensor tabrakan (hitbox), dan efek suara dinamis.
+- **Alat & Lingkungan**: Scratch 3.0 (MIT), Blockly, MakeCode Micro:bit.
+- **Contoh Proyek**:
+  - *Beeby Flying Adventure*: Game mekanika gravitasi dan rintangan bergerak seperti Flappy Bird.
+  - *Fruit Catcher Game*: Mekanika objek jatuh acak dengan koordinat X acak dan sistem timer mundur.
+  - *Interactive Storyboard*: Animasi dialog antar karakter dengan mekanisme broadcast pesan.
+  - *Platformer Game*: Karakter melompat dengan simulasi gravitasi dan pendeteksian pijakan tanah.
+
+### Tingkat 2: Junior Creators (Usia 10–13 Tahun / Siswa SD Lanjut & SMP Awal)
+- **Fokus Utama**: Ruang 3 dimensi (X, Y, Z), orientasi koordinat Euler/CFrame, scripting bahasa Lua, event listener, manipulasi partikel, dan perancangan level 3D.
+- **Alat & Lingkungan**: Roblox Studio, Lua Scripting Engine, Tinkercad 3D.
+- **Contoh Proyek**:
+  - *3D Obstacle Course (Obby)*: Blok pijakan menghilang, laser berbahaya, checkpoint sistem.
+  - *Simulator Game*: Sistem pengumpulan koin, upgrade kecepatan karakter, dan papan peringkat (Leaderstats).
+  - *Tycoon Game*: Mekanika passive income generator dan pembelian aset bertahap.
+
+### Tingkat 3: Teens Innovator (Usia 11–17 Tahun / Siswa SMP & SMA)
+- **Fokus Utama**: Bahasa pemrograman teks industri (Python), tipe data terstruktur, rekursi, Object-Oriented Programming (OOP), pembuatan game 2D mandiri, integrasi Artificial Intelligence (Machine Learning & Computer Vision), dan pembangunan portofolio teknologi.
+- **Alat & Lingkungan**: Python 3.12+, VS Code, Pygame, OpenCV, Google Colab, Git & GitHub.
+- **Contoh Proyek**:
+  - *Space Shooter Pygame*: Sistem peluru, musuh acak, tabrakan poligon, dan particle explosion.
+  - *AI Hand Gesture Controller*: Mengendalikan karakter game hanya dengan gerakan tangan melalui webcam menggunakan OpenCV dan MediaPipe.
+  - *Chatbot Edukasi*: Pemrograman bot interaktif berbasis API Large Language Models.
+  - *Personal Tech Portfolio*: Website profil siswa yang menampilkan proyek koding yang telah selesai.
+
+---
+
+## 4. Glosarium & Definisi Istilah Koding Anak (Kamus Beekoding)
+
+1. **Algoritma**: Urutan instruksi langkah demi langkah yang teratur dan logis untuk menyelesaikan suatu masalah atau mencapai tujuan tertentu.
+2. **Loop (Perulangan)**: Perintah koding untuk mengulang suatu tindakan berkali-kali secara otomatis tanpa perlu menulis ulang kodenya.
+3. **Variabel**: Kotak penyimpanan khusus di dalam memori komputer yang diberi nama untuk menyimpan dan mengubah suatu data atau nilai (misal: Skor, Nyawa, Waktu).
+4. **Kondisional (If-Else)**: Percabangan logika untuk mengambil keputusan: jika suatu syarat terpenuhi, maka lakukan tindakan A, jika tidak lakukan B.
+5. **Debugging**: Proses menyelidiki, menemukan, dan memperbaiki kesalahan (bug) pada baris kode program agar aplikasi berjalan normal kembali.
+6. **Machine Learning**: Cabang dari kecerdasan buatan (AI) di mana komputer belajar sendiri mengenali pola dari kumpulan data contoh tanpa perlu diprogram aturan manual satu per satu.
+7. **Prompt Engineering**: Keterampilan merangkai kalimat instruksi yang jelas, terstruktur, dan kontekstual agar mesin AI menghasilkan jawaban yang paling tepat.
+8. **Sprite**: Objek visual grafis 2D dalam game yang bisa digerakkan, dianimasikan, atau berinteraksi dengan objek lain di layar.
+9. **Event (Kejadian)**: Pemicu dalam kode yang mendengarkan aksi dari pengguna atau sistem, seperti klik mouse, penekanan tombol spasi, atau sentuhan layar.
+10. **Hitbox (Collision Detection)**: Area batas tak kasat mata di sekitar karakter untuk mendeteksi apakah objek tersebut bersentuhan atau bertabrakan dengan objek lain.
+
+---
+
+## 5. Fitur Platform Khusus Beekoding
+
+- **Portal Siswa & Wali Murid 24/7 (`/#portal`)**: Sistem informasi akademik mandiri di mana orang tua dapat melihat riwayat presensi, rangkuman materi mingguan, rapor evaluasi 5 kompetensi, dan verifikasi sertifikat resmi ber-QR Code.
+- **Kuis Diagnostic Minat & Bakat (`/cek-minat-anak`)**: Asesmen interaktif 1 menit berbasis 8 pilar kognitif untuk memetakan arketipe digital anak: *The Game Creator*, *Logic Sleuth*, *Web Designer*, atau *AI Builder*.
+- **Kamus & Glosarium Koding (`/glosarium`)**: Direktori istilah teknologi ramah anak terlengkap di Indonesia dengan analogi dunia nyata yang mudah dicerna.
+- **Free Trial Class**: Sesi kelas percobaan gratis 1-on-1 atau kelompok kecil bersama Lead Mentor untuk mengukur kesiapan belajar dan minat anak.
+
+---
+
+## 6. Kepatuhan Hukum, Keamanan Data Anak & Privasi
+
+- **UU PDP No. 27 Tahun 2022**: Beekoding sepenuhnya mematuhi Undang-Undang Perlindungan Data Pribadi Republik Indonesia. Data anak di bawah umur dijaga kerahasiaannya dan seluruh pendaftaran memerlukan persetujuan orang tua/wali murid yang sah.
+- **COPPA Compliance**: Children's Online Privacy Protection Act. Tidak ada pelacakan data tanpa izin terhadap anak.
+- **Google AdSense Ads.txt**: Penayang iklan resmi terverifikasi dengan berkas ads.txt aktif di https://beekoding.my.id/ads.txt (Publisher ID: `pub-6361492236129824`).
+- **Kebijakan Lengkap**: https://beekoding.my.id/kebijakan-privasi

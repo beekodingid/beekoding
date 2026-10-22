@@ -3,9 +3,42 @@
 User-agent: Mediapartners-Google
 Allow: /
 
+# AI Search & LLM Crawlers (OpenAI ChatGPT, Perplexity AI, Anthropic Claude, Google Gemini)
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
 # General Search Engine Crawlers
 User-agent: *
 Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /kebijakan-privasi
 Allow: /privacy-policy
 Allow: /syarat-ketentuan
