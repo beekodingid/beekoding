@@ -205,6 +205,116 @@ async function main() {
   console.log(`[prerender-blog] Successfully prerendered ${seoLandingPages.length} Programmatic SEO landing pages!`);
 
   // =========================================================================
+  // 3b-2. PRERENDER PROGRAMMATIC LOCAL SEO LANDING PAGES (KOTA-KOTA INDONESIA)
+  // =========================================================================
+  const citiesDataPath = path.join(rootDir, 'src', 'data', 'citiesData.ts');
+  const localCityPages = [];
+  if (fs.existsSync(citiesDataPath)) {
+    const citiesContent = fs.readFileSync(citiesDataPath, 'utf-8');
+    const cityBlocks = citiesContent.split(/\{\s*slug:\s*'/);
+
+    for (let i = 1; i < cityBlocks.length; i++) {
+      const cb = cityBlocks[i];
+      const slug = cb.match(/^([^']+)'/)?.[1];
+      const cityName = cb.match(/cityName:\s*'([^']+)'/)?.[1];
+      const province = cb.match(/province:\s*'([^']+)'/)?.[1];
+      const metaTitle = cb.match(/metaTitle:\s*'([^']+)'/)?.[1];
+      const metaDescription = cb.match(/metaDescription:\s*'([^']+)'/)?.[1];
+      const metaKeywords = cb.match(/metaKeywords:\s*'([^']+)'/)?.[1];
+
+      if (slug && cityName && metaTitle && metaDescription) {
+        localCityPages.push({
+          slug,
+          cityName,
+          province: province || 'Indonesia',
+          title: metaTitle,
+          description: metaDescription,
+          keywords: metaKeywords || `kursus coding anak ${cityName.toLowerCase()}`,
+          url: `https://beekoding.my.id/${slug}`,
+          courseName: `Kursus Coding Anak Kota ${cityName} - Beekoding`,
+        });
+      }
+    }
+
+    for (const cityPage of localCityPages) {
+      const cityDir = path.join(distDir, cityPage.slug);
+      if (!fs.existsSync(cityDir)) {
+        fs.mkdirSync(cityDir, { recursive: true });
+      }
+
+      const cityCourseJsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Course',
+        name: cityPage.courseName,
+        description: cityPage.description,
+        provider: {
+          '@type': 'EducationalOrganization',
+          name: 'Beekoding',
+          url: 'https://beekoding.my.id',
+          sameAs: 'https://beekoding.my.id',
+        },
+        hasCourseInstance: [
+          {
+            '@type': 'CourseInstance',
+            courseMode: 'Online',
+            location: {
+              '@type': 'Place',
+              name: `Kota ${cityPage.cityName}, ${cityPage.province}`,
+            },
+          },
+        ],
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '4.9',
+          bestRating: '5',
+          worstRating: '1',
+          ratingCount: '384',
+          reviewCount: '384',
+        },
+      });
+
+      const cityBreadcrumbJsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Beranda',
+            item: 'https://beekoding.my.id',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: `Kursus Coding Anak ${cityPage.cityName}`,
+            item: cityPage.url,
+          },
+        ],
+      });
+
+      const citySchemasTag = `\n    <!-- Programmatic Local SEO Structured Data for ${cityPage.cityName} -->\n    <script type="application/ld+json">\n    ${cityCourseJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${cityBreadcrumbJsonLd}\n    </script>\n  </head>`;
+
+      let cityHtml = baseHtml
+        .replace(/<title>.*?<\/title>/, `<title>${cityPage.title}</title>`)
+        .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${cityPage.url}" />`)
+        .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${cityPage.description}" />`)
+        .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${cityPage.keywords}" />`)
+        .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${cityPage.title}" />`)
+        .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${cityPage.description}" />`)
+        .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${cityPage.url}" />`)
+        .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${cityPage.title}" />`)
+        .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${cityPage.description}" />`)
+        .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${cityPage.url}" />`)
+        .replace('</head>', citySchemasTag);
+
+      fs.writeFileSync(path.join(cityDir, 'index.html'), cityHtml, 'utf-8');
+      fs.writeFileSync(path.join(distDir, `${cityPage.slug}.html`), cityHtml, 'utf-8');
+    }
+
+    console.log(`[prerender-blog] Successfully prerendered ${localCityPages.length} Programmatic Local SEO city landing pages!`);
+  }
+
+  // =========================================================================
   // 3c. PRERENDER GLOSARIUM / KAMUS KODING & AI
   // =========================================================================
   const glossaryDir = path.join(distDir, 'glosarium');
@@ -675,7 +785,7 @@ async function main() {
       .replace(/'/g, '&apos;');
   }
 
-  function generateSitemapXml(articlesList) {
+  function generateSitemapXml(articlesList, cityPagesList = []) {
     const today = new Date().toISOString().split('T')[0];
     const domain = 'https://beekoding.my.id';
 
@@ -792,6 +902,22 @@ async function main() {
   </url>
 `;
 
+    for (const city of cityPagesList) {
+      xml += `
+  <!-- Programmatic Local SEO: Kursus Coding Anak ${escapeXml(city.cityName)} -->
+  <url>
+    <loc>${domain}/${city.slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Kursus Coding Anak Kota ${escapeXml(city.cityName)} - Beekoding</image:title>
+      <image:caption>${escapeXml(city.description)}</image:caption>
+    </image:image>
+  </url>`;
+    }
+
     for (const article of articlesList) {
       const lastmod = article.publishedAt || today;
       const coverLoc = article.coverImage.startsWith('http')
@@ -850,7 +976,7 @@ async function main() {
     return rss;
   }
 
-  const sitemapContent = generateSitemapXml(articles);
+  const sitemapContent = generateSitemapXml(articles, localCityPages);
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapContent, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapContent, 'utf-8');
   console.log(`[prerender-blog] Successfully auto-generated sitemap.xml with ${articles.length} articles!`);

@@ -98,6 +98,62 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     <priority>0.95</priority>
   </url>
 
+  <!-- Programmatic Local SEO: Kota-Kota Indonesia -->
+  <url>
+    <loc>${domain}/kursus-coding-anak-jakarta</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-surabaya</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-bandung</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-tangerang</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-bekasi</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-medan</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-semarang</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-yogyakarta</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${domain}/kursus-coding-anak-bali</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Kamus & Glosarium Koding Anak -->
   <url>
     <loc>${domain}/glosarium</loc>

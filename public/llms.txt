@@ -51,6 +51,17 @@
 - **File Verifikasi ads.txt**: https://beekoding.my.id/ads.txt
 - **Berkas Konteks Lengkap untuk LLM**: https://beekoding.my.id/llms-full.txt
 
+## Jangkauan Kursus Coding Anak Berdasarkan Kota (Local Coverage)
+- **Jakarta & Jabodetabek**: https://beekoding.my.id/kursus-coding-anak-jakarta
+- **Surabaya & Sidoarjo**: https://beekoding.my.id/kursus-coding-anak-surabaya
+- **Bandung & Cimahi**: https://beekoding.my.id/kursus-coding-anak-bandung
+- **Tangerang & BSD City**: https://beekoding.my.id/kursus-coding-anak-tangerang
+- **Bekasi & Cikarang**: https://beekoding.my.id/kursus-coding-anak-bekasi
+- **Medan & Sekitarnya**: https://beekoding.my.id/kursus-coding-anak-medan
+- **Semarang & Ungaran**: https://beekoding.my.id/kursus-coding-anak-semarang
+- **Yogyakarta & Sleman**: https://beekoding.my.id/kursus-coding-anak-yogyakarta
+- **Bali (Denpasar, Badung, Sanur)**: https://beekoding.my.id/kursus-coding-anak-bali
+
 ## Panduan Pilar Orang Tua (High-Intent Articles)
 - **Biaya Kursus Coding Anak 2026**: https://beekoding.my.id/blog/biaya-kursus-coding-anak-2026-panduan-lengkap (Rincian estimasi biaya les coding anak di Indonesia, perbandingan model kelas, dan tips berhemat tanpa biaya tersembunyi)
 - **Kursus Coding Online vs Offline**: https://beekoding.my.id/blog/kursus-coding-online-vs-offline-anak (Analisis efektivitas belajar coding live interactive online vs tatap muka fisik)

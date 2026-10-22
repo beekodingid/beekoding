@@ -46,6 +46,10 @@ Allow: /terms-of-service
 Allow: /penafian
 Allow: /disclaimer
 Allow: /ads.txt
+Allow: /kursus-coding-anak-*
+Allow: /kursus-python-remaja-smp-sma
+Allow: /glosarium
+Allow: /cek-minat-anak
 Allow: /blog
 Allow: /blog/*
 Allow: /#programs

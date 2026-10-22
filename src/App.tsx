@@ -64,6 +64,10 @@ const QuizMinatView = lazy(() =>
 const LegalView = lazy(() =>
   import('./components/legal/LegalView').then((m) => ({ default: m.LegalView }))
 );
+const CityLandingPage = lazy(() =>
+  import('./components/landing/CityLandingPage').then((m) => ({ default: m.CityLandingPage }))
+);
+import { CITIES_DATA, type CityLandingData } from './data/citiesData';
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
   return (
@@ -98,6 +102,7 @@ export function App() {
   const [showLegal, setShowLegal] = useState(false);
   const [legalTab, setLegalTab] = useState<'privacy' | 'terms' | 'disclaimer'>('privacy');
   const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
+  const [activeCityLanding, setActiveCityLanding] = useState<CityLandingData | null>(null);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
 
   // Deteksi URL (clean path /kursus-*, /glosarium, /blog, /admin, /portal, /talent, /cek-minat-anak maupun hash #...)
@@ -169,6 +174,32 @@ export function App() {
         setShowGlossary(false);
         setShowLegal(false);
         setAgeLandingTier(null);
+        setActiveCityLanding(null);
+      } else if (
+        CITIES_DATA.some(
+          (c) =>
+            pathname === `/${c.slug}` ||
+            pathname.startsWith(`/${c.slug}/`) ||
+            hash === `#${c.slug}`
+        )
+      ) {
+        const foundCity = CITIES_DATA.find(
+          (c) =>
+            pathname === `/${c.slug}` ||
+            pathname.startsWith(`/${c.slug}/`) ||
+            hash === `#${c.slug}`
+        );
+        if (foundCity) {
+          setActiveCityLanding(foundCity);
+          setShowQuizMinat(false);
+          setShowAdmin(false);
+          setShowTalentAssessment(false);
+          setShowStudentPortal(false);
+          setShowBlog(false);
+          setShowGlossary(false);
+          setShowLegal(false);
+          setAgeLandingTier(null);
+        }
       } else if (
         hash.startsWith('#kursus-coding-anak-sd') ||
         pathname.startsWith('/kursus-coding-anak-sd')
@@ -484,6 +515,24 @@ export function App() {
     }
   };
 
+  const handleCloseCityLanding = () => {
+    startTransition(() => {
+      setActiveCityLanding(null);
+    });
+    window.history.pushState(null, '', '/');
+  };
+
+  const handleSelectCity = (slug: string) => {
+    const found = CITIES_DATA.find((c) => c.slug === slug);
+    if (found) {
+      window.history.pushState(null, '', `/${slug}`);
+      startTransition(() => {
+        setActiveCityLanding(found);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleOpenGlossary = (slug?: string) => {
     const targetUrl = slug ? `/glosarium/${slug}` : '/glosarium';
     window.history.pushState(null, '', targetUrl);
@@ -623,6 +672,24 @@ export function App() {
             onOpenTalentAssessment={handleOpenTalentAssessment}
             onOpenTrialEvents={handleOpenTrialEvents}
             onOpenBootcampModal={handleOpenBootcampModal}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
+    );
+  }
+
+  // Jika Programmatic Local SEO Landing Page Kota sedang aktif
+  if (activeCityLanding) {
+    return (
+      <>
+        <Suspense fallback={<AppLoadingFallback message={`Menyiapkan Kursus Coding Anak ${activeCityLanding.cityName}...`} />}>
+          <CityLandingPage
+            cityData={activeCityLanding}
+            onBackToHome={handleCloseCityLanding}
+            onSelectCity={handleSelectCity}
+            onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenTrialEvents={handleOpenTrialEvents}
           />
         </Suspense>
         <PWAInstallPrompt />

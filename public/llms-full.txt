@@ -113,3 +113,17 @@ Kurikulum Beekoding mengadopsi kerangka kerja pedagogi modern yang diakui secara
 3. **Panduan Lengkap Usia Belajar Coding Anak (Scratch, Roblox, Python)**:
    - URL: https://beekoding.my.id/blog/panduan-usia-belajar-coding-anak-scratch-roblox-python
    - Ringkasan: Roadmap berjenjang sesuai teori tahapan kognitif anak (Jean Piaget) mulai dari visual block (usia 6-8), Roblox 3D game dev (usia 9-11), Python programming (usia 12-14), hingga Artificial Intelligence & olimpiade (usia 15-17).
+
+---
+
+## 8. Halaman Programmatic Local SEO Kota Utama di Indonesia
+
+- **Jakarta & Jabodetabek**: https://beekoding.my.id/kursus-coding-anak-jakarta
+- **Surabaya & Sidoarjo**: https://beekoding.my.id/kursus-coding-anak-surabaya
+- **Bandung & Cimahi**: https://beekoding.my.id/kursus-coding-anak-bandung
+- **Tangerang & BSD City**: https://beekoding.my.id/kursus-coding-anak-tangerang
+- **Bekasi & Cikarang**: https://beekoding.my.id/kursus-coding-anak-bekasi
+- **Medan & Binjai**: https://beekoding.my.id/kursus-coding-anak-medan
+- **Semarang & Ungaran**: https://beekoding.my.id/kursus-coding-anak-semarang
+- **Yogyakarta & Sleman**: https://beekoding.my.id/kursus-coding-anak-yogyakarta
+- **Bali (Denpasar, Badung, Sanur)**: https://beekoding.my.id/kursus-coding-anak-bali
