@@ -2,7 +2,7 @@ import React, { useState, useEffect, startTransition } from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
-import { Menu, X, Phone, ArrowRight, Sparkles, Brain, GraduationCap, Calendar, BookOpen, Smartphone } from 'lucide-react';
+import { Menu, X, Phone, ArrowRight, Sparkles, Brain, Calendar, BookOpen, Smartphone } from 'lucide-react';
 
 interface NavbarProps {
   onOpenBootcampModal: () => void;
@@ -17,7 +17,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenBootcampModal,
   onOpenTalentAssessment,
-  onOpenStudentPortal,
   onOpenTrialEvents,
   onOpenBlog,
   onOpenGlossary,
@@ -292,24 +291,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Header Actions: Buttons + Theme Switch */}
         <div className="hidden sm:flex items-center gap-1.5 xl:gap-2 flex-shrink-0">
-          {/* Tombol Portal Siswa & Wali Murid */}
-          <button
-            type="button"
-            onClick={() => {
-              if (onOpenStudentPortal) onOpenStudentPortal();
-              else window.location.hash = '#portal';
-            }}
-            className={`whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer ${
-              isDark
-                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/40 hover:bg-sky-500/25 hover:border-sky-400'
-                : 'bg-sky-50 text-sky-900 border border-sky-300 hover:bg-sky-100'
-            }`}
-            title="Portal Siswa & Wali Murid"
-          >
-            <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden xl:inline">Portal Siswa</span>
-            <span className="xl:hidden">Portal</span>
-          </button>
 
           {/* Tombol Kuis Minat Anak (1 Menit) */}
           <button
@@ -492,23 +473,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Brain className="w-4 h-4 text-purple-400" />
                 <span>Tes Bakat Digital Anak (Gratis)</span>
-              </button>
-
-              {/* Portal Siswa & Wali Murid */}
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (onOpenStudentPortal) onOpenStudentPortal();
-                  else window.location.hash = '#portal';
-                }}
-                className={`w-full text-center py-3 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 ${
-                  isDark
-                    ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
-                    : 'bg-sky-100 text-sky-900 border-sky-300'
-                }`}
-              >
-                <GraduationCap className="w-4 h-4 text-sky-500" />
-                <span>Portal Siswa & Wali Murid</span>
               </button>
 
               {/* Free Trial Class & Workshop */}
