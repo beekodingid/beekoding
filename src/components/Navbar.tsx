@@ -64,6 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       'showcase',
       'founder',
       'gallery',
+      'blog',
       'faq',
       'contact',
     ];
@@ -264,10 +265,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={link.name}
                   href={link.href}
                   onClick={(e) => {
-                    if (link.href === '#blog' && onOpenBlog) {
-                      e.preventDefault();
-                      onOpenBlog();
-                    } else if (link.href === '#glosarium' && onOpenGlossary) {
+                    if (link.href === '#glosarium' && onOpenGlossary) {
                       e.preventDefault();
                       onOpenGlossary();
                     } else {

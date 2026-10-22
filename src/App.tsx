@@ -28,6 +28,9 @@ const CourseFinder = lazy(() =>
 const Gallery = lazy(() =>
   import('./components/Gallery').then((m) => ({ default: m.Gallery }))
 );
+const BlogSection = lazy(() =>
+  import('./components/BlogSection').then((m) => ({ default: m.BlogSection }))
+);
 const FAQ = lazy(() =>
   import('./components/FAQ').then((m) => ({ default: m.FAQ }))
 );
@@ -790,6 +793,10 @@ export function App() {
           />
           <Founder />
           <Gallery />
+          <BlogSection
+            onOpenBlog={handleOpenBlog}
+            onOpenTrialEvents={handleOpenTrialEvents}
+          />
           <FAQ />
           <Contact selectedProgram={selectedProgramForInquiry} />
         </Suspense>
