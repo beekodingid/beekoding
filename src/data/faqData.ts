@@ -1,6 +1,6 @@
 export interface FAQItem {
   id: string;
-  category: 'umum' | 'metode' | 'perangkat' | 'sertifikasi';
+  category: 'umum' | 'biaya' | 'metode' | 'perangkat' | 'sertifikasi';
   question: string;
   answer: string;
   isPopular?: boolean;
@@ -8,6 +8,7 @@ export interface FAQItem {
 
 export const FAQ_CATEGORIES = [
   { id: 'all', label: 'Semua Pertanyaan' },
+  { id: 'biaya', label: 'Biaya & Paket Kursus' },
   { id: 'umum', label: 'Umum & Pendaftaran' },
   { id: 'metode', label: 'Metode & Jadwal' },
   { id: 'perangkat', label: 'Perangkat & Alat' },
@@ -15,6 +16,30 @@ export const FAQ_CATEGORIES = [
 ] as const;
 
 export const FAQ_ITEMS: FAQItem[] = [
+  {
+    id: 'faq-biaya-1',
+    category: 'biaya',
+    question: 'Berapa rincian biaya kursus coding resmi di Beekoding?',
+    answer:
+      'Biaya kursus coding di Beekoding dipublikasikan secara terbuka, transparan, dan terjangkau: 1. Free Trial Class: Rp 0 (100% Gratis 1 sesi simulasi & tes minat 45–60 menit). 2. Kelas Reguler Online (Maksimal 4 Murid): Mulai Rp 350.000 / bulan (tersedia paket 12 Sesi Rp 1.050.000, 24 Sesi Rp 1.950.000, 48 Sesi Rp 3.600.000). 3. Kelas Privat Intensif 1-on-1: Mulai Rp 150.000 / sesi pertemuan dengan jadwal fleksibel. Seluruh program bebas biaya pendaftaran formulir dan tanpa uang gedung.',
+    isPopular: true,
+  },
+  {
+    id: 'faq-biaya-2',
+    category: 'biaya',
+    question: 'Apakah ada biaya tambahan tersembunyi seperti uang gedung atau uang ujian?',
+    answer:
+      'Sama sekali tidak ada biaya tersembunyi! Beekoding berkomitmen pada transparansi total. Tidak ada uang gedung tahunan, bebas biaya pendaftaran awal (Rp 0), dan seluruh sertifikat digital resmi ber-QR Code serta akses materi selamanya di Portal Siswa sudah termasuk gratis.',
+    isPopular: true,
+  },
+  {
+    id: 'faq-biaya-3',
+    category: 'biaya',
+    question: 'Apakah ada diskon untuk saudara kandung (kakak-adik) atau promo cicilan?',
+    answer:
+      'Ya! Kami menyediakan Sibling Discount sebesar 10% untuk pendaftaran anak kedua (kakak/adik), voucher cashback pendaftaran berkala, serta kemudahan pembayaran bertahap per termin.',
+    isPopular: false,
+  },
   {
     id: 'faq-1',
     category: 'umum',
