@@ -610,7 +610,7 @@ async function main() {
         url: 'https://beekoding.my.id',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://beekoding.my.id/og-image.jpg',
+          url: 'https://beekoding.my.id/icon-512.png',
         },
       },
     });
@@ -730,7 +730,7 @@ async function main() {
         url: 'https://beekoding.my.id',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://beekoding.my.id/og-image.jpg',
+          url: 'https://beekoding.my.id/icon-512.png',
         },
       },
       articleSection: article.category,
