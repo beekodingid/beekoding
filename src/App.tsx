@@ -64,6 +64,9 @@ const GlossaryView = lazy(() =>
 const QuizMinatView = lazy(() =>
   import('./components/quiz/QuizMinatView').then((m) => ({ default: m.QuizMinatView }))
 );
+const PlayableArcadeModal = lazy(() =>
+  import('./components/arcade/PlayableArcadeModal').then((m) => ({ default: m.PlayableArcadeModal }))
+);
 const LegalView = lazy(() =>
   import('./components/legal/LegalView').then((m) => ({ default: m.LegalView }))
 );
@@ -107,6 +110,8 @@ export function App() {
   const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
   const [activeCityLanding, setActiveCityLanding] = useState<CityLandingData | null>(null);
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
+  const [showArcadeModal, setShowArcadeModal] = useState(false);
+  const [arcadeGameId, setArcadeGameId] = useState<string | undefined>(undefined);
 
   // Deteksi URL (clean path /kursus-*, /glosarium, /blog, /admin, /portal, /talent, /cek-minat-anak maupun hash #...)
   useEffect(() => {
@@ -131,6 +136,12 @@ export function App() {
         setShowGlossary(false);
         setShowLegal(false);
         setAgeLandingTier(null);
+      } else if (hash.startsWith('#arcade') || pathname.startsWith('/arcade')) {
+        setShowArcadeModal(true);
+        const slug = (hash.replace('#arcade', '').replace('/', '') || pathname.replace('/arcade', '').replace('/', '')).trim();
+        if (slug) {
+          setArcadeGameId(slug);
+        }
       } else if (hash === '#talent' || pathname === '/talent') {
         setShowTalentAssessment(true);
         setShowQuizMinat(false);
@@ -472,6 +483,19 @@ export function App() {
     }
   };
 
+  const handleOpenArcade = (gameId?: string) => {
+    setArcadeGameId(gameId);
+    setShowArcadeModal(true);
+  };
+
+  const handleCloseArcade = () => {
+    setShowArcadeModal(false);
+    setArcadeGameId(undefined);
+    if (window.location.hash.startsWith('#arcade') || window.location.pathname.startsWith('/arcade')) {
+      window.history.pushState(null, '', '/');
+    }
+  };
+
   const handleOpenBlog = (slug?: string) => {
     const targetUrl = slug ? `/blog/${slug}` : '/blog';
     window.history.pushState(null, '', targetUrl);
@@ -763,6 +787,7 @@ export function App() {
           onOpenTalentAssessment={handleOpenTalentAssessment}
           onOpenTrialEvents={handleOpenTrialEvents}
           onOpenQuizMinat={handleOpenQuizMinat}
+          onOpenArcade={handleOpenArcade}
         />
         <About />
         <Programs
@@ -784,6 +809,7 @@ export function App() {
         <Suspense fallback={null}>
           <StudentShowcase
             onOpenTalentAssessment={handleOpenTalentAssessment}
+            onOpenArcade={handleOpenArcade}
             onOpenConsultation={() => {
               const contactElement = document.getElementById('contact');
               if (contactElement) {
@@ -819,6 +845,18 @@ export function App() {
 
       {/* PWA Add to Home Screen Prompt */}
       <PWAInstallPrompt />
+
+            {/* Beekoding Playable Arcade Modal */}
+      {showArcadeModal && (
+        <Suspense fallback={null}>
+          <PlayableArcadeModal
+            isOpen={showArcadeModal}
+            onClose={handleCloseArcade}
+            initialGameId={arcadeGameId}
+            onOpenTrialEvents={handleOpenTrialEvents}
+          />
+        </Suspense>
+      )}
 
       {/* Summer AI & Coding Bootcamp 2026 Curriculum Modal */}
       {bootcampModalOpen && (

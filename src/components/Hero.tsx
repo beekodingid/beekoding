@@ -1,13 +1,14 @@
 import React from 'react';
 import { siteConfig } from '../data/content';
 import { useTheme } from '../context/ThemeContext';
-import { Sparkles, ArrowRight, Compass, Rocket, ChevronDown, Heart, Brain, Calendar, Star } from 'lucide-react';
+import { Sparkles, ArrowRight, Compass, Rocket, ChevronDown, Heart, Brain, Calendar, Star, Gamepad2 } from 'lucide-react';
 
 interface HeroProps {
   onOpenBootcampModal: () => void;
   onOpenTalentAssessment?: () => void;
   onOpenTrialEvents?: () => void;
   onOpenQuizMinat?: () => void;
+  onOpenArcade?: (gameId?: string) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -15,6 +16,7 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenTalentAssessment,
   onOpenTrialEvents,
   onOpenQuizMinat,
+  onOpenArcade,
 }) => {
   const { isDark } = useTheme();
 
@@ -116,6 +118,24 @@ export const Hero: React.FC<HeroProps> = ({
                   1 Menit
                 </span>
               </button>
+
+              {onOpenArcade && (
+                <button
+                  type="button"
+                  onClick={() => onOpenArcade()}
+                  className={`inline-flex items-center gap-1.5 py-1.5 px-3.5 rounded-full border transition-all hover:scale-105 cursor-pointer shadow-xs ${
+                    isDark
+                      ? 'bg-gradient-to-r from-purple-500/20 to-indigo-500/10 border-purple-500/40 text-purple-300 hover:border-purple-400'
+                      : 'bg-purple-100/90 border-purple-300 text-purple-950 hover:bg-purple-200/90'
+                  }`}
+                >
+                  <Gamepad2 className="w-3.5 h-3.5 text-purple-500 animate-pulse" />
+                  <span className="text-xs font-bold">Arcade Game Siswa</span>
+                  <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-purple-600 text-white">
+                    Main
+                  </span>
+                </button>
+              )}
             </div>
 
             {/* Action Buttons */}

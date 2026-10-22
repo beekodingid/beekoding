@@ -24,11 +24,13 @@ import {
   Search,
   ShieldCheck,
   PenSquare,
+  Gamepad2,
 } from 'lucide-react';
 
 interface StudentShowcaseProps {
   onOpenTalentAssessment?: () => void;
   onOpenConsultation?: () => void;
+  onOpenArcade?: (gameId?: string) => void;
 }
 
 const PLATFORM_META: Record<
@@ -65,6 +67,7 @@ const PLATFORM_META: Record<
 export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
   onOpenTalentAssessment,
   onOpenConsultation,
+  onOpenArcade,
 }) => {
   const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState<'projects' | 'testimonials'>('projects');
@@ -403,6 +406,18 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
                         >
                           Detail
                         </button>
+
+                        {onOpenArcade && project.platform === 'scratch' && (
+                          <button
+                            type="button"
+                            onClick={() => onOpenArcade(project.id === 'proj-2026-004' ? 'space-crystal-defender' : 'bee-honey-catch')}
+                            className="px-3 py-1.5 rounded-lg text-xs font-black bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 text-white flex items-center space-x-1 shadow-sm transition-all cursor-pointer"
+                            title="Mainkan game ini langsung di browser!"
+                          >
+                            <Gamepad2 className="w-3.5 h-3.5" />
+                            <span>Main</span>
+                          </button>
+                        )}
 
                         {project.demoUrl ? (
                           <a
