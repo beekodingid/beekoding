@@ -104,14 +104,20 @@ async function main() {
     fs.mkdirSync(blogDir, { recursive: true });
   }
 
-  // Generate dist/blog/index.html (list view)
+  // Generate dist/blog/index.html and dist/blog.html (list view)
+  const blogDesc = 'Kumpulan artikel edukasi Coding Anak, Artificial Intelligence, Scratch, Roblox Studio, Python, dan tips Parenting Digital terbaru dari tim akademik Beekoding.';
   const blogListHtml = baseHtml
     .replace(/<title>.*?<\/title>/, '<title>Blog Edukasi Coding & AI Anak | Beekoding</title>')
+    .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, '<link rel="canonical" href="https://beekoding.my.id/blog" />')
+    .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${blogDesc}" />`)
     .replace(/<meta property="og:title" content="[^"]*"/, '<meta property="og:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
+    .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${blogDesc}" />`)
     .replace(/<meta name="twitter:title" content="[^"]*"/, '<meta name="twitter:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
+    .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${blogDesc}" />`)
     .replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="https://beekoding.my.id/blog"')
     .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.my.id/blog"');
   fs.writeFileSync(path.join(blogDir, 'index.html'), blogListHtml, 'utf-8');
+  fs.writeFileSync(path.join(distDir, 'blog.html'), blogListHtml, 'utf-8');
 
   // =========================================================================
   // 3b. PRERENDER PROGRAMMATIC SEO LANDING PAGES PER JENJANG USIA

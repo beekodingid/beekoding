@@ -299,9 +299,9 @@ export function App() {
         setAgeLandingTier(null);
         let slug = '';
         if (hash.startsWith('#glosarium/')) {
-          slug = hash.replace('#glosarium/', '').trim();
+          slug = hash.replace('#glosarium/', '').replace(/\/+$/, '').trim();
         } else if (pathname.startsWith('/glosarium/')) {
-          slug = pathname.replace('/glosarium/', '').trim();
+          slug = pathname.replace('/glosarium/', '').replace(/\/+$/, '').trim();
         }
         setGlossarySlug(slug || undefined);
       } else if (hash.startsWith('#blog') || pathname.startsWith('/blog')) {
@@ -315,9 +315,9 @@ export function App() {
         setAgeLandingTier(null);
         let slug = '';
         if (hash.startsWith('#blog/')) {
-          slug = hash.replace('#blog/', '').trim();
+          slug = hash.replace('#blog/', '').replace(/\/+$/, '').trim();
         } else if (pathname.startsWith('/blog/')) {
-          slug = pathname.replace('/blog/', '').trim();
+          slug = pathname.replace('/blog/', '').replace(/\/+$/, '').trim();
         }
         setBlogSlug(slug ? slug : undefined);
       } else {
@@ -329,6 +329,16 @@ export function App() {
         setShowGlossary(false);
         setShowLegal(false);
         setAgeLandingTier(null);
+        if (
+          pathname.startsWith('/biaya') ||
+          pathname.startsWith('/pricing') ||
+          hash === '#biaya'
+        ) {
+          setTimeout(() => {
+            const el = document.getElementById('biaya');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 150);
+        }
       }
     };
     handleHashCheck();

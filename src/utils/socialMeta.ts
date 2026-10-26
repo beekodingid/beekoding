@@ -44,6 +44,17 @@ function setOrUpdateMeta(attributeName: 'name' | 'property', attributeValue: str
   element.setAttribute('content', content);
 }
 
+function setOrUpdateCanonical(href: string) {
+  if (typeof document === 'undefined') return;
+  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', href);
+}
+
 function removeMeta(attributeName: 'name' | 'property', attributeValue: string) {
   if (typeof document === 'undefined') return;
   const element = document.querySelector(`meta[${attributeName}="${attributeValue}"]`);
@@ -119,8 +130,9 @@ export function updateArticleSocialMeta(article: BlogArticle) {
   const articleUrl = `${origin}/blog/${article.slug}`;
   const coverUrl = ensureAbsoluteUrl(article.coverImage);
 
-  // 1. Browser Tab Title
+  // 1. Browser Tab Title & Canonical
   document.title = `${article.title} | Blog Beekoding`;
+  setOrUpdateCanonical(articleUrl);
 
   // 2. Standard Meta
   setOrUpdateMeta('name', 'description', article.excerpt);
@@ -155,12 +167,47 @@ export function updateArticleSocialMeta(article: BlogArticle) {
 }
 
 /**
+ * Mengatur meta tag untuk halaman indeks Blog (/blog)
+ */
+export function updateBlogIndexSocialMeta() {
+  if (typeof document === 'undefined') return;
+
+  const origin = getPublicBaseUrl();
+  const blogUrl = `${origin}/blog`;
+  const blogTitle = 'Blog Edukasi Coding & AI Anak | Beekoding';
+  const blogDesc =
+    'Kumpulan artikel edukasi Coding Anak, Artificial Intelligence, Scratch, Roblox Studio, Python, dan tips Parenting Digital terbaru dari tim akademik Beekoding.';
+
+  document.title = blogTitle;
+  setOrUpdateCanonical(blogUrl);
+  setOrUpdateMeta('name', 'description', blogDesc);
+  setOrUpdateMeta('property', 'og:type', 'website');
+  setOrUpdateMeta('property', 'og:title', blogTitle);
+  setOrUpdateMeta('property', 'og:description', blogDesc);
+  setOrUpdateMeta('property', 'og:image', DEFAULT_META.image);
+  setOrUpdateMeta('property', 'og:url', blogUrl);
+
+  setOrUpdateMeta('name', 'twitter:card', 'summary_large_image');
+  setOrUpdateMeta('name', 'twitter:title', blogTitle);
+  setOrUpdateMeta('name', 'twitter:description', blogDesc);
+  setOrUpdateMeta('name', 'twitter:image', DEFAULT_META.image);
+  setOrUpdateMeta('name', 'twitter:url', blogUrl);
+
+  removeMeta('property', 'article:published_time');
+  removeMeta('property', 'article:author');
+  removeMeta('property', 'article:section');
+
+  removeArticleJsonLd();
+}
+
+/**
  * Mengembalikan meta tag ke halaman default website
  */
 export function resetSocialMetaToDefault() {
   if (typeof document === 'undefined') return;
 
   document.title = DEFAULT_META.title;
+  setOrUpdateCanonical(DEFAULT_META.url);
   setOrUpdateMeta('name', 'description', DEFAULT_META.description);
   setOrUpdateMeta('property', 'og:type', 'website');
   setOrUpdateMeta('property', 'og:title', DEFAULT_META.title);

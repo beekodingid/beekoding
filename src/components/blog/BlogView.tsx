@@ -22,7 +22,7 @@ import {
   useScrollSpy,
   type TocItem,
 } from './TableOfContents';
-import { updateArticleSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
+import { updateArticleSocialMeta, updateBlogIndexSocialMeta, resetSocialMetaToDefault, getPublicBaseUrl } from '../../utils/socialMeta';
 import { getArticleReadTime } from '../../utils/readTime';
 import {
   ArrowLeft,
@@ -369,14 +369,14 @@ export const BlogView: React.FC<BlogViewProps> = ({
   useEffect(() => {
     if (currentArticle) {
       updateArticleSocialMeta(currentArticle);
-    } else {
-      resetSocialMetaToDefault();
+    } else if (!selectedSlug) {
+      updateBlogIndexSocialMeta();
     }
 
     return () => {
       resetSocialMetaToDefault();
     };
-  }, [currentArticle]);
+  }, [currentArticle, selectedSlug]);
 
   const handleSelectArticle = (slug: string) => {
     setSelectedSlug(slug);
