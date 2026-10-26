@@ -3,6 +3,8 @@ import { useTheme } from '../../context/ThemeContext';
 import { ARCADE_GAMES_LIST } from './types';
 import { BeeHoneyGame } from './BeeHoneyGame';
 import { SpaceShooterGame } from './SpaceShooterGame';
+import { RobloxObbyGame } from './RobloxObbyGame';
+import { MazeLogicGame } from './MazeLogicGame';
 import { isSoundMuted, setSoundMuted } from './soundFX';
 import {
   Gamepad2,
@@ -65,7 +67,7 @@ export const PlayableArcadeModal: React.FC<PlayableArcadeModalProps> = ({
   };
 
   const handleShareArcade = () => {
-    const text = `🎮 Hai teman-teman! Coba mainkan game buatan murid Beekoding langsung gratis di browser tanpa install:\nhttps://beekoding.my.id/#arcade\n\nSeru banget ada game Bee Honey Catch & Space Galaxy Defender!`;
+    const text = `🎮 Hai teman-teman! Coba mainkan 4 game buatan murid Beekoding langsung gratis di browser tanpa install:\nhttps://beekoding.my.id/#arcade\n\nAda Bee Honey Catch, Roblox Obby Lava Runner, Maze Logika Algoritma, & Space Galaxy Defender!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -170,6 +172,12 @@ export const PlayableArcadeModal: React.FC<PlayableArcadeModalProps> = ({
           <div className="lg:col-span-7 flex justify-center">
             {currentGame.gameType === 'canvas-bee' && (
               <BeeHoneyGame onOpenTrialEvents={onOpenTrialEvents} />
+            )}
+            {currentGame.gameType === 'canvas-obby' && (
+              <RobloxObbyGame onOpenTrialEvents={onOpenTrialEvents} />
+            )}
+            {currentGame.gameType === 'interactive-maze' && (
+              <MazeLogicGame onOpenTrialEvents={onOpenTrialEvents} />
             )}
             {currentGame.gameType === 'canvas-space' && (
               <SpaceShooterGame onOpenTrialEvents={onOpenTrialEvents} />

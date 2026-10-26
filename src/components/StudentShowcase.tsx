@@ -407,10 +407,20 @@ export const StudentShowcase: React.FC<StudentShowcaseProps> = ({
                           Detail
                         </button>
 
-                        {onOpenArcade && project.platform === 'scratch' && (
+                        {onOpenArcade && (
                           <button
                             type="button"
-                            onClick={() => onOpenArcade(project.id === 'proj-2026-004' ? 'space-crystal-defender' : 'bee-honey-catch')}
+                            onClick={() => {
+                              if (project.platform === 'roblox') {
+                                onOpenArcade('roblox-obby-runner');
+                              } else if (project.platform === 'python' || project.platform === 'ai') {
+                                onOpenArcade('maze-logika-algoritma');
+                              } else if (project.id === 'proj-2026-004') {
+                                onOpenArcade('space-crystal-defender');
+                              } else {
+                                onOpenArcade('bee-honey-catch');
+                              }
+                            }}
                             className="px-3 py-1.5 rounded-lg text-xs font-black bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 text-white flex items-center space-x-1 shadow-sm transition-all cursor-pointer"
                             title="Mainkan game ini langsung di browser!"
                           >
