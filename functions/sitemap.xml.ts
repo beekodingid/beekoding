@@ -90,6 +90,14 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     <priority>0.95</priority>
   </url>
 
+  <!-- Lead Magnet: Printable Logic Worksheets PDF Gratis -->
+  <url>
+    <loc>${domain}/worksheet-gratis</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Programmatic SEO Landing: Kursus Coding Anak SD -->
   <url>
     <loc>${domain}/kursus-coding-anak-sd</loc>

@@ -73,6 +73,14 @@ const LegalView = lazy(() =>
 const CityLandingPage = lazy(() =>
   import('./components/landing/CityLandingPage').then((m) => ({ default: m.CityLandingPage }))
 );
+const WorksheetsView = lazy(() =>
+  import('./components/worksheets/WorksheetsView').then((m) => ({ default: m.WorksheetsView }))
+);
+const WorksheetLeadMagnetSection = lazy(() =>
+  import('./components/worksheets/WorksheetLeadMagnetSection').then((m) => ({
+    default: m.WorksheetLeadMagnetSection,
+  }))
+);
 import { CITIES_DATA, type CityLandingData } from './data/citiesData';
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
@@ -105,6 +113,7 @@ export function App() {
   const [showGlossary, setShowGlossary] = useState(false);
   const [glossarySlug, setGlossarySlug] = useState<string | undefined>(undefined);
   const [showQuizMinat, setShowQuizMinat] = useState(false);
+  const [showWorksheets, setShowWorksheets] = useState(false);
   const [showLegal, setShowLegal] = useState(false);
   const [legalTab, setLegalTab] = useState<'privacy' | 'terms' | 'disclaimer'>('privacy');
   const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
@@ -120,8 +129,24 @@ export function App() {
       const pathname = window.location.pathname || '';
       const search = window.location.search || '';
 
-      // 1. Prioritaskan route kuis minat & bakat anak
+      // 1. Prioritaskan route kuis minat & bakat anak atau worksheet gratis
       if (
+        hash === '#worksheet' ||
+        hash === '#worksheet-gratis' ||
+        hash === '#lembar-kerja' ||
+        pathname.startsWith('/worksheet-gratis') ||
+        pathname.startsWith('/worksheet')
+      ) {
+        setShowWorksheets(true);
+        setShowQuizMinat(false);
+        setShowTalentAssessment(false);
+        setShowAdmin(false);
+        setShowStudentPortal(false);
+        setShowBlog(false);
+        setShowGlossary(false);
+        setShowLegal(false);
+        setAgeLandingTier(null);
+      } else if (
         hash === '#kuis-minat' ||
         hash === '#quiz' ||
         hash === '#quiz-minat' ||
@@ -129,6 +154,7 @@ export function App() {
         pathname.startsWith('/kuis-minat')
       ) {
         setShowQuizMinat(true);
+        setShowWorksheets(false);
         setShowTalentAssessment(false);
         setShowAdmin(false);
         setShowStudentPortal(false);
@@ -321,6 +347,7 @@ export function App() {
         }
         setBlogSlug(slug ? slug : undefined);
       } else {
+        setShowWorksheets(false);
         setShowQuizMinat(false);
         setShowAdmin(false);
         setShowTalentAssessment(false);
@@ -376,10 +403,39 @@ export function App() {
     });
   };
 
+  const handleOpenWorksheets = () => {
+    window.history.pushState(null, '', '/worksheet-gratis');
+    startTransition(() => {
+      setShowWorksheets(true);
+      setShowQuizMinat(false);
+      setShowTalentAssessment(false);
+      setShowAdmin(false);
+      setAgeLandingTier(null);
+      setShowBlog(false);
+      setShowGlossary(false);
+      setShowStudentPortal(false);
+      setShowLegal(false);
+    });
+  };
+
+  const handleCloseWorksheets = () => {
+    startTransition(() => {
+      setShowWorksheets(false);
+    });
+    if (
+      window.location.hash.startsWith('#worksheet') ||
+      window.location.hash === '#lembar-kerja' ||
+      window.location.pathname.startsWith('/worksheet')
+    ) {
+      window.history.pushState(null, '', '/');
+    }
+  };
+
   const handleOpenQuizMinat = () => {
     window.location.hash = '#kuis-minat';
     startTransition(() => {
       setShowQuizMinat(true);
+      setShowWorksheets(false);
       setShowTalentAssessment(false);
       setShowAdmin(false);
       setAgeLandingTier(null);
@@ -654,6 +710,22 @@ export function App() {
     );
   }
 
+  // 0.5. Jika Lembar Kerja Logika (Printable Logic Worksheets PDF) sedang aktif
+  if (showWorksheets) {
+    return (
+      <>
+        <Suspense fallback={<AppLoadingFallback message="Menyiapkan Lembar Kerja Logika & Maze Anak (PDF)..." />}>
+          <WorksheetsView
+            onBackToHome={handleCloseWorksheets}
+            onOpenTrialEvents={handleOpenTrialEvents}
+            onOpenQuizMinat={handleOpenQuizMinat}
+          />
+        </Suspense>
+        <PWAInstallPrompt />
+      </>
+    );
+  }
+
   // 1. Jika Kuis Minat & Bakat Coding Anak sedang aktif
   if (showQuizMinat) {
     return (
@@ -829,6 +901,7 @@ export function App() {
           />
           <Founder />
           <Gallery />
+          <WorksheetLeadMagnetSection onOpenWorksheets={handleOpenWorksheets} />
           <BlogSection
             onOpenBlog={handleOpenBlog}
             onOpenTrialEvents={handleOpenTrialEvents}
@@ -848,6 +921,7 @@ export function App() {
         onOpenAgeLanding={handleOpenAgeLanding}
         onOpenGlossary={handleOpenGlossary}
         onOpenLegal={handleOpenLegal}
+        onOpenWorksheets={handleOpenWorksheets}
       />
 
       {/* Floating WhatsApp chat widget */}

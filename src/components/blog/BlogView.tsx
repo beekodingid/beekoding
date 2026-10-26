@@ -754,6 +754,40 @@ export const BlogView: React.FC<BlogViewProps> = ({
               onOpenTalentAssessment={onOpenTalentAssessment}
             />
 
+            {/* Printable Logic Worksheets PDF Lead Magnet Banner */}
+            <div
+              className={`my-6 p-5 sm:p-6 rounded-2xl border-2 transition-all ${
+                isDark
+                  ? 'bg-gradient-to-r from-amber-500/15 via-[#131826] to-[#0f131f] border-amber-500/40 text-slate-100'
+                  : 'bg-gradient-to-r from-amber-100/90 via-amber-50 to-white border-amber-400 text-slate-900 shadow-md'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-amber-500 text-slate-950">
+                    🎁 Bonus Orang Tua • PDF Siap Cetak A4
+                  </span>
+                  <h4 className="text-base sm:text-lg font-black font-['Space_Grotesk']">
+                    Download Gratis: 6 Lembar Kerja Logika Koding, Labirin &amp; Mewarnai Beeby!
+                  </h4>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                    Latih Computational Thinking anak di rumah tanpa layar HP (Unplugged Coding) + Kunci Jawaban Orang Tua.
+                  </p>
+                </div>
+                <a
+                  href="/worksheet-gratis"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.hash = '#worksheet-gratis';
+                  }}
+                  className="w-full sm:w-auto shrink-0 px-5 py-3 rounded-xl text-xs sm:text-sm font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition-all"
+                >
+                  <span>Unduh 6 PDF Gratis</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
             {/* Bottom In-Article AdSense Banner */}
             <AdSenseSlot slotId="5878990472" format="auto" label="Sponsor / Google AdSense" />
 
@@ -1441,15 +1475,6 @@ export const BlogView: React.FC<BlogViewProps> = ({
               className="hover:text-amber-500 transition-colors underline cursor-pointer"
             >
               Penafian
-            </a>
-            <span>•</span>
-            <a
-              href="/ads.txt"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-amber-500 transition-colors font-mono"
-            >
-              ads.txt
             </a>
           </div>
         </div>

@@ -621,6 +621,55 @@ async function main() {
   console.log(`[prerender-blog] Successfully prerendered Lead Magnet Quiz SEO page!`);
 
   // =========================================================================
+  // 3d-2. PRERENDER LEAD MAGNET: PRINTABLE LOGIC WORKSHEETS (/worksheet-gratis)
+  // =========================================================================
+  const wsDir = path.join(distDir, 'worksheet-gratis');
+  fs.mkdirSync(wsDir, { recursive: true });
+  const wsUrl = 'https://beekoding.my.id/worksheet-gratis';
+  const wsTitle = 'Download Worksheet Logika Coding & Maze Anak SD Gratis (PDF) | Beekoding';
+  const wsDesc =
+    'Unduh 6 Lembar Kerja (Printable Logic Worksheets) PDF A4 gratis untuk anak usia 5–13 tahun: Labirin Algoritma Beeby, Detektif Pola, Misi Debugging, Mewarnai Pixel Art, Sandi Biner AI, & Kanvas Perancang Game.';
+  const wsKeywords =
+    'worksheet coding anak sd gratis pdf, lembar kerja logika anak tk sd, maze coding anak printable, mewarnai coding anak, unplugged coding worksheet indonesia';
+
+  const wsSemanticHtml = `
+        <header style="margin-bottom:28px;">
+          <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${wsTitle}</h1>
+          <p style="font-size:1.05rem;color:#475569;">${wsDesc}</p>
+        </header>
+        <section>
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Daftar 6 Paket Lembar Kerja Logika &amp; Koding Cetak A4 (Unplugged Coding)</h2>
+          <ul style="padding-left:20px;line-height:1.8;">
+            <li><strong>Lembar Kerja #1 — Labirin Algoritma Beeby (Usia 5–8 Tahun):</strong> Menyusun blok panah arah untuk membantu lebah Beeby menuju Sarang Madu Emas.</li>
+            <li><strong>Lembar Kerja #2 — Detektif Pola &amp; Dekomposisi Roket (Usia 6–9 Tahun):</strong> Melengkapi deret pola kode dan memecah bangun datar penyusun roket.</li>
+            <li><strong>Lembar Kerja #3 — Misi Debugging: Cari &amp; Perbaiki Bug! (Usia 7–10 Tahun):</strong> Menemukan langkah instruksi robot yang salah dan memperbaikinya.</li>
+            <li><strong>Lembar Kerja #4 — Mewarnai Maskot Beeby &amp; Pixel Art (Usia 5–9 Tahun):</strong> Mewarnai grid piksel 9x9 berdasarkan logika IF-THEN dan menghias maskot Beeby.</li>
+            <li><strong>Lembar Kerja #5 — Sandi Rahasia Biner &amp; Pohon Keputusan AI (Usia 8–12 Tahun):</strong> Menerjemahkan kode biner 5-bit dan membaca alur klasifikasi AI.</li>
+            <li><strong>Lembar Kerja #6 — Blueprint Perancang Game Pertamaku (Usia 7–13 Tahun):</strong> Merancang karakter Hero, rintangan, dan aturan skor variabel game Scratch/Roblox.</li>
+          </ul>
+        </section>`;
+
+  const wsHtml = replaceNoscript(
+    subpageBaseHtml
+      .replace(/<title>.*?<\/title>/, `<title>${wsTitle}</title>`)
+      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${wsUrl}" />`)
+      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${wsDesc}" />`)
+      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${wsKeywords}" />`)
+      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${wsTitle}" />`)
+      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${wsDesc}" />`)
+      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${wsUrl}" />`)
+      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${wsTitle}" />`)
+      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${wsDesc}" />`)
+      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${wsUrl}" />`),
+    wsSemanticHtml
+  );
+
+  fs.writeFileSync(path.join(wsDir, 'index.html'), wsHtml, 'utf-8');
+  fs.writeFileSync(path.join(distDir, 'worksheet-gratis.html'), wsHtml, 'utf-8');
+  console.log(`[prerender-blog] Successfully prerendered Printable Logic Worksheets SEO page!`);
+
+  // =========================================================================
   // 3e. PRERENDER LEGAL & PRIVACY POLICY PAGES (GOOGLE ADSENSE & COMPLIANCE)
   // =========================================================================
   const legalPages = [
@@ -1120,6 +1169,18 @@ async function main() {
       <image:loc>${domain}/og-image.jpg</image:loc>
       <image:title>Kuis Minat &amp; Bakat Coding Anak (1 Menit) Beekoding</image:title>
       <image:caption>Temukan potensi digital buah hati: The Game Creator, Logic Sleuth, Web Designer, atau AI Builder.</image:caption>
+    </image:image>
+  </url>
+  <!-- Lead Magnet: Printable Logic Worksheets PDF Gratis -->
+  <url>
+    <loc>${domain}/worksheet-gratis</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>${domain}/og-image.jpg</image:loc>
+      <image:title>Download Worksheet Logika Coding &amp; Maze Anak SD Gratis (PDF) Beekoding</image:title>
+      <image:caption>6 lembar kerja cetak A4 latihan logika koding, labirin Beeby, dan mewarnai piksel untuk anak usia 5-13 tahun.</image:caption>
     </image:image>
   </url>
   <!-- Legal: Kebijakan Privasi (Google AdSense & COPPA Compliance) -->

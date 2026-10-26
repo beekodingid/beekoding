@@ -13,6 +13,7 @@ interface FooterProps {
   onOpenAgeLanding?: (tier: 'sd' | 'teens') => void;
   onOpenGlossary?: () => void;
   onOpenLegal?: (tab: LegalTabType) => void;
+  onOpenWorksheets?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -24,6 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenAgeLanding,
   onOpenGlossary,
   onOpenLegal,
+  onOpenWorksheets,
 }) => {
   const { isDark } = useTheme();
   const [legalModalOpen, setLegalModalOpen] = useState(false);
@@ -147,6 +149,22 @@ export const Footer: React.FC<FooterProps> = ({
                 >
                   <span>🎯 Tes Bakat Anak (Gratis)</span>
                 </button>
+              </li>
+              <li>
+                <a
+                  href="/worksheet-gratis"
+                  onClick={(e) => {
+                    if (onOpenWorksheets) {
+                      e.preventDefault();
+                      onOpenWorksheets();
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 font-bold transition-colors cursor-pointer ${
+                    isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-700 hover:text-amber-900'
+                  }`}
+                >
+                  <span>🎁 Worksheet Logika Anak (PDF Gratis)</span>
+                </a>
               </li>
               <li>
                 <button
