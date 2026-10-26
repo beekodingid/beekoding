@@ -31,15 +31,15 @@ const tsContent = fs.readFileSync(blogArticlesPath, 'utf-8');
 async function main() {
   // 1. Parse articles from static file blogArticles.ts
   const articles = [];
-  const blocks = tsContent.split(/\{\s*slug:\s*'/);
+  const blocks = tsContent.split(/\{\s*slug:\s*['"]/);
   for (let i = 1; i < blocks.length; i++) {
     const b = blocks[i];
-    const slug = b.match(/^([^']+)'/)?.[1];
-    const title = b.match(/title:\s*'([^']+)'/)?.[1];
-    const excerpt = b.match(/excerpt:\s*'([^']+)'/)?.[1];
-    const coverImage = b.match(/coverImage:\s*'([^']+)'/)?.[1];
-    const publishedAt = b.match(/publishedAt:\s*'([^']+)'/)?.[1] || new Date().toISOString().split('T')[0];
-    const category = b.match(/category:\s*'([^']+)'/)?.[1] || 'Coding Anak';
+    const slug = b.match(/^([^'"]+)['"]/)?.[1];
+    const title = b.match(/title:\s*['"]([^'"]+)['"]/)?.[1];
+    const excerpt = b.match(/excerpt:\s*['"]([^'"]+)['"]/)?.[1];
+    const coverImage = b.match(/coverImage:\s*['"]([^'"]+)['"]/)?.[1];
+    const publishedAt = b.match(/publishedAt:\s*['"]([^'"]+)['"]/)?.[1] || new Date().toISOString().split('T')[0];
+    const category = b.match(/category:\s*['"]([^'"]+)['"]/)?.[1] || 'Coding Anak';
 
     if (slug && title && coverImage) {
       articles.push({

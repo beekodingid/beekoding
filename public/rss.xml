@@ -5,7 +5,7 @@
     <link>https://beekoding.my.id/blog</link>
     <description>Panduan dan wawasan koding anak, Artificial Intelligence, dan parenting digital masa depan.</description>
     <language>id-ID</language>
-    <lastBuildDate>Thu, 22 Oct 2026 07:27:40 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 06:31:53 GMT</lastBuildDate>
     <atom:link href="https://beekoding.my.id/rss.xml" rel="self" type="application/rss+xml"/>
 
     <item>
@@ -41,7 +41,7 @@
       <category>Artificial Intelligence</category>
     </item>
     <item>
-      <title>Tips Digital Parenting: Mengubah Anak dari &quot;Konsumen Gadget&quot; Menjadi &quot;Kreator Digital&quot;</title>
+      <title>Tips Digital Parenting: Mengubah Anak dari </title>
       <link>https://beekoding.my.id/blog/tips-digital-parenting-ubah-konsumen-jadi-kreator</link>
       <guid>https://beekoding.my.id/blog/tips-digital-parenting-ubah-konsumen-jadi-kreator</guid>
       <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
@@ -137,12 +137,12 @@
       <category>Artificial Intelligence</category>
     </item>
     <item>
-      <title>Anak Suka Main Gadget? Yuk, Ubah Jadi Kreator Digital dengan Belajar Coding!</title>
-      <link>https://beekoding.my.id/blog/anak-suka-main-gadget-belajar-coding</link>
-      <guid>https://beekoding.my.id/blog/anak-suka-main-gadget-belajar-coding</guid>
-      <pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate>
-      <description>Anak suka bermain gadget? Temukan cara mengubah kebiasaan menggunakan gadget menjadi aktivitas kreatif melalui belajar coding sejak dini.</description>
-      <category>Parenting Digital</category>
+      <title>Belajar Coding Tanpa Laptop: 10 Aktivitas Seru untuk Anak di Rumah</title>
+      <link>https://beekoding.my.id/blog/belajar-coding-tanpa-laptop-untuk-anak</link>
+      <guid>https://beekoding.my.id/blog/belajar-coding-tanpa-laptop-untuk-anak</guid>
+      <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Belajar coding tidak harus menggunakan laptop! Temukan 10 aktivitas unplugged coding untuk melatih logika, kreativitas, dan problem solving anak di rumah</description>
+      <category>Coding Anak</category>
     </item>
     <item>
       <title>7 Manfaat Belajar Coding untuk Anak Sejak Usia Dini yang Perlu Orang Tua Ketahui</title>
@@ -153,12 +153,20 @@
       <category>Parenting Digital</category>
     </item>
     <item>
-      <title>Belajar Coding Tanpa Laptop: 10 Aktivitas Seru untuk Anak di Rumah</title>
-      <link>https://beekoding.my.id/blog/belajar-coding-tanpa-laptop-untuk-anak</link>
-      <guid>https://beekoding.my.id/blog/belajar-coding-tanpa-laptop-untuk-anak</guid>
-      <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
-      <description>Belajar coding tidak harus menggunakan laptop! Temukan 10 aktivitas unplugged coding untuk melatih logika, kreativitas, dan problem solving anak di rumah</description>
-      <category>Coding Anak</category>
+      <title>Anak Suka Main Gadget? Yuk, Ubah Jadi Kreator Digital dengan Belajar Coding!</title>
+      <link>https://beekoding.my.id/blog/anak-suka-main-gadget-belajar-coding</link>
+      <guid>https://beekoding.my.id/blog/anak-suka-main-gadget-belajar-coding</guid>
+      <pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Anak suka bermain gadget? Temukan cara mengubah kebiasaan menggunakan gadget menjadi aktivitas kreatif melalui belajar coding sejak dini.</description>
+      <category>Parenting Digital</category>
+    </item>
+    <item>
+      <title>10 Permainan Logical Thinking untuk Anak SD yang Seru dan Edukatif</title>
+      <link>https://beekoding.my.id/blog/10-permainan-logical-thinking-untuk-anak-sd</link>
+      <guid>https://beekoding.my.id/blog/10-permainan-logical-thinking-untuk-anak-sd</guid>
+      <pubDate>Mon, 26 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Temukan 10 permainan logical thinking untuk anak SD yang seru dan edukatif. Latih kemampuan berpikir logis, problem solving, dan kreativitas anak melalui aktivitas sederhana.</description>
+      <category>Game Dev</category>
     </item>
   </channel>
 </rss>
