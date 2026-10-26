@@ -84,11 +84,13 @@ Allow: /#faq
 Allow: /#talent
 Allow: /#portal
 
-# Disallow private administrative and recovery endpoints
+# Disallow private administrative, Cloudflare internal, and search query endpoints
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /#admin*
 Disallow: /*?type=recovery*
+Disallow: /cdn-cgi/
+Disallow: /*?q=*
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1

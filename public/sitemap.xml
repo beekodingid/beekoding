@@ -109,19 +109,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-  <!-- Generative Engine Optimization (LLM Search Standards) -->
-  <url>
-    <loc>https://beekoding.my.id/llms.txt</loc>
-    <lastmod>2026-10-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beekoding.my.id/llms-full.txt</loc>
-    <lastmod>2026-10-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
 
   <!-- Programmatic Local SEO: Kursus Coding Anak Jakarta -->
   <url>

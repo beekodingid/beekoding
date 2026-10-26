@@ -26,7 +26,37 @@ if (!fs.existsSync(blogArticlesPath)) {
 }
 
 const baseHtml = fs.readFileSync(indexPath, 'utf-8');
+const subpageBaseHtml = baseHtml.replace(/<!-- HOMEPAGE_SCHEMAS_START -->[\s\S]*?<!-- HOMEPAGE_SCHEMAS_END -->\s*/g, '');
 const tsContent = fs.readFileSync(blogArticlesPath, 'utf-8');
+
+function replaceNoscript(html, innerSemanticHtml) {
+  return html.replace(
+    /<noscript>[\s\S]*?<\/noscript>/,
+    `<noscript>\n      <!--email_off-->\n      <main style="max-width:960px;margin:0 auto;padding:40px 20px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">\n${innerSemanticHtml}\n      </main>\n      <!--/email_off-->\n    </noscript>`
+  );
+}
+
+function markdownToSimpleHtml(md) {
+  if (!md) return '';
+  return md
+    .split('\n')
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed === '---') return '';
+      if (trimmed.startsWith('### ')) {
+        return `<h3 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-top:20px;">${trimmed.slice(4).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h3>`;
+      }
+      if (trimmed.startsWith('## ')) {
+        return `<h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin-top:28px;">${trimmed.slice(3).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h2>`;
+      }
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        return `<p style="margin:6px 0 6px 16px;">&bull; ${trimmed.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>`;
+      }
+      return `<p style="margin:12px 0;">${trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>`;
+    })
+    .filter(Boolean)
+    .join('\n        ');
+}
 
 async function main() {
   // 1. Parse articles from static file blogArticles.ts
@@ -40,6 +70,7 @@ async function main() {
     const coverImage = b.match(/coverImage:\s*['"]([^'"]+)['"]/)?.[1];
     const publishedAt = b.match(/publishedAt:\s*['"]([^'"]+)['"]/)?.[1] || new Date().toISOString().split('T')[0];
     const category = b.match(/category:\s*['"]([^'"]+)['"]/)?.[1] || 'Coding Anak';
+    const rawContent = b.match(/content:\s*`([\s\S]*?)`\s*,?\s*\}/)?.[1] || '';
 
     if (slug && title && coverImage) {
       articles.push({
@@ -49,6 +80,7 @@ async function main() {
         coverImage,
         publishedAt,
         category,
+        content: rawContent,
       });
     }
   }
@@ -56,7 +88,7 @@ async function main() {
   // 2. Fetch published articles from Supabase REST API (for newly created articles)
   try {
     const sbRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/blog_articles?select=slug,title,excerpt,cover_image,published_at,category&status=eq.published`,
+      `${SUPABASE_URL}/rest/v1/blog_articles?select=slug,title,excerpt,cover_image,published_at,category,content&status=eq.published`,
       {
         headers: {
           apikey: SUPABASE_KEY,
@@ -82,6 +114,7 @@ async function main() {
                 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
               publishedAt: item.published_at ? item.published_at.split('T')[0] : new Date().toISOString().split('T')[0],
               category: item.category || 'Coding Anak',
+              content: item.content || '',
             });
             existingSlugs.add(item.slug);
           } else {
@@ -106,16 +139,32 @@ async function main() {
 
   // Generate dist/blog/index.html and dist/blog.html (list view)
   const blogDesc = 'Kumpulan artikel edukasi Coding Anak, Artificial Intelligence, Scratch, Roblox Studio, Python, dan tips Parenting Digital terbaru dari tim akademik Beekoding.';
-  const blogListHtml = baseHtml
-    .replace(/<title>.*?<\/title>/, '<title>Blog Edukasi Coding & AI Anak | Beekoding</title>')
-    .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, '<link rel="canonical" href="https://beekoding.my.id/blog" />')
-    .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${blogDesc}" />`)
-    .replace(/<meta property="og:title" content="[^"]*"/, '<meta property="og:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
-    .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${blogDesc}" />`)
-    .replace(/<meta name="twitter:title" content="[^"]*"/, '<meta name="twitter:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
-    .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${blogDesc}" />`)
-    .replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="https://beekoding.my.id/blog"')
-    .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.my.id/blog"');
+  const blogListSemanticHtml = `
+        <header style="margin-bottom:32px;">
+          <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2.2rem;font-weight:900;color:#0f172a;margin-bottom:10px;">Blog Edukasi Coding &amp; AI Anak — Beekoding</h1>
+          <p style="font-size:1.05rem;color:#475569;">${blogDesc}</p>
+        </header>
+        <section>
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin-bottom:16px;">Daftar Artikel Terbaru (${articles.length} Artikel)</h2>
+          <ul style="padding-left:20px;line-height:1.8;">
+            ${articles.map((a) => `<li style="margin-bottom:14px;"><a href="https://beekoding.my.id/blog/${a.slug}" style="font-weight:800;color:#d97706;font-size:1.05rem;">${a.title}</a><br/><span style="color:#475569;font-size:0.92rem;">${a.excerpt}</span></li>`).join('\n            ')}
+          </ul>
+        </section>`;
+
+  const blogListHtml = replaceNoscript(
+    subpageBaseHtml
+      .replace(/<title>.*?<\/title>/, '<title>Blog Edukasi Coding & AI Anak | Beekoding</title>')
+      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, '<link rel="canonical" href="https://beekoding.my.id/blog" />')
+      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${blogDesc}" />`)
+      .replace(/<meta property="og:title" content="[^"]*"/, '<meta property="og:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
+      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${blogDesc}" />`)
+      .replace(/<meta name="twitter:title" content="[^"]*"/, '<meta name="twitter:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
+      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${blogDesc}" />`)
+      .replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="https://beekoding.my.id/blog"')
+      .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.my.id/blog"'),
+    blogListSemanticHtml
+  );
   fs.writeFileSync(path.join(blogDir, 'index.html'), blogListHtml, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'blog.html'), blogListHtml, 'utf-8');
 
@@ -191,18 +240,39 @@ async function main() {
 
     const landingSchemasTag = `\n    <!-- Programmatic SEO Landing Structured Data -->\n    <script type="application/ld+json">\n    ${courseJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${breadcrumbJsonLd}\n    </script>\n  </head>`;
 
-    let landingHtml = baseHtml
-      .replace(/<title>.*?<\/title>/, `<title>${landing.title}</title>`)
-      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${landing.url}" />`)
-      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${landing.description}" />`)
-      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${landing.keywords}" />`)
-      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${landing.title}" />`)
-      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${landing.description}" />`)
-      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${landing.url}" />`)
-      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${landing.title}" />`)
-      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${landing.description}" />`)
-      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${landing.url}" />`)
-      .replace('</head>', landingSchemasTag);
+    const landingSemanticHtml = `
+        <header style="margin-bottom:28px;">
+          <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${landing.title}</h1>
+          <p style="font-size:1.05rem;color:#475569;">${landing.description}</p>
+        </header>
+        <section style="margin-bottom:28px;">
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Kurikulum &amp; Keunggulan Program (${landing.courseName})</h2>
+          <p>${landing.courseDesc}</p>
+          <ul style="padding-left:20px;line-height:1.8;">
+            <li><strong>Metode Project-Based Learning:</strong> Anak membuat karya game, animasi, dan proyek kecerdasan buatan nyata di setiap sesi.</li>
+            <li><strong>Kelas Kecil Interaktif:</strong> Rasio maksimal 1 mentor mendampingi 4 murid via Google Meet atau Privat 1-on-1.</li>
+            <li><strong>Biaya Kursus Transparan:</strong> Mulai Rp 350.000/bulan tanpa biaya pendaftaran dan tanpa uang gedung.</li>
+            <li><strong>Sertifikat Digital Resmi Ber-QR Code:</strong> Portofolio digital terverifikasi untuk setiap kelulusan tahapan.</li>
+          </ul>
+          <p style="margin-top:20px;"><a href="https://beekoding.my.id/biaya-kursus" style="color:#d97706;font-weight:bold;">Lihat Rincian Biaya Kursus Lengkap &rarr;</a></p>
+        </section>`;
+
+    let landingHtml = replaceNoscript(
+      subpageBaseHtml
+        .replace(/<title>.*?<\/title>/, `<title>${landing.title}</title>`)
+        .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${landing.url}" />`)
+        .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${landing.description}" />`)
+        .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${landing.keywords}" />`)
+        .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${landing.title}" />`)
+        .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${landing.description}" />`)
+        .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${landing.url}" />`)
+        .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${landing.title}" />`)
+        .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${landing.description}" />`)
+        .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${landing.url}" />`)
+        .replace('</head>', landingSchemasTag),
+      landingSemanticHtml
+    );
 
     fs.writeFileSync(path.join(landingDir, 'index.html'), landingHtml, 'utf-8');
     fs.writeFileSync(path.join(distDir, `${landing.slug}.html`), landingHtml, 'utf-8');
@@ -300,18 +370,38 @@ async function main() {
 
       const citySchemasTag = `\n    <!-- Programmatic Local SEO Structured Data for ${cityPage.cityName} -->\n    <script type="application/ld+json">\n    ${cityCourseJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${cityBreadcrumbJsonLd}\n    </script>\n  </head>`;
 
-      let cityHtml = baseHtml
-        .replace(/<title>.*?<\/title>/, `<title>${cityPage.title}</title>`)
-        .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${cityPage.url}" />`)
-        .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${cityPage.description}" />`)
-        .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${cityPage.keywords}" />`)
-        .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${cityPage.title}" />`)
-        .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${cityPage.description}" />`)
-        .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${cityPage.url}" />`)
-        .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${cityPage.title}" />`)
-        .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${cityPage.description}" />`)
-        .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${cityPage.url}" />`)
-        .replace('</head>', citySchemasTag);
+      const citySemanticHtml = `
+        <header style="margin-bottom:28px;">
+          <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${cityPage.title}</h1>
+          <p style="font-size:1.05rem;color:#475569;">${cityPage.description}</p>
+        </header>
+        <section style="margin-bottom:28px;">
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Program Kursus Coding &amp; AI Terbaik untuk Anak di ${cityPage.cityName} (${cityPage.province})</h2>
+          <p>Beekoding melayani siswa SD, SMP, dan SMA di seluruh wilayah <strong>${cityPage.cityName}</strong> melalui kelas Live Interactive Online (rasio maksimal 4 murid per kelas) maupun kelas Privat 1-on-1.</p>
+          <ul style="padding-left:20px;line-height:1.8;">
+            <li><strong>Junior Explorer (Usia 6–10 Tahun):</strong> Scratch 3.0, Logika Komputasi Visual &amp; Game 2D — Mulai Rp 350.000/bulan.</li>
+            <li><strong>Intermediate Coder (Usia 10–12 Tahun):</strong> App Inventor &amp; Roblox Studio 3D (Bahasa Lua) — Mulai Rp 383.000/bulan.</li>
+            <li><strong>Teens Innovator (Usia 13–17 Tahun):</strong> Python Pro, Data Science, Web Development &amp; Artificial Intelligence — Mulai Rp 400.000/bulan.</li>
+          </ul>
+          <p style="margin-top:20px;"><a href="https://beekoding.my.id/biaya-kursus" style="color:#d97706;font-weight:bold;">Cek Rincian Biaya Kursus &amp; Daftar Free Trial Class di ${cityPage.cityName} &rarr;</a></p>
+        </section>`;
+
+      let cityHtml = replaceNoscript(
+        subpageBaseHtml
+          .replace(/<title>.*?<\/title>/, `<title>${cityPage.title}</title>`)
+          .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${cityPage.url}" />`)
+          .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${cityPage.description}" />`)
+          .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${cityPage.keywords}" />`)
+          .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${cityPage.title}" />`)
+          .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${cityPage.description}" />`)
+          .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${cityPage.url}" />`)
+          .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${cityPage.title}" />`)
+          .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${cityPage.description}" />`)
+          .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${cityPage.url}" />`)
+          .replace('</head>', citySchemasTag),
+        citySemanticHtml
+      );
 
       fs.writeFileSync(path.join(cityDir, 'index.html'), cityHtml, 'utf-8');
       fs.writeFileSync(path.join(distDir, `${cityPage.slug}.html`), cityHtml, 'utf-8');
@@ -394,18 +484,43 @@ async function main() {
 
   const glossarySchemasTag = `\n    <!-- Glosarium Structured Data for Google Featured Snippets -->\n    <script type="application/ld+json">\n    ${glossaryDefinedTermSetJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${glossaryBreadcrumbJsonLd}\n    </script>\n  </head>`;
 
-  let glossaryHtml = baseHtml
-    .replace(/<title>.*?<\/title>/, `<title>${glossaryTitle}</title>`)
-    .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${glossaryUrl}" />`)
-    .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${glossaryDesc}" />`)
-    .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${glossaryKeywords}" />`)
-    .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${glossaryTitle}" />`)
-    .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${glossaryDesc}" />`)
-    .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${glossaryUrl}" />`)
-    .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${glossaryTitle}" />`)
-    .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${glossaryDesc}" />`)
-    .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${glossaryUrl}" />`)
-    .replace('</head>', glossarySchemasTag);
+  const glossarySemanticHtml = `
+        <header style="margin-bottom:28px;">
+          <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${glossaryTitle}</h1>
+          <p style="font-size:1.05rem;color:#475569;">${glossaryDesc}</p>
+        </header>
+        <section>
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Daftar Istilah Populer Koding &amp; AI untuk Anak</h2>
+          <dl style="line-height:1.8;">
+            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">1. Algoritma (Algorithm)</dt>
+            <dd style="margin-left:16px;color:#475569;">Urutan instruksi langkah demi langkah yang teratur dan logis untuk menyelesaikan suatu masalah atau mencapai tujuan tertentu.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">2. Loop (Perulangan)</dt>
+            <dd style="margin-left:16px;color:#475569;">Perintah dalam koding untuk mengulang suatu tindakan berkali-kali secara otomatis tanpa perlu menulis ulang kodenya.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">3. Variabel (Variable)</dt>
+            <dd style="margin-left:16px;color:#475569;">Kotak penyimpanan khusus di dalam memori komputer yang diberi nama untuk menyimpan dan mengubah suatu nilai seperti skor game atau nyawa karakter.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">4. Debugging</dt>
+            <dd style="margin-left:16px;color:#475569;">Proses menyelidiki, menemukan, dan memperbaiki kesalahan (bug) pada baris kode program agar aplikasi berjalan normal kembali.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">5. Machine Learning &amp; Prompt Engineering</dt>
+            <dd style="margin-left:16px;color:#475569;">Cabang dari Artificial Intelligence di mana komputer belajar mengenali pola dari contoh data, serta keterampilan menyusun instruksi yang jelas bagi AI.</dd>
+          </dl>
+        </section>`;
+
+  let glossaryHtml = replaceNoscript(
+    subpageBaseHtml
+      .replace(/<title>.*?<\/title>/, `<title>${glossaryTitle}</title>`)
+      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${glossaryUrl}" />`)
+      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${glossaryDesc}" />`)
+      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${glossaryKeywords}" />`)
+      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${glossaryTitle}" />`)
+      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${glossaryDesc}" />`)
+      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${glossaryUrl}" />`)
+      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${glossaryTitle}" />`)
+      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${glossaryDesc}" />`)
+      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${glossaryUrl}" />`)
+      .replace('</head>', glossarySchemasTag),
+    glossarySemanticHtml
+  );
 
   fs.writeFileSync(path.join(glossaryDir, 'index.html'), glossaryHtml, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'glosarium.html'), glossaryHtml, 'utf-8');
@@ -467,18 +582,37 @@ async function main() {
 
   const quizSchemasTag = `\n    <!-- Quiz Structured Data for Social & Search Snippets -->\n    <script type="application/ld+json">\n    ${quizJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${quizBreadcrumbJsonLd}\n    </script>\n  </head>`;
 
-  let quizHtml = baseHtml
-    .replace(/<title>.*?<\/title>/, `<title>${quizTitle}</title>`)
-    .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${quizUrl}" />`)
-    .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${quizDesc}" />`)
-    .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${quizKeywords}" />`)
-    .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${quizTitle}" />`)
-    .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${quizDesc}" />`)
-    .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${quizUrl}" />`)
-    .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${quizTitle}" />`)
-    .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${quizDesc}" />`)
-    .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${quizUrl}" />`)
-    .replace('</head>', quizSchemasTag);
+  const quizSemanticHtml = `
+        <header style="margin-bottom:28px;">
+          <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
+          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${quizTitle}</h1>
+          <p style="font-size:1.05rem;color:#475569;">${quizDesc}</p>
+        </header>
+        <section>
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">4 Arketipe Bakat Digital Anak di Beekoding</h2>
+          <ul style="padding-left:20px;line-height:1.8;">
+            <li><strong>The Game Creator:</strong> Suka bercerita, menggambar karakter, dan merancang dunia permainan interaktif di Scratch &amp; Roblox Studio.</li>
+            <li><strong>The Logic Sleuth:</strong> Gemar memecahkan teka-teki strategi, pola matematika, dan algoritma pemrograman Python.</li>
+            <li><strong>The Web &amp; App Designer:</strong> Kreatif secara visual dan senang membuat aplikasi atau situs web yang bisa digunakan banyak orang.</li>
+            <li><strong>The AI Innovator:</strong> Penasaran dengan cara kerja robot, asisten pintar, dan eksperimen Machine Learning masa depan.</li>
+          </ul>
+        </section>`;
+
+  let quizHtml = replaceNoscript(
+    subpageBaseHtml
+      .replace(/<title>.*?<\/title>/, `<title>${quizTitle}</title>`)
+      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${quizUrl}" />`)
+      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${quizDesc}" />`)
+      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${quizKeywords}" />`)
+      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${quizTitle}" />`)
+      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${quizDesc}" />`)
+      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${quizUrl}" />`)
+      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${quizTitle}" />`)
+      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${quizDesc}" />`)
+      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${quizUrl}" />`)
+      .replace('</head>', quizSchemasTag),
+    quizSemanticHtml
+  );
 
   fs.writeFileSync(path.join(quizDir, 'index.html'), quizHtml, 'utf-8');
   fs.writeFileSync(path.join(quizAltDir, 'index.html'), quizHtml, 'utf-8');
@@ -615,7 +749,7 @@ async function main() {
           </ul>
 
           <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">3. Berkas Verifikasi Transparansi Iklan (Authorized Digital Sellers / ads.txt)</h2>
-          <p>Beekoding menyediakan berkas <code>ads.txt</code> resmi yang dapat diakses publik pada tautan: <a href="https://beekoding.my.id/ads.txt" target="_blank" style="color:#d97706;font-weight:bold;">https://beekoding.my.id/ads.txt</a> sesuai standar IAB Tech Lab untuk menjamin penayangan iklan yang sah dari penayang terverifikasi Google AdSense (Publisher ID: <code>pub-6361492236129824</code>).</p>
+          <p>Beekoding menyediakan berkas <code>ads.txt</code> resmi yang dapat diakses publik pada lokasi <code>https://beekoding.my.id/ads.txt</code> sesuai standar IAB Tech Lab untuk menjamin penayangan iklan yang sah dari penayang terverifikasi Google AdSense (Publisher ID: <code>pub-6361492236129824</code>).</p>
 
           <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">4. Hak Pemilik Data Pribadi</h2>
           <p>Setiap orang tua atau siswa memiliki hak untuk meminta salinan data pribadi yang kami simpan, memperbarui data yang tidak akurat, atau meminta penghapusan riwayat data pendaftaran kapan saja melalui kontak resmi kami.</p>
@@ -623,7 +757,7 @@ async function main() {
           <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">5. Kontak Resmi Privasi &amp; Perlindungan Data</h2>
           <p>Jika ada pertanyaan atau permintaan terkait Kebijakan Privasi ini, silakan hubungi tim kami:</p>
           <ul style="padding-left:20px;">
-            <li><strong>Email Resmi:</strong> <a href="mailto:halo@beekoding.id" style="color:#d97706;">halo@beekoding.id</a></li>
+            <li><strong>Email Resmi:</strong> <!--email_off-->halo@beekoding.id<!--/email_off--></li>
             <li><strong>WhatsApp Hotline:</strong> <a href="https://wa.me/6281818901737" style="color:#d97706;">+62 818-1890-1737</a></li>
             <li><strong>Situs Web:</strong> <a href="https://beekoding.my.id" style="color:#d97706;">https://beekoding.my.id</a></li>
           </ul>
@@ -656,7 +790,7 @@ async function main() {
           <p>Biaya pendaftaran program wajib diselesaikan sebelum jadwal kelas perdana dimulai. Jadwal pengganti (make-up class) dapat diajukan dengan pemberitahuan minimal 24 jam sebelum kelas berlangsung.</p>
 
           <h2 style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:28px;">5. Kontak Layanan Bantuan</h2>
-          <p>Untuk pertanyaan seputar syarat layanan, hubungi <a href="mailto:halo@beekoding.id" style="color:#d97706;">halo@beekoding.id</a> atau WhatsApp resmi di <a href="https://wa.me/6281818901737" style="color:#d97706;">+62 818-1890-1737</a>.</p>
+          <p>Untuk pertanyaan seputar syarat layanan, hubungi <!--email_off-->halo@beekoding.id<!--/email_off--> atau WhatsApp resmi di <a href="https://wa.me/6281818901737" style="color:#d97706;">+62 818-1890-1737</a>.</p>
         </header>
       `,
     },
@@ -731,19 +865,21 @@ async function main() {
 
     const pageSchemasTag = `\n    <!-- Legal WebPage Structured Data -->\n    <script type="application/ld+json">\n    ${pageJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${pageBreadcrumbJsonLd}\n    </script>\n  </head>`;
 
-    let renderedHtml = baseHtml
-      .replace(/<title>.*?<\/title>/, `<title>${page.title}</title>`)
-      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${pageUrl}" />`)
-      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${page.description}" />`)
-      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${page.keywords}" />`)
-      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${page.title}" />`)
-      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${page.description}" />`)
-      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${pageUrl}" />`)
-      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${page.title}" />`)
-      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${page.description}" />`)
-      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${pageUrl}" />`)
-      .replace('</head>', pageSchemasTag)
-      .replace('<div id="root"></div>', `<div id="root">${page.bodyHtml}</div>`);
+    let renderedHtml = replaceNoscript(
+      subpageBaseHtml
+        .replace(/<title>.*?<\/title>/, `<title>${page.title}</title>`)
+        .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${pageUrl}" />`)
+        .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${page.description}" />`)
+        .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${page.keywords}" />`)
+        .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${page.title}" />`)
+        .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${page.description}" />`)
+        .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${pageUrl}" />`)
+        .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${page.title}" />`)
+        .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${page.description}" />`)
+        .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${pageUrl}" />`)
+        .replace('</head>', pageSchemasTag),
+      page.bodyHtml
+    );
 
     fs.writeFileSync(path.join(pageDir, 'index.html'), renderedHtml, 'utf-8');
     fs.writeFileSync(path.join(distDir, `${page.slug}.html`), renderedHtml, 'utf-8');
@@ -782,7 +918,7 @@ async function main() {
       imageType = 'image/webp';
     }
 
-    let articleHtml = baseHtml
+    let articleHtml = subpageBaseHtml
       .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
       .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${url}" />`)
       .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${desc}" />`)
@@ -858,7 +994,19 @@ async function main() {
 
     const schemasTag = `\n    <!-- Article & Breadcrumb Structured Data for Google Rich Results -->\n    <script type="application/ld+json">\n    ${articleJsonLd}\n    </script>\n    <script type="application/ld+json">\n    ${breadcrumbJsonLd}\n    </script>\n  </head>`;
 
-    articleHtml = articleHtml.replace('</head>', schemasTag);
+    const articleSemanticHtml = `
+        <article>
+          <a href="https://beekoding.my.id/blog" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Daftar Artikel Blog Beekoding</a>
+          <div style="font-size:0.85rem;color:#64748b;margin-bottom:8px;">Kategori: <strong>${article.category}</strong> | Diterbitkan: ${article.publishedAt}</div>
+          <h1 style="font-size:2rem;font-weight:900;color:#0f172a;margin-bottom:12px;">${article.title}</h1>
+          <p style="font-size:1.05rem;color:#475569;font-weight:500;margin-bottom:24px;">${article.excerpt}</p>
+          <hr style="margin:24px 0;border:0;border-top:1px solid #e2e8f0;"/>
+          <div>
+            ${markdownToSimpleHtml(article.content)}
+          </div>
+        </article>`;
+
+    articleHtml = replaceNoscript(articleHtml.replace('</head>', schemasTag), articleSemanticHtml);
 
     // Write both dist/blog/:slug/index.html and dist/blog/:slug.html for Cloudflare Pages Clean URLs
     fs.writeFileSync(path.join(articleDir, 'index.html'), articleHtml, 'utf-8');
@@ -994,19 +1142,6 @@ async function main() {
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url>
-  <!-- Generative Engine Optimization (LLM Search Standards) -->
-  <url>
-    <loc>${domain}/llms.txt</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${domain}/llms-full.txt</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
   </url>
 `;
 
