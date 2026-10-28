@@ -25,7 +25,8 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
   const adRef = useRef<HTMLDivElement>(null);
   const isPushedRef = useRef(false);
   const adsenseClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-6361492236129824';
-  const isLiveAdSense = Boolean(adsenseClientId && adsenseClientId.startsWith('ca-pub-'));
+  const isSlotsActive = import.meta.env.VITE_ADSENSE_SLOTS_ACTIVE === 'true';
+  const isLiveAdSense = Boolean(isSlotsActive && adsenseClientId && adsenseClientId.startsWith('ca-pub-'));
 
   useEffect(() => {
     if (isLiveAdSense && !isPushedRef.current && typeof window !== 'undefined') {
@@ -40,6 +41,10 @@ export const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
       }
     }
   }, [isLiveAdSense, slotId]);
+
+  if (!isLiveAdSense) {
+    return null;
+  }
 
   // Height reservation to guarantee 0 Cumulative Layout Shift (CLS)
   const minHeightClass =

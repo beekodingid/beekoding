@@ -4,7 +4,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://beekoding.my.id/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,7 +21,7 @@
   <!-- Blog Index -->
   <url>
     <loc>https://beekoding.my.id/blog</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -29,7 +29,7 @@
   <!-- Programmatic Pricing: Biaya Kursus Resmi -->
   <url>
     <loc>https://beekoding.my.id/biaya-kursus</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <image:image>
@@ -42,7 +42,7 @@
   <!-- Programmatic SEO Landing: Kursus Coding Anak SD (Usia 6-10 Thn) -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-sd</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <image:image>
@@ -55,7 +55,7 @@
   <!-- Programmatic SEO Landing: Kursus Python & AI Remaja SMP-SMA (Usia 11-17 Thn) -->
   <url>
     <loc>https://beekoding.my.id/kursus-python-remaja-smp-sma</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <image:image>
@@ -67,7 +67,7 @@
   <!-- Programmatic SEO: Kamus & Glosarium Koding Anak -->
   <url>
     <loc>https://beekoding.my.id/glosarium</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -79,7 +79,7 @@
   <!-- Lead Magnet: Kuis Minat & Bakat Coding Anak -->
   <url>
     <loc>https://beekoding.my.id/cek-minat-anak</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -91,7 +91,7 @@
   <!-- Lead Magnet: Printable Logic Worksheets PDF Gratis -->
   <url>
     <loc>https://beekoding.my.id/worksheet-gratis</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -103,21 +103,21 @@
   <!-- Legal: Kebijakan Privasi (Google AdSense & COPPA Compliance) -->
   <url>
     <loc>https://beekoding.my.id/kebijakan-privasi</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- Legal: Syarat & Ketentuan Layanan (Terms of Service) -->
   <url>
     <loc>https://beekoding.my.id/syarat-ketentuan</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- Legal: Penafian Resmi (Disclaimer) -->
   <url>
     <loc>https://beekoding.my.id/penafian</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -125,7 +125,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Jakarta -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-jakarta</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -137,7 +137,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Surabaya -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-surabaya</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -149,7 +149,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Bandung -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-bandung</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -161,7 +161,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Tangerang &amp; BSD -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-tangerang</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -173,7 +173,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Bekasi -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-bekasi</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -185,7 +185,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Medan -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-medan</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -197,7 +197,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Semarang -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-semarang</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -209,7 +209,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Yogyakarta -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-yogyakarta</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -221,7 +221,7 @@
   <!-- Programmatic Local SEO: Kursus Coding Anak Bali / Denpasar -->
   <url>
     <loc>https://beekoding.my.id/kursus-coding-anak-bali</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -448,6 +448,17 @@
       <image:loc>https://nmsfffkwpikiokycfdml.supabase.co/storage/v1/object/public/showcase/blog-covers/logical_thinking_1792981250349_35wa6.jpeg</image:loc>
       <image:title>10 Permainan Logical Thinking untuk Anak SD yang Seru dan Edukatif</image:title>
       <image:caption>Temukan 10 permainan logical thinking untuk anak SD yang seru dan edukatif. Latih kemampuan berpikir logis, problem solving, dan kreativitas anak melalui aktivitas sederhana.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://beekoding.my.id/blog/anak-tidak-harus-jadi-programmer-untuk-belajar-coding</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://nmsfffkwpikiokycfdml.supabase.co/storage/v1/object/public/showcase/blog-covers/image_coding_1793155318212_xkhey.jpeg</image:loc>
+      <image:title>Anak Tidak Harus Jadi Programmer untuk Belajar Coding: Ini 7 Alasan Pentingnya!</image:title>
+      <image:caption>Belajar coding bukan berarti anak harus menjadi programmer. Temukan 7 alasan mengapa coding bermanfaat untuk melatih logika, kreativitas, dan problem solving anak.</image:caption>
     </image:image>
   </url>
 </urlset>

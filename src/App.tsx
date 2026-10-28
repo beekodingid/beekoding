@@ -12,31 +12,25 @@ import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { PWAInstallPrompt } from './components/common/PWAInstallPrompt';
 import { type CodingEvent } from './services/adminStorage';
 
-// Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed & responsiveness
-const TrialEventsSection = lazy(() =>
-  import('./components/TrialEventsSection').then((m) => ({ default: m.TrialEventsSection }))
-);
-const StudentShowcase = lazy(() =>
-  import('./components/StudentShowcase').then((m) => ({ default: m.StudentShowcase }))
-);
-const Founder = lazy(() =>
-  import('./components/Founder').then((m) => ({ default: m.Founder }))
-);
-const CourseFinder = lazy(() =>
-  import('./components/CourseFinder').then((m) => ({ default: m.CourseFinder }))
-);
-const Gallery = lazy(() =>
-  import('./components/Gallery').then((m) => ({ default: m.Gallery }))
-);
-const BlogSection = lazy(() =>
-  import('./components/BlogSection').then((m) => ({ default: m.BlogSection }))
-);
-const FAQ = lazy(() =>
-  import('./components/FAQ').then((m) => ({ default: m.FAQ }))
-);
-const Contact = lazy(() =>
-  import('./components/Contact').then((m) => ({ default: m.Contact }))
-);
+import { TrialEventsSection } from './components/TrialEventsSection';
+import { StudentShowcase } from './components/StudentShowcase';
+import { Founder } from './components/Founder';
+import { CourseFinder } from './components/CourseFinder';
+import { Gallery } from './components/Gallery';
+import { BlogSection } from './components/BlogSection';
+import { FAQ } from './components/FAQ';
+import { Contact } from './components/Contact';
+import { BlogView } from './components/blog/BlogView';
+import { AgeTierLandingPage } from './components/landing/AgeTierLandingPage';
+import { GlossaryView } from './components/glossary/GlossaryView';
+import { QuizMinatView } from './components/quiz/QuizMinatView';
+import { LegalView } from './components/legal/LegalView';
+import { CityLandingPage } from './components/landing/CityLandingPage';
+import { WorksheetsView } from './components/worksheets/WorksheetsView';
+import { WorksheetLeadMagnetSection } from './components/worksheets/WorksheetLeadMagnetSection';
+import { CITIES_DATA, type CityLandingData } from './data/citiesData';
+
+// Lazy-loaded heavy internal portals and interactive modals
 const TalentAssessmentView = lazy(() =>
   import('./components/talent/TalentAssessmentView').then((m) => ({ default: m.TalentAssessmentView }))
 );
@@ -46,42 +40,15 @@ const AdminView = lazy(() =>
 const StudentPortalView = lazy(() =>
   import('./components/portal/StudentPortalView').then((m) => ({ default: m.StudentPortalView }))
 );
-const BlogView = lazy(() =>
-  import('./components/blog/BlogView').then((m) => ({ default: m.BlogView }))
-);
 const BootcampModal = lazy(() =>
   import('./components/BootcampModal').then((m) => ({ default: m.BootcampModal }))
 );
 const TrialEventsModal = lazy(() =>
   import('./components/TrialEventsModal').then((m) => ({ default: m.TrialEventsModal }))
 );
-const AgeTierLandingPage = lazy(() =>
-  import('./components/landing/AgeTierLandingPage').then((m) => ({ default: m.AgeTierLandingPage }))
-);
-const GlossaryView = lazy(() =>
-  import('./components/glossary/GlossaryView').then((m) => ({ default: m.GlossaryView }))
-);
-const QuizMinatView = lazy(() =>
-  import('./components/quiz/QuizMinatView').then((m) => ({ default: m.QuizMinatView }))
-);
 const PlayableArcadeModal = lazy(() =>
   import('./components/arcade/PlayableArcadeModal').then((m) => ({ default: m.PlayableArcadeModal }))
 );
-const LegalView = lazy(() =>
-  import('./components/legal/LegalView').then((m) => ({ default: m.LegalView }))
-);
-const CityLandingPage = lazy(() =>
-  import('./components/landing/CityLandingPage').then((m) => ({ default: m.CityLandingPage }))
-);
-const WorksheetsView = lazy(() =>
-  import('./components/worksheets/WorksheetsView').then((m) => ({ default: m.WorksheetsView }))
-);
-const WorksheetLeadMagnetSection = lazy(() =>
-  import('./components/worksheets/WorksheetLeadMagnetSection').then((m) => ({
-    default: m.WorksheetLeadMagnetSection,
-  }))
-);
-import { CITIES_DATA, type CityLandingData } from './data/citiesData';
 
 function AppLoadingFallback({ message = 'Memuat modul...' }: { message?: string }) {
   return (
@@ -105,19 +72,93 @@ export function App() {
   const [bootcampModalOpen, setBootcampModalOpen] = useState(false);
   const [trialEventsModalOpen, setTrialEventsModalOpen] = useState(false);
   const [selectedEventForModal, setSelectedEventForModal] = useState<CodingEvent | null>(null);
-  const [showTalentAssessment, setShowTalentAssessment] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
-  const [showStudentPortal, setShowStudentPortal] = useState(false);
-  const [showBlog, setShowBlog] = useState(false);
-  const [blogSlug, setBlogSlug] = useState<string | undefined>(undefined);
-  const [showGlossary, setShowGlossary] = useState(false);
-  const [glossarySlug, setGlossarySlug] = useState<string | undefined>(undefined);
-  const [showQuizMinat, setShowQuizMinat] = useState(false);
-  const [showWorksheets, setShowWorksheets] = useState(false);
-  const [showLegal, setShowLegal] = useState(false);
-  const [legalTab, setLegalTab] = useState<'privacy' | 'terms' | 'disclaimer'>('privacy');
-  const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(null);
-  const [activeCityLanding, setActiveCityLanding] = useState<CityLandingData | null>(null);
+  const [showTalentAssessment, setShowTalentAssessment] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.location.hash === '#talent' || window.location.pathname === '/talent';
+  });
+  const [showAdmin, setShowAdmin] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    return h.startsWith('#admin') || p.startsWith('/admin');
+  });
+  const [showStudentPortal, setShowStudentPortal] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    const s = window.location.search || '';
+    return h.startsWith('#portal') || p.startsWith('/portal') || s.includes('cert=') || s.includes('report=');
+  });
+  const [showBlog, setShowBlog] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return (window.location.hash || '').startsWith('#blog') || (window.location.pathname || '').startsWith('/blog');
+  });
+  const [blogSlug, setBlogSlug] = useState<string | undefined>(() => {
+    if (typeof window === 'undefined') return undefined;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    let s = '';
+    if (h.startsWith('#blog/')) s = h.replace('#blog/', '').replace(/\/+$/, '').trim();
+    else if (p.startsWith('/blog/')) s = p.replace('/blog/', '').replace(/\/+$/, '').trim();
+    return s || undefined;
+  });
+  const [showGlossary, setShowGlossary] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return (window.location.hash || '').startsWith('#glosarium') || (window.location.pathname || '').startsWith('/glosarium');
+  });
+  const [glossarySlug, setGlossarySlug] = useState<string | undefined>(() => {
+    if (typeof window === 'undefined') return undefined;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    let s = '';
+    if (h.startsWith('#glosarium/')) s = h.replace('#glosarium/', '').replace(/\/+$/, '').trim();
+    else if (p.startsWith('/glosarium/')) s = p.replace('/glosarium/', '').replace(/\/+$/, '').trim();
+    return s || undefined;
+  });
+  const [showQuizMinat, setShowQuizMinat] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    return h === '#kuis-minat' || h === '#quiz' || h === '#quiz-minat' || p.startsWith('/cek-minat-anak') || p.startsWith('/kuis-minat');
+  });
+  const [showWorksheets, setShowWorksheets] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    return h === '#worksheet' || h === '#worksheet-gratis' || h === '#lembar-kerja' || p.startsWith('/worksheet-gratis') || p.startsWith('/worksheet');
+  });
+  const [showLegal, setShowLegal] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    return (
+      h === '#privacy' || h === '#kebijakan-privasi' || p === '/kebijakan-privasi' || p === '/privacy-policy' || p === '/privacy' ||
+      h === '#terms' || h === '#syarat-ketentuan' || p === '/syarat-ketentuan' || p === '/terms-of-service' || p === '/terms' ||
+      h === '#disclaimer' || h === '#penafian' || p === '/penafian' || p === '/disclaimer'
+    );
+  });
+  const [legalTab, setLegalTab] = useState<'privacy' | 'terms' | 'disclaimer'>(() => {
+    if (typeof window === 'undefined') return 'privacy';
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    if (h === '#terms' || h === '#syarat-ketentuan' || p === '/syarat-ketentuan' || p === '/terms-of-service' || p === '/terms') return 'terms';
+    if (h === '#disclaimer' || h === '#penafian' || p === '/penafian' || p === '/disclaimer') return 'disclaimer';
+    return 'privacy';
+  });
+  const [ageLandingTier, setAgeLandingTier] = useState<'sd' | 'teens' | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    if (h.startsWith('#kursus-coding-anak-sd') || p.startsWith('/kursus-coding-anak-sd')) return 'sd';
+    if (h.startsWith('#kursus-python-remaja-smp-sma') || p.startsWith('/kursus-python-remaja-smp-sma')) return 'teens';
+    return null;
+  });
+  const [activeCityLanding, setActiveCityLanding] = useState<CityLandingData | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const h = window.location.hash || '';
+    const p = window.location.pathname || '';
+    return CITIES_DATA.find((c) => p === `/${c.slug}` || p.startsWith(`/${c.slug}/`) || h === `#${c.slug}`) || null;
+  });
   const [selectedProgramForInquiry, setSelectedProgramForInquiry] = useState('Summer AI & Coding Bootcamp 2026');
   const [showArcadeModal, setShowArcadeModal] = useState(false);
   const [arcadeGameId, setArcadeGameId] = useState<string | undefined>(undefined);

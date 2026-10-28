@@ -18,7 +18,8 @@ export const AdSenseStickyFooter: React.FC<AdSenseStickyFooterProps> = ({
   const isPushedRef = useRef(false);
 
   const adsenseClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-6361492236129824';
-  const isLiveAdSense = Boolean(adsenseClientId && adsenseClientId.startsWith('ca-pub-'));
+  const isSlotsActive = import.meta.env.VITE_ADSENSE_SLOTS_ACTIVE === 'true';
+  const isLiveAdSense = Boolean(isSlotsActive && adsenseClientId && adsenseClientId.startsWith('ca-pub-'));
 
   // Cek apakah user sudah menutup iklan di sesi ini
   useEffect(() => {
@@ -49,9 +50,9 @@ export const AdSenseStickyFooter: React.FC<AdSenseStickyFooterProps> = ({
   // Beritahu parent component untuk penyesuaian posisi floating action bar
   useEffect(() => {
     if (onVisibilityChange) {
-      onVisibilityChange(isVisible && !isCollapsed);
+      onVisibilityChange(isLiveAdSense && isVisible && !isCollapsed);
     }
-  }, [isVisible, isCollapsed, onVisibilityChange]);
+  }, [isLiveAdSense, isVisible, isCollapsed, onVisibilityChange]);
 
   // Push AdSense hanya sekali ketika terlihat
   useEffect(() => {
@@ -78,7 +79,7 @@ export const AdSenseStickyFooter: React.FC<AdSenseStickyFooterProps> = ({
     setIsCollapsed((prev) => !prev);
   };
 
-  if (!hasScrolled || isDismissed) {
+  if (!isLiveAdSense || !hasScrolled || isDismissed) {
     return null;
   }
 

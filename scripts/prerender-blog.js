@@ -31,8 +31,8 @@ const tsContent = fs.readFileSync(blogArticlesPath, 'utf-8');
 
 function replaceNoscript(html, innerSemanticHtml) {
   return html.replace(
-    /<noscript>[\s\S]*?<\/noscript>/,
-    `<noscript>\n      <!--email_off-->\n      <main style="max-width:960px;margin:0 auto;padding:40px 20px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">\n${innerSemanticHtml}\n      </main>\n      <!--/email_off-->\n    </noscript>`
+    /<!-- PRERENDER_ROOT_START -->[\s\S]*?<!-- PRERENDER_ROOT_END -->/,
+    `<!-- PRERENDER_ROOT_START -->\n      <!--email_off-->\n      <main style="max-width:960px;margin:0 auto;padding:84px 20px 40px;font-family:'DM Sans',system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">\n${innerSemanticHtml}\n      </main>\n      <!--/email_off-->\n      <!-- PRERENDER_ROOT_END -->`
   );
 }
 
