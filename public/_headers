@@ -68,7 +68,8 @@
 /curriculum/*
   Cache-Control: public, max-age=604800, stale-while-revalidate=86400
   Access-Control-Allow-Origin: *
-  X-Robots-Tag: noindex
+  X-Robots-Tag: noindex, noarchive
+  Link: <https://beekoding.my.id/curriculum/kurikulum-lengkap-beekoding-2026.pdf>; rel="canonical"
 /worksheets/*
   Cache-Control: public, max-age=604800, stale-while-revalidate=86400
   Access-Control-Allow-Origin: *

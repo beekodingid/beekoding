@@ -89,15 +89,19 @@ export const onRequestGet = async (context: {
     : await fetch(new URL('/', request.url));
 
   const url = new URL(request.url);
+  if (url.hostname === 'www.beekoding.my.id') {
+    return Response.redirect(`https://beekoding.my.id${url.pathname}${url.search}`, 301);
+  }
+  const canonicalOrigin = 'https://beekoding.my.id';
   const pageTitle = `${articleData.title} | Blog Beekoding`;
-  const pageUrl = `${url.origin}/blog/${slug}`;
+  const pageUrl = `${canonicalOrigin}/blog/${slug}`;
   let coverUrl = articleData.coverImage;
 
   // Pastikan URL gambar adalah absolute URL
   if (coverUrl.startsWith('/')) {
-    coverUrl = `${url.origin}${coverUrl}`;
+    coverUrl = `${canonicalOrigin}${coverUrl}`;
   } else if (!coverUrl.startsWith('http')) {
-    coverUrl = `${url.origin}/${coverUrl}`;
+    coverUrl = `${canonicalOrigin}/${coverUrl}`;
   }
 
   // Deteksi MIME type gambar untuk tag OpenGraph

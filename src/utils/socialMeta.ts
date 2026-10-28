@@ -17,7 +17,12 @@ const DEFAULT_META = {
 export function getPublicBaseUrl(): string {
   if (typeof window === 'undefined') return 'https://beekoding.my.id';
   const host = window.location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1') {
+  if (
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host === 'www.beekoding.my.id' ||
+    host === 'beekoding.my.id'
+  ) {
     return 'https://beekoding.my.id';
   }
   return window.location.origin;

@@ -34,6 +34,32 @@ export const LegalView: React.FC<LegalViewProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [initialTab]);
 
+  useEffect(() => {
+    const metaMap: Record<LegalTabType, { slug: string; title: string }> = {
+      privacy: {
+        slug: 'kebijakan-privasi',
+        title: 'Kebijakan Privasi (Privacy Policy) & AdSense Cookie | Beekoding',
+      },
+      terms: {
+        slug: 'syarat-ketentuan',
+        title: 'Syarat & Ketentuan Layanan (Terms of Service) | Beekoding',
+      },
+      disclaimer: {
+        slug: 'penafian',
+        title: 'Penafian Resmi (Disclaimer) | Beekoding',
+      },
+    };
+    const current = metaMap[activeTab];
+    document.title = current.title;
+    let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', `https://beekoding.my.id/${current.slug}`);
+  }, [activeTab]);
+
   const handleTabChange = (tab: LegalTabType) => {
     setActiveTab(tab);
     const slugMap: Record<LegalTabType, string> = {
