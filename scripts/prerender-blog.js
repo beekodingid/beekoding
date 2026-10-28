@@ -32,7 +32,7 @@ const tsContent = fs.readFileSync(blogArticlesPath, 'utf-8');
 function replaceNoscript(html, innerSemanticHtml) {
   return html.replace(
     /<!-- PRERENDER_ROOT_START -->[\s\S]*?<!-- PRERENDER_ROOT_END -->/,
-    `<!-- PRERENDER_ROOT_START -->\n      <!--email_off-->\n      <main style="max-width:960px;margin:0 auto;padding:84px 20px 40px;font-family:'DM Sans',system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">\n${innerSemanticHtml}\n      </main>\n      <!--/email_off-->\n      <!-- PRERENDER_ROOT_END -->`
+    `<!-- PRERENDER_ROOT_START -->\n      <!--email_off-->\n      <main class="bk-prerender-shell" style="max-width:960px;margin:0 auto;padding:84px 20px 40px;font-family:'DM Sans',system-ui,-apple-system,sans-serif;color:#1e293b;line-height:1.7;">\n${innerSemanticHtml}\n      </main>\n      <!--/email_off-->\n      <!-- PRERENDER_ROOT_END -->`
   );
 }
 
@@ -42,10 +42,12 @@ function replaceNoscript(html, innerSemanticHtml) {
  * Google pada layar yang digunakan untuk notifikasi, navigasi, atau tujuan perilaku lainnya".
  */
 function stripAdSenseScript(html) {
-  return html.replace(
-    /\s*<!-- Google AdSense Verification & Auto Ads -->\s*<meta name="google-adsense-account"[^>]*>\s*<script async src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[^>]*><\/script>/g,
-    ''
-  );
+  return html
+    .replace(
+      /\s*<!-- Google AdSense Verification[^\n]*-->\s*(?:<meta name="google-adsense-account"[^>]*>\s*)?<script[\s\S]*?pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[\s\S]*?<\/script>/g,
+      ''
+    )
+    .replace(/\s*<meta name="google-adsense-account"[^>]*>/g, '');
 }
 
 function markdownToSimpleHtml(md) {
