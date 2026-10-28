@@ -1,0 +1,17 @@
+Bisnis yang cocok dikembangkan oleh Sarang Edukasi Teknologi (pengelola Beekoding yang fokus pada kursus koding anak-anak usia 6–15 tahun) adalah lini usaha di bidang EdTech (Edukasi Teknologi), literasi digital, dan STEAM yang masih serumpun.
+Beberapa peluang bisnis lain yang sangat relevan meliputi:
+• Kelas Robotika & IoT untuk Anak (Robotics for Kids): Memadukan pemrograman dasar dengan perakitan fisik/mekanik menggunakan perangkat seperti Arduino, LEGO Education, atau kit robotika sederhana.
+• Pelatihan Kecerdasan Artifisial (AI Literacy & Generative AI for Teens): Mengajarkan remaja cara memanfaatkan AI secara etis, membuat prompt engineering, hingga dasar Machine Learning ringan.
+• B2B School Partnership / Ekstrakurikuler Sekolah: Menawarkan program ekstrakurikuler koding dan sains digital yang bermitra langsung dengan SD, SMP, atau SMA swasta (seperti konsep yang diterapkan kompetitor).
+• Penerbitan Modul / Buku / Worksheet Koding Anak: Menjual perangkat ajar fisik, papan permainan edukatif (unplugged coding), atau buku latihan logika pemrograman anak secara ritel maupun
+• Kamp Liburan & Kompetisi Teknologi (Tech Camp & Coding Competition): Mengadakan holiday camp intensif atau turnamen game design/robotika saat liburan sekolah untuk mendulang pemasukan musiman yang tinggi.
+• Kelas Persiapan Sertifikasi / Literasi Digital untuk Guru: Memberikan pelatihan upskilling kepada guru-guru sekolah dasar/menengah agar mereka siap mengajar kurikulum teknologi.
+
+
+Jenis Bisnis Tambahan					Target Pasar					Keunggulan Sinergi dengan Beekoding
+-----------------------------------------------------------------------------------------------------------
+Kelas Robotika & Mekanik				Anak usia 8–15 tahun			Memperluas kurikulum dari layar (software) ke bentuk fisik (hardware).
+Program Ekstrakurikuler Sekolah (B2B)	Sekolah SD–SMA					Pendapatan lebih stabil melalui kontrak kerja sama institusi.
+AI & Prompt Literacy for Teens			Remaja (SMP–SMA)				Menjawab tren teknologi terbaru (Kecerdasan Artifisial) yang sedang masif.
+Holiday Tech Camp / Workshop			Orang tua & anak				Monetisasi tinggi saat masa libur panjang sekolah.
+Modul & Boardgame Unplugged				Anak usia dini (4–8 tahun)		Menjangkau segmen anak-anak yang belum terlalu akrab dengan gawai/komputer.

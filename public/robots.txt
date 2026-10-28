@@ -2,6 +2,12 @@
 # Google AdSense Media Crawler
 User-agent: Mediapartners-Google
 Allow: /
+Disallow: /admin
+Disallow: /portal
+Disallow: /talent
+Disallow: /slides/
+Disallow: /brosur-ekskul.html
+Disallow: /cdn-cgi/
 
 # AI Search & LLM Crawlers (OpenAI ChatGPT, Perplexity AI, Anthropic Claude, Google Gemini)
 User-agent: GPTBot
@@ -68,26 +74,22 @@ Allow: /terms-of-service
 Allow: /penafian
 Allow: /disclaimer
 Allow: /ads.txt
-Allow: /kursus-coding-anak-*
+Allow: /kursus-coding-anak-sd
 Allow: /kursus-python-remaja-smp-sma
+Allow: /biaya-kursus
 Allow: /glosarium
 Allow: /cek-minat-anak
+Allow: /worksheet-gratis
 Allow: /blog
 Allow: /blog/*
-Allow: /#programs
-Allow: /#modular
-Allow: /#events
-Allow: /#course-finder
-Allow: /#about
-Allow: /#contact
-Allow: /#faq
-Allow: /#talent
-Allow: /#portal
 
-# Disallow private administrative, Cloudflare internal, and search query endpoints
+# Disallow private administrative, internal slide decks, portals, and Cloudflare internal endpoints
 Disallow: /admin
 Disallow: /admin/*
-Disallow: /#admin*
+Disallow: /portal
+Disallow: /talent
+Disallow: /slides/
+Disallow: /brosur-ekskul.html
 Disallow: /*?type=recovery*
 Disallow: /cdn-cgi/
 Disallow: /*?q=*

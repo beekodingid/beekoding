@@ -736,6 +736,31 @@ export function App() {
     }
   };
 
+  // Pause Google AdSense auto-ad requests on behavioral, login, quiz, lead-capture, or legal policy screens
+  // to strictly comply with Google AdSense policy ("Iklan pada layar yang digunakan untuk notifikasi, navigasi, atau tujuan perilaku lainnya")
+  useEffect(() => {
+    const isNonAdScreen =
+      showAdmin ||
+      showStudentPortal ||
+      showTalentAssessment ||
+      showQuizMinat ||
+      showWorksheets ||
+      Boolean(activeCityLanding) ||
+      showLegal;
+
+    const w = window as unknown as { adsbygoogle?: { pauseAdRequests?: number } & unknown[] };
+    w.adsbygoogle = w.adsbygoogle || [];
+    w.adsbygoogle.pauseAdRequests = isNonAdScreen ? 1 : 0;
+  }, [
+    showAdmin,
+    showStudentPortal,
+    showTalentAssessment,
+    showQuizMinat,
+    showWorksheets,
+    activeCityLanding,
+    showLegal,
+  ]);
+
   // 0. Jika Halaman Legalitas (Kebijakan Privasi, Syarat Layanan, Penafian) sedang aktif
   if (showLegal) {
     return (

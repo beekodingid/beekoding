@@ -36,6 +36,18 @@ function replaceNoscript(html, innerSemanticHtml) {
   );
 }
 
+/**
+ * Strips Google AdSense script from behavioral, utility, lead-capture, legal,
+ * or local doorway pages so Google AdSense never flags "Iklan yang ditayangkan
+ * Google pada layar yang digunakan untuk notifikasi, navigasi, atau tujuan perilaku lainnya".
+ */
+function stripAdSenseScript(html) {
+  return html.replace(
+    /\s*<!-- Google AdSense Verification & Auto Ads -->\s*<meta name="google-adsense-account"[^>]*>\s*<script async src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[^>]*><\/script>/g,
+    ''
+  );
+}
+
 function markdownToSimpleHtml(md) {
   if (!md) return '';
   return md
@@ -142,14 +154,15 @@ async function main() {
   const blogListSemanticHtml = `
         <header style="margin-bottom:32px;">
           <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
-          <h1 style="font-size:2.2rem;font-weight:900;color:#0f172a;margin-bottom:10px;">Blog Edukasi Coding &amp; AI Anak — Beekoding</h1>
+          <h1 style="font-size:2.2rem;font-weight:900;color:#0f172a;margin-bottom:10px;">Pusat Literasi &amp; Jurnal Edukasi Coding &amp; AI Anak — Beekoding</h1>
           <p style="font-size:1.05rem;color:#475569;">${blogDesc}</p>
+          <p style="font-size:0.98rem;color:#334155;margin-top:12px;">Seluruh artikel di bawah ini disusun secara orisinal oleh tim kurikulum dan praktisi edukasi teknologi Beekoding untuk membantu orang tua Indonesia mendampingi tumbuh kembang literasi digital, logika pemrograman (Computational Thinking), serta pemanfaatan Artificial Intelligence yang sehat bagi anak usia 6 hingga 17 tahun.</p>
         </header>
         <section>
-          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin-bottom:16px;">Daftar Artikel Terbaru (${articles.length} Artikel)</h2>
-          <ul style="padding-left:20px;line-height:1.8;">
-            ${articles.map((a) => `<li style="margin-bottom:14px;"><a href="https://beekoding.my.id/blog/${a.slug}" style="font-weight:800;color:#d97706;font-size:1.05rem;">${a.title}</a><br/><span style="color:#475569;font-size:0.92rem;">${a.excerpt}</span></li>`).join('\n            ')}
-          </ul>
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin-bottom:16px;">Indeks Kajian &amp; Panduan Parenting Digital (${articles.length} Artikel Mendalam)</h2>
+          <div style="display:grid;gap:20px;">
+            ${articles.map((a, idx) => `<article style="padding:18px;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;"><div style="font-size:0.8rem;font-weight:700;color:#d97706;margin-bottom:4px;">Artikel #${idx + 1} &bull; Kategori: ${a.category} &bull; Terbit: ${a.publishedAt}</div><h3 style="margin:0 0 8px 0;font-size:1.15rem;"><a href="https://beekoding.my.id/blog/${a.slug}" style="font-weight:800;color:#0f172a;text-decoration:none;">${a.title}</a></h3><p style="margin:0 0 10px 0;color:#475569;font-size:0.95rem;">${a.excerpt}</p><a href="https://beekoding.my.id/blog/${a.slug}" style="font-size:0.88rem;font-weight:700;color:#d97706;text-decoration:none;">Baca Kajian Selengkapnya &rarr;</a></article>`).join('\n            ')}
+          </div>
         </section>`;
 
   const blogListHtml = replaceNoscript(
@@ -298,6 +311,12 @@ async function main() {
       const metaDescription = cb.match(/metaDescription:\s*'([^']+)'/)?.[1];
       const metaKeywords = cb.match(/metaKeywords:\s*'([^']+)'/)?.[1];
 
+      const heroHeadline = cb.match(/heroHeadline:\s*'([^']+)'/)?.[1] || metaTitle;
+      const heroSubtitle = cb.match(/heroSubtitle:\s*\n?\s*'([^']+)'/)?.[1] || metaDescription;
+      const localCommuteBenefit = cb.match(/localCommuteBenefit:\s*\n?\s*'([^']+)'/)?.[1] || '';
+      const parentName = cb.match(/parentName:\s*'([^']+)'/)?.[1] || '';
+      const quote = cb.match(/quote:\s*\n?\s*'([^']+)'/)?.[1] || '';
+
       if (slug && cityName && metaTitle && metaDescription) {
         localCityPages.push({
           slug,
@@ -308,6 +327,11 @@ async function main() {
           keywords: metaKeywords || `kursus coding anak ${cityName.toLowerCase()}`,
           url: `https://beekoding.my.id/${slug}`,
           courseName: `Kursus Coding Anak Kota ${cityName} - Beekoding`,
+          heroHeadline,
+          heroSubtitle,
+          localCommuteBenefit,
+          parentName,
+          quote,
         });
       }
     }
@@ -373,34 +397,38 @@ async function main() {
       const citySemanticHtml = `
         <header style="margin-bottom:28px;">
           <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
-          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${cityPage.title}</h1>
-          <p style="font-size:1.05rem;color:#475569;">${cityPage.description}</p>
+          <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${cityPage.heroHeadline}</h1>
+          <p style="font-size:1.05rem;color:#475569;">${cityPage.heroSubtitle}</p>
         </header>
         <section style="margin-bottom:28px;">
           <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Program Kursus Coding &amp; AI Terbaik untuk Anak di ${cityPage.cityName} (${cityPage.province})</h2>
           <p>Beekoding melayani siswa SD, SMP, dan SMA di seluruh wilayah <strong>${cityPage.cityName}</strong> melalui kelas Live Interactive Online (rasio maksimal 4 murid per kelas) maupun kelas Privat 1-on-1.</p>
+          ${cityPage.localCommuteBenefit ? `<p>${cityPage.localCommuteBenefit}</p>` : ''}
           <ul style="padding-left:20px;line-height:1.8;">
             <li><strong>Junior Explorer (Usia 6–10 Tahun):</strong> Scratch 3.0, Logika Komputasi Visual &amp; Game 2D — Mulai Rp 350.000/bulan.</li>
             <li><strong>Intermediate Coder (Usia 10–12 Tahun):</strong> App Inventor &amp; Roblox Studio 3D (Bahasa Lua) — Mulai Rp 383.000/bulan.</li>
             <li><strong>Teens Innovator (Usia 13–17 Tahun):</strong> Python Pro, Data Science, Web Development &amp; Artificial Intelligence — Mulai Rp 400.000/bulan.</li>
           </ul>
+          ${cityPage.quote ? `<blockquote style="margin:20px 0;padding:16px;background:#f8fafc;border-left:4px solid #f59e0b;color:#334155;">"${cityPage.quote}" — <strong>${cityPage.parentName}</strong></blockquote>` : ''}
           <p style="margin-top:20px;"><a href="https://beekoding.my.id/biaya-kursus" style="color:#d97706;font-weight:bold;">Cek Rincian Biaya Kursus &amp; Daftar Free Trial Class di ${cityPage.cityName} &rarr;</a></p>
         </section>`;
 
-      let cityHtml = replaceNoscript(
-        subpageBaseHtml
-          .replace(/<title>.*?<\/title>/, `<title>${cityPage.title}</title>`)
-          .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${cityPage.url}" />`)
-          .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${cityPage.description}" />`)
-          .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${cityPage.keywords}" />`)
-          .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${cityPage.title}" />`)
-          .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${cityPage.description}" />`)
-          .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${cityPage.url}" />`)
-          .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${cityPage.title}" />`)
-          .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${cityPage.description}" />`)
-          .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${cityPage.url}" />`)
-          .replace('</head>', citySchemasTag),
-        citySemanticHtml
+      let cityHtml = stripAdSenseScript(
+        replaceNoscript(
+          subpageBaseHtml
+            .replace(/<title>.*?<\/title>/, `<title>${cityPage.title}</title>`)
+            .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${cityPage.url}" />`)
+            .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${cityPage.description}" />`)
+            .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${cityPage.keywords}" />`)
+            .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${cityPage.title}" />`)
+            .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${cityPage.description}" />`)
+            .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${cityPage.url}" />`)
+            .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${cityPage.title}" />`)
+            .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${cityPage.description}" />`)
+            .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${cityPage.url}" />`)
+            .replace('</head>', citySchemasTag),
+          citySemanticHtml
+        )
       );
 
       fs.writeFileSync(path.join(cityDir, 'index.html'), cityHtml, 'utf-8');
@@ -489,20 +517,41 @@ async function main() {
           <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
           <h1 style="font-size:2.1rem;font-weight:900;color:#0f172a;margin-bottom:10px;">${glossaryTitle}</h1>
           <p style="font-size:1.05rem;color:#475569;">${glossaryDesc}</p>
+          <p style="font-size:0.98rem;color:#334155;margin-top:12px;">Ensiklopedia istilah pemrograman komputer, pengembangan game, dan kecerdasan buatan (Artificial Intelligence) ini dirancang menggunakan analogi kehidupan sehari-hari agar mudah dipahami oleh siswa SD, SMP, SMA, maupun orang tua.</p>
         </header>
         <section>
-          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Daftar Istilah Populer Koding &amp; AI untuk Anak</h2>
-          <dl style="line-height:1.8;">
-            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">1. Algoritma (Algorithm)</dt>
-            <dd style="margin-left:16px;color:#475569;">Urutan instruksi langkah demi langkah yang teratur dan logis untuk menyelesaikan suatu masalah atau mencapai tujuan tertentu.</dd>
-            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">2. Loop (Perulangan)</dt>
-            <dd style="margin-left:16px;color:#475569;">Perintah dalam koding untuk mengulang suatu tindakan berkali-kali secara otomatis tanpa perlu menulis ulang kodenya.</dd>
-            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">3. Variabel (Variable)</dt>
-            <dd style="margin-left:16px;color:#475569;">Kotak penyimpanan khusus di dalam memori komputer yang diberi nama untuk menyimpan dan mengubah suatu nilai seperti skor game atau nyawa karakter.</dd>
-            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">4. Debugging</dt>
-            <dd style="margin-left:16px;color:#475569;">Proses menyelidiki, menemukan, dan memperbaiki kesalahan (bug) pada baris kode program agar aplikasi berjalan normal kembali.</dd>
-            <dt style="font-weight:800;color:#0f172a;margin-top:12px;">5. Machine Learning &amp; Prompt Engineering</dt>
-            <dd style="margin-left:16px;color:#475569;">Cabang dari Artificial Intelligence di mana komputer belajar mengenali pola dari contoh data, serta keterampilan menyusun instruksi yang jelas bagi AI.</dd>
+          <h2 style="font-size:1.5rem;font-weight:800;color:#0f172a;">Daftar Lengkap Istilah Koding, Game Dev &amp; AI Ramah Anak</h2>
+          <dl style="line-height:1.85;">
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">1. Algoritma (Algorithm)</dt>
+            <dd style="margin-left:16px;color:#475569;">Urutan instruksi langkah demi langkah yang teratur dan logis untuk menyelesaikan suatu masalah atau mencapai tujuan tertentu. <em>Analogi:</em> Seperti resep membuat roti lapis—jika urutannya terbalik, hasilnya tidak sesuai harapan.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">2. Loop (Perulangan)</dt>
+            <dd style="margin-left:16px;color:#475569;">Perintah dalam koding untuk mengulang suatu tindakan berkali-kali secara otomatis tanpa perlu menulis ulang kodenya. <em>Analogi:</em> Seperti perintah lari keliling lapangan 5 kali dalam pelajaran olahraga.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">3. Variabel (Variable)</dt>
+            <dd style="margin-left:16px;color:#475569;">Kotak penyimpanan khusus di dalam memori komputer yang diberi nama untuk menyimpan dan mengubah suatu nilai seperti skor game, nama pemain, atau sisa nyawa karakter.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">4. Kondisional (If-Else Statement)</dt>
+            <dd style="margin-left:16px;color:#475569;">Logika pengambilan keputusan di mana komputer menjalankan aksi tertentu hanya jika suatu syarat terpenuhi. Contoh: "JIKA hujan MAKA bawa payung, JIKA TIDAK pakai topi".</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">5. Debugging &amp; Bug</dt>
+            <dd style="margin-left:16px;color:#475569;">Bug adalah kesalahan pada kode yang membuat program tidak berjalan semestinya, sedangkan Debugging adalah proses menjadi detektif kode untuk mencari dan memperbaiki kesalahan tersebut.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">6. Dekomposisi (Decomposition)</dt>
+            <dd style="margin-left:16px;color:#475569;">Pilar utama Computational Thinking untuk memecah masalah besar yang rumit menjadi bagian-bagian kecil yang mudah dikerjakan satu per satu.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">7. Pengenalan Pola (Pattern Recognition)</dt>
+            <dd style="margin-left:16px;color:#475569;">Kemampuan mengamati kesamaan pola atau keteraturan dari berbagai masalah sehingga solusi sebelumnya dapat digunakan kembali secara efisien.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">8. Abstraksi (Abstraction)</dt>
+            <dd style="margin-left:16px;color:#475569;">Keterampilan menyaring informasi penting dan mengabaikan detail yang tidak relevan saat merancang solusi program atau arsitektur game.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">9. Sprite &amp; Backdrop (Scratch 3.0)</dt>
+            <dd style="margin-left:16px;color:#475569;">Sprite adalah objek atau karakter di dalam panggung animasi/game 2D yang diberi instruksi blok kode, sedangkan Backdrop adalah latar panggungnya.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">10. Event Listener (Pemicu Kejadian)</dt>
+            <dd style="margin-left:16px;color:#475569;">Blok atau fungsi kode yang menunggu sinyal tertentu—seperti tombol spasi ditekan atau bendera hijau diklik—sebelum menjalankan perintah.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">11. Koordinat Kartesius (X, Y, Z)</dt>
+            <dd style="margin-left:16px;color:#475569;">Sistem peta angka untuk menentukan posisi objek secara presisi di layar 2D (X mendatar, Y tegak) maupun dunia 3D Roblox Studio (ditambah kedalaman Z).</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">12. Fungsi (Function)</dt>
+            <dd style="margin-left:16px;color:#475569;">Kumpulan baris kode yang dibungkus dengan satu nama perintah khusus sehingga dapat dipanggil kapan saja tanpa menulis ulang dari awal.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">13. Bahasa Pemrograman Python</dt>
+            <dd style="margin-left:16px;color:#475569;">Bahasa pemrograman berbasis teks yang populer di dunia industri dan sains karena tata bahasanya bersih menyerupai bahasa Inggris serta menjadi fondasi utama Artificial Intelligence.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">14. Bahasa Pemrograman Lua (Roblox Studio)</dt>
+            <dd style="margin-left:16px;color:#475569;">Bahasa scripting yang ringan dan cepat yang digunakan untuk menghidupkan interaksi objek, rintangan Obby, dan sistem permainan di dunia 3D Roblox Studio.</dd>
+            <dt style="font-weight:800;color:#0f172a;margin-top:14px;">15. Machine Learning &amp; Prompt Engineering</dt>
+            <dd style="margin-left:16px;color:#475569;">Cabang dari Artificial Intelligence di mana komputer belajar mengenali pola dari contoh data, serta keterampilan menyusun instruksi terstruktur agar AI memberikan hasil yang akurat.</dd>
           </dl>
         </section>`;
 
@@ -598,20 +647,22 @@ async function main() {
           </ul>
         </section>`;
 
-  let quizHtml = replaceNoscript(
-    subpageBaseHtml
-      .replace(/<title>.*?<\/title>/, `<title>${quizTitle}</title>`)
-      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${quizUrl}" />`)
-      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${quizDesc}" />`)
-      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${quizKeywords}" />`)
-      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${quizTitle}" />`)
-      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${quizDesc}" />`)
-      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${quizUrl}" />`)
-      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${quizTitle}" />`)
-      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${quizDesc}" />`)
-      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${quizUrl}" />`)
-      .replace('</head>', quizSchemasTag),
-    quizSemanticHtml
+  let quizHtml = stripAdSenseScript(
+    replaceNoscript(
+      subpageBaseHtml
+        .replace(/<title>.*?<\/title>/, `<title>${quizTitle}</title>`)
+        .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${quizUrl}" />`)
+        .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${quizDesc}" />`)
+        .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${quizKeywords}" />`)
+        .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${quizTitle}" />`)
+        .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${quizDesc}" />`)
+        .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${quizUrl}" />`)
+        .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${quizTitle}" />`)
+        .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${quizDesc}" />`)
+        .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${quizUrl}" />`)
+        .replace('</head>', quizSchemasTag),
+      quizSemanticHtml
+    )
   );
 
   fs.writeFileSync(path.join(quizDir, 'index.html'), quizHtml, 'utf-8');
@@ -650,19 +701,21 @@ async function main() {
           </ul>
         </section>`;
 
-  const wsHtml = replaceNoscript(
-    subpageBaseHtml
-      .replace(/<title>.*?<\/title>/, `<title>${wsTitle}</title>`)
-      .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${wsUrl}" />`)
-      .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${wsDesc}" />`)
-      .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${wsKeywords}" />`)
-      .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${wsTitle}" />`)
-      .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${wsDesc}" />`)
-      .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${wsUrl}" />`)
-      .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${wsTitle}" />`)
-      .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${wsDesc}" />`)
-      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${wsUrl}" />`),
-    wsSemanticHtml
+  const wsHtml = stripAdSenseScript(
+    replaceNoscript(
+      subpageBaseHtml
+        .replace(/<title>.*?<\/title>/, `<title>${wsTitle}</title>`)
+        .replace(/<link[^>]*?rel="canonical"[^>]*?>/s, `<link rel="canonical" href="${wsUrl}" />`)
+        .replace(/<meta[^>]*?name="description"[^>]*?>/s, `<meta name="description" content="${wsDesc}" />`)
+        .replace(/<meta[^>]*?name="keywords"[^>]*?>/s, `<meta name="keywords" content="${wsKeywords}" />`)
+        .replace(/<meta[^>]*?property="og:title"[^>]*?>/s, `<meta property="og:title" content="${wsTitle}" />`)
+        .replace(/<meta[^>]*?property="og:description"[^>]*?>/s, `<meta property="og:description" content="${wsDesc}" />`)
+        .replace(/<meta[^>]*?property="og:url"[^>]*?>/s, `<meta property="og:url" content="${wsUrl}" />`)
+        .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${wsTitle}" />`)
+        .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${wsDesc}" />`)
+        .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${wsUrl}" />`),
+      wsSemanticHtml
+    )
   );
 
   fs.writeFileSync(path.join(wsDir, 'index.html'), wsHtml, 'utf-8');
@@ -929,6 +982,10 @@ async function main() {
         .replace('</head>', pageSchemasTag),
       page.bodyHtml
     );
+
+    if (page.slug !== 'biaya-kursus') {
+      renderedHtml = stripAdSenseScript(renderedHtml);
+    }
 
     fs.writeFileSync(path.join(pageDir, 'index.html'), renderedHtml, 'utf-8');
     fs.writeFileSync(path.join(distDir, `${page.slug}.html`), renderedHtml, 'utf-8');
@@ -1280,7 +1337,8 @@ async function main() {
     return rss;
   }
 
-  const sitemapContent = generateSitemapXml(articles, localCityPages);
+  // Omit programmatic city pages from sitemap.xml so Google AdSense reviewers focus on original editorial & pillar pages
+  const sitemapContent = generateSitemapXml(articles, []);
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapContent, 'utf-8');
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapContent, 'utf-8');
   console.log(`[prerender-blog] Successfully auto-generated sitemap.xml with ${articles.length} articles!`);
