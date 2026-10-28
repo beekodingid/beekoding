@@ -136,6 +136,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedWaBroadcast, setCopiedWaBroadcast] = useState(false);
 
   // Phase 1: Reading Experience states
   const [readingProgress, setReadingProgress] = useState(0);
@@ -252,6 +253,43 @@ export const BlogView: React.FC<BlogViewProps> = ({
     if (!selectedSlug) return null;
     return articles.find((a) => a.slug === selectedSlug) || null;
   }, [articles, selectedSlug]);
+
+  // Contextual related articles ranked by matching category + shared tags
+  const contextualRelatedArticles = useMemo(() => {
+    if (!currentArticle) return [];
+    const currentTags = new Set(
+      (currentArticle.tags || []).map((t) => t.toLowerCase())
+    );
+    return articles
+      .filter((a) => a.slug !== currentArticle.slug)
+      .map((a) => {
+        let score = 0;
+        if (a.category === currentArticle.category) score += 3;
+        for (const t of a.tags || []) {
+          if (currentTags.has(t.toLowerCase())) score += 2;
+        }
+        return { article: a, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .map((item) => item.article);
+  }, [articles, currentArticle]);
+
+  const midArticleRelated = useMemo(
+    () => contextualRelatedArticles.slice(0, 2),
+    [contextualRelatedArticles]
+  );
+
+  const bottomRelatedArticles = useMemo(
+    () => contextualRelatedArticles.slice(2, 6),
+    [contextualRelatedArticles]
+  );
+
+  const nextArticleToRead = useMemo(() => {
+    if (!currentArticle || articles.length < 2) return null;
+    const idx = articles.findIndex((a) => a.slug === currentArticle.slug);
+    if (idx === -1) return contextualRelatedArticles[0] || null;
+    return articles[(idx + 1) % articles.length];
+  }, [articles, currentArticle, contextualRelatedArticles]);
 
   // Mid-article in-article AdSense split (anti-CLS injection between major headings)
   const articleContentParts = useMemo(() => {
@@ -402,11 +440,23 @@ export const BlogView: React.FC<BlogViewProps> = ({
     }
   };
 
-  const handleShareWhatsApp = (article: BlogArticle) => {
+  const getParentShareText = (article: BlogArticle) => {
     const baseUrl = getPublicBaseUrl();
     const articleUrl = `${baseUrl}/blog/${article.slug}`;
-    const text = `*${article.title}*\n\n${article.excerpt}\n\n👉 Baca selengkapnya di Blog Edukasi Beekoding:\n${articleUrl}`;
+    return `Halo Ayah/Bunda, baru saja baca tulisan edukasi anak yang sangat bagus dan membuka wawasan:\n\n*${article.title}*\n\n💡 _"${article.excerpt}"_\n\n👉 Baca panduan lengkapnya di sini:\n${articleUrl}`;
+  };
+
+  const handleShareWhatsApp = (article: BlogArticle) => {
+    const text = getParentShareText(article);
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const handleCopyWaBroadcast = (article: BlogArticle) => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(getParentShareText(article));
+      setCopiedWaBroadcast(true);
+      setTimeout(() => setCopiedWaBroadcast(false), 2800);
+    }
   };
 
   return (
@@ -674,6 +724,15 @@ export const BlogView: React.FC<BlogViewProps> = ({
                     />
                     <span>{getArticleLikes(currentArticle)} Bermanfaat</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => handleShareWhatsApp(currentArticle)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold bg-emerald-500 hover:bg-emerald-600 text-white transition-all cursor-pointer shadow-xs"
+                    title="Bagikan artikel ini ke WhatsApp Orang Tua / Grup"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>Bagikan ke WA</span>
+                  </button>
                 </div>
               </div>
             </header>
@@ -702,7 +761,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
               />
             </div>
 
-            {/* Article Body Content with Dynamic Font Size & Mid-Article AdSense */}
+            {/* Article Body Content with Dynamic Font Size, Inline "Baca Juga" Box & Mid-Article AdSense */}
             <div
               className={`max-w-none transition-all duration-200 ${
                 fontSizeStep === 'normal'
@@ -713,6 +772,56 @@ export const BlogView: React.FC<BlogViewProps> = ({
               }`}
             >
               <MarkdownRenderer content={articleContentParts.part1} isDark={isDark} />
+
+              {/* Inline "Baca Juga" Box (Pageview Multiplier in Middle of Article) */}
+              {midArticleRelated.length > 0 && (
+                <aside
+                  aria-label="Baca Juga Artikel Terkait"
+                  className={`my-8 p-5 sm:p-6 rounded-2xl border-l-4 border-amber-500 transition-all ${
+                    isDark
+                      ? 'bg-[#131826]/95 border-y border-r border-slate-800'
+                      : 'bg-amber-50/85 border-y border-r border-amber-200/80 shadow-xs'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-3">
+                    <BookOpen className="w-4 h-4" />
+                    <span>Baca Juga Panduan Pilihan Orang Tua:</span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {midArticleRelated.map((rel) => (
+                      <a
+                        key={rel.slug}
+                        href={`/blog/${rel.slug}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSelectArticle(rel.slug);
+                        }}
+                        className={`group flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                          isDark
+                            ? 'bg-[#0d111b] border-slate-800 hover:border-amber-500/50'
+                            : 'bg-white border-amber-200 hover:border-amber-400 shadow-2xs'
+                        }`}
+                      >
+                        <img
+                          src={rel.coverImage}
+                          alt={rel.title}
+                          className="w-16 h-16 rounded-lg object-cover shrink-0 group-hover:scale-105 transition-transform"
+                          loading="lazy"
+                        />
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-500 block">
+                            {rel.category} • {getArticleReadTime(rel)} mnt baca
+                          </span>
+                          <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-amber-500 transition-colors mt-0.5 leading-snug">
+                            {rel.title}
+                          </h4>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </aside>
+              )}
+
               {articleContentParts.part2 && (
                 <div className="my-8">
                   <AdSenseSlot slotId="5878990472" format="in-article" label="Iklan Sponsor Edukasi Terkait" />
@@ -845,15 +954,33 @@ export const BlogView: React.FC<BlogViewProps> = ({
               </div>
             </div>
 
-            {/* Social Share Bar + Phase 2 Like Reactions */}
-            <div className="pt-6 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+            {/* Viral Parent WhatsApp Broadcast Box + Like Reactions */}
+            <div
+              className={`p-5 sm:p-6 rounded-2xl border-2 transition-all space-y-4 ${
+                isDark
+                  ? 'bg-gradient-to-br from-emerald-500/10 via-[#121624] to-[#0e121d] border-emerald-500/30'
+                  : 'bg-gradient-to-br from-emerald-50/90 via-white to-amber-50/50 border-emerald-300 shadow-sm'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                    💬 Bagikan Wawasan Parenting Digital
+                  </span>
+                  <h4 className="text-base sm:text-lg font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
+                    Merasa artikel ini bermanfaat? Bagikan ke Grup WhatsApp Orang Tua!
+                  </h4>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                    Bantu sesama Ayah &amp; Bunda mendampingi masa depan digital buah hati dengan sekali klik.
+                  </p>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => handleToggleLike(currentArticle.slug)}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold border transition-all flex items-center gap-2 cursor-pointer shadow-sm ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-extrabold border transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0 shadow-xs ${
                     userLikedSet.has(currentArticle.slug)
-                      ? 'bg-rose-500 text-white border-rose-500 shadow-rose-500/25 scale-105'
+                      ? 'bg-rose-500 text-white border-rose-500 shadow-rose-500/25'
                       : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-rose-300 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/30'
                   }`}
                 >
@@ -865,40 +992,93 @@ export const BlogView: React.FC<BlogViewProps> = ({
                     }`}
                   />
                   <span>
-                    {userLikedSet.has(currentArticle.slug) ? 'Anda Menyukai Artikel Ini' : 'Artikel ini Bermanfaat'} (
+                    {userLikedSet.has(currentArticle.slug) ? 'Disukai' : 'Bermanfaat'} (
                     {getArticleLikes(currentArticle)})
                   </span>
                 </button>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-emerald-500/20">
                 <button
                   type="button"
                   onClick={() => handleShareWhatsApp(currentArticle)}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-white hover:bg-emerald-600 transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-500 text-white hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-500/20"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp</span>
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Kirim ke WhatsApp Sekarang</span>
                 </button>
+
                 <button
                   type="button"
-                  onClick={handleCopyLink}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 cursor-pointer bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700"
+                  onClick={() => handleCopyWaBroadcast(currentArticle)}
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    isDark
+                      ? 'bg-slate-800/90 hover:bg-slate-700 border-slate-700 text-slate-100'
+                      : 'bg-white hover:bg-amber-50 border-amber-300 text-slate-800'
+                  }`}
+                  title="Salin caption menarik + link artikel untuk ditempel ke Status WA atau Grup"
                 >
-                  {copiedLink ? (
+                  {copiedWaBroadcast ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-emerald-500">Tersalin!</span>
+                      <Check className="w-4 h-4 text-emerald-500" />
+                      <span className="text-emerald-500 font-extrabold">Teks Broadcast WA Tersalin!</span>
                     </>
                   ) : (
                     <>
-                      <Share2 className="w-3.5 h-3.5 text-amber-500" />
-                      <span>Salin Link</span>
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span>Salin Teks Status WA + Link</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition-colors flex items-center justify-center gap-1.5 cursor-pointer bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700"
+                >
+                  {copiedLink ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-500" />
+                      <span className="text-emerald-500">Link Tersalin!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4 text-amber-500" />
+                      <span>Salin URL</span>
                     </>
                   )}
                 </button>
               </div>
             </div>
+
+            {/* Next Recommended Article Banner (1-Click Continuous Reading) */}
+            {nextArticleToRead && (
+              <div
+                onClick={() => handleSelectArticle(nextArticleToRead.slug)}
+                className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                  isDark
+                    ? 'bg-[#151928] border-amber-500/30 hover:border-amber-400'
+                    : 'bg-amber-50/90 border-amber-300 hover:border-amber-500 shadow-xs'
+                }`}
+              >
+                <div className="space-y-1 min-w-0">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-500 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>Lanjut Baca Artikel Berikutnya ({getArticleReadTime(nextArticleToRead)} menit baca)</span>
+                  </span>
+                  <h4 className="text-base sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-1">
+                    {nextArticleToRead.title}
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1">
+                    {nextArticleToRead.excerpt}
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 shrink-0 group-hover:translate-x-1 transition-transform">
+                  <span>Baca Sekarang</span>
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            )}
 
             {/* Community Q&A and Interactive Discussion */}
             <BlogCommentsSection
@@ -906,40 +1086,56 @@ export const BlogView: React.FC<BlogViewProps> = ({
               articleTitle={currentArticle.title}
             />
 
-            {/* Related Articles */}
+            {/* Contextual Related Articles (4 Items) */}
             <section className="pt-12 border-t border-amber-500/20 space-y-6">
-              <h3 className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
-                Artikel Edukasi Terkait
-              </h3>
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-slate-900 dark:text-white">
+                  Rekomendasi Artikel Terkait Untuk Anda
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleBackToList}
+                  className="text-xs font-extrabold text-amber-500 hover:text-amber-400 flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Lihat Semua ({articles.length})</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
               <div className="grid sm:grid-cols-2 gap-6">
-                {articles
-                  .filter((a) => a.slug !== currentArticle.slug)
-                  .slice(0, 2)
-                  .map((article) => (
-                    <div
-                      key={article.slug}
-                      onClick={() => handleSelectArticle(article.slug)}
-                      className={`p-4 rounded-2xl border transition-all cursor-pointer group hover:-translate-y-1 ${
-                        isDark
-                          ? 'bg-[#141824] border-slate-800 hover:border-amber-500/50'
-                          : 'bg-white border-amber-200/80 hover:border-amber-400 shadow-sm'
-                      }`}
-                    >
-                      <div className="aspect-[16/9] rounded-xl overflow-hidden mb-3">
-                        <img
-                          src={article.coverImage}
-                          alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <span className="text-[10px] uppercase font-bold text-amber-500">
-                        {article.category}
-                      </span>
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white line-clamp-2 mt-1 group-hover:text-amber-500 transition-colors">
-                        {article.title}
-                      </h4>
+                {bottomRelatedArticles.map((article) => (
+                  <a
+                    key={article.slug}
+                    href={`/blog/${article.slug}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSelectArticle(article.slug);
+                    }}
+                    className={`p-4 rounded-2xl border transition-all cursor-pointer group hover:-translate-y-1 block ${
+                      isDark
+                        ? 'bg-[#141824] border-slate-800 hover:border-amber-500/50'
+                        : 'bg-white border-amber-200/80 hover:border-amber-400 shadow-sm'
+                    }`}
+                  >
+                    <div className="aspect-[16/9] rounded-xl overflow-hidden mb-3">
+                      <img
+                        src={article.coverImage}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
                     </div>
-                  ))}
+                    <div className="flex items-center justify-between text-[10px] uppercase font-bold text-amber-500">
+                      <span>{article.category}</span>
+                      <span>{getArticleReadTime(article)} mnt baca</span>
+                    </div>
+                    <h4 className="text-base font-bold text-slate-900 dark:text-white line-clamp-2 mt-1 group-hover:text-amber-500 transition-colors">
+                      {article.title}
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">
+                      {article.excerpt}
+                    </p>
+                  </a>
+                ))}
               </div>
             </section>
           </article>
