@@ -73,6 +73,7 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1">
               <a
                 href="#showcase"
+                aria-label="Lihat ulasan dan karya siswa dengan rating 4.9 dari 5 bintang"
                 className={`inline-flex items-center gap-2.5 py-1.5 px-3 rounded-full border transition-all hover:scale-105 group ${
                   isDark
                     ? 'bg-amber-500/10 border-amber-500/30 hover:border-amber-400/50'
@@ -236,7 +237,7 @@ export const Hero: React.FC<HeroProps> = ({
 
               {/* Central Mascot Container */}
               <div className="relative z-10 animate-bee-float flex flex-col items-center">
-                <div className="relative group cursor-pointer">
+                <div className="relative group">
                   {/* Decorative golden honey pedestal circle */}
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-12 bg-amber-500/20 rounded-[100%] blur-md" />
 

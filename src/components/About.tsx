@@ -186,14 +186,14 @@ export const About: React.FC = () => {
                 className="w-16 h-16 object-contain flex-shrink-0"
               />
               <div>
-                <h4
+                <h3
                   className={`text-sm font-bold flex items-center gap-1.5 ${
                     isDark ? 'text-white' : 'text-slate-900'
                   }`}
                 >
                   <span>Sarang Pembelajaran 4 Pilar Beekoding</span>
                   <span className="text-xs text-amber-500">🐝</span>
-                </h4>
+                </h3>
                 <p
                   className={`text-xs mt-0.5 leading-relaxed ${
                     isDark ? 'text-slate-300' : 'text-slate-600'

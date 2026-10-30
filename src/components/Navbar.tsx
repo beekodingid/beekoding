@@ -357,7 +357,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 ? 'text-slate-300 hover:text-amber-400 hover:bg-slate-800/80'
                 : 'text-slate-700 hover:text-amber-600 hover:bg-amber-100'
             }`}
-            aria-label="Toggle Navigation"
+            aria-label="Menu Navigasi Mobile"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -375,7 +376,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               ? 'text-slate-300 hover:text-amber-400 hover:bg-slate-800/80'
               : 'text-slate-700 hover:text-amber-600 hover:bg-amber-100'
           }`}
-          aria-label="Toggle Navigation"
+          aria-label="Menu Navigasi Tablet"
+          aria-expanded={mobileMenuOpen}
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>

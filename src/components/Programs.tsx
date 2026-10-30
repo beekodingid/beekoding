@@ -598,6 +598,8 @@ export const Programs: React.FC<ProgramsProps> = ({
 
           {/* Interactive Stage Selector (Junior, Intermediate, Teens) */}
           <div
+            role="tablist"
+            aria-label="Pilihan Tahapan Jalur Belajar Coding & AI"
             className={`p-1.5 rounded-2xl border max-w-3xl mx-auto flex flex-col sm:flex-row gap-1.5 mb-8 shadow-sm ${
               isDark ? 'bg-[#121622] border-slate-800' : 'bg-slate-100 border-slate-200'
             }`}
@@ -608,8 +610,10 @@ export const Programs: React.FC<ProgramsProps> = ({
               return (
                 <button
                   key={stage.id}
+                  role="tab"
+                  aria-selected={isSelected}
                   onClick={() => setSelectedStage(stageKey)}
-                  className={`flex-1 py-3 px-4 rounded-xl text-left transition-all flex items-center justify-between ${
+                  className={`flex-1 py-3 px-4 rounded-xl text-left transition-all flex items-center justify-between cursor-pointer ${
                     isSelected
                       ? 'bg-amber-500 text-slate-950 font-black shadow-md scale-[1.01]'
                       : isDark
