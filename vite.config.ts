@@ -7,6 +7,19 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     chunkSizeWarningLimit: 700,
+    modulePreload: {
+      resolveDependencies(_filename, deps) {
+        return deps.filter(
+          (dep) =>
+            !dep.includes('app-data') &&
+            !dep.includes('blog-data') &&
+            !dep.includes('BlogView') &&
+            !dep.includes('AdminView') &&
+            !dep.includes('TalentAssessmentView') &&
+            !dep.includes('StudentPortalView')
+        );
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id: string) {
