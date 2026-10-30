@@ -29,23 +29,23 @@
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
   Content-Type: application/manifest+json; charset=utf-8
 /favicon.ico
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/x-icon
   Access-Control-Allow-Origin: *
 /favicon-48x48.png
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/png
   Access-Control-Allow-Origin: *
 /favicon-96x96.png
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/png
   Access-Control-Allow-Origin: *
 /favicon.png
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/png
   Access-Control-Allow-Origin: *
 /apple-touch-icon.png
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/png
   Access-Control-Allow-Origin: *
 /robots.txt
@@ -86,20 +86,20 @@
 
 # Media & Image Assets
 /*.png
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 /*.webp
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 /*.jpg
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 /*.jpeg
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 /*.svg
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 /*.ico
-  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *

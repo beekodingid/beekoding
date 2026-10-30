@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
+    target: 'es2022',
     chunkSizeWarningLimit: 700,
     modulePreload: {
       resolveDependencies(_filename, deps) {

@@ -216,7 +216,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <img
-                    src="/beekoding-logo.png"
+                    src="/bee-mascot.webp"
                     alt="Beekoding"
                     className="w-7 h-7 sm:w-8 sm:h-8 object-contain group-hover:scale-110 transition-transform duration-300"
                   />

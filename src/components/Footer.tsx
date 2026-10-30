@@ -68,7 +68,7 @@ export const Footer: React.FC<FooterProps> = ({
                   }`}
                 >
                   <img
-                    src="/beekoding-logo.png"
+                    src="/bee-mascot.webp"
                     alt="Beekoding Mascot"
                     className="w-8 h-8 object-contain"
                   />

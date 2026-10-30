@@ -1,3 +1,7 @@
+# Redirect www to non-www canonical domain
+https://www.beekoding.my.id/* https://beekoding.my.id/:splat 301
+
 # Cloudflare Pages SPA (Single Page Application) Redirect Rules
 # Ensures all routes and refresh actions are handled by React (index.html)
 /*    /index.html   200
+
