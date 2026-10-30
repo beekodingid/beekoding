@@ -26,6 +26,9 @@ export default defineConfig({
           if (normalizedId.includes('src/services/adminStorage') || normalizedId.includes('src/data/talentQuestions')) {
             return 'app-data';
           }
+          if (normalizedId.includes('src/data/blogArticles')) {
+            return 'blog-data';
+          }
         },
       },
     },

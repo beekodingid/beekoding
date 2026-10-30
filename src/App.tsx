@@ -12,22 +12,57 @@ import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { PWAInstallPrompt } from './components/common/PWAInstallPrompt';
 import { type CodingEvent } from './services/adminStorage';
 
-import { TrialEventsSection } from './components/TrialEventsSection';
-import { StudentShowcase } from './components/StudentShowcase';
-import { Founder } from './components/Founder';
-import { CourseFinder } from './components/CourseFinder';
-import { Gallery } from './components/Gallery';
-import { BlogSection } from './components/BlogSection';
-import { FAQ } from './components/FAQ';
-import { Contact } from './components/Contact';
-import { BlogView } from './components/blog/BlogView';
-import { AgeTierLandingPage } from './components/landing/AgeTierLandingPage';
-import { GlossaryView } from './components/glossary/GlossaryView';
-import { QuizMinatView } from './components/quiz/QuizMinatView';
-import { LegalView } from './components/legal/LegalView';
-import { CityLandingPage } from './components/landing/CityLandingPage';
-import { WorksheetsView } from './components/worksheets/WorksheetsView';
-import { WorksheetLeadMagnetSection } from './components/worksheets/WorksheetLeadMagnetSection';
+// Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed & responsiveness
+const TrialEventsSection = lazy(() =>
+  import('./components/TrialEventsSection').then((m) => ({ default: m.TrialEventsSection }))
+);
+const StudentShowcase = lazy(() =>
+  import('./components/StudentShowcase').then((m) => ({ default: m.StudentShowcase }))
+);
+const Founder = lazy(() =>
+  import('./components/Founder').then((m) => ({ default: m.Founder }))
+);
+const CourseFinder = lazy(() =>
+  import('./components/CourseFinder').then((m) => ({ default: m.CourseFinder }))
+);
+const Gallery = lazy(() =>
+  import('./components/Gallery').then((m) => ({ default: m.Gallery }))
+);
+const BlogSection = lazy(() =>
+  import('./components/BlogSection').then((m) => ({ default: m.BlogSection }))
+);
+const FAQ = lazy(() =>
+  import('./components/FAQ').then((m) => ({ default: m.FAQ }))
+);
+const Contact = lazy(() =>
+  import('./components/Contact').then((m) => ({ default: m.Contact }))
+);
+const BlogView = lazy(() =>
+  import('./components/blog/BlogView').then((m) => ({ default: m.BlogView }))
+);
+const AgeTierLandingPage = lazy(() =>
+  import('./components/landing/AgeTierLandingPage').then((m) => ({ default: m.AgeTierLandingPage }))
+);
+const GlossaryView = lazy(() =>
+  import('./components/glossary/GlossaryView').then((m) => ({ default: m.GlossaryView }))
+);
+const QuizMinatView = lazy(() =>
+  import('./components/quiz/QuizMinatView').then((m) => ({ default: m.QuizMinatView }))
+);
+const LegalView = lazy(() =>
+  import('./components/legal/LegalView').then((m) => ({ default: m.LegalView }))
+);
+const CityLandingPage = lazy(() =>
+  import('./components/landing/CityLandingPage').then((m) => ({ default: m.CityLandingPage }))
+);
+const WorksheetsView = lazy(() =>
+  import('./components/worksheets/WorksheetsView').then((m) => ({ default: m.WorksheetsView }))
+);
+const WorksheetLeadMagnetSection = lazy(() =>
+  import('./components/worksheets/WorksheetLeadMagnetSection').then((m) => ({
+    default: m.WorksheetLeadMagnetSection,
+  }))
+);
 import { CITIES_DATA, type CityLandingData } from './data/citiesData';
 
 // Lazy-loaded heavy internal portals and interactive modals
