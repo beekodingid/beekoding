@@ -24,8 +24,11 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://beekoding.my.id/" />
     <script>
-      if (typeof window !== 'undefined' && window.location.hostname === 'www.beekoding.my.id') {
-        window.location.replace('https://beekoding.my.id' + window.location.pathname + window.location.search + window.location.hash);
+      if (typeof window !== 'undefined') {
+        var h = window.location.hostname;
+        if (h === 'www.beekoding.my.id' || h === 'beekoding.pages.dev' || h.endsWith('.pages.dev')) {
+          window.location.replace('https://beekoding.my.id' + window.location.pathname + window.location.search + window.location.hash);
+        }
       }
     </script>
 
@@ -433,9 +436,6 @@
       <!-- PRERENDER_ROOT_END -->
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Cloudflare Web Analytics -->
-    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "921bd9b999514a3e87b5021da0b8d9de"}'></script>
-    <!-- End Cloudflare Web Analytics -->
     <!-- Google AdSense Verification Script -->
     <script
       async
