@@ -155,7 +155,9 @@ export const Hero: React.FC<HeroProps> = ({
               </button>
 
               <button
+                type="button"
                 onClick={onOpenBootcampModal}
+                aria-label="Buka Informasi Bootcamp Coding 2026"
                 className={`whitespace-nowrap flex-shrink-0 inline-flex items-center justify-center gap-2 px-5 xl:px-7 py-3.5 xl:py-4 rounded-full text-sm xl:text-base font-bold shadow-lg hover:-translate-y-0.5 transition-all duration-200 group ${
                   isDark
                     ? 'bg-[#171b26]/90 hover:bg-[#1f2433] text-white border border-amber-500/40 hover:border-amber-400 shadow-amber-500/10'
@@ -245,7 +247,7 @@ export const Hero: React.FC<HeroProps> = ({
                   <div className="block aspect-[440/600] w-64 sm:w-80">
                     <img
                       src="/bee-mascot.webp"
-                      alt="Beekoding Mascot"
+                      alt="Maskot Lebah Beekoding - Belajar Coding dan AI Anak"
                       width={440}
                       height={600}
                       fetchPriority="high"

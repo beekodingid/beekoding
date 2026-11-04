@@ -14,6 +14,7 @@ export default defineConfig({
           (dep) =>
             !dep.includes('app-data') &&
             !dep.includes('blog-data') &&
+            !dep.includes('vendor-qrcode') &&
             !dep.includes('BlogView') &&
             !dep.includes('AdminView') &&
             !dep.includes('TalentAssessmentView') &&
@@ -34,6 +35,9 @@ export default defineConfig({
             }
             if (normalizedId.includes('/@supabase/')) {
               return 'vendor-supabase';
+            }
+            if (normalizedId.includes('/qrcode/')) {
+              return 'vendor-qrcode';
             }
             return 'vendor';
           }

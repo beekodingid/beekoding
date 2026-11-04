@@ -213,13 +213,13 @@ export const ModularPrograms: React.FC<ModularProgramsProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               <span>Dokumentasi Resmi Silabus & Kurikulum 2026</span>
             </div>
-            <h4
+            <h3
               className={`text-lg sm:text-xl font-bold font-['Space_Grotesk'] ${
                 isDark ? 'text-white' : 'text-slate-900'
               }`}
             >
               Butuh Dokumen Silabus untuk Diskusi dengan Pasangan atau Sekolah?
-            </h4>
+            </h3>
             <p className={`text-xs sm:text-sm max-w-2xl ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               Unduh booklet silabus resmi berformat PDF berisikan rincian 24 sesi bootcamp, 8 pilar kecerdasan kognitif, modul project, dan rubrik kelulusan.
             </p>

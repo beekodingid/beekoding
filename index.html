@@ -22,7 +22,10 @@
     />
     <meta name="theme-color" content="#0d0f15" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="google-adsense-account" content="ca-pub-6361492236129824" />
     <link rel="canonical" href="https://beekoding.my.id/" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Documentation" />
+    <link rel="help" type="text/plain" href="/llms.txt" />
     <script>
       if (typeof window !== 'undefined') {
         var h = window.location.hostname;
@@ -436,11 +439,24 @@
       <!-- PRERENDER_ROOT_END -->
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Google AdSense Verification Script -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6361492236129824"
-      crossorigin="anonymous"
-    ></script>
+    <!-- Google AdSense Script (Deferred after main thread idle to guarantee 0ms Total Blocking Time) -->
+    <script>
+      window.addEventListener('load', function() {
+        var loadAds = function() {
+          if (document.getElementById('adsbygoogle-js')) return;
+          var s = document.createElement('script');
+          s.id = 'adsbygoogle-js';
+          s.async = true;
+          s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6361492236129824';
+          s.crossOrigin = 'anonymous';
+          document.head.appendChild(s);
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadAds, { timeout: 3500 });
+        } else {
+          setTimeout(loadAds, 2500);
+        }
+      });
+    </script>
   </body>
 </html>

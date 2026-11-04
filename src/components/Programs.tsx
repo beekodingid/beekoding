@@ -717,13 +717,13 @@ export const Programs: React.FC<ProgramsProps> = ({
                         </div>
 
                         <div className="mt-2 flex items-baseline gap-2">
-                          <h4
+                          <div
                             className={`text-2xl font-black font-['Space_Grotesk'] ${
                               isDark ? 'text-white' : 'text-slate-900'
                             }`}
                           >
                             {track.sessions} Sesi
-                          </h4>
+                          </div>
                           <span className="text-xs text-amber-500 font-bold">{track.period}</span>
                         </div>
 

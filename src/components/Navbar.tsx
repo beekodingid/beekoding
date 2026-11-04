@@ -118,7 +118,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
 
     // Panggil sekali saat pertama kali dimuat
-    updateScrollSpy();
+    if (typeof window !== 'undefined' && window.scrollY > 30) {
+      window.requestAnimationFrame(updateScrollSpy);
+    }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

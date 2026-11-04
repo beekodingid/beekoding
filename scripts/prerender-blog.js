@@ -44,7 +44,7 @@ function replaceNoscript(html, innerSemanticHtml) {
 function stripAdSenseScript(html) {
   return html
     .replace(
-      /\s*<!-- Google AdSense Verification[^\n]*-->\s*(?:<meta name="google-adsense-account"[^>]*>\s*)?<script[\s\S]*?pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[\s\S]*?<\/script>/g,
+      /\s*<!-- Google AdSense[^\n]*-->\s*(?:<meta name="google-adsense-account"[^>]*>\s*)?<script[\s\S]*?pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[\s\S]*?<\/script>/g,
       ''
     )
     .replace(/\s*<meta name="google-adsense-account"[^>]*>/g, '');

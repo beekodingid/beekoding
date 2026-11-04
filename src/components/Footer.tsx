@@ -131,13 +131,13 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Quick Navigation */}
           <div className="space-y-3">
-            <h4
+            <h3
               className={`text-xs font-black font-['Space_Grotesk'] uppercase tracking-wider ${
                 isDark ? 'text-amber-400' : 'text-amber-800'
               }`}
             >
               Navigasi Cepat
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <button
@@ -295,13 +295,13 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Programs */}
           <div className="space-y-3">
-            <h4
+            <h3
               className={`text-xs font-black font-['Space_Grotesk'] uppercase tracking-wider ${
                 isDark ? 'text-amber-400' : 'text-amber-800'
               }`}
             >
               Program Pilihan
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <a
@@ -415,13 +415,13 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Pedagogy & Accreditations */}
           <div className="space-y-3">
-            <h4
+            <h3
               className={`text-xs font-black font-['Space_Grotesk'] uppercase tracking-wider ${
                 isDark ? 'text-amber-400' : 'text-amber-800'
               }`}
             >
               Komitmen Belajar
-            </h4>
+            </h3>
             <p
               className={`text-xs leading-relaxed ${
                 isDark ? 'text-slate-300' : 'text-slate-700'

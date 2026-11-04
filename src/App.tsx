@@ -2,15 +2,17 @@ import { useState, useEffect, lazy, Suspense, startTransition } from 'react';
 import { useTheme } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { Programs } from './components/Programs';
-import { ModularPrograms } from './components/ModularPrograms';
-import { Audience } from './components/Audience';
-import { WhyUs } from './components/WhyUs';
-import { Footer } from './components/Footer';
-import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { PWAInstallPrompt } from './components/common/PWAInstallPrompt';
 import { type CodingEvent } from './services/adminStorage';
+
+// Lazy-loaded below-the-fold components to slash initial JS execution & blocking time
+const About = lazy(() => import('./components/About').then((m) => ({ default: m.About })));
+const Programs = lazy(() => import('./components/Programs').then((m) => ({ default: m.Programs })));
+const ModularPrograms = lazy(() => import('./components/ModularPrograms').then((m) => ({ default: m.ModularPrograms })));
+const Audience = lazy(() => import('./components/Audience').then((m) => ({ default: m.Audience })));
+const WhyUs = lazy(() => import('./components/WhyUs').then((m) => ({ default: m.WhyUs })));
+const Footer = lazy(() => import('./components/Footer').then((m) => ({ default: m.Footer })));
+const FloatingWhatsApp = lazy(() => import('./components/FloatingWhatsApp').then((m) => ({ default: m.FloatingWhatsApp })));
+const PWAInstallPrompt = lazy(() => import('./components/common/PWAInstallPrompt').then((m) => ({ default: m.PWAInstallPrompt })));
 
 // Lazy-loaded heavy and below-the-fold modules for maximum initial page load speed & responsiveness
 const TrialEventsSection = lazy(() =>
@@ -972,24 +974,20 @@ export function App() {
           onOpenQuizMinat={handleOpenQuizMinat}
           onOpenArcade={handleOpenArcade}
         />
-        <About />
-        <Programs
-          onOpenBootcampModal={handleOpenBootcampModal}
-          onSelectProgramForInquiry={handleSelectProgramForInquiry}
-        />
-        <ModularPrograms onSelectProgramForInquiry={handleSelectProgramForInquiry} />
         <Suspense fallback={null}>
+          <About />
+          <Programs
+            onOpenBootcampModal={handleOpenBootcampModal}
+            onSelectProgramForInquiry={handleSelectProgramForInquiry}
+          />
+          <ModularPrograms onSelectProgramForInquiry={handleSelectProgramForInquiry} />
           <TrialEventsSection onOpenTrialEventsModal={handleOpenTrialEvents} />
-        </Suspense>
-        <Suspense fallback={null}>
           <CourseFinder
             onOpenTalentAssessment={handleOpenTalentAssessment}
             onOpenTrialEventsModal={handleOpenTrialEvents}
           />
-        </Suspense>
-        <Audience />
-        <WhyUs />
-        <Suspense fallback={null}>
+          <Audience />
+          <WhyUs />
           <StudentShowcase
             onOpenTalentAssessment={handleOpenTalentAssessment}
             onOpenArcade={handleOpenArcade}
@@ -1012,24 +1010,22 @@ export function App() {
         </Suspense>
       </main>
 
-      {/* Footer */}
-      <Footer
-        onOpenBootcampModal={handleOpenBootcampModal}
-        onOpenTalentAssessment={handleOpenTalentAssessment}
-        onOpenAdmin={handleOpenAdmin}
-        onOpenStudentPortal={handleOpenStudentPortal}
-        onOpenBlog={handleOpenBlog}
-        onOpenAgeLanding={handleOpenAgeLanding}
-        onOpenGlossary={handleOpenGlossary}
-        onOpenLegal={handleOpenLegal}
-        onOpenWorksheets={handleOpenWorksheets}
-      />
-
-      {/* Floating WhatsApp chat widget */}
-      <FloatingWhatsApp />
-
-      {/* PWA Add to Home Screen Prompt */}
-      <PWAInstallPrompt />
+      {/* Footer & Floating Widgets */}
+      <Suspense fallback={null}>
+        <Footer
+          onOpenBootcampModal={handleOpenBootcampModal}
+          onOpenTalentAssessment={handleOpenTalentAssessment}
+          onOpenAdmin={handleOpenAdmin}
+          onOpenStudentPortal={handleOpenStudentPortal}
+          onOpenBlog={handleOpenBlog}
+          onOpenAgeLanding={handleOpenAgeLanding}
+          onOpenGlossary={handleOpenGlossary}
+          onOpenLegal={handleOpenLegal}
+          onOpenWorksheets={handleOpenWorksheets}
+        />
+        <FloatingWhatsApp />
+        <PWAInstallPrompt />
+      </Suspense>
 
             {/* Beekoding Playable Arcade Modal */}
       {showArcadeModal && (
