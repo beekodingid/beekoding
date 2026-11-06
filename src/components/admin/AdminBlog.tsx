@@ -51,6 +51,7 @@ import {
   Heart,
   Send,
   MessageCircle,
+  ExternalLink,
 } from 'lucide-react';
 import {
   getAllComments,
@@ -63,10 +64,9 @@ import {
 
 interface AdminBlogProps {
   isDark?: boolean;
-  onOpenArticleInWeb?: (slug: string) => void;
 }
 
-export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark, onOpenArticleInWeb }) => {
+export const AdminBlog: React.FC<AdminBlogProps> = ({ isDark: propIsDark }) => {
   const { isDark: themeIsDark } = useTheme();
   const isDark = propIsDark ?? themeIsDark;
   const [articles, setArticles] = useState<BlogArticle[]>(() => getBlogArticles());
@@ -800,17 +800,15 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (onOpenArticleInWeb) onOpenArticleInWeb(art.slug);
-                            else window.open(`/#blog/${art.slug}`, '_blank');
-                          }}
-                          className="p-1.5 rounded-lg border border-transparent hover:border-amber-400 text-slate-500 hover:text-amber-500 transition-colors"
+                        <a
+                          href={`/blog/${art.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg border border-transparent hover:border-amber-400 text-slate-500 hover:text-amber-500 transition-colors inline-flex items-center justify-center cursor-pointer"
                           title="Lihat Pratinjau di Blog Web"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                        </button>
+                        </a>
                         <button
                           type="button"
                           onClick={() => handleOpenEditModal(art)}
@@ -1026,15 +1024,10 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                       </span>
 
                       {/* Article link */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (onOpenArticleInWeb) {
-                            onOpenArticleInWeb(comment.articleSlug);
-                          } else {
-                            window.open(`/blog/${comment.articleSlug}`, '_blank');
-                          }
-                        }}
+                      <a
+                        href={`/blog/${comment.articleSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-colors cursor-pointer ${
                           isDark
                             ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-amber-400'
@@ -1044,7 +1037,8 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                       >
                         <Eye className="w-3 h-3" />
                         <span className="max-w-[140px] truncate">/{comment.articleSlug}</span>
-                      </button>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                      </a>
                     </div>
                   </div>
 
@@ -1236,13 +1230,27 @@ CREATE POLICY "Admin Full Access Articles" ON blog_articles
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setModalOpen(false)}
-                className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {editingArticle && formSlug && (
+                  <a
+                    href={`/blog/${formSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
+                    title="Buka pratinjau artikel di halaman blog publik (tab baru)"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Lihat di Web</span>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Modal Form Body */}

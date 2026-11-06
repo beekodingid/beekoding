@@ -370,9 +370,6 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToHome }) => {
           {currentTab === 'blog' && (
             <AdminBlog
               isDark={isDark}
-              onOpenArticleInWeb={(slug) => {
-                window.location.hash = `#blog/${slug}`;
-              }}
             />
           )}
 
