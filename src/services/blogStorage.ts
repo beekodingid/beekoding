@@ -52,8 +52,11 @@ function normalizeArticle(article: Partial<BlogArticle>, index: number = 0): Blo
  * Mengambil seluruh artikel blog dari LocalStorage dengan fallback ke seed data awal
  */
 export function getBlogArticles(): BlogArticle[] {
+  const sortByDateDesc = (items: BlogArticle[]) =>
+    [...items].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
   if (typeof window === 'undefined') {
-    return defaultSeedArticles.map((a, i) => normalizeArticle(a, i));
+    return sortByDateDesc(defaultSeedArticles.map((a, i) => normalizeArticle(a, i)));
   }
 
   try {
@@ -66,9 +69,9 @@ export function getBlogArticles(): BlogArticle[] {
         if (newSeeds.length > 0) {
           const combined = [...parsed, ...newSeeds].map((a, i) => normalizeArticle(a, i));
           saveBlogArticlesLocally(combined);
-          return combined;
+          return sortByDateDesc(combined);
         }
-        return parsed.map((a, i) => normalizeArticle(a, i));
+        return sortByDateDesc(parsed.map((a, i) => normalizeArticle(a, i)));
       }
     }
   } catch (err) {
@@ -76,7 +79,7 @@ export function getBlogArticles(): BlogArticle[] {
   }
 
   // Jika belum ada di localStorage, inisialisasi dengan seed articles
-  const initial = defaultSeedArticles.map((a, i) => normalizeArticle(a, i));
+  const initial = sortByDateDesc(defaultSeedArticles.map((a, i) => normalizeArticle(a, i)));
   saveBlogArticlesLocally(initial);
   return initial;
 }

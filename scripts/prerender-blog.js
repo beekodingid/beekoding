@@ -145,6 +145,9 @@ async function main() {
     console.warn('[prerender-blog] Notice: Unable to connect to Supabase at build time, using static data.');
   }
 
+  // Sort articles descending by publishedAt so the newest article is always first
+  articles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
   // 3. Ensure dist/blog directory exists
   const blogDir = path.join(distDir, 'blog');
   if (!fs.existsSync(blogDir)) {
@@ -153,6 +156,11 @@ async function main() {
 
   // Generate dist/blog/index.html and dist/blog.html (list view)
   const blogDesc = 'Kumpulan artikel edukasi Coding Anak, Artificial Intelligence, Scratch, Roblox Studio, Python, dan tips Parenting Digital terbaru dari tim akademik Beekoding.';
+  const heroCoverImage = articles[0]?.coverImage;
+  const blogPreloadTag = heroCoverImage
+    ? `<link rel="preload" as="image" href="${heroCoverImage}" fetchpriority="high" />`
+    : '';
+
   const blogListSemanticHtml = `
         <header style="margin-bottom:32px;">
           <a href="/" style="display:inline-block;margin-bottom:16px;color:#d97706;font-weight:bold;text-decoration:none;">&larr; Kembali ke Beranda Beekoding</a>
@@ -177,7 +185,8 @@ async function main() {
       .replace(/<meta name="twitter:title" content="[^"]*"/, '<meta name="twitter:title" content="Blog Edukasi Coding & AI Anak | Beekoding"')
       .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${blogDesc}" />`)
       .replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="https://beekoding.my.id/blog"')
-      .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.my.id/blog"'),
+      .replace(/<meta name="twitter:url" content="[^"]*"/, '<meta name="twitter:url" content="https://beekoding.my.id/blog"')
+      .replace(/<link rel="preload" as="image" href="\/bee-mascot\.webp"[^>]*?>/, blogPreloadTag),
     blogListSemanticHtml
   );
   fs.writeFileSync(path.join(blogDir, 'index.html'), blogListHtml, 'utf-8');
@@ -1044,7 +1053,8 @@ async function main() {
       .replace(/<meta[^>]*?name="twitter:title"[^>]*?>/s, `<meta name="twitter:title" content="${title.replace(/"/g, '&quot;')}" />`)
       .replace(/<meta[^>]*?name="twitter:description"[^>]*?>/s, `<meta name="twitter:description" content="${desc}" />`)
       .replace(/<meta[^>]*?name="twitter:image"[^>]*?>/s, `<meta name="twitter:image" content="${image}" />`)
-      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${url}" />`);
+      .replace(/<meta[^>]*?name="twitter:url"[^>]*?>/s, `<meta name="twitter:url" content="${url}" />`)
+      .replace(/<link rel="preload" as="image" href="\/bee-mascot\.webp"[^>]*?>/, `<link rel="preload" as="image" href="${image}" fetchpriority="high" />`);
 
     const articleJsonLd = JSON.stringify({
       '@context': 'https://schema.org',

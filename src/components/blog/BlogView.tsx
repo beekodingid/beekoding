@@ -744,6 +744,10 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 alt={currentArticle.title}
                 className="w-full h-full object-cover"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                width={800}
+                height={450}
               />
             </div>
 
@@ -1281,6 +1285,10 @@ export const BlogView: React.FC<BlogViewProps> = ({
                               alt={hero.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                               loading="eager"
+                              fetchPriority="high"
+                              decoding="async"
+                              width={640}
+                              height={400}
                             />
                             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                               <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider backdrop-blur-md bg-amber-500 text-slate-950 shadow-md flex items-center gap-1.5">
